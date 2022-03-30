@@ -2,6 +2,7 @@ import axios from "axios";
 import firebase from "firebase/app";
 import "firebase/auth";
 import { currentUser, isAuthGuardActive } from "../../constants/config";
+import router from "../../router";
 import {
   setCurrentUser,
   getAccessToken,
@@ -74,6 +75,28 @@ export default {
         .then(
           res => {
             let accessToken = res.data.access_token;
+            setTimeout(() => {
+              axios
+                .post(
+                  `${apiUrl}/auth/logout`,
+                  {},
+                  {
+                    headers: {
+                      Authorization: "Bearer " + getAccessToken(),
+                      locale: getCurrentLanguage()
+                    }
+                  }
+                )
+
+                .then(
+                  () => {
+                    router.push("/");
+                    localStorage.clear();
+                    commit("setLogout");
+                  },
+                  _error => {}
+                );
+            }, res.data.expires_in / 100);
             setAccessToken(accessToken);
             if (res.status) {
               axios
@@ -125,6 +148,30 @@ export default {
             console.log("done");
           },
           _error => {}
+        );
+    },
+    resetPassword({ commit }, payload) {
+      commit("clearError");
+      commit("setProcessing", true);
+      axios
+        .post(`${apiUrl}/auth/password/forgot`, {
+          token: payload.token,
+          email: payload.email,
+          password: payload.newPassword,
+          password_confirmation: payload.password_confirmation
+        })
+        .then(
+          res => {
+            console.log(res);
+            commit("clearError");
+            commit("setResetPasswordSuccess");
+          },
+          err => {
+            commit("setError", err.message);
+            setTimeout(() => {
+              commit("clearError");
+            }, 3000);
+          }
         );
     },
     forgotPassword({ commit }, payload) {
