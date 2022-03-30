@@ -127,7 +127,27 @@ export default {
           _error => {}
         );
     },
-
+    forgotPassword({ commit }, payload) {
+      commit("clearError");
+      commit("setProcessing", true);
+      axios
+        .post(`${apiUrl}/auth/password/forgot`, {
+          email: payload.email
+        })
+        .then(
+          res => {
+            console.log(res);
+            commit("clearError");
+            commit("setForgotMailSuccess");
+          },
+          err => {
+            commit("setError", err.message);
+            setTimeout(() => {
+              commit("clearError");
+            }, 3000);
+          }
+        );
+    },
     signOut({ commit }) {
       axios
         .post(
