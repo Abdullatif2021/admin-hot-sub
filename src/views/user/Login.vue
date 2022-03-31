@@ -167,10 +167,15 @@ export default {
     },
     loginError(val) {
       if (val != null) {
-        this.$notify("error", "Login Error", val, {
-          duration: 3000,
-          permanent: false
-        });
+        this.$notify(
+          "error",
+          "Login Error",
+          "Invalid credentials. Please try again.",
+          {
+            duration: 3000,
+            permanent: false
+          }
+        );
       }
     }
   }

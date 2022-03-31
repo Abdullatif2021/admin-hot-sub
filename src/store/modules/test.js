@@ -1,5 +1,5 @@
-import axios from "axios";
-import { apiUrl, Headers } from "../../constants/config";
+import axios from "../../plugins/axios";
+import { apiUrl } from "../../constants/config";
 
 const state = {
   isLoad: false,
@@ -33,10 +33,8 @@ const actions = {
   getItems({ commit }) {
     commit("getItemStarted");
     axios
-      .get(`${apiUrl}/addresses`, {
-        headers: Headers
-      })
-      .then(r => r.data)
+      .get(`${apiUrl}/addresses`)
+      .then(res => res.data)
       .then(res => {
         if (res.status) {
           commit("getItemSuccess", res.data);

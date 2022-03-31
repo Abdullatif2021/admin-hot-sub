@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../plugins/axios";
 import firebase from "firebase/app";
 import "firebase/auth";
 import { currentUser, isAuthGuardActive } from "../../constants/config";
@@ -76,44 +76,25 @@ export default {
           res => {
             let accessToken = res.data.access_token;
             setTimeout(() => {
-              axios
-                .post(
-                  `${apiUrl}/auth/logout`,
-                  {},
-                  {
-                    headers: {
-                      Authorization: "Bearer " + getAccessToken(),
-                      locale: getCurrentLanguage()
-                    }
-                  }
-                )
-
-                .then(
-                  () => {
-                    router.push("/");
-                    localStorage.clear();
-                    commit("setLogout");
-                  },
-                  _error => {}
-                );
-            }, res.data.expires_in / 100);
+              axios.post(`${apiUrl}/auth/logout`).then(
+                () => {
+                  router.push("/");
+                  localStorage.clear();
+                  commit("setLogout");
+                },
+                _error => {}
+              );
+            }, res.data.expires_in * 900);
             setAccessToken(accessToken);
             if (res.status) {
-              axios
-                .get(`${apiUrl}/auth/user`, {
-                  headers: {
-                    Authorization: "Bearer " + accessToken,
-                    locale: localStorage.getItem("currentLanguage")
-                  }
-                })
-                .then(res => {
-                  if (res.status) {
-                    setCurrentUser(res.data.data);
-                    commit("setUser", res.data.data);
-                  } else {
-                    commit("getItemError", "error:getItem");
-                  }
-                });
+              axios.get(`${apiUrl}/auth/user`).then(res => {
+                if (res.status) {
+                  setCurrentUser(res.data.data);
+                  commit("setUser", res.data.data);
+                } else {
+                  commit("getItemError", "error:getItem");
+                }
+              });
             }
           },
           err => {
@@ -126,30 +107,18 @@ export default {
         );
     },
 
-    changePreferLocale(locale) {
-      console.log("time out is running");
+    // changePreferLocale(locale) {
+    //   console.log("time out is running");
 
-      axios
-        .put(
-          `${apiUrl}/users/prefer_locale`,
-          {
-            prefer_locale: locale
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + getAccessToken(),
-              locale: getCurrentLanguage()
-            }
-          }
-        )
-
-        .then(
-          () => {
-            console.log("done");
-          },
-          _error => {}
-        );
-    },
+    //   axios
+    //     .put(`${apiUrl}/users/prefer_locale`, {
+    //       prefer_locale: locale
+    //     }).then(() => {
+    //         console.log("done");
+    //       },
+    //       _error => {}
+    //     );
+    // },
     resetPassword({ commit }, payload) {
       commit("clearError");
       commit("setProcessing", true);
@@ -196,25 +165,13 @@ export default {
         );
     },
     signOut({ commit }) {
-      axios
-        .post(
-          `${apiUrl}/auth/logout`,
-          {},
-          {
-            headers: {
-              Authorization: "Bearer " + getAccessToken(),
-              locale: getCurrentLanguage()
-            }
-          }
-        )
-
-        .then(
-          () => {
-            localStorage.clear();
-            commit("setLogout");
-          },
-          _error => {}
-        );
+      axios.post(`${apiUrl}/auth/logout`).then(
+        () => {
+          localStorage.clear();
+          commit("setLogout");
+        },
+        _error => {}
+      );
     }
   }
 };

@@ -45,10 +45,19 @@
 </template>
 <script>
 import IconCard from "../../../components/Cards/IconCard.vue";
-
+import { mapActions } from "vuex";
 export default {
   components: {
     "icon-card": IconCard
+  },
+  data() {
+    return {};
+  },
+  methods: {
+    // ...mapActions(["getItems"]),
+    // click() {
+    //   this.getItems();
+    // }
   }
 };
 </script>

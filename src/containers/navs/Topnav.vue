@@ -193,7 +193,7 @@
                 :src="
                   currentUser.img
                     ? currentUser.img
-                    : '/assets/img/profiles/default.png'
+                    : '/assets/img/profiles/user.png'
                 "
               />
             </span>
