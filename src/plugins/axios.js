@@ -1,7 +1,5 @@
 import axios from "axios";
-import { getAccessToken, getCurrentLanguage } from "../utils";
-import router from "../router";
-import { apiUrl } from "../constants/config";
+import { getCurrentLanguage } from "../utils";
 import store from "../store";
 
 axios.interceptors.request.use(request => {
@@ -23,7 +21,7 @@ axios.interceptors.response.use(
       store.dispatch("refreshToken");
       setTimeout(() => {
         axios.request(error.config);
-      }, 2000);
+      }, 1500);
     }
   }
 );

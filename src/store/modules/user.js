@@ -77,24 +77,6 @@ export default {
             let refreshToken = res.data.refresh_token;
             let accessToken = res.data.access_token;
             setTokens(accessToken, refreshToken);
-            // setTimeout(() => {
-            //   axios
-            //     .post(`${apiUrl}/auth/refresh_token`, {
-            //       refresh_token: refreshToken
-            //     })
-            //     .then(
-            //       res => {
-            //         let accessToken = res.data.access_token;
-            //         setAccessToken(accessToken);
-            //       },
-            //       _error => {
-            //         router.push("/");
-            //         localStorage.removeItem("accessToken");
-            //         localStorage.removeItem("currentUser");
-            //         commit("setLogout");
-            //       }
-            //     );
-            // }, res.data.expires_in * 10);
 
             if (res.status) {
               axios.get(`${apiUrl}/auth/user`).then(res => {
@@ -177,17 +159,20 @@ export default {
     signOut({ commit }) {
       axios.post(`${apiUrl}/auth/logout`).then(
         res => {
+          console.log(res);
+
           sessionStorage.removeItem("accessToken");
           sessionStorage.removeItem("currentUser");
           sessionStorage.removeItem("refreshToken");
           router.push("/");
           commit("setLogout");
         },
-        _error => {}
+        _error => {
+          console.log("i am errtr");
+        }
       );
     },
     refreshToken() {
-      console.log("i am refreshToken func");
       axios
         .post(`${apiUrl}/auth/refresh_token`, {
           refresh_token: sessionStorage.getItem("refreshToken")

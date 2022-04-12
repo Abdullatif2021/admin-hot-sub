@@ -287,12 +287,7 @@ export default {
       this.changePreferLocale(locale);
     },
     logout() {
-      this.signOut().then(res => {
-        console.log(res);
-        // if (res.status === 200) {
-        //   this.$router.push("/");
-        // }
-      });
+      this.signOut();
     },
 
     toggleFullScreen() {
