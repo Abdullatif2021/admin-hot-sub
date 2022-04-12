@@ -147,7 +147,7 @@ export const getCurrentLanguage = () => {
 };
 export const getAccessToken = () => {
   try {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = sessionStorage.getItem("accessToken");
     return accessToken;
   } catch (error) {
     console.log(">>>> src/utils/index.js : setCurrentLanguage -> error", error);
@@ -167,8 +167,8 @@ export const getCurrentUser = () => {
   let currentUser = null;
   try {
     currentUser =
-      localStorage.getItem("currentUser") != null
-        ? JSON.parse(localStorage.getItem("currentUser"))
+      sessionStorage.getItem("currentUser") != null
+        ? JSON.parse(sessionStorage.getItem("currentUser"))
         : null;
   } catch (error) {
     console.log(">>>> src/utils/index.js : getCurrentUser -> error", error);
@@ -180,17 +180,18 @@ export const getCurrentUser = () => {
 export const setCurrentUser = user => {
   try {
     if (user) {
-      localStorage.setItem("currentUser", JSON.stringify(user));
+      sessionStorage.setItem("currentUser", JSON.stringify(user));
     } else {
-      localStorage.removeItem("currentUser");
+      sessionStorage.removeItem("currentUser");
     }
   } catch (error) {
     console.log(">>>> src/utils/index.js : setCurrentUser -> error", error);
   }
 };
-export const setAccessToken = accessToken => {
+export const setTokens = (accessToken, refreshToken) => {
   try {
-    localStorage.setItem("accessToken", accessToken);
+    sessionStorage.setItem("accessToken", accessToken);
+    sessionStorage.setItem("refreshToken", refreshToken);
   } catch (error) {
     console.log(">>>> src/utils/index.js : setCurrentUser -> error", error);
   }

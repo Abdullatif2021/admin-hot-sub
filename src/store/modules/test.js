@@ -8,8 +8,8 @@ const state = {
 };
 
 const getters = {
-  isLoad: state => state.isLoad,
-  Error: state => state.Error,
+  // isLoad: state => state.isLoad,
+  // Error: state => state.Error,
   Items: state => state.Items
 };
 

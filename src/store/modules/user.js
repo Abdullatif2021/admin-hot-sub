@@ -6,7 +6,7 @@ import router from "../../router";
 import {
   setCurrentUser,
   getAccessToken,
-  setAccessToken,
+  setTokens,
   getCurrentUser,
   getCurrentLanguage
 } from "../../utils";
@@ -74,18 +74,28 @@ export default {
         })
         .then(
           res => {
+            let refreshToken = res.data.refresh_token;
             let accessToken = res.data.access_token;
-            setTimeout(() => {
-              axios.post(`${apiUrl}/auth/logout`).then(
-                () => {
-                  router.push("/");
-                  localStorage.clear();
-                  commit("setLogout");
-                },
-                _error => {}
-              );
-            }, res.data.expires_in * 900);
-            setAccessToken(accessToken);
+            setTokens(accessToken, refreshToken);
+            // setTimeout(() => {
+            //   axios
+            //     .post(`${apiUrl}/auth/refresh_token`, {
+            //       refresh_token: refreshToken
+            //     })
+            //     .then(
+            //       res => {
+            //         let accessToken = res.data.access_token;
+            //         setAccessToken(accessToken);
+            //       },
+            //       _error => {
+            //         router.push("/");
+            //         localStorage.removeItem("accessToken");
+            //         localStorage.removeItem("currentUser");
+            //         commit("setLogout");
+            //       }
+            //     );
+            // }, res.data.expires_in * 10);
+
             if (res.status) {
               axios.get(`${apiUrl}/auth/user`).then(res => {
                 if (res.status) {
@@ -166,12 +176,34 @@ export default {
     },
     signOut({ commit }) {
       axios.post(`${apiUrl}/auth/logout`).then(
-        () => {
-          localStorage.clear();
+        res => {
+          sessionStorage.removeItem("accessToken");
+          sessionStorage.removeItem("currentUser");
+          sessionStorage.removeItem("refreshToken");
+          router.push("/");
           commit("setLogout");
         },
         _error => {}
       );
+    },
+    refreshToken() {
+      console.log("i am refreshToken func");
+      axios
+        .post(`${apiUrl}/auth/refresh_token`, {
+          refresh_token: sessionStorage.getItem("refreshToken")
+        })
+        .then(
+          res => {
+            sessionStorage.removeItem("accessToken");
+            sessionStorage.removeItem("refreshToken");
+            let refreshToken = res.data.refresh_token;
+            let accessToken = res.data.access_token;
+            setTokens(accessToken, refreshToken);
+          },
+          _error => {
+            router.push("/");
+          }
+        );
     }
   }
 };

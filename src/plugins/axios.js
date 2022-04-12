@@ -1,21 +1,31 @@
 import axios from "axios";
 import { getAccessToken, getCurrentLanguage } from "../utils";
 import router from "../router";
+import { apiUrl } from "../constants/config";
+import store from "../store";
 
 axios.interceptors.request.use(request => {
   request.headers = {
-    Authorization: "Bearer " + getAccessToken(),
+    Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
     locale: getCurrentLanguage()
   };
   return request;
 });
 
-axios.interceptors.response.use(response => {
-  // if (response.data.status == 401) {
-  //   router.push("/");
-  // }
-
-  return response;
-});
+axios.interceptors.response.use(
+  response => {
+    return response;
+  },
+  function(error) {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      store.dispatch("refreshToken");
+      setTimeout(() => {
+        axios.request(error.config);
+      }, 2000);
+    }
+  }
+);
 
 export default axios;

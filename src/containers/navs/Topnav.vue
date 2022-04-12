@@ -288,7 +288,10 @@ export default {
     },
     logout() {
       this.signOut().then(res => {
-        this.$router.push("/");
+        console.log(res);
+        // if (res.status === 200) {
+        //   this.$router.push("/");
+        // }
       });
     },
 

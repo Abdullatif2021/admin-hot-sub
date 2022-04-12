@@ -16,16 +16,17 @@ const data = [
       }
     ]
   },
+
   {
-    id: "second-menu",
-    icon: "iconsminds-chemical",
-    label: "menu.second-menu",
-    to: `${adminRoot}/second-menu`,
+    id: "blocks",
+    icon: "iconsminds-picasa",
+    label: "menu.blocks",
+    to: `${adminRoot}/blocks`,
     subs: [
       {
         icon: "simple-icon-paper-plane",
-        label: "menu.second",
-        to: `${adminRoot}/second-menu/second`
+        label: "menu.blocks",
+        to: `${adminRoot}/blocks`
       }
     ]
   },

@@ -53,6 +53,26 @@ const routes = [
           }
         ]
       },
+      {
+        path: "blocks",
+        component: () =>
+          import(/* webpackChunkName: "second-menu" */ "./views/app/block"),
+        redirect: `${adminRoot}/blocks/blockList`,
+        children: [
+          {
+            path: "blockList",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/block/blockList"
+              )
+          },
+          {
+            path: "block/:id",
+            component: () =>
+              import(/* webpackChunkName: "blog" */ "./views/app/block/block")
+          }
+        ]
+      },
 
       {
         path: "single",

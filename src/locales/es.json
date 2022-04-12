@@ -79,7 +79,7 @@
     "auth-login": "Autenticación",
     "auth-register": "Registro",
     "blog": "Blog",
-    "blog-list": "Blog List",
+    "blog-list": "BlockList",
     "blog-detail": "Detalle del Blog",
     "careers": "Carrera",
     "confirmation": "Confirmación",
@@ -508,8 +508,8 @@
     "vue-autosuggest": "Vue Autosuggest",
     "disabled-dates": "Disabled Dates",
     "dropzone": "Vue Dropzone",
-    "month-view-only" :"Month View Only",
-    "year-and-month-view-only" :"Year and Month View Only"
+    "month-view-only": "Month View Only",
+    "year-and-month-view-only": "Year and Month View Only"
   },
   "icons": {
     "simplelineicons": "Simple Line Iconos",
