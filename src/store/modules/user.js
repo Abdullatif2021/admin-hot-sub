@@ -202,6 +202,7 @@ export default {
           },
           _error => {
             router.push("/");
+            sessionStorage.clear();
           }
         );
     }
