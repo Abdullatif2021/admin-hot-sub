@@ -17,11 +17,12 @@ export default {
     loginError: null,
     processing: false,
     forgotMailSuccess: null,
+    usersList: null,
     resetPasswordSuccess: null
   },
   getters: {
     currentUser: state => state.currentUser,
-
+    usersList: state => state.usersList,
     processing: state => state.processing,
     loginError: state => state.loginError,
     forgotMailSuccess: state => state.forgotMailSuccess,
@@ -32,6 +33,10 @@ export default {
       state.currentUser = payload;
       state.processing = false;
       state.loginError = null;
+    },
+    setUsersList(state, payload) {
+      state.usersList = payload;
+      state.processing = false;
     },
     setLogout(state) {
       state.currentUser = null;
@@ -98,7 +103,19 @@ export default {
           }
         );
     },
-
+    getUsersList({ commit }, payload) {
+      commit("setProcessing", true);
+      axios
+        .get(`${apiUrl}/users`, {
+          params: {
+            role: payload,
+            order_dir: "DESC"
+          }
+        })
+        .then(res => {
+          commit("setUsersList", res.data.data);
+        });
+    },
     // changePreferLocale(locale) {
     //   console.log("time out is running");
 
@@ -159,8 +176,6 @@ export default {
     signOut({ commit }) {
       axios.post(`${apiUrl}/auth/logout`).then(
         res => {
-          console.log(res);
-
           sessionStorage.removeItem("accessToken");
           sessionStorage.removeItem("currentUser");
           sessionStorage.removeItem("refreshToken");
@@ -168,7 +183,7 @@ export default {
           commit("setLogout");
         },
         _error => {
-          console.log("i am errtr");
+          console.log("i am error");
         }
       );
     },
@@ -179,8 +194,6 @@ export default {
         })
         .then(
           res => {
-            sessionStorage.removeItem("accessToken");
-            sessionStorage.removeItem("refreshToken");
             let refreshToken = res.data.refresh_token;
             let accessToken = res.data.access_token;
             setTokens(accessToken, refreshToken);

@@ -29,6 +29,7 @@
             >
               <b-form-input
                 type="text"
+                ref="email"
                 v-model="$v.form.email.$model"
                 :state="!$v.form.email.$error"
               />
@@ -147,6 +148,7 @@ export default {
   methods: {
     ...mapActions(["login"]),
     formSubmit() {
+      // window.top.close();
       this.$v.$touch();
       this.$v.form.$touch();
       if (!this.$v.form.$invalid) {

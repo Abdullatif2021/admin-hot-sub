@@ -73,6 +73,21 @@ const routes = [
           }
         ]
       },
+      {
+        path: "users",
+        component: () =>
+          import(/* webpackChunkName: "second-menu" */ "./views/app/users"),
+        redirect: `${adminRoot}/users/usersList`,
+        children: [
+          {
+            path: "usersList",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/users/usersList"
+              )
+          }
+        ]
+      },
 
       {
         path: "single",

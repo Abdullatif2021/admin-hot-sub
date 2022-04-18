@@ -31,6 +31,19 @@ const data = [
     ]
   },
   {
+    id: "users",
+    icon: "iconsminds-picasa",
+    label: "menu.users",
+    to: `${adminRoot}/users`,
+    subs: [
+      {
+        icon: "simple-icon-paper-plane",
+        label: "menu.usersList",
+        to: `${adminRoot}/users`
+      }
+    ]
+  },
+  {
     id: "pages",
     icon: "iconsminds-digital-drawing",
     label: "menu.pages",

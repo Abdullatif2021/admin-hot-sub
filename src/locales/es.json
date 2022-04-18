@@ -284,6 +284,7 @@
     "another-action": "Otra accion",
     "display-options": "Opciones de Pantalla",
     "orderby": "Ordenar por : ",
+    "orderbyrole": "Order By Role : ",
     "all-tasks": "Todas las Tareas",
     "pending-tasks": "Tareas Pendientes",
     "completed-tasks": "Tareas Completadas",

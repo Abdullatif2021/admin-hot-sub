@@ -7,7 +7,6 @@
 
 <script>
 import ColorSwitcher from "./components/Common/ColorSwitcher";
-
 import { getDirection } from "./utils";
 
 export default {
@@ -16,6 +15,12 @@ export default {
   },
   beforeMount() {
     const direction = getDirection();
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      console.log("hi from windows theme");
+    }
     if (direction.isRtl) {
       document.body.classList.add("rtl");
       document.dir = "rtl";

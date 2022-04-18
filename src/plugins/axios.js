@@ -1,10 +1,10 @@
 import axios from "axios";
-import { getCurrentLanguage } from "../utils";
+import { getAccessToken, getCurrentLanguage } from "../utils";
 import store from "../store";
 
 axios.interceptors.request.use(request => {
   request.headers = {
-    Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+    Authorization: "Bearer " + getAccessToken(),
     locale: getCurrentLanguage()
   };
   return request;
@@ -22,6 +22,9 @@ axios.interceptors.response.use(
       setTimeout(() => {
         axios.request(error.config);
       }, 1500);
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
     }
   }
 );

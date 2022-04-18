@@ -39,6 +39,7 @@ const i18n = new VueI18n({
 Vue.use(Notifications);
 Vue.use(require("vue-shortkey"));
 Vue.use(contentmenu);
+
 Vue.use(VueScrollTo);
 Vue.use(VueLineClamp, {
   importCss: true

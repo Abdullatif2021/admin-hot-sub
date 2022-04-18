@@ -43,8 +43,8 @@
               >
             </b-form-group>
             <div class="d-flex justify-content-between align-items-center">
-              <router-link to="/user/forgot-password">{{
-                $t("user.forgot-password-question")
+              <router-link to="/">{{
+                $t("user.forgot-password-question1")
               }}</router-link>
               <b-button
                 type="submit"
@@ -95,7 +95,7 @@ export default {
   data() {
     return {
       form: {
-        email: "test@coloredstrategies.com"
+        email: ""
       }
     };
   },
