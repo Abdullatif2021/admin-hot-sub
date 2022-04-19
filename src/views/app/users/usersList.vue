@@ -1,13 +1,14 @@
 <template>
   <div>
     <datatable-heading
-      :title="$t('menu.divided-table')"
+      :title="$t('menu.users-table')"
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
       :changePageSize="changePageSize"
       :searchChange="searchChange"
       :changeOrderBy="changeOrderBy"
       :from="from"
+      :sort="sort"
       :to="to"
       :Filtered="true"
       :total="total"
@@ -19,7 +20,7 @@
           ref="vuetable"
           class="table-divided order-with-arrow"
           :api-mode="false"
-          :data="usersList"
+          :data-total="dataCount"
           :query-params="makeQueryParams"
           :per-page="perPage"
           :data-manager="dataManager"
@@ -79,16 +80,22 @@ export default {
     return {
       isLoad: false,
       apiBase: "/cakes/fordatatable",
-      sort: "",
+      sort: {
+        column: null,
+        label: "All"
+      },
       page: 1,
       perPage: 8,
       search: "",
       from: 0,
       to: 0,
       total: 0,
+      dataCount: 0,
+
       lastPage: 0,
       items: [],
       selectedItems: [],
+
       fields: [
         {
           name: "first_name",
@@ -138,8 +145,14 @@ export default {
       ]
     };
   },
+  mounted() {
+    this.$refs.vuetable.setData(this.usersList);
+  },
   created() {
-    this.getUsersList();
+    this.getUsersList({ role: null, dir: null });
+    setTimeout(() => {
+      this.$refs.vuetable.setData(this.usersList);
+    }, 1000);
   },
   methods: {
     ...mapActions(["getUsersList"]),
@@ -214,8 +227,19 @@ export default {
       this.$refs.pagination.setPaginationData(paginationData);
     },
     dataManager(sortOrder, pagination) {
-      console.log("orderBy:", sortOrder[0].sortField, sortOrder[0].direction);
+      // sortOrder can be empty, so we have to check for that as well
+      if (sortOrder.length > 0) {
+        console.log("orderBy:", sortOrder[0].sortField, sortOrder[0].direction);
+        this.getUsersList({
+          role: this.sort.column,
+          dir: sortOrder[0].direction
+        });
+        setTimeout(() => {
+          this.$refs.vuetable.setData(this.usersList);
+        }, 1000);
+      }
     },
+
     onChangePage(page) {
       this.$refs.vuetable.changePage(page);
     },
@@ -223,9 +247,19 @@ export default {
     changePageSize(perPage) {},
 
     changeOrderBy(sort) {
-      this.getUsersList(sort.column);
+      this.sort = sort;
+
+      this.getUsersList({ role: sort.column, dir: "" });
+      setTimeout(() => {
+        this.$refs.vuetable.setData(this.usersList);
+      }, 1000);
     },
     searchChange(val) {
+      console.log(val);
+      this.$refs.vuetable.refresh();
+      this.$refs.vuetable.reload();
+      this.$forceUpdate();
+
       this.search = val;
     },
 

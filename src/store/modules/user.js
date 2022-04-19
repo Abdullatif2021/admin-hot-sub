@@ -108,8 +108,8 @@ export default {
       axios
         .get(`${apiUrl}/users`, {
           params: {
-            role: payload,
-            order_dir: "DESC"
+            role: payload.role,
+            order_dir: payload.dir
           }
         })
         .then(res => {

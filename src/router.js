@@ -17,10 +17,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "app" */ "./views/app"),
     redirect: `${adminRoot}/piaf`,
     meta: { loginRequired: true },
-    /*
-   define with Authorization :
-   meta: { loginRequired: true, roles: [UserRole.Admin, UserRole.Editor] },
-   */
+
     children: [
       {
         path: "piaf",
@@ -58,6 +55,7 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "second-menu" */ "./views/app/block"),
         redirect: `${adminRoot}/blocks/blockList`,
+
         children: [
           {
             path: "blockList",
@@ -78,6 +76,8 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "second-menu" */ "./views/app/users"),
         redirect: `${adminRoot}/users/usersList`,
+        meta: { loginRequired: true, roles: ["superadmin"] },
+
         children: [
           {
             path: "usersList",

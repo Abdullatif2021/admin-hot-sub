@@ -5,10 +5,13 @@ export default (to, from, next) => {
     if (isAuthGuardActive) {
       const user = getCurrentUser();
       if (user) {
+        console.log(user);
         const roleArrayHierarchic = to.matched
           .filter(x => x.meta.roles)
           .map(x => x.meta.roles);
-        if (roleArrayHierarchic.every(x => x.includes(user.role))) {
+        console.log(roleArrayHierarchic);
+        if (roleArrayHierarchic.every(x => x.includes(user.role[0]))) {
+          console.log(roleArrayHierarchic.every(x => x.includes(user.role[0])));
           next();
         } else {
           next("/unauthorized");

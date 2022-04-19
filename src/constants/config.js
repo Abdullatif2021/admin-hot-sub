@@ -22,7 +22,7 @@ export const currentUser = {
   title: "Default User",
   img: "/assets/img/profiles/l-7.jpg",
   date: "Last seen today 15:24",
-  role: UserRole.Admin
+  role: UserRole.superadmin
 };
 
 export const isAuthGuardActive = true;
