@@ -198,7 +198,7 @@
               />
             </span>
           </template>
-          <b-dropdown-item>Account</b-dropdown-item>
+          <b-dropdown-item @click="profile">Account</b-dropdown-item>
           <b-dropdown-item>Features</b-dropdown-item>
           <b-dropdown-item>History</b-dropdown-item>
           <b-dropdown-item>Support</b-dropdown-item>
@@ -213,7 +213,7 @@
 <script>
 import Switches from "vue-switches";
 import notifications from "../../data/notifications";
-
+import router from "../../router";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import { MenuIcon, MobileMenuIcon } from "../../components/Svg";
 import {
@@ -285,6 +285,10 @@ export default {
       this.setLang(locale);
       console.log("sgsdgsddg");
       this.changePreferLocale(locale);
+    },
+    profile() {
+      console.log("sgsdgsddg");
+      router.push("/user/profile");
     },
     logout() {
       this.signOut();

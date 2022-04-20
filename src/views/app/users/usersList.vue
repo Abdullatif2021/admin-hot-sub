@@ -152,7 +152,7 @@ export default {
     this.getUsersList({ role: null, dir: null });
     setTimeout(() => {
       this.$refs.vuetable.setData(this.usersList);
-    }, 1000);
+    }, 2000);
   },
   methods: {
     ...mapActions(["getUsersList"]),

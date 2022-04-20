@@ -93,6 +93,11 @@ const routes = [
         path: "single",
         component: () =>
           import(/* webpackChunkName: "single" */ "./views/app/single")
+      },
+      {
+        path: "profile",
+        component: () =>
+          import(/* webpackChunkName: "single" */ "./views/app/single")
       }
     ]
   },
@@ -124,6 +129,11 @@ const routes = [
         path: "reset-password",
         component: () =>
           import(/* webpackChunkName: "user" */ "./views/user/ResetPassword")
+      },
+      {
+        path: "profile",
+        component: () =>
+          import(/* webpackChunkName: "user" */ "./views/user/profile")
       }
     ]
   },

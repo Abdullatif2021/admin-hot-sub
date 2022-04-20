@@ -152,6 +152,13 @@ export default {
           }
         );
     },
+    updateUserInfo(user) {
+      formData.append("peeath", this.user);
+
+      axios.put(`${apiUrl}/auth`, {}).then(res => {
+        console.log(res);
+      });
+    },
     forgotPassword({ commit }, payload) {
       commit("clearError");
       commit("setProcessing", true);
