@@ -23,19 +23,14 @@
             </label>
             <div class="form-group has-float-label">
               <input
-                type="text"
+                type="number"
                 class="form-control"
                 v-model="user.phone_number"
               />
               <span>Phone Number</span>
             </div>
             <div class="form-group has-float-label">
-              <vuejs-datepicker
-                :value="4124 / 5 / 5"
-                :bootstrap-styling="true"
-                :placeholder="user.dob"
-                v-model="user.dob"
-              ></vuejs-datepicker>
+              <input type="text" class="form-control" v-model="user.dob" />
               <span>Date of Birth</span>
             </div>
           </b-form>
@@ -61,6 +56,7 @@
                   @vdropzone-files-added="fileAdded"
                   @vdropzone-complete="afterUploadComplete"
                   @vdropzone-sending-multiple="sendMessage"
+                  @vdropzone-removed-file="fileRemoved"
                 ></vue-dropzone>
               </b-colxx>
               <span>Image</span>
@@ -87,6 +83,7 @@ import "vue-select/dist/vue-select.css";
 import Datepicker from "vuejs-datepicker";
 import InputTag from "../../components/Form/InputTag";
 import { getDirection, getCurrentUser } from "../../utils";
+import { mapActions } from "vuex";
 export default {
   components: {
     "input-tag": InputTag,
@@ -96,10 +93,8 @@ export default {
   },
   data() {
     return {
-      test: "dfgdfg",
       user: null,
-      default: "2018-10-04",
-
+      file: null,
       sendSuccess: false,
       dropzoneOptions: {
         url:
@@ -109,7 +104,7 @@ export default {
         thumbnailWidth: 150,
         parallelUploads: 3,
         maxFiles: 1,
-        uploadMultiple: true,
+        uploadMultiple: false,
         autoProcessQueue: false,
         previewTemplate: this.dropzoneTemplate(),
         headers: {}
@@ -135,41 +130,33 @@ export default {
   },
   created() {
     this.user = getCurrentUser();
-    console.log(this.user);
   },
   methods: {
+    ...mapActions(["updateUserInfo"]),
+
     submit() {
-      console.log(this.user);
+      this.updateUserInfo({
+        file: this.file ? this.file[0] : null,
+        user: this.user
+      });
     },
-    onTopLabelsOverLineFormSubmit() {
-      console.log(JSON.stringify(this.topLabelsOverLineForm));
-    },
+    onTopLabelsOverLineFormSubmit() {},
     afterUploadComplete: async function(response) {
       if (response.status == "success") {
-        console.log("upload successful");
         this.sendSuccess = true;
       } else {
-        console.log("upload failed");
       }
     },
     fileAdded(file) {
-      console.log(file);
+      this.file = file;
+    },
+    fileRemoved(file) {
+      this.file = null;
     },
     shootMessage: async function() {
       this.$refs.myVueDropzone.processQueue();
     },
-    sendMessage: async function(files, xhr, formData) {
-      // xhr.setOption("url",
-      //         "https://lilacmarketingevents.com/tarrab-api/public/api/blocks/images/54?en[title]=dddddddddddddd&en[description]=dddddddddddddd"
-
-      // )
-      console.log(files);
-      formData.append("peeath", this.test);
-      formData.append("peeath", this.test);
-
-      formData.append("path", files[0]);
-      console.log("this is file", files);
-    },
+    sendMessage: async function(files, xhr, formData) {},
 
     dropzoneTemplate() {
       return `<div class="dz-preview dz-file-preview mb-3">

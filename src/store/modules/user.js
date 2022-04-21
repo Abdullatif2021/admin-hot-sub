@@ -10,6 +10,7 @@ import {
   getCurrentUser,
   getCurrentLanguage
 } from "../../utils";
+import { adminRoot } from "../../constants/config";
 import { apiUrl, Headers, locale } from "../../constants/config";
 export default {
   state: {
@@ -152,11 +153,27 @@ export default {
           }
         );
     },
-    updateUserInfo(user) {
-      formData.append("peeath", this.user);
+    updateUserInfo({ commit }, payload) {
+      console.log("from state", payload);
+      const formData = new FormData();
+      formData.append("first_name", payload.user.first_name);
+      formData.append("last_name", payload.user.last_name);
 
-      axios.put(`${apiUrl}/auth`, {}).then(res => {
-        console.log(res);
+      formData.append("phone_number", payload.user.phone_number);
+
+      formData.append("dob", payload.user.dob);
+
+      formData.append("email", payload.user.email);
+
+      formData.append("gender", payload.user.gender);
+
+      formData.append("image", payload.file);
+
+      axios.put(`${apiUrl}/auth`, formData).then(res => {
+        if (res.status === 200) {
+          setCurrentUser(res.data.data);
+          router.push(adminRoot);
+        }
       });
     },
     forgotPassword({ commit }, payload) {

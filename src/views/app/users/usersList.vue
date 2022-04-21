@@ -34,7 +34,7 @@
         >
           <template slot="actions" slot-scope="props">
             <b-form-checkbox
-              :checked="selectedItems.includes(props.rowData.id)"
+              :checked="selected(props)"
               class="itemCheck mb-0"
             ></b-form-checkbox>
           </template>
@@ -180,7 +180,9 @@ export default {
       }
       return "";
     },
-
+    selected(id) {
+      console.log(id);
+    },
     getSortParam(sortOrder) {
       console.log(sortOrder);
     },
