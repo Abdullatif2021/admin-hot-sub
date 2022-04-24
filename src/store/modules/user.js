@@ -19,10 +19,12 @@ export default {
     processing: false,
     forgotMailSuccess: null,
     usersList: null,
+    UserInfo: null,
     resetPasswordSuccess: null
   },
   getters: {
     currentUser: state => state.currentUser,
+    UserInfo: state => state.UserInfo,
     usersList: state => state.usersList,
     processing: state => state.processing,
     loginError: state => state.loginError,
@@ -34,6 +36,10 @@ export default {
       state.currentUser = payload;
       state.processing = false;
       state.loginError = null;
+    },
+    setUserInfo(state, payload) {
+      state.UserInfo = payload;
+      state.processing = false;
     },
     setUsersList(state, payload) {
       state.usersList = payload;
@@ -153,7 +159,23 @@ export default {
           }
         );
     },
-    updateUserInfo({ commit }, payload) {
+    getUserInfo({ commit }, payload) {
+      const userId = payload.id;
+      commit("clearError");
+      commit("setProcessing", true);
+      commit("setUserInfo", null);
+      axios
+        .get(`${apiUrl}/users`, {
+          params: {
+            id: userId
+          }
+        })
+        .then(res => {
+          console.log(res.data.data[0]);
+          commit("setUserInfo", res.data.data[0]);
+        });
+    },
+    updateUserProfile({ commit }, payload) {
       console.log("from state", payload);
       const formData = new FormData();
       formData.append("first_name", payload.user.first_name);
@@ -169,12 +191,42 @@ export default {
 
       formData.append("image", payload.file);
 
-      axios.put(`${apiUrl}/auth`, formData).then(res => {
+      axios.put(`${apiUrl}/auth`, { formData }).then(res => {
         if (res.status === 200) {
           setCurrentUser(res.data.data);
           router.push(adminRoot);
         }
       });
+    },
+    updateUserInfo({ commit }, payload) {
+      commit("clearError");
+      console.log("this is payload of update user info", payload);
+      const formData = new FormData();
+      // formData.append("first_name", payload.info.firstname);
+      // formData.append("last_name", payload.info.lastname);
+
+      // formData.append("phone_number", payload.info.phonenumber);
+
+      // formData.append("email", payload.info.email);
+
+      formData.append("role", payload.info.role);
+      const id = payload.id;
+      axios
+        .put(
+          `${apiUrl}/users/${id}`,
+          {
+            first_name: payload.info.firstname,
+            last_name: payload.info.lastname,
+            phone_number: payload.info.phonenumber,
+            email: payload.info.email,
+            role: payload.info.role,
+            active: payload.info.active
+          },
+          {}
+        )
+        .then(res => {
+          console.log(res);
+        });
     },
     forgotPassword({ commit }, payload) {
       commit("clearError");

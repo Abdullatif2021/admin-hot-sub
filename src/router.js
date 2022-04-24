@@ -85,6 +85,13 @@ const routes = [
               import(
                 /* webpackChunkName: "piaf" */ "./views/app/users/usersList"
               )
+          },
+          {
+            path: "user",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/users/userForm"
+              )
           }
         ]
       },

@@ -33,10 +33,13 @@
           @vuetable:cell-rightclicked="rightClicked"
         >
           <template slot="actions" slot-scope="props">
-            <b-form-checkbox
-              :checked="selected(props)"
-              class="itemCheck mb-0"
-            ></b-form-checkbox>
+            <b-button
+              variant="outline-theme-3"
+              class="icon-button"
+              @click="modify(props.rowData.id)"
+            >
+              <i class="simple-icon-settings"></i>
+            </b-button>
           </template>
         </vuetable>
         <vuetable-pagination-bootstrap
@@ -68,7 +71,8 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { mapGetters, mapActions } from "vuex";
-
+import router from "../../../router";
+import { adminRoot } from "../../../constants/config";
 export default {
   props: ["title"],
   components: {
@@ -157,7 +161,6 @@ export default {
   methods: {
     ...mapActions(["getUsersList"]),
     makeQueryParams(sortOrder, currentPage, perPage) {
-      console.log("sdffsdgfsfd");
       this.selectedItems = [];
       return sortOrder[0]
         ? {
@@ -180,8 +183,11 @@ export default {
       }
       return "";
     },
-    selected(id) {
-      console.log(id);
+    modify(id) {
+      this.$router.push({
+        path: `${adminRoot}/users/user`,
+        query: { id: id }
+      });
     },
     getSortParam(sortOrder) {
       console.log(sortOrder);

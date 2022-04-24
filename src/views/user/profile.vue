@@ -132,10 +132,10 @@ export default {
     this.user = getCurrentUser();
   },
   methods: {
-    ...mapActions(["updateUserInfo"]),
+    ...mapActions(["updateUserProfile"]),
 
     submit() {
-      this.updateUserInfo({
+      this.updateUserProfile({
         file: this.file ? this.file[0] : null,
         user: this.user
       });
