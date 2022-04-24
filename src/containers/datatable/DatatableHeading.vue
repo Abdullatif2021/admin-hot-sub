@@ -29,7 +29,7 @@
                 @input="val => searchChange(val)"
               />
             </div>
-            <i @click="cancle()" class="simple-icon-close" />
+            <!-- <i @click="cancle()" class="simple-icon-close" /> -->
           </div>
           <div class="float-md-right pt-1">
             <span class="text-muted text-small mr-1 mb-2"

@@ -188,7 +188,7 @@ export default {
       return "";
     },
     cancle() {
-      this.getUsersList({ role: null, dir: null, search: null });
+      this.this.getUsersList({ role: null, dir: null, search: null });
       setTimeout(() => {
         this.$refs.vuetable.setData(this.usersList);
       }, 1500);
