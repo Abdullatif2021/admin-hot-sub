@@ -116,7 +116,8 @@ export default {
         .get(`${apiUrl}/users`, {
           params: {
             role: payload.role,
-            order_dir: payload.dir
+            order_dir: payload.dir,
+            first_name: payload.search
           }
         })
         .then(res => {

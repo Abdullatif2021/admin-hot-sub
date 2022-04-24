@@ -6,6 +6,7 @@
       :keymap="keymap"
       :changePageSize="changePageSize"
       :searchChange="searchChange"
+      :cancle="cancle"
       :changeOrderBy="changeOrderBy"
       :from="from"
       :sort="sort"
@@ -82,6 +83,9 @@ export default {
   },
   data() {
     return {
+      dir: null,
+      role: null,
+      search: null,
       isLoad: false,
       apiBase: "/cakes/fordatatable",
       sort: {
@@ -153,7 +157,7 @@ export default {
     this.$refs.vuetable.setData(this.usersList);
   },
   created() {
-    this.getUsersList({ role: null, dir: null });
+    this.getUsersList({ role: null, dir: null, search: null });
     setTimeout(() => {
       this.$refs.vuetable.setData(this.usersList);
     }, 2000);
@@ -182,6 +186,12 @@ export default {
         return "selected";
       }
       return "";
+    },
+    cancle() {
+      this.getUsersList({ role: null, dir: null, search: null });
+      setTimeout(() => {
+        this.$refs.vuetable.setData(this.usersList);
+      }, 1500);
     },
     modify(id) {
       this.$router.push({
@@ -238,9 +248,11 @@ export default {
       // sortOrder can be empty, so we have to check for that as well
       if (sortOrder.length > 0) {
         console.log("orderBy:", sortOrder[0].sortField, sortOrder[0].direction);
+        this.dir = sortOrder[0].direction;
         this.getUsersList({
           role: this.sort.column,
-          dir: sortOrder[0].direction
+          dir: sortOrder[0].direction,
+          search: this.search
         });
         setTimeout(() => {
           this.$refs.vuetable.setData(this.usersList);
@@ -257,18 +269,23 @@ export default {
     changeOrderBy(sort) {
       this.sort = sort;
 
-      this.getUsersList({ role: sort.column, dir: "" });
+      this.getUsersList({
+        role: sort.column,
+        dir: this.dir,
+        search: this.search
+      });
       setTimeout(() => {
         this.$refs.vuetable.setData(this.usersList);
       }, 1000);
     },
     searchChange(val) {
       console.log(val);
-      this.$refs.vuetable.refresh();
-      this.$refs.vuetable.reload();
-      this.$forceUpdate();
-
       this.search = val;
+      this.getUsersList({ role: this.sort.column, dir: this.dir, search: val });
+
+      setTimeout(() => {
+        this.$refs.vuetable.setData(this.usersList);
+      }, 1000);
     },
 
     selectAll(isToggle) {
@@ -314,6 +331,14 @@ export default {
         this.selectedItems.length > 0 &&
         this.selectedItems.length < this.items.length
       );
+    }
+  },
+  watch: {
+    searchChange(newQuestion, oldQuestion) {
+      if (newQuestion) {
+        console.log("sdfsdf", oldQuestion);
+        console.log("new", newQuestion);
+      }
     }
   }
 };

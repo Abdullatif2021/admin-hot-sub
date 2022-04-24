@@ -22,7 +22,6 @@
                 >{{ order.label }}</b-dropdown-item
               >
             </b-dropdown>
-            <i class="simple-icon-close" />
 
             <div class="search-sm d-inline-block float-md-left mr-1 align-top">
               <b-input
@@ -30,6 +29,7 @@
                 @input="val => searchChange(val)"
               />
             </div>
+            <i @click="cancle()" class="simple-icon-close" />
           </div>
           <div class="float-md-right pt-1">
             <span class="text-muted text-small mr-1 mb-2"
@@ -67,6 +67,7 @@ export default {
     "keymap",
     "changePageSize",
     "searchChange",
+    "cancle",
     "changeOrderBy",
     "from",
     "to",
