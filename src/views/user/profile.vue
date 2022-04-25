@@ -44,7 +44,11 @@
               <span>Email</span>
             </label>
             <label class="form-group has-float-label">
-              <input type="text" class="form-control" v-model="user.gender" />
+              <b-form-select
+                v-model="user.gender"
+                :options="genderOptions"
+                plain
+              />
               <span>Gender</span>
             </label>
             <label class="form-group has-float-label">
@@ -96,6 +100,10 @@ export default {
       user: null,
       file: null,
       sendSuccess: false,
+      genderOptions: [
+        { text: "Female", value: 1 },
+        { text: "Male", value: 0 }
+      ],
       dropzoneOptions: {
         url:
           "https://lilacmarketingevents.com/tarrab-api/public/api/blocks/images/54?en[title]=dddddddddddddd&en[description]=dddddddddddddd",
