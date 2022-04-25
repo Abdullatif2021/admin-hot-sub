@@ -127,18 +127,15 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
           commit("setUsersList", res.data);
         });
     },
     // changePreferLocale(locale) {
-    //   console.log("time out is running");
 
     //   axios
     //     .put(`${apiUrl}/users/prefer_locale`, {
     //       prefer_locale: locale
     //     }).then(() => {
-    //         console.log("done");
     //       },
     //       _error => {}
     //     );
@@ -155,7 +152,6 @@ export default {
         })
         .then(
           res => {
-            console.log(res);
             commit("clearError");
             commit("setResetPasswordSuccess");
           },
@@ -179,45 +175,44 @@ export default {
           }
         })
         .then(res => {
-          console.log(res.data.data[0]);
           commit("setUserInfo", res.data.data[0]);
         });
     },
     updateUserProfile({ commit }, payload) {
-      console.log("from state", payload);
-      const formData = new FormData();
-      formData.append("first_name", payload.user.first_name);
-      formData.append("last_name", payload.user.last_name);
+      // const formData = new FormData();
+      // formData.append("first_name", payload.user.first_name);
+      // formData.append("last_name", payload.user.last_name);
 
-      formData.append("phone_number", payload.user.phone_number);
+      // formData.append("phone_number", payload.user.phone_number);
 
-      formData.append("dob", payload.user.dob);
+      // formData.append("dob", payload.user.dob);
 
-      formData.append("email", payload.user.email);
+      // formData.append("email", payload.user.email);
 
-      formData.append("gender", payload.user.gender);
+      // formData.append("gender", payload.user.gender);
 
-      formData.append("image", payload.file);
+      // formData.append("image", payload.file);
 
-      axios.put(`${apiUrl}/auth`, { formData }).then(res => {
-        if (res.status === 200) {
-          setCurrentUser(res.data.data);
-          router.push(adminRoot);
-        }
-      });
+      axios
+        .put(`${apiUrl}/auth`, {
+          first_name: payload.user.first_name,
+          last_name: payload.user.last_name,
+          phone_number: payload.user.phone_number,
+          dob: payload.user.dob,
+          email: payload.user.email,
+          gender: payload.user.gender,
+          image: payload.file
+        })
+        .then(res => {
+          if (res.status === 200) {
+            setCurrentUser(res.data.data);
+            commit("setUser", res.data.data);
+            router.push(adminRoot);
+          }
+        });
     },
     updateUserInfo({ commit }, payload) {
       commit("clearError");
-      console.log("this is payload of update user info", payload);
-      const formData = new FormData();
-      // formData.append("first_name", payload.info.firstname);
-      // formData.append("last_name", payload.info.lastname);
-
-      // formData.append("phone_number", payload.info.phonenumber);
-
-      // formData.append("email", payload.info.email);
-
-      formData.append("role", payload.info.role);
       const id = payload.id;
       axios
         .put(
@@ -232,9 +227,7 @@ export default {
           },
           {}
         )
-        .then(res => {
-          console.log(res);
-        });
+        .then(res => {});
     },
     forgotPassword({ commit }, payload) {
       commit("clearError");
@@ -245,7 +238,6 @@ export default {
         })
         .then(
           res => {
-            console.log(res);
             commit("clearError");
             commit("setForgotMailSuccess");
           },
@@ -266,9 +258,7 @@ export default {
           router.push("/");
           commit("setLogout");
         },
-        _error => {
-          console.log("i am error");
-        }
+        _error => {}
       );
     },
     refreshToken() {

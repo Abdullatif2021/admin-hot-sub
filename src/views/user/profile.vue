@@ -110,14 +110,6 @@ export default {
         headers: {}
       },
       direction: getDirection().direction,
-      selectData: [
-        { label: "Chocolate", value: "chocolate" },
-        { label: "Vanilla", value: "vanilla" },
-        { label: "Strawberry", value: "strawberry" },
-        { label: "Caramel", value: "caramel" },
-        { label: "Cookies and Cream", value: "cookiescream" },
-        { label: "Peppermint", value: "peppermint" }
-      ],
       topLabelsOverLineForm: {
         email: "",
         password: "",

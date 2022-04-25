@@ -281,13 +281,10 @@ export default {
       if (direction !== currentDirection) {
         setDirection(direction);
       }
-
       this.setLang(locale);
-      console.log("sgsdgsddg");
       this.changePreferLocale(locale);
     },
     profile() {
-      console.log("sgsdgsddg");
       router.push("/user/profile");
     },
     logout() {
@@ -352,6 +349,9 @@ export default {
       if (from !== to) {
         this.$router.go(this.$route.path);
       }
+    },
+    currentUser(val) {
+      console.log("hi from watcher", val);
     },
     isDarkActive(val) {
       let color = getThemeColor();

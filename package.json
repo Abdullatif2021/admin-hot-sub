@@ -6,7 +6,9 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "dependencies": {
     "@glidejs/glide": "^3.4.1",
@@ -52,7 +54,8 @@
     "node-sass": "^4.14.1",
     "sass-loader": "^9.0.2",
     "vue-loader": "^15.9.7",
-    "vue-template-compiler": "^2.6.14"
+    "vue-template-compiler": "^2.6.14",
+    "vuepress": "^1.9.7"
   },
   "postcss": {
     "plugins": {
