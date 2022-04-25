@@ -19,11 +19,13 @@ export default {
     processing: false,
     forgotMailSuccess: null,
     usersList: null,
+    ListActions: null,
     UserInfo: null,
     resetPasswordSuccess: null
   },
   getters: {
     currentUser: state => state.currentUser,
+    ListActions: state => state.ListActions,
     UserInfo: state => state.UserInfo,
     usersList: state => state.usersList,
     processing: state => state.processing,
@@ -42,7 +44,8 @@ export default {
       state.processing = false;
     },
     setUsersList(state, payload) {
-      state.usersList = payload;
+      state.usersList = payload.data;
+      state.ListActions = payload;
       state.processing = false;
     },
     setLogout(state) {
@@ -117,11 +120,15 @@ export default {
           params: {
             role: payload.role,
             order_dir: payload.dir,
-            first_name: payload.search
+            first_name: payload.search,
+            order_by: payload.order_by,
+            limit: payload.limit,
+            page: payload.page
           }
         })
         .then(res => {
-          commit("setUsersList", res.data.data);
+          console.log(res);
+          commit("setUsersList", res.data);
         });
     },
     // changePreferLocale(locale) {

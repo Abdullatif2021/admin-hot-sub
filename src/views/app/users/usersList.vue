@@ -85,7 +85,9 @@ export default {
     return {
       dir: null,
       role: null,
+      order_by: null,
       search: null,
+      actions: null,
       isLoad: false,
       apiBase: "/cakes/fordatatable",
       sort: {
@@ -93,8 +95,8 @@ export default {
         label: "All"
       },
       page: 1,
+      limit: null,
       perPage: 8,
-      search: "",
       from: 0,
       to: 0,
       total: 0,
@@ -157,9 +159,21 @@ export default {
     this.$refs.vuetable.setData(this.usersList);
   },
   created() {
-    this.getUsersList({ role: null, dir: null, search: null });
+    this.getUsersList({
+      role: null,
+      dir: null,
+      search: null,
+      order_by: null,
+      limit: null,
+      page: null
+    });
     setTimeout(() => {
       this.$refs.vuetable.setData(this.usersList);
+      this.perPage = this.ListActions.per_page;
+      this.from = this.ListActions.from;
+      this.to = this.ListActions.to;
+      this.total = this.ListActions.total;
+      this.$refs.pagination.setPaginationData(this.ListActions);
     }, 2000);
   },
   methods: {
@@ -188,10 +202,22 @@ export default {
       return "";
     },
     cancle() {
-      this.this.getUsersList({ role: null, dir: null, search: null });
+      this.this.getUsersList({
+        role: null,
+        dir: null,
+        search: null,
+        order_by: null,
+        limit: null,
+        page: null
+      });
       setTimeout(() => {
         this.$refs.vuetable.setData(this.usersList);
-      }, 1500);
+        this.perPage = this.ListActions.per_page;
+        this.from = this.ListActions.from;
+        this.to = this.ListActions.to;
+        this.total = this.ListActions.total;
+        this.$refs.pagination.setPaginationData(this.ListActions);
+      }, 2000);
     },
     modify(id) {
       this.$router.push({
@@ -248,23 +274,94 @@ export default {
       // sortOrder can be empty, so we have to check for that as well
       if (sortOrder.length > 0) {
         console.log("orderBy:", sortOrder[0].sortField, sortOrder[0].direction);
-        this.dir = sortOrder[0].direction;
-        this.getUsersList({
-          role: this.sort.column,
-          dir: sortOrder[0].direction,
-          search: this.search
-        });
-        setTimeout(() => {
-          this.$refs.vuetable.setData(this.usersList);
-        }, 1000);
+        // this.dir = sortOrder[0].direction;
+        if (sortOrder[0].direction == "asc") {
+          this.order_by = sortOrder[0].sortField;
+          this.dir = "ASC";
+          this.getUsersList({
+            role: this.sort.column,
+            dir: "ASC",
+            search: this.search,
+            order_by: this.order_by,
+            limit: this.limit,
+            page: this.page
+          });
+          setTimeout(() => {
+            this.$refs.vuetable.setData(this.usersList);
+            this.perPage = this.ListActions.per_page;
+            this.from = this.ListActions.from;
+            this.to = this.ListActions.to;
+            this.total = this.ListActions.total;
+            this.$refs.pagination.setPaginationData(this.ListActions);
+          }, 2000);
+        }
+        if (sortOrder[0].direction == "desc") {
+          this.order_by = sortOrder[0].sortField;
+          this.dir = "ASC";
+          this.getUsersList({
+            role: this.sort.column,
+            dir: "DESC",
+            search: this.search,
+            order_by: this.order_by,
+            limit: this.limit,
+            page: this.page
+          });
+          setTimeout(() => {
+            this.$refs.vuetable.setData(this.usersList);
+            this.perPage = this.ListActions.per_page;
+            this.from = this.ListActions.from;
+            this.to = this.ListActions.to;
+            this.total = this.ListActions.total;
+            this.$refs.pagination.setPaginationData(this.ListActions);
+          }, 2000);
+        }
       }
     },
 
     onChangePage(page) {
-      this.$refs.vuetable.changePage(page);
+      // console.log(page);
+      if (page == "next" || page == "prev") {
+        console.log(page);
+      } else {
+        this.page = page;
+        this.getUsersList({
+          role: this.sort.column,
+          dir: "DESC",
+          search: this.search,
+          order_by: this.order_by,
+          limit: this.limit,
+          page: this.page
+        });
+        setTimeout(() => {
+          this.$refs.vuetable.setData(this.usersList);
+          this.perPage = this.ListActions.per_page;
+          this.from = this.ListActions.from;
+          this.to = this.ListActions.to;
+          this.total = this.ListActions.total;
+          this.$refs.pagination.setPaginationData(this.ListActions);
+        }, 2000);
+      }
     },
 
-    changePageSize(perPage) {},
+    changePageSize(perPage) {
+      console.log(perPage);
+      this.limit = perPage;
+      this.getUsersList({
+        role: this.sort.column,
+        dir: "DESC",
+        search: this.search,
+        order_by: this.order_by,
+        limit: this.limit,
+        page: this.page
+      });
+      setTimeout(() => {
+        this.$refs.vuetable.setData(this.usersList);
+        this.perPage = this.ListActions.per_page;
+        this.from = this.ListActions.from;
+        this.to = this.ListActions.to;
+        this.total = this.ListActions.total;
+      }, 1000);
+    },
 
     changeOrderBy(sort) {
       this.sort = sort;
@@ -272,16 +369,31 @@ export default {
       this.getUsersList({
         role: sort.column,
         dir: this.dir,
-        search: this.search
+        search: this.search,
+        order_by: this.order_by,
+        limit: this.limit,
+        page: this.page
       });
       setTimeout(() => {
         this.$refs.vuetable.setData(this.usersList);
-      }, 1000);
+        this.perPage = this.ListActions.per_page;
+        this.from = this.ListActions.from;
+        this.to = this.ListActions.to;
+        this.total = this.ListActions.total;
+        this.$refs.pagination.setPaginationData(this.ListActions);
+      }, 2000);
     },
     searchChange(val) {
       console.log(val);
       this.search = val;
-      this.getUsersList({ role: this.sort.column, dir: this.dir, search: val });
+      this.getUsersList({
+        role: this.sort.column,
+        dir: this.dir,
+        search: val,
+        order_by: this.order_by,
+        limit: this.limit,
+        page: this.page
+      });
 
       setTimeout(() => {
         this.$refs.vuetable.setData(this.usersList);
@@ -322,7 +434,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["usersList"]),
+    ...mapGetters(["usersList", "ListActions"]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
