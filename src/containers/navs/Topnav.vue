@@ -191,8 +191,8 @@
               <img
                 :alt="currentUser.first_name"
                 :src="
-                  currentUser.img
-                    ? currentUser.img
+                  currentUser.image
+                    ? currentUser.image
                     : '/assets/img/profiles/user.png'
                 "
               />

@@ -44,6 +44,7 @@
             <b-colxx sm="6">
               <b-form-group :label="$t('forms.active')">
                 <b-form-select
+                  selected
                   v-model="gridForm.active"
                   :options="activeOptions"
                   plain
@@ -90,20 +91,11 @@ export default {
   created() {
     this.userId = this.$route.query.id;
     this.getUserInfo({ id: this.userId });
-    setTimeout(() => {
-      (this.gridForm.firstname = this.UserInfo.first_name),
-        (this.gridForm.lastname = this.UserInfo.last_name),
-        (this.gridForm.email = this.UserInfo.email),
-        (this.gridForm.phonenumber = this.UserInfo.phone_number);
-      (this.gridForm.role = this.UserInfo.role[0]),
-        (this.gridForm.active = this.UserInfo.active);
-    }, 1000);
   },
   methods: {
     ...mapActions(["getUserInfo", "updateUserInfo"]),
     onGridFormSubmit() {
       console.log(this.gridForm);
-      // console.log(this.UserInfo);
       this.updateUserInfo({
         info: this.gridForm,
         id: this.UserInfo.id
@@ -123,6 +115,16 @@ export default {
         console.log("sdfsf", newRole);
         return newRole;
       }
+    }
+  },
+  watch: {
+    UserInfo(newInfo, oldOne) {
+      (this.gridForm.firstname = newInfo.first_name),
+        (this.gridForm.lastname = newInfo.last_name),
+        (this.gridForm.email = newInfo.email),
+        (this.gridForm.phonenumber = newInfo.phone_number);
+      (this.gridForm.role = newInfo.role[0]),
+        (this.gridForm.active = newInfo.active);
     }
   }
 };

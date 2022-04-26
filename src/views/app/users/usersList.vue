@@ -22,7 +22,6 @@
           class="table-divided order-with-arrow"
           :api-mode="false"
           :data-total="dataCount"
-          :query-params="makeQueryParams"
           :per-page="perPage"
           :data-manager="dataManager"
           :reactive-api-url="true"
@@ -137,7 +136,13 @@ export default {
         {
           name: "active",
           callback: value => {
-            return value === "1" ? "Active" : "Not Active";
+            return value === "1"
+              ? `<span class="badge badge-pill badge-success handle mr-1">
+                Active
+              </span>`
+              : `<span class="badge badge-pill badge-danger handle mr-1">
+                Not Active
+              </span>`;
           },
           sortField: "active",
           title: "Active",
@@ -167,34 +172,10 @@ export default {
       limit: null,
       page: null
     });
-    setTimeout(() => {
-      this.$refs.vuetable.setData(this.usersList);
-      this.perPage = this.ListActions.per_page;
-      this.from = this.ListActions.from;
-      this.to = this.ListActions.to;
-      this.total = this.ListActions.total;
-      this.$refs.pagination.setPaginationData(this.ListActions);
-    }, 2000);
   },
   methods: {
     ...mapActions(["getUsersList"]),
-    makeQueryParams(sortOrder, currentPage, perPage) {
-      this.selectedItems = [];
-      return sortOrder[0]
-        ? {
-            sort: sortOrder[0]
-              ? sortOrder[0].field + "|" + sortOrder[0].direction
-              : "",
-            page: currentPage,
-            per_page: this.perPage,
-            search: this.search
-          }
-        : {
-            page: currentPage,
-            per_page: this.perPage,
-            search: this.search
-          };
-    },
+
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
         return "selected";
@@ -210,23 +191,12 @@ export default {
         limit: null,
         page: null
       });
-      setTimeout(() => {
-        this.$refs.vuetable.setData(this.usersList);
-        this.perPage = this.ListActions.per_page;
-        this.from = this.ListActions.from;
-        this.to = this.ListActions.to;
-        this.total = this.ListActions.total;
-        this.$refs.pagination.setPaginationData(this.ListActions);
-      }, 2000);
     },
     modify(id) {
       this.$router.push({
         path: `${adminRoot}/users/user`,
         query: { id: id }
       });
-    },
-    getSortParam(sortOrder) {
-      console.log(sortOrder);
     },
 
     rowClicked(dataItem, event) {
@@ -271,10 +241,8 @@ export default {
       this.$refs.pagination.setPaginationData(paginationData);
     },
     dataManager(sortOrder, pagination) {
-      // sortOrder can be empty, so we have to check for that as well
       if (sortOrder.length > 0) {
         console.log("orderBy:", sortOrder[0].sortField, sortOrder[0].direction);
-        // this.dir = sortOrder[0].direction;
         if (sortOrder[0].direction == "asc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
@@ -286,14 +254,6 @@ export default {
             limit: this.limit,
             page: this.page
           });
-          setTimeout(() => {
-            this.$refs.vuetable.setData(this.usersList);
-            this.perPage = this.ListActions.per_page;
-            this.from = this.ListActions.from;
-            this.to = this.ListActions.to;
-            this.total = this.ListActions.total;
-            this.$refs.pagination.setPaginationData(this.ListActions);
-          }, 2000);
         }
         if (sortOrder[0].direction == "desc") {
           this.order_by = sortOrder[0].sortField;
@@ -306,40 +266,23 @@ export default {
             limit: this.limit,
             page: this.page
           });
-          setTimeout(() => {
-            this.$refs.vuetable.setData(this.usersList);
-            this.perPage = this.ListActions.per_page;
-            this.from = this.ListActions.from;
-            this.to = this.ListActions.to;
-            this.total = this.ListActions.total;
-            this.$refs.pagination.setPaginationData(this.ListActions);
-          }, 2000);
         }
       }
     },
 
     onChangePage(page) {
-      // console.log(page);
       if (page == "next" || page == "prev") {
         console.log(page);
       } else {
         this.page = page;
         this.getUsersList({
           role: this.sort.column,
-          dir: "DESC",
+          dir: this.dir,
           search: this.search,
           order_by: this.order_by,
           limit: this.limit,
           page: this.page
         });
-        setTimeout(() => {
-          this.$refs.vuetable.setData(this.usersList);
-          this.perPage = this.ListActions.per_page;
-          this.from = this.ListActions.from;
-          this.to = this.ListActions.to;
-          this.total = this.ListActions.total;
-          this.$refs.pagination.setPaginationData(this.ListActions);
-        }, 2000);
       }
     },
 
@@ -348,19 +291,12 @@ export default {
       this.limit = perPage;
       this.getUsersList({
         role: this.sort.column,
-        dir: "DESC",
+        dir: this.dir,
         search: this.search,
         order_by: this.order_by,
         limit: this.limit,
         page: this.page
       });
-      setTimeout(() => {
-        this.$refs.vuetable.setData(this.usersList);
-        this.perPage = this.ListActions.per_page;
-        this.from = this.ListActions.from;
-        this.to = this.ListActions.to;
-        this.total = this.ListActions.total;
-      }, 1000);
     },
 
     changeOrderBy(sort) {
@@ -374,14 +310,6 @@ export default {
         limit: this.limit,
         page: this.page
       });
-      setTimeout(() => {
-        this.$refs.vuetable.setData(this.usersList);
-        this.perPage = this.ListActions.per_page;
-        this.from = this.ListActions.from;
-        this.to = this.ListActions.to;
-        this.total = this.ListActions.total;
-        this.$refs.pagination.setPaginationData(this.ListActions);
-      }, 2000);
     },
     searchChange(val) {
       console.log(val);
@@ -394,10 +322,6 @@ export default {
         limit: this.limit,
         page: this.page
       });
-
-      setTimeout(() => {
-        this.$refs.vuetable.setData(this.usersList);
-      }, 1000);
     },
 
     selectAll(isToggle) {
@@ -448,9 +372,19 @@ export default {
   watch: {
     searchChange(newQuestion, oldQuestion) {
       if (newQuestion) {
-        console.log("sdfsdf", oldQuestion);
+        console.log("old", oldQuestion);
         console.log("new", newQuestion);
       }
+    },
+    usersList(newList, old) {
+      this.$refs.vuetable.setData(newList);
+    },
+    ListActions(newActions, old) {
+      this.perPage = newActions.per_page;
+      this.from = newActions.from;
+      this.to = newActions.to;
+      this.total = newActions.total;
+      this.$refs.pagination.setPaginationData(newActions);
     }
   }
 };
