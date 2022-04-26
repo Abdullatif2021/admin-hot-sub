@@ -201,20 +201,10 @@ export default {
 
     rowClicked(dataItem, event) {
       const itemId = dataItem.id;
+      console.log(dataItem.id);
       if (event.shiftKey && this.selectedItems.length > 0) {
-        let itemsForToggle = this.items;
-        var start = this.getIndex(itemId, itemsForToggle, "id");
-        var end = this.getIndex(
-          this.selectedItems[this.selectedItems.length - 1],
-          itemsForToggle,
-          "id"
-        );
-        itemsForToggle = itemsForToggle.slice(
-          Math.min(start, end),
-          Math.max(start, end) + 1
-        );
         this.selectedItems.push(
-          ...itemsForToggle.map(item => {
+          dataItem.map(item => {
             return item.id;
           })
         );
@@ -248,7 +238,7 @@ export default {
           this.dir = "ASC";
           this.getUsersList({
             role: this.sort.column,
-            dir: "ASC",
+            dir: this.dir,
             search: this.search,
             order_by: this.order_by,
             limit: this.limit,
@@ -257,10 +247,10 @@ export default {
         }
         if (sortOrder[0].direction == "desc") {
           this.order_by = sortOrder[0].sortField;
-          this.dir = "ASC";
+          this.dir = "DESC";
           this.getUsersList({
             role: this.sort.column,
-            dir: "DESC",
+            dir: this.dir,
             search: this.search,
             order_by: this.order_by,
             limit: this.limit,

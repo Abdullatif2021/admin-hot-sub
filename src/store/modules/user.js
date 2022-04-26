@@ -179,29 +179,25 @@ export default {
         });
     },
     updateUserProfile({ commit }, payload) {
-      // const formData = new FormData();
-      // formData.append("first_name", payload.user.first_name);
-      // formData.append("last_name", payload.user.last_name);
+      const formData = new FormData();
 
-      // formData.append("phone_number", payload.user.phone_number);
-
-      // formData.append("dob", payload.user.dob);
-
-      // formData.append("email", payload.user.email);
-
-      // formData.append("gender", payload.user.gender);
-
-      // formData.append("image", payload.file);
-
+      formData.append("image", payload.file);
+      formData.append("first_name", payload.user.first_name);
+      formData.append("last_name", payload.user.last_name);
+      formData.append("email", payload.user.email);
+      formData.append("phone_number", payload.user.phone_number);
+      formData.append("dob", payload.user.dob);
+      formData.append("gender", payload.user.gender);
+      formData.append("_method", "PUT");
       axios
-        .put(`${apiUrl}/auth`, {
+        .post(`${apiUrl}/auth`, formData, {
           first_name: payload.user.first_name,
           last_name: payload.user.last_name,
           phone_number: payload.user.phone_number,
           dob: payload.user.dob,
           email: payload.user.email,
           gender: payload.user.gender,
-          image: payload.file
+          method: "PUT"
         })
         .then(res => {
           if (res.status === 200) {
@@ -222,12 +218,17 @@ export default {
             last_name: payload.info.lastname,
             phone_number: payload.info.phonenumber,
             email: payload.info.email,
-            role: payload.info.role,
+            role: payload.role,
             active: payload.info.active
           },
           {}
         )
-        .then(res => {});
+        .then(res => {
+          console.log(res);
+          if (res.status === 200) {
+            router.push(`${adminRoot}/users`);
+          }
+        });
     },
     forgotPassword({ commit }, payload) {
       commit("clearError");

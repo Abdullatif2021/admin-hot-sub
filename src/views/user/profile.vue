@@ -141,13 +141,14 @@ export default {
       });
     },
     onTopLabelsOverLineFormSubmit() {},
-    afterUploadComplete: async function(response) {
+    afterUploadComplete(response) {
       if (response.status == "success") {
         this.sendSuccess = true;
       } else {
       }
     },
     fileAdded(file) {
+      console.log(file);
       this.file = file;
     },
     fileRemoved(file) {

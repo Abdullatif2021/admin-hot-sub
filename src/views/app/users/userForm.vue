@@ -35,7 +35,8 @@
             <b-colxx sm="6">
               <b-form-group :label="$t('forms.role')">
                 <b-form-select
-                  v-model="gridForm.role"
+                  @change="myFunc()"
+                  v-model="role"
                   :options="roleOptions"
                   plain
                 />
@@ -67,6 +68,7 @@ export default {
   data() {
     return {
       userId: null,
+      _role: null,
       sdfsdf: "sfsdfs",
       roleOptions: [
         "Select Role",
@@ -96,10 +98,42 @@ export default {
     ...mapActions(["getUserInfo", "updateUserInfo"]),
     onGridFormSubmit() {
       console.log(this.gridForm);
+      // switch (this.gridForm.role) {
+      //   case "superadmin":
+      //     return 1;
+      //   case "admin":
+      //     return 2;
+      //   case "user":
+      //     return 3;
+      //   case "branchadmin":
+      //     return 4;
+      //   case "casher":
+      //     return 5;
+      //   case "guest":
+      //     return 6;
+      // }
+      console.log(this._role);
       this.updateUserInfo({
+        role: this._role,
         info: this.gridForm,
         id: this.UserInfo.id
       });
+    },
+    myFunc(fff) {
+      // switch (this._role) {
+      //   case "superadmin":
+      //     return console.log("case2444444444444444");
+      //   case "admin":
+      //     return console.log("case255555555555555555555555555555555555");
+      //   case 3:
+      //     return console.log(3);
+      //   case 4:
+      //     return console.log(4);
+      //   case 5:
+      //     return console.log(5);
+      //   case 6:
+      //     return console.log(6);
+      // }
     }
   },
   computed: {
@@ -109,11 +143,38 @@ export default {
     },
     role: {
       get() {
-        return this.gridForm.role;
+        switch (this.gridForm.role) {
+          case "superadmin":
+            return 1;
+          case "admin":
+            return 2;
+          case "user":
+            return 3;
+          case "branchadmin":
+            return 4;
+          case "casher":
+            return 5;
+          case "guest":
+            return 6;
+        }
       },
       set(newRole) {
-        console.log("sdfsf", newRole);
-        return newRole;
+        switch (newRole) {
+          case 1:
+            return (this._role = 1);
+          case 2:
+            return (this._role = 2);
+          case 3:
+            return (this._role = 3);
+          case 4:
+            return (this._role = 4);
+          case 5:
+            return (this._role = 5);
+          case 6:
+            return (this._role = 6);
+        }
+        console.log("new role", newRole);
+        console.log(this._role);
       }
     }
   },
