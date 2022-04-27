@@ -25,7 +25,7 @@ const data = [
   },
   {
     id: "users",
-    icon: "iconsminds-picasa",
+    icon: "simple-icon-people",
     label: "menu.users",
     to: `${adminRoot}/users`,
     roles: ["superadmin"]

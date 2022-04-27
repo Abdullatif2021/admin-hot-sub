@@ -180,8 +180,9 @@ export default {
     },
     updateUserProfile({ commit }, payload) {
       const formData = new FormData();
-
-      formData.append("image", payload.file);
+      if (payload.file) {
+        formData.append("image", payload.file);
+      }
       formData.append("first_name", payload.user.first_name);
       formData.append("last_name", payload.user.last_name);
       formData.append("email", payload.user.email);
@@ -189,23 +190,13 @@ export default {
       formData.append("dob", payload.user.dob);
       formData.append("gender", payload.user.gender);
       formData.append("_method", "PUT");
-      axios
-        .post(`${apiUrl}/auth`, formData, {
-          first_name: payload.user.first_name,
-          last_name: payload.user.last_name,
-          phone_number: payload.user.phone_number,
-          dob: payload.user.dob,
-          email: payload.user.email,
-          gender: payload.user.gender,
-          method: "PUT"
-        })
-        .then(res => {
-          if (res.status === 200) {
-            setCurrentUser(res.data.data);
-            commit("setUser", res.data.data);
-            router.push(adminRoot);
-          }
-        });
+      axios.post(`${apiUrl}/auth`, formData, {}).then(res => {
+        if (res.status === 200) {
+          setCurrentUser(res.data.data);
+          commit("setUser", res.data.data);
+          router.push(adminRoot);
+        }
+      });
     },
     updateUserInfo({ commit }, payload) {
       commit("clearError");
@@ -269,11 +260,13 @@ export default {
         })
         .then(
           res => {
+            // response.status === 401
             let refreshToken = res.data.refresh_token;
             let accessToken = res.data.access_token;
             setTokens(accessToken, refreshToken);
           },
           _error => {
+            console.log(_error);
             router.push("/");
             sessionStorage.clear();
           }
