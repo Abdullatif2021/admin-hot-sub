@@ -97,9 +97,9 @@ const routes = [
       },
 
       {
-        path: "single",
+        path: "settings",
         component: () =>
-          import(/* webpackChunkName: "single" */ "./views/app/single")
+          import(/* webpackChunkName: "single" */ "./views/app/settings")
       },
       {
         path: "profile",

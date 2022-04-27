@@ -29,6 +29,12 @@ const data = [
     label: "menu.users",
     to: `${adminRoot}/users`,
     roles: ["superadmin"]
+  },
+  {
+    id: "Settings",
+    icon: "simple-icon-settings",
+    label: "menu.settings",
+    to: `${adminRoot}/settings`
   }
   // {
   //   id: "pages",
@@ -62,11 +68,5 @@ const data = [
   //     }
   //   ]
   // },
-  // {
-  //   id: "single",
-  //   icon: "iconsminds-three-arrow-fork",
-  //   label: "menu.single",
-  //   to: `${adminRoot}/single`
-  // }
 ];
 export default data;

@@ -128,7 +128,8 @@
     "block": "block",
     "second": "Blocks",
     "start": "Start",
-    "single": "Single"
+    "settings": "Settings",
+    "settings-list": "Settings List"
   },
   "dashboards": {
     "pending-orders": "Pending Orders",
@@ -342,6 +343,9 @@
     "dark": "Dark"
   },
   "button": {
+    "save": "Save",
+    "changes": "Changes",
+
     "default": "Bootstrap Default",
     "colors": "Colors",
     "rounded": "Rounded",
@@ -640,5 +644,6 @@
     "prev": "Back",
     "registered": "Your registration completed successfully!",
     "async": "Async save for 3 seconds!"
-  }
+  },
+  "async": "Async save for 3 seconds!"
 }

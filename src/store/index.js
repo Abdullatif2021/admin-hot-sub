@@ -6,6 +6,7 @@ import menu from "./modules/menu";
 import block from "./modules/block";
 import user from "./modules/user";
 import test from "./modules/test";
+import settings from "./modules/settings";
 import { setCurrentLanguage } from "../utils";
 
 Vue.use(Vuex);
@@ -27,6 +28,7 @@ export default new Vuex.Store({
     menu,
     user,
     block,
-    test
+    test,
+    settings
   }
 });
