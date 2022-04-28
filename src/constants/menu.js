@@ -24,6 +24,13 @@ const data = [
     to: `${adminRoot}/blocks`
   },
   {
+    id: "Pages",
+    icon: "iconsminds-digital-drawing",
+    label: "menu.pages",
+    to: `${adminRoot}/pages`,
+    roles: ["superadmin"]
+  },
+  {
     id: "users",
     icon: "simple-icon-people",
     label: "menu.users",
@@ -34,8 +41,10 @@ const data = [
     id: "Settings",
     icon: "simple-icon-settings",
     label: "menu.settings",
-    to: `${adminRoot}/settings`
+    to: `${adminRoot}/settings`,
+    roles: ["superadmin"]
   }
+
   // {
   //   id: "pages",
   //   icon: "iconsminds-digital-drawing",

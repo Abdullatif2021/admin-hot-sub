@@ -72,6 +72,14 @@ export default {
         console.log(item);
         this.updateSettings(item);
       });
+      //     successButtonClick() {
+      //   // eslint-disable-next-line promise/param-names
+      //   return new Promise((success, fail) => {
+      //     setTimeout(() => {
+      //       success("Everything went right!");
+      //     }, 2000);
+      //   });
+      // },
     }
   },
   created() {

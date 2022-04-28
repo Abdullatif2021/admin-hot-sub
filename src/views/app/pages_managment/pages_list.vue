@@ -1,7 +1,7 @@
 <template>
   <div>
     <datatable-heading
-      :title="$t('menu.users-table')"
+      :title="$t('menu.pages-table')"
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
       :changePageSize="changePageSize"
@@ -83,7 +83,7 @@ export default {
   data() {
     return {
       dir: null,
-      role: null,
+      type: null,
       order_by: null,
       search: null,
       actions: null,
@@ -117,64 +117,37 @@ export default {
           width: "20%"
         },
         {
-          name: "first_name",
-          sortField: "first_name",
+          name: "locales",
+          callback: value => {
+            return value.en.name;
+          },
+          sortField: "name",
           title: "Name",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "20%"
+          width: "40%"
         },
         {
-          name: "email",
-          title: "Email",
+          name: "type",
+          sortField: "type",
+          title: "Type",
           titleClass: "",
           dataClass: "text-muted",
           width: "20%"
-        },
-        {
-          name: "role",
-          callback: value => {
-            return value[0];
-          },
-          sortField: "role",
-          title: "Role",
-          titleClass: "",
-          dataClass: "text-muted",
-          width: "20%"
-        },
-        {
-          name: "active",
-          callback: value => {
-            return value === "1"
-              ? `<span class="badge badge-pill badge-success handle mr-1">
-                Active
-              </span>`
-              : `<span class="badge badge-pill badge-danger handle mr-1">
-                Not Active
-              </span>`;
-          },
-          sortField: "active",
-          title: "Active",
-          titleClass: "",
-          dataClass: "text-muted",
-          width: "10%"
         },
         {
           name: "__slot:actions",
           title: "",
           titleClass: "center aligned text-right",
           dataClass: "center aligned text-right",
-          width: "10%"
+          width: "20%"
         }
       ]
     };
   },
-  mounted() {
-    this.$refs.vuetable.setData(this.usersList);
-  },
   created() {
-    this.getUsersList({
-      role: null,
+    this.getPagesList({
+      type: null,
       dir: null,
       search: null,
       order_by: null,
@@ -182,8 +155,11 @@ export default {
       page: null
     });
   },
+  mounted() {
+    this.$refs.vuetable.setData(this.usersList);
+  },
   methods: {
-    ...mapActions(["getUsersList"]),
+    ...mapActions(["getPagesList"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -202,8 +178,9 @@ export default {
       });
     },
     modify(id) {
+      console.log(id);
       this.$router.push({
-        path: `${adminRoot}/users/user`,
+        path: `${adminRoot}/pages/page`,
         query: { id: id }
       });
     },
@@ -245,8 +222,8 @@ export default {
         if (sortOrder[0].direction == "asc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
-          this.getUsersList({
-            role: this.sort.column,
+          this.getPagesList({
+            type: this.sort.column,
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -257,8 +234,8 @@ export default {
         if (sortOrder[0].direction == "desc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
-          this.getUsersList({
-            role: this.sort.column,
+          this.getPagesList({
+            type: this.sort.column,
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -274,8 +251,8 @@ export default {
         console.log(page);
       } else {
         this.page = page;
-        this.getUsersList({
-          role: this.sort.column,
+        this.getPagesList({
+          type: this.sort.column,
           dir: this.dir,
           search: this.search,
           order_by: this.order_by,
@@ -288,8 +265,8 @@ export default {
     changePageSize(perPage) {
       console.log(perPage);
       this.limit = perPage;
-      this.getUsersList({
-        role: this.sort.column,
+      this.getPagesList({
+        type: this.sort.column,
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
@@ -301,8 +278,8 @@ export default {
     changeOrderBy(sort) {
       this.sort = sort;
 
-      this.getUsersList({
-        role: sort.column,
+      this.getPagesList({
+        type: sort.column,
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
@@ -313,8 +290,8 @@ export default {
     searchChange(val) {
       console.log(val);
       this.search = val;
-      this.getUsersList({
-        role: this.sort.column,
+      this.getPagesList({
+        type: this.sort.column,
         dir: this.dir,
         search: val,
         order_by: this.order_by,
@@ -357,7 +334,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["usersList", "ListActions"]),
+    ...mapGetters(["Pages", "pagesPaginations"]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -375,10 +352,11 @@ export default {
         console.log("new", newQuestion);
       }
     },
-    usersList(newList, old) {
+    Pages(newList, old) {
+      console.log(newList);
       this.$refs.vuetable.setData(newList);
     },
-    ListActions(newActions, old) {
+    paginations(newActions, old) {
       this.perPage = newActions.per_page;
       this.from = newActions.from;
       this.to = newActions.to;

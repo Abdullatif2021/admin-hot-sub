@@ -116,7 +116,7 @@
     "datatables": "Datatables",
     "divided-table": "Divided Table",
     "users-table": "Users Table",
-
+    "pages-table": "Pages List",
     "scrollable": "Scrollable",
     "responsive": "Responsive",
     "piaf": "Piaf",
@@ -437,7 +437,10 @@
     "large-button": "Large Button",
     "sizing": "Sizing",
     "split-button": "Split Button Dropdowns",
-    "dropup": "Dropup"
+    "dropup": "Dropup",
+    "edit": "Edit",
+    "attachment": "Attachment",
+    "meta": "Meta"
   },
   "editors": {
     "draftjs": "Draft.js",

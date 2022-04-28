@@ -72,6 +72,33 @@ const routes = [
         ]
       },
       {
+        path: "pages",
+        component: () =>
+          import(
+            /* webpackChunkName: "second-menu" */ "./views/app/pages_managment"
+          ),
+        redirect: `${adminRoot}/pages/pageList`,
+
+        // meta: { loginRequired: true, roles: ["superadmin"] },
+
+        children: [
+          {
+            path: "pageList",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/pages_managment/pages_list"
+              )
+          },
+          {
+            path: "page",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/pages_managment/page"
+              )
+          }
+        ]
+      },
+      {
         path: "users",
         component: () =>
           import(/* webpackChunkName: "second-menu" */ "./views/app/users"),
