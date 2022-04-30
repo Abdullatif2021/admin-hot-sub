@@ -394,6 +394,7 @@
     "image-overlay-card": "Image Overlay Card",
     "image-card-list": "Image Card List",
     "tab-card": "Tab Card",
+    "page-details": "Page Details",
     "user-card": "User Card"
   },
   "carousel": {
@@ -449,6 +450,7 @@
   },
   "forms": {
     "basic": "Basic",
+    "create": "Create",
     "email": "E-mail",
     "email-muted": "We'll never share your email with anyone else.",
     "password": "Password",

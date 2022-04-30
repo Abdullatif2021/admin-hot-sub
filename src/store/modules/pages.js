@@ -1,5 +1,6 @@
 import axios from "../../plugins/axios";
-import { apiUrl } from "../../constants/config";
+import { apiUrl, adminRoot } from "../../constants/config";
+import router from "../../router";
 
 const state = {
   isLoadPages: true,
@@ -8,7 +9,8 @@ const state = {
   updatedSuccessfuly: false,
   Error: "",
   // //////////////////////////////////////////////////////////////////
-  page: null
+  page: null,
+  metaList: null
 };
 
 const getters = {
@@ -17,7 +19,7 @@ const getters = {
   pagesPaginations: state => state.paginations,
   Pages: state => state.Pages,
   //   updatedSuccessfuly: state => state.updatedSuccessfuly
-
+  metaList: state => state.metaList,
   page: state => state.page
 };
 
@@ -44,6 +46,9 @@ const mutations = {
     state.isLoadPages = false;
     state.PagesError = error;
     state.Pages = null;
+  },
+  getMetaList(state, payload) {
+    state.metaList = payload.data;
   }
 };
 
@@ -78,7 +83,38 @@ const actions = {
       commit("getPageSuccess", res.data);
     });
   },
-  updatePageData({ commit }, payload) {}
+  getMetaList({ commit }, payload) {
+    const id = payload.id;
+    axios.get(`${apiUrl}/pages/metadata/${id}`).then(res => {
+      console.log(res);
+      commit("getMetaList", res.data);
+    });
+  },
+  updatePageData({ commit }, payload) {
+    console.log(payload);
+    const id = payload.id;
+
+    const formData = new FormData();
+
+    if (payload.data.locales.ar) {
+      formData.append("ar[name]", payload.data.locales.ar.name);
+      formData.append("ar[description]", payload.data.locales.ar.description);
+    }
+    if (payload.data.locales.en) {
+      formData.append("en[name]", payload.data.locales.en.name);
+      formData.append("en[description]", payload.data.locales.en.description);
+    }
+    if (payload.file !== null) {
+      formData.append("image", payload.file);
+    }
+    formData.append("_method", "PUT");
+    axios.post(`${apiUrl}/pages/${id}`, formData, {}).then(res => {
+      console.log(res);
+      if (res.status === 200) {
+        console.log("Successfully Done !");
+      }
+    });
+  }
 };
 
 export default {
