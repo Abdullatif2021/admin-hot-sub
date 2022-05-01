@@ -101,6 +101,9 @@
                             size="sm"
                             toggle-class="language-button"
                           >
+                            <template #button-content>
+                              <i class="simple-icon-settings"></i>
+                            </template>
                             <b-dropdown-item
                               v-for="(item, index) in Options"
                               :key="index"
@@ -120,16 +123,18 @@
                     /> -->
                   </b-colxx>
                   <b-colxx xs="12" md="6" class="mb-3">
-                    <b-card class="mb-4" :title="$t('forms.create')">
+                    <b-card
+                      class="mb-4"
+                      :title="edit ? $t('forms.edit') : $t('forms.create')"
+                    >
                       <b-form
-                        @submit.prevent="onValitadeFormSubmit"
+                        @submit.prevent="onValitadeFormSubmit()"
                         class="av-tooltip tooltip-label-right"
                       >
                         <b-form-group label="Option">
                           <b-form-select
                             @change="typeSelect()"
-                            v-model.trim="$v.select.$model"
-                            :state="!$v.select.$error"
+                            v-model.trim="select"
                             :options="selectOptions"
                             plain
                           />
@@ -138,10 +143,7 @@
                           >
                         </b-form-group>
                         <b-form-group label="Details">
-                          <b-textarea
-                            v-model.trim="$v.detail.$model"
-                            :state="!$v.detail.$error"
-                          ></b-textarea>
+                          <b-textarea v-model.trim="detail"></b-textarea>
                           <b-form-invalid-feedback
                             >Please enter some details!</b-form-invalid-feedback
                           >
@@ -151,8 +153,9 @@
                           type="submit"
                           variant="primary"
                           class="mt-4"
-                          @click="createNewMeta()"
-                          >{{ $t("forms.submit") }}</b-button
+                          >{{
+                            edit ? $t("forms.save") : $t("forms.submit")
+                          }}</b-button
                         >
                       </b-form>
                     </b-card>
@@ -191,6 +194,8 @@ export default {
       pageId: null,
       pageData: null,
       _data: null,
+      edit: false,
+      itemId: null,
       meta_type_id: null,
       textarea: null,
       file: null,
@@ -326,7 +331,10 @@ export default {
       "getPageMeta",
       "updatePageData",
       "updatePageData",
-      "getMetaList"
+      "getMetaList",
+      "deleteMetaPage",
+      "updateMetaPage",
+      "createMetaPage"
     ]),
     save() {
       console.log(this.pageData);
@@ -348,6 +356,21 @@ export default {
           detail: this.detail
         })
       );
+      if (!this.edit) {
+        this.createMetaPage({
+          meta_type_id: this.select,
+          pageId: this.pageId,
+          metadata_id: this.itemId,
+          content: this.detail
+        });
+      } else {
+        this.updateMetaPage({
+          meta_type_id: this.select,
+          pageId: this.pageId,
+          metadata_id: this.itemId,
+          content: this.detail
+        });
+      }
     },
     onEditorBlur(editor) {
       console.log("editor blur!", editor);
@@ -406,16 +429,18 @@ export default {
     },
     editAction(f, value, item) {
       if (value == 1) {
-        console.log("sdfsdfsdf");
-        this.detail = item.locales.en.meta_content;
+        this.edit = true;
+        this.itemId = item.id;
         this.select = item.meta_type_id;
+        this.detail = item.locales.en.meta_content;
       } else {
-        console.log("delete");
+        this.edit = false;
+        this.select = null;
+        this.detail = null;
+        this.deleteMetaPage({ pageId: this.pageId, metadata_id: item.id });
       }
     },
-    createNewMeta() {
-      console.log(this.meta_type_id, this.pageId, this.textarea);
-    },
+
     dataManager(sortOrder, pagination) {
       if (sortOrder.length > 0) {
         console.log("orderBy:", sortOrder[0].sortField, sortOrder[0].direction);
@@ -448,7 +473,7 @@ export default {
     // meta data
   },
   computed: {
-    ...mapGetters(["page", "metaList"]),
+    ...mapGetters(["page", "metaList", "updateMetaPageSuccess"]),
     editor() {
       return this.$refs.myTextEditor.quill;
     }
@@ -460,6 +485,11 @@ export default {
     },
     metaList(newList, old) {
       this.$refs.vuetable.setData(newList);
+    },
+    updateMetaPageSuccess(newActions, old) {
+      this.edit = false;
+      this.select = null;
+      this.detail = null;
     }
   }
 };

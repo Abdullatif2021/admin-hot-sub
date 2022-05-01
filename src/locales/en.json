@@ -451,6 +451,7 @@
   "forms": {
     "basic": "Basic",
     "create": "Create",
+    "edit": "Edit",
     "email": "E-mail",
     "email-muted": "We'll never share your email with anyone else.",
     "password": "Password",

@@ -8,9 +8,11 @@ const state = {
   Pages: null,
   updatedSuccessfuly: false,
   Error: "",
+
   // //////////////////////////////////////////////////////////////////
   page: null,
-  metaList: null
+  metaList: null,
+  updateMetaPage: false
 };
 
 const getters = {
@@ -20,7 +22,8 @@ const getters = {
   Pages: state => state.Pages,
   //   updatedSuccessfuly: state => state.updatedSuccessfuly
   metaList: state => state.metaList,
-  page: state => state.page
+  page: state => state.page,
+  updateMetaPage: state => state.updateMetaPage
 };
 
 const mutations = {
@@ -49,6 +52,9 @@ const mutations = {
   },
   getMetaList(state, payload) {
     state.metaList = payload.data;
+  },
+  updateMetaPageSuccess(state, payload) {
+    state.updateMetaPage = true;
   }
 };
 
@@ -113,6 +119,56 @@ const actions = {
       if (res.status === 200) {
         console.log("Successfully Done !");
       }
+    });
+  },
+  createMetaPage({ commit, dispatch }, payload) {
+    const id = payload.pageId;
+    axios
+      .post(
+        `${apiUrl}/pages/metadata/${id}`,
+        {
+          en: { meta_content: payload.content },
+          meta_type_id: payload.meta_type_id
+        },
+        {}
+      )
+      .then(res => {
+        console.log(res);
+        if (res.status === 201) {
+          dispatch("getMetaList", { id });
+        }
+      });
+  },
+  updateMetaPage({ commit, dispatch }, payload) {
+    const metadata_id = payload.metadata_id;
+    const id = payload.pageId;
+    const formData = new FormData();
+    formData.append("en[meta_content]", payload.content);
+    formData.append("meta_type_id", payload.meta_type_id);
+    axios
+      .put(
+        `${apiUrl}/pages/metadata/${id}/${metadata_id}`,
+        // formData,
+        {
+          en: { meta_content: payload.content },
+          meta_type_id: payload.meta_type_id
+        },
+        {}
+      )
+      .then(res => {
+        console.log(res);
+        if (res.status === 200) {
+          dispatch("getMetaList", { id });
+          commit("updateMetaPageSuccess");
+        }
+      });
+  },
+  deleteMetaPage({ commit, dispatch }, payload) {
+    const metadata_id = payload.metadata_id;
+    const id = payload.pageId;
+    axios.delete(`${apiUrl}/pages/metadata/${id}/${metadata_id}`).then(res => {
+      console.log(res);
+      dispatch("getMetaList", { id });
     });
   }
 };
