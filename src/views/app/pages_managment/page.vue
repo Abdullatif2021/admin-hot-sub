@@ -70,10 +70,51 @@
                   >
                 </b-colxx>
               </b-tab>
-              <b-tab title="Attachment" title-item-class="w-30 text-center">
-                <h1 class="mb-4 card-title">
-                  here is attachments
-                </h1>
+              <b-tab
+                @click="attach()"
+                title="Attachment"
+                title-item-class="w-30 text-center"
+              >
+                <div style="display: grid;">
+                  <b-button
+                    v-b-modal.modalright
+                    variant="primary"
+                    style="margin: auto;margin-bottom: 17px;"
+                    size="lg"
+                    >{{ $t("survey.add-new") }}</b-button
+                  >
+                  <div class="row social-image-row gallery">
+                    <b-colxx
+                      xxs="4"
+                      class="container"
+                      v-for="(thumb, thumbIndex) in _pageImageList"
+                      :key="`thumb_${thumbIndex}`"
+                    >
+                      <img
+                        class="img-fluid border-radius image-hover"
+                        :src="thumb.path"
+                        alt="thumbnail"
+                        @click="onThumbClick(thumbIndex)"
+                      />
+                      <div class="middle">
+                        <div class="text">
+                          <h3>{{ thumb.locales.en.title }}</h3>
+                          <p>{{ thumb.locales.en.description }}</p>
+                        </div>
+                        <div @click="deleteImage(thumb)" class="button">
+                          Delete
+                        </div>
+                      </div>
+                    </b-colxx>
+                  </div>
+                  <LightGallery
+                    :images="images"
+                    :index="photoIndex"
+                    :disable-scroll="true"
+                    @close="handleHide()"
+                  />
+                </div>
+                <add-new-modal :pageId="pageId"></add-new-modal>
               </b-tab>
               <b-tab
                 @click="meta()"
@@ -138,6 +179,7 @@
                             :options="selectOptions"
                             plain
                           />
+
                           <b-form-invalid-feedback
                             >Please select an option!</b-form-invalid-feedback
                           >
@@ -179,18 +221,43 @@ import { mapGetters, mapActions } from "vuex";
 import VueDropzone from "vue2-dropzone";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
-
+import AddNewModal from "../../../containers/appliaction/AddNewModal.vue";
 import { validationMixin } from "vuelidate";
 const { required } = require("vuelidate/lib/validators");
+import { LightGallery } from "vue-light-gallery";
+const images = [
+  "/assets/img/products/fruitcake.jpg",
+  "/assets/img/products/napoleonshat.jpg",
+  "/assets/img/products/tea-loaf.jpg",
+  "/assets/img/products/magdalena.jpg",
+  "/assets/img/products/marble-cake.jpg",
+  "/assets/img/products/parkin.jpg"
+];
+const thumbs = [
+  "/assets/img/products/fruitcake-thumb.jpg",
+  "/assets/img/products/napoleonshat-thumb.jpg",
+  "/assets/img/products/tea-loaf-thumb.jpg",
+  "/assets/img/products/magdalena-thumb.jpg",
+  "/assets/img/products/marble-cake-thumb.jpg",
+  "/assets/img/products/parkin-thumb.jpg"
+];
 export default {
   components: {
+    "add-new-modal": AddNewModal,
     "quill-editor": quillEditor,
     vuetable: Vuetable,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
-    "vue-dropzone": VueDropzone
+    "vue-dropzone": VueDropzone,
+    LightGallery
   },
   data() {
     return {
+      // LightGaller
+      images,
+      thumbs,
+      isOpen: false,
+      photoIndex: null,
+      // LightGallery
       pageId: null,
       pageData: null,
       _data: null,
@@ -200,14 +267,7 @@ export default {
       textarea: null,
       file: null,
       itemForEdit: null,
-      selectOptions: [
-        "",
-        { text: "Option1", value: "1" },
-        { text: "Option2", value: "2" },
-        { text: "Option3", value: "3" },
-        { text: "Option4", value: "4" },
-        { text: "Option5", value: "5" }
-      ],
+      selectOptions: [],
       select: "",
       detail: "",
       // vue table-2
@@ -334,8 +394,25 @@ export default {
       "getMetaList",
       "deleteMetaPage",
       "updateMetaPage",
-      "createMetaPage"
+      "createMetaPage",
+      "getMetaTypeList",
+      "getPageImageList",
+      "deletePageImage"
     ]),
+    // gallery
+    onThumbClick(index) {
+      this.photoIndex = index;
+      this.isOpen = true;
+    },
+    handleHide() {
+      this.photoIndex = null;
+      this.isOpen = false;
+    },
+    deleteImage(thumb) {
+      console.log(thumb);
+      this.deletePageImage({ id: this.pageId, attachment_id: thumb.id });
+    },
+    // gallery
     save() {
       console.log(this.pageData);
       this.updatePageData({
@@ -344,6 +421,10 @@ export default {
         file: this.file ? this.file[0] : null
       });
     },
+    attach() {
+      this.getPageImageList({ id: this.pageId });
+    },
+
     typeSelect() {},
     modify() {
       console.log("hereeee");
@@ -363,6 +444,11 @@ export default {
           metadata_id: this.itemId,
           content: this.detail
         });
+        setTimeout(() => {
+          this.edit = false;
+          this.select = null;
+          this.detail = null;
+        }, 1000);
       } else {
         this.updateMetaPage({
           meta_type_id: this.select,
@@ -370,6 +456,11 @@ export default {
           metadata_id: this.itemId,
           content: this.detail
         });
+        // setTimeout(() => {
+        //   this.edit = false;
+        //   this.select = null;
+        //   this.detail = null;
+        // }, 1000);
       }
     },
     onEditorBlur(editor) {
@@ -426,6 +517,10 @@ export default {
     // meta data
     meta() {
       this.getMetaList({ id: this.pageId });
+      setTimeout(() => {
+        this.getMetaTypeList();
+      }, 2000);
+      // this.getMetaTypeList();
     },
     editAction(f, value, item) {
       if (value == 1) {
@@ -473,23 +568,41 @@ export default {
     // meta data
   },
   computed: {
-    ...mapGetters(["page", "metaList", "updateMetaPageSuccess"]),
+    ...mapGetters([
+      "_page",
+      "metaList",
+      "_updateMetaPage",
+      "_metaTypeList",
+      "_pageImageList"
+    ]),
     editor() {
       return this.$refs.myTextEditor.quill;
     }
   },
   watch: {
-    page(newpage, oldone) {
+    _page(newpage, oldone) {
       this.pageData = newpage;
-      console.log(this.pageData);
     },
     metaList(newList, old) {
       this.$refs.vuetable.setData(newList);
     },
-    updateMetaPageSuccess(newActions, old) {
+    _pageImageList(newData, old) {
+      console.log("_pageImageList", newData);
+    },
+    _updateMetaPage(newActions, old) {
       this.edit = false;
       this.select = null;
       this.detail = null;
+    },
+    _metaTypeList(newContent, old) {
+      newContent.forEach(option => {
+        this.selectOptions.push(
+          new Object({
+            value: option.id,
+            text: option.type
+          })
+        );
+      });
     }
   }
 };

@@ -27,6 +27,7 @@
   "menu": {
     "home": "Home",
     "app": "Home",
+    "pageList": "Page List",
     "dashboards": "Dashboards",
     "default": "Default",
     "analytics": "Analytics",
@@ -192,6 +193,7 @@
     "product-name": "Product Name",
     "category": "Category",
     "description": "Description",
+    "add-new-title": "Add New Image",
     "status": "Status",
     "cancel": "Cancel",
     "submit": "Submit",

@@ -7,11 +7,10 @@
       :changePageSize="changePageSize"
       :searchChange="searchChange"
       :cancle="cancle"
-      :changeOrderBy="changeOrderBy"
       :from="from"
       :sort="sort"
       :to="to"
-      :Filtered="true"
+      :Filtered="false"
       :total="total"
       :perPage="perPage"
     ></datatable-heading>
@@ -275,18 +274,6 @@ export default {
       });
     },
 
-    changeOrderBy(sort) {
-      this.sort = sort;
-
-      this.getPagesList({
-        type: sort.column,
-        dir: this.dir,
-        search: this.search,
-        order_by: this.order_by,
-        limit: this.limit,
-        page: this.page
-      });
-    },
     searchChange(val) {
       console.log(val);
       this.search = val;
@@ -356,7 +343,7 @@ export default {
       console.log(newList);
       this.$refs.vuetable.setData(newList);
     },
-    paginations(newActions, old) {
+    pagesPaginations(newActions, old) {
       this.perPage = newActions.per_page;
       this.from = newActions.from;
       this.to = newActions.to;

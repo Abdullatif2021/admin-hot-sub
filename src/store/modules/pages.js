@@ -8,9 +8,11 @@ const state = {
   Pages: null,
   updatedSuccessfuly: false,
   Error: "",
-
+  metaTypeList: null,
+  successAddPageImage: null,
   // //////////////////////////////////////////////////////////////////
   page: null,
+  pageImageList: null,
   metaList: null,
   updateMetaPage: false
 };
@@ -18,12 +20,15 @@ const state = {
 const getters = {
   isLoadPages: state => state.isLoadPages,
   PagesError: state => state.Error,
-  pagesPaginations: state => state.paginations,
+  pagesPaginations: state => state.pagesPaginations,
   Pages: state => state.Pages,
   //   updatedSuccessfuly: state => state.updatedSuccessfuly
   metaList: state => state.metaList,
-  page: state => state.page,
-  updateMetaPage: state => state.updateMetaPage
+  _page: state => state.page,
+  _updateMetaPage: state => state.updateMetaPage,
+  _metaTypeList: state => state.metaTypeList,
+  _pageImageList: state => state.pageImageList,
+  sccussCreateImage: state => state.successAddPageImage
 };
 
 const mutations = {
@@ -55,6 +60,18 @@ const mutations = {
   },
   updateMetaPageSuccess(state, payload) {
     state.updateMetaPage = true;
+  },
+  getMetaTypeList(state, payload) {
+    state.metaTypeList = payload.data;
+  },
+  getPageImageListStarted(state, payload) {
+    state.pageImageList = null;
+  },
+  getPageImageList(state, payload) {
+    state.pageImageList = payload.data;
+  },
+  successAddPageImage(state, payload) {
+    state.successAddPageImage = payload;
   }
 };
 
@@ -85,7 +102,7 @@ const actions = {
     commit("getPageStarted");
     const id = payload.id;
     axios.get(`${apiUrl}/pages/${id}`).then(res => {
-      console.log(res);
+      console.log("from get page", res);
       commit("getPageSuccess", res.data);
     });
   },
@@ -94,6 +111,39 @@ const actions = {
     axios.get(`${apiUrl}/pages/metadata/${id}`).then(res => {
       console.log(res);
       commit("getMetaList", res.data);
+    });
+  },
+  getPageImageList({ commit }, payload) {
+    commit("getPageImageListStarted");
+
+    const id = payload.id;
+    axios.get(`${apiUrl}/pages/images/${id}`).then(res => {
+      console.log(res);
+      commit("getPageImageList", res.data);
+    });
+  },
+  createPageImage({ commit, display }, payload) {
+    const id = payload.id;
+    const formData = new FormData();
+    if (payload.file) {
+      formData.append("path", payload.file);
+    }
+    formData.append("en[title]", payload.title);
+    formData.append("en[description]", payload.description);
+    axios.post(`${apiUrl}/pages/images/${id}`, formData, {}).then(res => {
+      if (res.status === 201) {
+        commit("successAddPageImage", res.data.data);
+      }
+    });
+  },
+  deletePageImage({ commit, dispatch }, payload) {
+    const id = payload.id;
+    const attachment_id = payload.attachment_id;
+    axios.delete(`${apiUrl}/pages/images/${id}/${attachment_id}`).then(res => {
+      console.log("delete page image", res);
+      if (res.status === 200) {
+        dispatch("getPageImageList", { id });
+      }
     });
   },
   updatePageData({ commit }, payload) {
@@ -136,6 +186,7 @@ const actions = {
         console.log(res);
         if (res.status === 201) {
           dispatch("getMetaList", { id });
+          commit("updateMetaPageSuccess");
         }
       });
   },
@@ -158,6 +209,7 @@ const actions = {
       .then(res => {
         console.log(res);
         if (res.status === 200) {
+          console.log("updateMetaPageSuccess");
           dispatch("getMetaList", { id });
           commit("updateMetaPageSuccess");
         }
@@ -169,6 +221,12 @@ const actions = {
     axios.delete(`${apiUrl}/pages/metadata/${id}/${metadata_id}`).then(res => {
       console.log(res);
       dispatch("getMetaList", { id });
+    });
+  },
+  getMetaTypeList({ commit }, payload) {
+    axios.get(`${apiUrl}/metadata/meta-type`).then(res => {
+      console.log("meta types", res);
+      commit("getMetaTypeList", res.data);
     });
   }
 };
