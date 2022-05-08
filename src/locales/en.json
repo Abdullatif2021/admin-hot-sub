@@ -574,7 +574,9 @@
   "modal": {
     "basic": "Basic",
     "modal-title": "Modal title",
+    "modal-video": "Add New Video",
     "launch-demo-modal": "Launch Demo Modal",
+    "create-new-video": "Add New Video",
     "scrolling-long-content": "Scrolling Long Content",
     "backdrop": "Backdrop",
     "backdrop-value": "Backdrop value",

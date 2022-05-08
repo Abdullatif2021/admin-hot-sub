@@ -455,13 +455,7 @@ export default {
     // meta data
   },
   computed: {
-    ...mapGetters([
-      "_page",
-      "metaList",
-      "_updateMetaPage",
-      "_metaTypeList",
-      "_pageImageList"
-    ]),
+    ...mapGetters(["_page", "_metaList", "_updateMetaPage", "_metaTypeList"]),
     editor() {
       return this.$refs.myTextEditor.quill;
     }
@@ -470,13 +464,12 @@ export default {
     _page(newpage, oldone) {
       this.pageData = newpage;
     },
-    metaList(newList, old) {
+    _metaList(newList, old) {
       this.$refs.vuetable.setData(newList);
     },
-    _pageImageList(newData, old) {
-      console.log("_pageImageList", newData);
-    },
+
     _updateMetaPage(newActions, old) {
+      console.log("_updateMetaPage");
       this.edit = false;
       this.select = null;
       this.detail = null;

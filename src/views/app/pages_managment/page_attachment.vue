@@ -66,7 +66,7 @@
                       <b-dropdown-item
                         v-for="(item, index) in Options"
                         :key="index"
-                        @click="editAction(item.value, props.rowData)"
+                        @click="file_Action(item.value, props.rowData)"
                         >{{ item.name }}</b-dropdown-item
                       >
                     </b-dropdown>
@@ -130,7 +130,48 @@
             </b-colxx>
           </b-row>
         </b-tab>
-        <b-tab title="Videos"> </b-tab>
+        <b-tab @click="openVideo()" title="Videos">
+          <b-row>
+            <b-colxx style="display: grid;" xs="12" md="12" class="mb-3">
+              <div class="top-right-button-container">
+                <b-button-group style="float: right;padding: 12px;">
+                  <b-button v-b-modal.modalbackdrop variant="primary">{{
+                    $t("modal.create-new-video")
+                  }}</b-button>
+                </b-button-group>
+              </div>
+              <b-card>
+                <vuetable
+                  ref="video_vuetable"
+                  :api-mode="false"
+                  :reactive-api-url="true"
+                  :fields="videos_fields"
+                >
+                  <template slot="actions" slot-scope="props">
+                    <b-dropdown
+                      id="langddm"
+                      class="ml-2"
+                      variant="light"
+                      size="sm"
+                      toggle-class="language-button"
+                    >
+                      <template #button-content>
+                        <i class="simple-icon-settings"></i>
+                      </template>
+                      <b-dropdown-item
+                        v-for="(item, index) in videos_Options"
+                        :key="index"
+                        @click="videos_Action(item.value, props.rowData)"
+                        >{{ item.name }}</b-dropdown-item
+                      >
+                    </b-dropdown>
+                  </template>
+                </vuetable>
+              </b-card>
+            </b-colxx>
+            <add-new-video-model :pageId="pageId" />
+          </b-row>
+        </b-tab>
       </b-tabs>
     </b-card>
   </b-colxx>
@@ -140,19 +181,23 @@
 import { LightGallery } from "vue-light-gallery";
 import { mapGetters, mapActions } from "vuex";
 import VueDropzone from "vue2-dropzone";
+import VideoPlayer from "../../../components/Common/VideoPlayer.vue";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
 import AddNewModal from "../../../containers/appliaction/AddNewModal.vue";
+import AddNewVideoModel from "../../../containers/appliaction/AddNewVideoModel.vue";
 import { validationMixin } from "vuelidate";
 const { required } = require("vuelidate/lib/validators");
 
 export default {
   components: {
     "add-new-modal": AddNewModal,
+    "video-player": VideoPlayer,
     vuetable: Vuetable,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "vue-dropzone": VueDropzone,
-    LightGallery
+    LightGallery,
+    "add-new-video-model": AddNewVideoModel
   },
   props: ["pageId"],
   data() {
@@ -174,6 +219,7 @@ export default {
         { name: "DOWNLOAD", value: 1 },
         { name: "DELETE", value: 0 }
       ],
+
       sort: "",
       dataCount: 0,
       perPage: 12,
@@ -219,6 +265,46 @@ export default {
           width: "20%"
         }
       ],
+      //   videos
+      videos_fields: [
+        {
+          name: "id",
+          title: "ID",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "40%"
+        },
+        {
+          name: "original_filename",
+          callback: value => {
+            return value.substring(0, value.indexOf("."));
+          },
+          title: "File Name",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "40%"
+        },
+        {
+          name: "extension",
+          title: "Extention",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "40%"
+        },
+
+        {
+          name: "__slot:actions",
+          title: "",
+          titleClass: "center aligned text-right",
+          dataClass: "center aligned text-right",
+          width: "20%"
+        }
+      ],
+      videos_Options: [
+        { name: "DISPLAY", value: 1 },
+        { name: "DELETE", value: 0 }
+      ],
+      //   videos
       // vue table-2
       //   files
       file: null,
@@ -230,10 +316,11 @@ export default {
       dropzoneOptions: {
         url: "https://lilacmarketingevents.com",
         thumbnailHeight: 160,
-        maxFilesize: 2,
         thumbnailWidth: 150,
         parallelUploads: 3,
         maxFiles: 1,
+        acceptedFiles:
+          "application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf",
         uploadMultiple: false,
         addRemoveLinks: true,
         removedfile: function(file) {
@@ -268,30 +355,46 @@ export default {
   methods: {
     ...mapActions([
       "getPageImageList",
+      "deletePageFile",
       "deletePageImage",
+      "deletePageVideo",
       "createPageFile",
       "getPageFileList",
-      "deletePageFile"
+      "getPageVideosList"
     ]),
-    // gallery
+    // -----------------------------gallery----------------------------
     deleteImage(thumb) {
       console.log(thumb);
-      this.deletePageImage({ id: this.pageId, attachment_id: thumb.id });
+      this.deletePageFile({ id: this.pageId, attachment_id: thumb.id });
     },
     // gallery
-    // files
+    // -------------------------------files---------------------------
     openFile() {
       this.getPageFileList({ id: this.pageId });
     },
-    editAction(value, item) {
+    file_Action(value, item) {
       console.log(item);
       if (value == 1) {
         window.open(item.path);
       } else {
-        this.deletePageFile({ pageId: this.pageId, file_id: item.id });
+        this.deletePageFile({
+          type: "files",
+          pageId: this.pageId,
+          file_id: item.id
+        });
       }
     },
-
+    videos_Action(value, item) {
+      console.log(item);
+      if (value == 1) {
+        window.open(item.path);
+      } else {
+        this.deletePageVideo({
+          pageId: this.pageId,
+          file_id: item.id
+        });
+      }
+    },
     hideModal(refname) {
       this.$refs[refname].hide();
     },
@@ -351,12 +454,22 @@ export default {
                   <a href="#" class="remove" data-dz-remove> <i class="glyph-icon simple-icon-trash"></i> </a>
                 </div>
         `;
-    }
+    },
     // vue dropezone
     // file
+    // --------------------------------videos--------------------------
+    openVideo() {
+      this.getPageVideosList({ id: this.pageId });
+    }
+    // videos
   },
   computed: {
-    ...mapGetters(["_pageImageList", "_pageFileList", "sccussCreateFile"])
+    ...mapGetters([
+      "_pageImageList",
+      "_pageFileList",
+      "_sccussCreateFile",
+      "_pageVideosList"
+    ])
   },
   watch: {
     _pageImageList: function(val) {
@@ -365,7 +478,11 @@ export default {
     _pageFileList(newData, old) {
       this.$refs.vuetable.setData(newData);
     },
-    sccussCreateFile: function(val) {
+    _pageVideosList(newData, old) {
+      console.log("i am here");
+      this.$refs.video_vuetable.setData(newData);
+    },
+    _sccussCreateFile: function(val) {
       this.form.title = null;
       this.form.description = null;
       this.file = null;

@@ -1,9 +1,10 @@
 <template>
   <b-modal
-    id="modalright"
-    ref="modalright"
-    :title="$t('pages.add-new-title')"
-    modal-class="modal-right"
+    id="modalbackdrop"
+    ref="modalbackdrop"
+    :title="$t('modal.modal-video')"
+    :hide-backdrop="true"
+    :no-close-on-backdrop="true"
   >
     <b-form>
       <b-form-group :label="$t('todo.title')" class="has-float-label mb-4">
@@ -41,19 +42,20 @@
             @vdropzone-removed-file="fileRemoved"
           ></vue-dropzone>
         </b-colxx>
-        <span>Image</span>
+        <span>Video</span>
       </label>
     </b-form>
     <template slot="modal-footer">
-      <b-button variant="outline-secondary" @click="hideModal('modalright')">{{
-        $t("survey.cancel")
-      }}</b-button>
-      <b-button variant="primary" @click="formSubmit()" class="mr-1">{{
-        $t("survey.submit")
-      }}</b-button>
+      <b-button variant="primary" @click="formSubmit()" class="mr-1"
+        >Add New</b-button
+      >
+      <b-button variant="secondary" @click="hideModal('modalbackdrop')"
+        >Cancel</b-button
+      >
     </template>
   </b-modal>
 </template>
+
 <script>
 import VueDropzone from "vue2-dropzone";
 
@@ -87,7 +89,8 @@ export default {
         autoProcessQueue: false,
         previewTemplate: this.dropzoneTemplate(),
         headers: {},
-        acceptedFiles: "image/jpeg,image/png,image/gif"
+        acceptedFiles:
+          "video/mp4, video/avi, video/mpeg, video/quicktime, video/ogg, video/3gpp2, video/3gpp, video/webm, video/mp2t"
       }
     };
   },
@@ -103,9 +106,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["createPageImage"]),
+    ...mapActions(["createPageVideo"]),
     hideModal(refname) {
       this.$refs[refname].hide();
+      this.form.title = null;
+      this.form.description = null;
     },
     formSubmit() {
       // window.top.close();
@@ -118,7 +123,7 @@ export default {
           this.file[0],
           this.pageId
         );
-        this.createPageImage({
+        this.createPageVideo({
           title: this.form.title,
           description: this.form.description,
           file: this.file ? this.file[0] : null,
@@ -166,11 +171,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["_sccussCreateImage"])
+    ...mapGetters(["_successAddPageVideo"])
   },
   watch: {
-    _sccussCreateImage: function(val) {
-      this.hideModal("modalright");
+    _successAddPageVideo: function(val) {
+      this.hideModal("modalbackdrop");
       this.form.title = null;
       this.form.description = null;
     }

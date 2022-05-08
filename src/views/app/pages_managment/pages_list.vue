@@ -321,7 +321,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["Pages", "pagesPaginations"]),
+    ...mapGetters(["_Pages", "_pagesPaginations"]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -339,11 +339,11 @@ export default {
         console.log("new", newQuestion);
       }
     },
-    Pages(newList, old) {
+    _Pages(newList, old) {
       console.log(newList);
       this.$refs.vuetable.setData(newList);
     },
-    pagesPaginations(newActions, old) {
+    _pagesPaginations(newActions, old) {
       this.perPage = newActions.per_page;
       this.from = newActions.from;
       this.to = newActions.to;
