@@ -75,46 +75,7 @@
                 title="Attachment"
                 title-item-class="w-30 text-center"
               >
-                <div style="display: grid;">
-                  <b-button
-                    v-b-modal.modalright
-                    variant="primary"
-                    style="margin: auto;margin-bottom: 17px;"
-                    size="lg"
-                    >{{ $t("survey.add-new") }}</b-button
-                  >
-                  <div class="row social-image-row gallery">
-                    <b-colxx
-                      xxs="4"
-                      class="container"
-                      v-for="(thumb, thumbIndex) in _pageImageList"
-                      :key="`thumb_${thumbIndex}`"
-                    >
-                      <img
-                        class="img-fluid border-radius image-hover"
-                        :src="thumb.path"
-                        alt="thumbnail"
-                        @click="onThumbClick(thumbIndex)"
-                      />
-                      <div class="middle">
-                        <div class="text">
-                          <h3>{{ thumb.locales.en.title }}</h3>
-                          <p>{{ thumb.locales.en.description }}</p>
-                        </div>
-                        <div @click="deleteImage(thumb)" class="button">
-                          Delete
-                        </div>
-                      </div>
-                    </b-colxx>
-                  </div>
-                  <LightGallery
-                    :images="images"
-                    :index="photoIndex"
-                    :disable-scroll="true"
-                    @close="handleHide()"
-                  />
-                </div>
-                <add-new-modal :pageId="pageId"></add-new-modal>
+                <page_attachment :pageId="pageId" />
               </b-tab>
               <b-tab
                 @click="meta()"
@@ -129,7 +90,6 @@
                         :api-mode="false"
                         :data-total="dataCount"
                         :per-page="perPage"
-                        :data-manager="dataManager"
                         :reactive-api-url="true"
                         :fields="fields"
                         pagination-path
@@ -174,7 +134,6 @@
                       >
                         <b-form-group label="Option">
                           <b-form-select
-                            @change="typeSelect()"
                             v-model.trim="select"
                             :options="selectOptions"
                             plain
@@ -215,7 +174,7 @@
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-
+import page_attachment from "./page_attachment.vue";
 import { quillEditor } from "vue-quill-editor";
 import { mapGetters, mapActions } from "vuex";
 import VueDropzone from "vue2-dropzone";
@@ -224,23 +183,7 @@ import VuetablePaginationBootstrap from "../../../components/Common/VuetablePagi
 import AddNewModal from "../../../containers/appliaction/AddNewModal.vue";
 import { validationMixin } from "vuelidate";
 const { required } = require("vuelidate/lib/validators");
-import { LightGallery } from "vue-light-gallery";
-const images = [
-  "/assets/img/products/fruitcake.jpg",
-  "/assets/img/products/napoleonshat.jpg",
-  "/assets/img/products/tea-loaf.jpg",
-  "/assets/img/products/magdalena.jpg",
-  "/assets/img/products/marble-cake.jpg",
-  "/assets/img/products/parkin.jpg"
-];
-const thumbs = [
-  "/assets/img/products/fruitcake-thumb.jpg",
-  "/assets/img/products/napoleonshat-thumb.jpg",
-  "/assets/img/products/tea-loaf-thumb.jpg",
-  "/assets/img/products/magdalena-thumb.jpg",
-  "/assets/img/products/marble-cake-thumb.jpg",
-  "/assets/img/products/parkin-thumb.jpg"
-];
+
 export default {
   components: {
     "add-new-modal": AddNewModal,
@@ -248,20 +191,13 @@ export default {
     vuetable: Vuetable,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "vue-dropzone": VueDropzone,
-    LightGallery
+    page_attachment
   },
   data() {
     return {
-      // LightGaller
-      images,
-      thumbs,
-      isOpen: false,
-      photoIndex: null,
-      // LightGallery
       pageId: null,
       pageData: null,
       _data: null,
-      edit: false,
       itemId: null,
       meta_type_id: null,
       textarea: null,
@@ -287,7 +223,7 @@ export default {
       lastPage: 0,
       items: [],
       selectedItems: [],
-
+      edit: false,
       fields: [
         {
           name: "id",
@@ -318,10 +254,9 @@ export default {
       // vue table-2
       // vue dropezone
       dropzoneOptions: {
-        url:
-          "https://lilacmarketingevents.com/tarrab-api/public/api/blocks/images/54?en[title]=dddddddddddddd&en[description]=dddddddddddddd",
+        url: "https://lilacmarketingevents.com",
         thumbnailHeight: 160,
-        maxFilesize: 2,
+        maxFilesize: 10,
         thumbnailWidth: 150,
         parallelUploads: 3,
         maxFiles: 1,
@@ -399,20 +334,7 @@ export default {
       "getPageImageList",
       "deletePageImage"
     ]),
-    // gallery
-    onThumbClick(index) {
-      this.photoIndex = index;
-      this.isOpen = true;
-    },
-    handleHide() {
-      this.photoIndex = null;
-      this.isOpen = false;
-    },
-    deleteImage(thumb) {
-      console.log(thumb);
-      this.deletePageImage({ id: this.pageId, attachment_id: thumb.id });
-    },
-    // gallery
+
     save() {
       console.log(this.pageData);
       this.updatePageData({
@@ -422,13 +344,9 @@ export default {
       });
     },
     attach() {
-      this.getPageImageList({ id: this.pageId });
+      // this.getPageImageList({ id: this.pageId });
     },
 
-    typeSelect() {},
-    modify() {
-      console.log("hereeee");
-    },
     onValitadeFormSubmit() {
       this.$v.$touch();
       console.log(
@@ -510,7 +428,6 @@ export default {
       console.log("editor ready!", editor);
     },
     onEditorChange({ editor, html, text }) {
-      // console.log('editor change!', editor, html, text)
       this.contentBubble = html;
     },
 
@@ -520,7 +437,6 @@ export default {
       setTimeout(() => {
         this.getMetaTypeList();
       }, 2000);
-      // this.getMetaTypeList();
     },
     editAction(f, value, item) {
       if (value == 1) {
@@ -534,37 +450,8 @@ export default {
         this.detail = null;
         this.deleteMetaPage({ pageId: this.pageId, metadata_id: item.id });
       }
-    },
-
-    dataManager(sortOrder, pagination) {
-      if (sortOrder.length > 0) {
-        console.log("orderBy:", sortOrder[0].sortField, sortOrder[0].direction);
-        if (sortOrder[0].direction == "asc") {
-          this.order_by = sortOrder[0].sortField;
-          this.dir = "ASC";
-          this.getUsersList({
-            role: this.sort.column,
-            dir: this.dir,
-            search: this.search,
-            order_by: this.order_by,
-            limit: this.limit,
-            page: this.page
-          });
-        }
-        if (sortOrder[0].direction == "desc") {
-          this.order_by = sortOrder[0].sortField;
-          this.dir = "DESC";
-          this.getUsersList({
-            role: this.sort.column,
-            dir: this.dir,
-            search: this.search,
-            order_by: this.order_by,
-            limit: this.limit,
-            page: this.page
-          });
-        }
-      }
     }
+
     // meta data
   },
   computed: {

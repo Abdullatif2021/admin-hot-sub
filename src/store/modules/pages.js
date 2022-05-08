@@ -10,9 +10,12 @@ const state = {
   Error: "",
   metaTypeList: null,
   successAddPageImage: null,
+  successAddPageFile: null,
+
   // //////////////////////////////////////////////////////////////////
   page: null,
   pageImageList: null,
+  pageFileList: null,
   metaList: null,
   updateMetaPage: false
 };
@@ -28,7 +31,9 @@ const getters = {
   _updateMetaPage: state => state.updateMetaPage,
   _metaTypeList: state => state.metaTypeList,
   _pageImageList: state => state.pageImageList,
-  sccussCreateImage: state => state.successAddPageImage
+  sccussCreateImage: state => state.successAddPageImage,
+  _pageFileList: state => state.pageFileList,
+  sccussCreateFile: state => state.successAddPageFile
 };
 
 const mutations = {
@@ -72,6 +77,15 @@ const mutations = {
   },
   successAddPageImage(state, payload) {
     state.successAddPageImage = payload;
+  },
+  getPageFileListStarted(state, payload) {
+    state.pageFileList = null;
+  },
+  getPageFileList(state, payload) {
+    state.pageFileList = payload.data;
+  },
+  successAddPageFile(state, payload) {
+    state.successAddPageFile = payload;
   }
 };
 
@@ -122,7 +136,7 @@ const actions = {
       commit("getPageImageList", res.data);
     });
   },
-  createPageImage({ commit, display }, payload) {
+  createPageImage({ commit, dispatch }, payload) {
     const id = payload.id;
     const formData = new FormData();
     if (payload.file) {
@@ -133,6 +147,7 @@ const actions = {
     axios.post(`${apiUrl}/pages/images/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddPageImage", res.data.data);
+        dispatch("getPageImageList", { id });
       }
     });
   },
@@ -143,6 +158,40 @@ const actions = {
       console.log("delete page image", res);
       if (res.status === 200) {
         dispatch("getPageImageList", { id });
+      }
+    });
+  },
+  getPageFileList({ commit }, payload) {
+    commit("getPageFileListStarted");
+
+    const id = payload.id;
+    axios.get(`${apiUrl}/pages/files/${id}`).then(res => {
+      console.log(res);
+      commit("getPageFileList", res.data);
+    });
+  },
+  createPageFile({ commit, dispatch }, payload) {
+    const id = payload.id;
+    const formData = new FormData();
+    if (payload.file) {
+      formData.append("path", payload.file);
+    }
+    formData.append("en[title]", payload.title);
+    formData.append("en[description]", payload.description);
+    axios.post(`${apiUrl}/pages/files/${id}`, formData, {}).then(res => {
+      if (res.status === 201) {
+        commit("successAddPageFile", res.data.data);
+        dispatch("getPageFileList", { id });
+      }
+    });
+  },
+  deletePageFile({ commit, dispatch }, payload) {
+    const id = payload.pageId;
+    const attachment_id = payload.file_id;
+    axios.delete(`${apiUrl}/pages/files/${id}/${attachment_id}`).then(res => {
+      console.log("delete page file", res);
+      if (res.status === 200) {
+        dispatch("getPageFileList", { id });
       }
     });
   },
