@@ -6,12 +6,14 @@
       :keymap="keymap"
       :changePageSize="changePageSize"
       :searchChange="searchChange"
+      :category="category"
       :cancle="cancle"
       :changeOrderBy="changeOrderBy"
       :from="from"
       :sort="sort"
       :to="to"
       :Filtered="true"
+      :sortOptions="sortOptions"
       :total="total"
       :perPage="perPage"
     ></datatable-heading>
@@ -94,6 +96,8 @@ export default {
         label: "All"
       },
       page: 1,
+      category: false,
+
       limit: null,
       perPage: 8,
       from: 0,
@@ -104,7 +108,20 @@ export default {
       lastPage: 0,
       items: [],
       selectedItems: [],
-
+      sortOptions: [
+        {
+          column: "user",
+          label: "User"
+        },
+        {
+          column: "guest",
+          label: "Guest"
+        },
+        {
+          column: "superadmin",
+          label: "Super Admin"
+        }
+      ],
       fields: [
         {
           name: "image",
@@ -150,7 +167,7 @@ export default {
                 Active
               </span>`
               : `<span class="badge badge-pill badge-danger handle mr-1">
-                Not Active
+                Inactive
               </span>`;
           },
           sortField: "active",

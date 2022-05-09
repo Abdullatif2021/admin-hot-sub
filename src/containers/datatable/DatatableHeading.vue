@@ -10,7 +10,11 @@
             <b-dropdown
               v-if="Filtered"
               id="ddown1"
-              :text="`${$t('todo.orderbyrole')} ${sort.label}`"
+              :text="
+                category
+                  ? `${$t('todo.orderbycategory')} ${sort.label}`
+                  : `${$t('todo.orderbyrole')} ${sort.label}`
+              "
               variant="outline-dark"
               class="mr-1 float-md-left btn-group"
               size="xs"
@@ -74,7 +78,9 @@ export default {
     "sort",
     "total",
     "perPage",
-    "Filtered"
+    "Filtered",
+    "sortOptions",
+    "category"
   ],
   data() {
     return {
@@ -103,20 +109,6 @@ export default {
         }
       ],
 
-      sortOptions: [
-        {
-          column: "user",
-          label: "User"
-        },
-        {
-          column: "guest",
-          label: "Guest"
-        },
-        {
-          column: "superadmin",
-          label: "Super Admin"
-        }
-      ],
       pageSizes: [4, 8, 12]
     };
   }

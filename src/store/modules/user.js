@@ -82,36 +82,39 @@ export default {
     login({ commit }, payload) {
       commit("clearError");
       commit("setProcessing", true);
+
       axios
         .post(`${apiUrl}/auth`, {
           email: payload.email,
           password: payload.password
         })
-        .then(
-          res => {
-            let refreshToken = res.data.refresh_token;
-            let accessToken = res.data.access_token;
-            setTokens(accessToken, refreshToken);
+        .then(res => {
+          let refreshToken = res.data.refresh_token;
+          let accessToken = res.data.access_token;
+          setTokens(accessToken, refreshToken);
 
-            if (res.status) {
-              axios.get(`${apiUrl}/auth/user`).then(res => {
-                if (res.status) {
-                  setCurrentUser(res.data.data);
-                  commit("setUser", res.data.data);
-                } else {
-                  commit("getItemError", "error:getItem");
-                }
-              });
-            }
-          },
-          err => {
-            setCurrentUser(null);
-            commit("setError", err.message);
-            setTimeout(() => {
-              commit("clearError");
-            }, 3000);
+          if (res.status) {
+            axios.get(`${apiUrl}/auth/user`).then(res => {
+              if (res.status) {
+                setCurrentUser(res.data.data);
+                commit("setUser", res.data.data);
+                commit("setProcessing", false);
+              } else {
+                commit("getItemError", "error:getItem");
+              }
+            });
           }
-        );
+        })
+        .catch(error => {
+          console.log("hi from catch", error);
+          setCurrentUser(null);
+          commit("setProcessing", false);
+
+          commit("setError", error.message);
+          setTimeout(() => {
+            commit("clearError");
+          }, 3000);
+        });
     },
     getUsersList({ commit }, payload) {
       commit("setProcessing", true);

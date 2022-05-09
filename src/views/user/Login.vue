@@ -160,6 +160,9 @@ export default {
     }
   },
   watch: {
+    processing: function(value) {
+      console.log(value);
+    },
     currentUser(val) {
       if (val != null) {
         setTimeout(() => {
@@ -168,6 +171,7 @@ export default {
       }
     },
     loginError(val) {
+      console.log(val);
       if (val != null) {
         this.$notify(
           "error",

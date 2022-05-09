@@ -117,6 +117,7 @@
     "datatables": "Datatables",
     "divided-table": "Divided Table",
     "users-table": "Users Table",
+    "blocks-table": "Blocks Table",
     "pages-table": "Pages List",
     "scrollable": "Scrollable",
     "responsive": "Responsive",
@@ -296,6 +297,7 @@
     "another-action": "Another action",
     "display-options": "Display Options",
     "orderby": "Order By : ",
+    "orderbycategory": "Order By Category",
     "orderbyrole": "Order By Role : ",
 
     "all-tasks": "All Tasks",

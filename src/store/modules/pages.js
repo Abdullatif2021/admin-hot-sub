@@ -7,7 +7,7 @@ const state = {
   pagesPaginations: null,
   Pages: null,
   updatedSuccessfuly: false,
-  Error: "",
+  _Error: "",
   metaTypeList: null,
   successAddPageImage: null,
   successAddPageFile: null,
@@ -23,7 +23,7 @@ const state = {
 const getters = {
   // general
   _isLoadPages: state => state.isLoadPages,
-  _PagesError: state => state.Error,
+  _PagesError: state => state._Error,
   _pagesPaginations: state => state.pagesPaginations,
   _Pages: state => state.Pages,
   _page: state => state.page,
@@ -263,7 +263,7 @@ const actions = {
     const metadata_id = payload.metadata_id;
     const id = payload.pageId;
     const formData = new FormData();
-    formData.append("en[meta_content]", payload.content);
+    formData.append(`${en}[meta_content]`, payload.content);
     formData.append("meta_type_id", payload.meta_type_id);
     axios
       .put(

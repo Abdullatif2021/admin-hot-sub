@@ -184,14 +184,14 @@ import VueDropzone from "vue2-dropzone";
 import VideoPlayer from "../../../components/Common/VideoPlayer.vue";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
-import AddNewModal from "../../../containers/appliaction/AddNewModal.vue";
+import AddNewImageModel from "../../../containers/appliaction/AddNewImageModel.vue";
 import AddNewVideoModel from "../../../containers/appliaction/AddNewVideoModel.vue";
 import { validationMixin } from "vuelidate";
 const { required } = require("vuelidate/lib/validators");
 
 export default {
   components: {
-    "add-new-modal": AddNewModal,
+    "add-new-modal": AddNewImageModel,
     "video-player": VideoPlayer,
     vuetable: Vuetable,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
