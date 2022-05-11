@@ -69,8 +69,6 @@ export default {
     "v-select": vSelect,
     "vue-dropzone": VueDropzone
   },
-  props: ["pageId"],
-
   data() {
     return {
       file: null,
@@ -112,22 +110,16 @@ export default {
       this.form.title = null;
       this.form.description = null;
     },
+
     formSubmit() {
       // window.top.close();
       this.$v.$touch();
       this.$v.form.$touch();
       if (!this.$v.form.$invalid) {
-        console.log(
-          this.form.title,
-          this.form.description,
-          this.file[0],
-          this.pageId
-        );
-        this.createPageVideo({
+        this.$emit("AddNewVideo", {
           title: this.form.title,
           description: this.form.description,
-          file: this.file ? this.file[0] : null,
-          id: this.pageId
+          video: this.file ? this.file[0] : null
         });
       }
     },
@@ -171,10 +163,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["_successAddPageVideo"])
+    ...mapGetters(["_successAddPageVideo", "_successAddBlockVideo"])
   },
   watch: {
     _successAddPageVideo: function(val) {
+      this.hideModal("modalbackdrop");
+      this.form.title = null;
+      this.form.description = null;
+    },
+    _successAddBlockVideo: function(val) {
       this.hideModal("modalbackdrop");
       this.form.title = null;
       this.form.description = null;

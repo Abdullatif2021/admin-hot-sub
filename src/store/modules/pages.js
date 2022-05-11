@@ -30,7 +30,7 @@ const getters = {
   // meta
   _metaList: state => state.metaList,
   _updateMetaPage: state => state.updateMetaPage,
-  _metaTypeList: state => state.metaTypeList,
+  _pageMetaTypeList: state => state.metaTypeList,
   // images
   _pageImageList: state => state.pageImageList,
   _sccussCreateImage: state => state.successAddPageImage,
@@ -175,8 +175,8 @@ const actions = {
   createPageImage({ commit, dispatch }, payload) {
     const id = payload.id;
     const formData = new FormData();
-    if (payload.file) {
-      formData.append("path", payload.file);
+    if (payload.image) {
+      formData.append("path", payload.image);
     }
     formData.append("en[title]", payload.title);
     formData.append("en[description]", payload.description);
@@ -307,8 +307,8 @@ const actions = {
   createPageVideo({ commit, dispatch }, payload) {
     const id = payload.id;
     const formData = new FormData();
-    if (payload.file) {
-      formData.append("path", payload.file);
+    if (payload.video) {
+      formData.append("path", payload.video);
     }
     formData.append("en[title]", payload.title);
     formData.append("en[description]", payload.description);

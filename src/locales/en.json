@@ -455,6 +455,7 @@
   "forms": {
     "basic": "Basic",
     "create": "Create",
+    "description": "Description",
     "edit": "Edit",
     "email": "E-mail",
     "email-muted": "We'll never share your email with anyone else.",
@@ -657,5 +658,17 @@
     "registered": "Your registration completed successfully!",
     "async": "Async save for 3 seconds!"
   },
-  "async": "Async save for 3 seconds!"
+  "async": "Async save for 3 seconds!",
+  "block": {
+    "add-new": "Add new",
+    "description": "Description",
+    "title": "Title",
+    "block-details": "Block details",
+    "image": "Image",
+    "file": "File",
+    "category": "Category",
+    "url": "URL",
+    "post-date": "Post date",
+    "visible": "Activated"
+  }
 }

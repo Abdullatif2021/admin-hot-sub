@@ -16,7 +16,7 @@
                   class="form-group has-float-label"
                 >
                   <img
-                    :src="pageData.image"
+                    :src="pageData.image ? pageData.image : pageData.image"
                     style="border-radius: 20%;"
                     alt="Image"
                     width="120"
@@ -474,7 +474,7 @@ export default {
       this.select = null;
       this.detail = null;
     },
-    _metaTypeList(newContent, old) {
+    _pageMetaTypeList(newContent, old) {
       newContent.forEach(option => {
         this.selectOptions.push(
           new Object({

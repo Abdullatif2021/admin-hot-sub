@@ -165,7 +165,7 @@ export default {
     this.$refs.vuetable.setData(this.usersList);
   },
   created() {
-    this.getBlocks({
+    this.getBlocksList({
       block_category_id: null,
       dir: null,
       search: null,
@@ -176,7 +176,7 @@ export default {
     this.getBlockCategories();
   },
   methods: {
-    ...mapActions(["getBlocks", "getBlockCategories"]),
+    ...mapActions(["getBlocksList", "getBlockCategories"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -185,7 +185,7 @@ export default {
       return "";
     },
     cancle() {
-      this.this.getBlocks({
+      this.this.getBlocksList({
         block_category_id: null,
         dir: null,
         search: null,
@@ -195,8 +195,9 @@ export default {
       });
     },
     modify(id) {
+      console.log(id);
       this.$router.push({
-        path: `${adminRoot}/users/user`,
+        path: `${adminRoot}/blocks/block`,
         query: { id: id }
       });
     },
@@ -238,7 +239,7 @@ export default {
         if (sortOrder[0].direction == "asc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
-          this.getBlocks({
+          this.getBlocksList({
             block_category_id: this.sort.column,
             dir: this.dir,
             search: this.search,
@@ -250,7 +251,7 @@ export default {
         if (sortOrder[0].direction == "desc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
-          this.getBlocks({
+          this.getBlocksList({
             block_category_id: this.sort.column,
             dir: this.dir,
             search: this.search,
@@ -262,12 +263,29 @@ export default {
       }
     },
 
-    onChangePage(page) {
-      if (page == "next" || page == "prev") {
-        console.log(page);
+    onChangePage(_page) {
+      if (_page == "next") {
+        // this.getBlocksList({
+        //   block_category_id: this.sort.column,
+        //   dir: this.dir,
+        //   search: this.search,
+        //   order_by: this.order_by,
+        //   limit: this.limit,
+        //   page: this.page + 1
+        // });
+      }
+      if (_page == "prev") {
+        // this.getBlocksList({
+        //   block_category_id: this.sort.column,
+        //   dir: this.dir,
+        //   search: this.search,
+        //   order_by: this.order_by,
+        //   limit: this.limit,
+        //   page: this.page - 1
+        // });
       } else {
-        this.page = page;
-        this.getBlocks({
+        this.page = _page;
+        this.getBlocksList({
           block_category_id: this.sort.column,
           dir: this.dir,
           search: this.search,
@@ -281,7 +299,7 @@ export default {
     changePageSize(perPage) {
       console.log(perPage);
       this.limit = perPage;
-      this.getBlocks({
+      this.getBlocksList({
         block_category_id: this.sort.column,
         dir: this.dir,
         search: this.search,
@@ -294,7 +312,7 @@ export default {
     changeOrderBy(sort) {
       this.sort = sort;
 
-      this.getBlocks({
+      this.getBlocksList({
         block_category_id: sort.column,
         dir: this.dir,
         search: this.search,
@@ -304,9 +322,8 @@ export default {
       });
     },
     searchChange(val) {
-      console.log(val);
       this.search = val;
-      this.getBlocks({
+      this.getBlocksList({
         block_category_id: this.sort.column,
         dir: this.dir,
         search: val,
@@ -350,7 +367,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["blocks", "_paginations", "_blockCategories"]),
+    ...mapGetters(["_blocks", "_blockPaginations", "_blockCategories"]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -368,10 +385,10 @@ export default {
         console.log("new", newQuestion);
       }
     },
-    blocks(newList, old) {
+    _blocks(newList, old) {
       this.$refs.vuetable.setData(newList);
     },
-    _paginations(newActions, old) {
+    _blockPaginations(newActions, old) {
       this.perPage = newActions.per_page;
       this.from = newActions.from;
       this.to = newActions.to;

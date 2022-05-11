@@ -65,7 +65,7 @@ const routes = [
               )
           },
           {
-            path: "block/:id",
+            path: "block",
             component: () =>
               import(/* webpackChunkName: "blog" */ "./views/app/block/block")
           }

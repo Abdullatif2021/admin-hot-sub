@@ -289,6 +289,7 @@ export default {
     onChangePage(page) {
       if (page == "next" || page == "prev") {
         console.log(page);
+        console.log(this.page);
       } else {
         this.page = page;
         this.getUsersList({

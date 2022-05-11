@@ -9,13 +9,13 @@
               variant="primary"
               style="margin: auto;margin-bottom: 17px;"
               size="lg"
-              >{{ $t("survey.add-new") }}</b-button
+              >{{ $t("block.add-new") }}</b-button
             >
             <div class="row social-image-row gallery">
               <b-colxx
                 xxs="4"
                 class="container"
-                v-for="(thumb, thumbIndex) in _pageImageList"
+                v-for="(thumb, thumbIndex) in _blockImageList"
                 :key="`thumb_${thumbIndex}`"
               >
                 <img
@@ -81,7 +81,7 @@
                   class="av-tooltip tooltip-label-right"
                 >
                   <b-form-group
-                    :label="$t('todo.title')"
+                    :label="$t('block.title')"
                     class="has-float-label mb-4"
                   >
                     <b-form-input
@@ -94,7 +94,7 @@
                     >
                   </b-form-group>
                   <b-form-group
-                    :label="$t('pages.description')"
+                    :label="$t('block.description')"
                     class="has-float-label mb-4"
                   >
                     <b-form-input
@@ -199,10 +199,10 @@ export default {
     LightGallery,
     "add-new-video-model": AddNewVideoModel
   },
-  props: ["pageId"],
+  props: ["blockId"],
   data() {
     return {
-      pageData: null,
+      blockData: null,
       _data: null,
       itemId: null,
       meta_type_id: null,
@@ -349,59 +349,61 @@ export default {
     //   files
   },
   created() {
-    console.log(this.pageId);
-    this.getPageImageList({ id: this.pageId });
+    console.log(this.blockId);
+    this.getBlockImageList({ id: this.blockId });
   },
   methods: {
     ...mapActions([
-      "getPageImageList",
-      "deletePageFile",
-      "deletePageImage",
-      "deletePageVideo",
-      "createPageFile",
-      "createPageImage",
-      "getPageFileList",
-      "getPageVideosList",
-      "createPageVideo"
+      "getBlockImageList",
+      "deleteBlockFile",
+      "deleteBlockVideo",
+      "createBlockFile",
+      "getBlockFileList",
+      "getBlockVideosList",
+      "createBlockImage",
+      "deleteBlockImage",
+      "createBlockVideo",
+      "deleteBlockVideo"
     ]),
     // .....................upload new image ......................
 
     createImage(value) {
       console.log(value);
-      this.createPageImage({
+      this.createBlockImage({
         title: value.title,
         description: value.description,
         image: value.image ? value.image : null,
-        id: this.pageId
+        id: this.blockId
       });
     },
     // .....................upload new video ......................
     createVideo(value) {
-      this.createPageVideo({
+      console.log(value);
+      this.createBlockVideo({
         title: value.title,
         description: value.description,
-        video: value.video ? value.video : null,
-        id: this.pageId
+        file: value.video ? value.video : null,
+        id: this.blockId
       });
     },
     // -----------------------------gallery----------------------------
     deleteImage(thumb) {
       console.log(thumb);
-      this.deletePageImage({ id: this.pageId, attachment_id: thumb.id });
+      this.deleteBlockImage({ id: this.blockId, attachment_id: thumb.id });
     },
     // gallery
     // -------------------------------files---------------------------
     openFile() {
-      this.getPageFileList({ id: this.pageId });
+      this.getBlockFileList({ id: this.blockId });
     },
     file_Action(value, item) {
       console.log(item);
       if (value == 1) {
         window.open(item.path);
       } else {
-        this.deletePageFile({
+        this.deleteBlockFile({
           type: "files",
-          pageId: this.pageId,
+          blockId: this.blockId,
           file_id: item.id
         });
       }
@@ -411,8 +413,8 @@ export default {
       if (value == 1) {
         window.open(item.path);
       } else {
-        this.deletePageVideo({
-          pageId: this.pageId,
+        this.deleteBlockVideo({
+          blockId: this.blockId,
           file_id: item.id
         });
       }
@@ -429,13 +431,13 @@ export default {
           this.form.title,
           this.form.description,
           this.file[0],
-          this.pageId
+          this.blockId
         );
-        this.createPageFile({
+        this.createBlockFile({
           title: this.form.title,
           description: this.form.description,
           file: this.file ? this.file[0] : null,
-          id: this.pageId
+          id: this.blockId
         });
       }
     },
@@ -481,32 +483,32 @@ export default {
     // file
     // --------------------------------videos--------------------------
     openVideo() {
-      this.getPageVideosList({ id: this.pageId });
+      this.getBlockVideosList({ id: this.blockId });
     }
     // videos
   },
   computed: {
     ...mapGetters([
-      "_pageImageList",
-      "_pageFileList",
-      "_sccussCreateFile",
-      "_pageVideosList"
+      "_blockImageList",
+      "_blockFileList",
+      "_sccussCreateBlockFile",
+      "_blockVideosList"
     ])
   },
   watch: {
-    _pageImageList: function(val) {
-      console.log("_pageImageList", val);
-    },
-    _pageFileList(newData, old) {
+    _blockImageList: function(val) {},
+    _blockFileList(newData, old) {
       this.$refs.vuetable.setData(newData);
     },
-    _pageVideosList(newData, old) {
+    _blockVideosList(newData, old) {
       console.log("i am here");
       this.$refs.video_vuetable.setData(newData);
     },
-    _sccussCreateFile(newData, old) {
+    _sccussCreateBlockFile: function(val) {
       this.form.title = null;
       this.form.description = null;
+      this.file = null;
+      this.$refs.myVueDropzone.removeFile();
     }
   }
 };

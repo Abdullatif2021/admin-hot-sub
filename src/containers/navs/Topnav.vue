@@ -189,6 +189,7 @@
             >
             <span>
               <img
+                class="user_img"
                 :alt="currentUser.first_name"
                 :src="
                   currentUser.image

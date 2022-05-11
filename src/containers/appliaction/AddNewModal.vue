@@ -112,17 +112,10 @@ export default {
       this.$v.$touch();
       this.$v.form.$touch();
       if (!this.$v.form.$invalid) {
-        console.log(
-          this.form.title,
-          this.form.description,
-          this.file[0],
-          this.pageId
-        );
-        this.createPageImage({
+        this.$emit("AddNewImage", {
           title: this.form.title,
           description: this.form.description,
-          file: this.file ? this.file[0] : null,
-          id: this.pageId
+          image: this.file ? this.file[0] : null
         });
       }
     },
@@ -166,10 +159,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["_sccussCreateImage"])
+    ...mapGetters(["_sccussCreateImage", "_successAddBlockImage"])
   },
   watch: {
     _sccussCreateImage: function(val) {
+      this.hideModal("modalright");
+      this.form.title = null;
+      this.form.description = null;
+    },
+    _successAddBlockImage: function(val) {
       this.hideModal("modalright");
       this.form.title = null;
       this.form.description = null;
