@@ -8,7 +8,8 @@ import {
   getAccessToken,
   setTokens,
   getCurrentUser,
-  getCurrentLanguage
+  getCurrentLanguage,
+  setDirection
 } from "../../utils";
 import { adminRoot } from "../../constants/config";
 import { apiUrl, Headers, locale } from "../../constants/config";
@@ -21,7 +22,8 @@ export default {
     usersList: null,
     ListActions: null,
     UserInfo: null,
-    resetPasswordSuccess: null
+    resetPasswordSuccess: null,
+    preferLocale: null
   },
   getters: {
     currentUser: state => state.currentUser,
@@ -31,7 +33,8 @@ export default {
     processing: state => state.processing,
     loginError: state => state.loginError,
     forgotMailSuccess: state => state.forgotMailSuccess,
-    resetPasswordSuccess: state => state.resetPasswordSuccess
+    resetPasswordSuccess: state => state.resetPasswordSuccess,
+    _preferLocale: state => state.preferLocale
   },
   mutations: {
     setUser(state, payload) {
@@ -76,10 +79,13 @@ export default {
     },
     clearError(state) {
       state.loginError = null;
+    },
+    updatePreferLocale(state, payload) {
+      state.preferLocale = payload;
     }
   },
   actions: {
-    login({ commit }, payload) {
+    login({ commit, dispatch }, payload) {
       commit("clearError");
       commit("setProcessing", true);
 
@@ -97,6 +103,10 @@ export default {
             axios.get(`${apiUrl}/auth/user`).then(res => {
               if (res.status) {
                 setCurrentUser(res.data.data);
+                dispatch("setLang", { locale: res.data.data.prefer_locale });
+                res.data.data.prefer_locale === "ar"
+                  ? setDirection("rtl")
+                  : setDirection("ltr");
                 commit("setUser", res.data.data);
                 commit("setProcessing", false);
               } else {
@@ -133,16 +143,17 @@ export default {
           commit("setUsersList", res.data);
         });
     },
-    // changePreferLocale(locale) {
-
-    //   axios
-    //     .put(`${apiUrl}/users/prefer_locale`, {
-    //       prefer_locale: locale
-    //     }).then(() => {
-    //       },
-    //       _error => {}
-    //     );
-    // },
+    changePreferLocale({ commit }, payload) {
+      axios
+        .put(`${apiUrl}/users/prefer_locale`, {
+          prefer_locale: payload.locale
+        })
+        .then(res => {
+          if (res.status === 200) {
+            commit("updatePreferLocale", res);
+          }
+        });
+    },
     resetPassword({ commit }, payload) {
       commit("clearError");
       commit("setProcessing", true);

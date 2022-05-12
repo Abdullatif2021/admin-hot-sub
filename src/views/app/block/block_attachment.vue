@@ -24,7 +24,6 @@
                   width="400"
                   height="400"
                   alt="thumbnail"
-                  @click="onThumbClick(thumbIndex)"
                 />
                 <div class="middle">
                   <div class="text">
@@ -172,6 +171,100 @@
             <add-new-video-model @AddNewVideo="createVideo" />
           </b-row>
         </b-tab>
+        <b-tab @click="openYoutubeVideo()" title="Youtube Videos">
+          <b-row>
+            <b-colxx xs="12" md="6" class="mb-3">
+              <b-card>
+                <vuetable
+                  ref="youtubeVideo_vuetable"
+                  :api-mode="false"
+                  :data-total="dataCount"
+                  :per-page="perPage"
+                  :reactive-api-url="true"
+                  :fields="youtube_fields"
+                >
+                  <template slot="actions" slot-scope="props">
+                    <b-dropdown
+                      id="langddm"
+                      class="ml-2"
+                      variant="light"
+                      size="sm"
+                      toggle-class="language-button"
+                    >
+                      <template #button-content>
+                        <i class="simple-icon-settings"></i>
+                      </template>
+                      <b-dropdown-item
+                        v-for="(item, index) in youtube_Options"
+                        :key="index"
+                        @click="youtube_Action(item.value, props.rowData)"
+                        >{{ item.name }}</b-dropdown-item
+                      >
+                    </b-dropdown>
+                  </template>
+                </vuetable>
+              </b-card>
+            </b-colxx>
+            <b-colxx xs="12" md="6" class="mb-3">
+              <b-card
+                class="mb-4"
+                :title="edit ? $t('forms.edit') : $t('forms.create')"
+              >
+                <b-form
+                  @submit.prevent="onValitadeYoutubeFormSubmit()"
+                  class="av-tooltip tooltip-label-right"
+                >
+                  <b-form-group
+                    :label="$t('block.title')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.youtube_form.title.$model"
+                      :state="!$v.youtube_form.title.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.youtube_form.title.required"
+                      >Please enter title</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('block.description')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.youtube_form.description.$model"
+                      :state="!$v.youtube_form.description.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.youtube_form.description.required"
+                      >Please enter description</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('block.path')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.youtube_form.path.$model"
+                      :state="!$v.youtube_form.path.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.youtube_form.path.required"
+                      >Please enter Youtube Link</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+
+                  <b-button type="submit" variant="primary" class="mt-4">{{
+                    edit ? $t("forms.save") : $t("forms.submit")
+                  }}</b-button>
+                </b-form>
+              </b-card>
+            </b-colxx>
+          </b-row>
+        </b-tab>
       </b-tabs>
     </b-card>
   </b-colxx>
@@ -224,9 +317,11 @@ export default {
       dataCount: 0,
       perPage: 12,
       search: "",
+      attachment_id: null,
       from: 0,
       to: 0,
       total: 0,
+      edit: false,
       lastPage: 0,
       items: [],
       selectedItems: [],
@@ -304,7 +399,46 @@ export default {
         { name: "DISPLAY", value: 1 },
         { name: "DELETE", value: 0 }
       ],
-      //   videos
+      // youtube
+      youtube_fields: [
+        {
+          name: "id",
+          title: "ID",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "40%"
+        },
+        {
+          name: "locales",
+          callback: value => {
+            return value.en.title;
+          },
+          title: "Title",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "40%"
+        },
+
+        {
+          name: "__slot:actions",
+          title: "",
+          titleClass: "center aligned text-right",
+          dataClass: "center aligned text-right",
+          width: "20%"
+        }
+      ],
+
+      youtube_Options: [
+        { name: "OPEN", value: 1 },
+        { name: "UPDATE", value: 2 },
+        { name: "DELETE", value: 3 }
+      ],
+      youtube_form: {
+        title: "",
+        description: "",
+        path: ""
+      },
+
       // vue table-2
       //   files
       file: null,
@@ -345,6 +479,17 @@ export default {
       description: {
         required
       }
+    },
+    youtube_form: {
+      title: {
+        required
+      },
+      description: {
+        required
+      },
+      path: {
+        required
+      }
     }
     //   files
   },
@@ -363,7 +508,11 @@ export default {
       "createBlockImage",
       "deleteBlockImage",
       "createBlockVideo",
-      "deleteBlockVideo"
+      "deleteBlockVideo",
+      "getBlockYoutubeVideoList",
+      "createBlockYoutubeVideo",
+      "updateBlockYoutubeVideo",
+      "deleteBlockYoutubeVideo"
     ]),
     // .....................upload new image ......................
 
@@ -419,6 +568,45 @@ export default {
         });
       }
     },
+    openYoutubeVideo() {
+      this.getBlockYoutubeVideoList({ id: this.blockId });
+    },
+    youtube_Action(value, item) {
+      switch (value) {
+        case 1:
+          {
+            window.open(item.path);
+          }
+          break;
+        case 2:
+          {
+            this.attachment_id = item.id;
+            this.edit = true;
+            console.log("update");
+            this.youtube_form.title = item.locales.en.title;
+            this.youtube_form.description = item.locales.en.description;
+            this.youtube_form.path = item.path;
+          }
+          break;
+        case 3:
+          {
+            console.log("delete");
+            this.deleteBlockYoutubeVideo({
+              blockId: this.blockId,
+              youtube_id: item.id
+            });
+          }
+          break;
+      }
+      // if (value == 1) {
+      //   window.open(item.path);
+      // } else {
+      //   this.deleteBlockYoutubeVideo({
+      //     blockId: this.blockId,
+      //     youtube_id: item.id
+      //   });
+      // }
+    },
     hideModal(refname) {
       this.$refs[refname].hide();
     },
@@ -439,6 +627,34 @@ export default {
           file: this.file ? this.file[0] : null,
           id: this.blockId
         });
+      }
+    },
+    onValitadeYoutubeFormSubmit() {
+      this.$v.$touch();
+      this.$v.youtube_form.$touch();
+      if (!this.$v.youtube_form.$invalid) {
+        console.log(
+          this.youtube_form.title,
+          this.youtube_form.description,
+          this.youtube_form.path,
+          this.blockId
+        );
+        if (!this.edit) {
+          this.createBlockYoutubeVideo({
+            title: this.youtube_form.title,
+            description: this.youtube_form.description,
+            path: this.youtube_form.path,
+            id: this.blockId
+          });
+        } else {
+          this.updateBlockYoutubeVideo({
+            title: this.youtube_form.title,
+            description: this.youtube_form.description,
+            path: this.youtube_form.path,
+            attachment_id: this.attachment_id,
+            id: this.blockId
+          });
+        }
       }
     },
     // vue dropezone
@@ -492,7 +708,8 @@ export default {
       "_blockImageList",
       "_blockFileList",
       "_sccussCreateBlockFile",
-      "_blockVideosList"
+      "_blockVideosList",
+      "_blockYoutubeVideosList"
     ])
   },
   watch: {
@@ -500,9 +717,17 @@ export default {
     _blockFileList(newData, old) {
       this.$refs.vuetable.setData(newData);
     },
+
     _blockVideosList(newData, old) {
       console.log("i am here");
       this.$refs.video_vuetable.setData(newData);
+    },
+    _blockYoutubeVideosList(newData, old) {
+      this.$refs.youtubeVideo_vuetable.setData(newData);
+      this.youtube_form.title = null;
+      this.youtube_form.description = null;
+      this.youtube_form.path = null;
+      this.edit = false;
     },
     _sccussCreateBlockFile: function(val) {
       this.form.title = null;

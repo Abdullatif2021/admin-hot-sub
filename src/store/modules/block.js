@@ -16,7 +16,9 @@ const state = {
   blockFileList: null,
   successAddBlockFile: null,
   blockVideosList: null,
-  successAddBlockVideo: null
+  successAddBlockVideo: null,
+  blockYoutubeVideosList: null,
+  successAddBlockYoutubeVideo: null
 };
 
 const getters = {
@@ -38,7 +40,10 @@ const getters = {
   _sccussCreateBlockFile: state => state.successAddBlockFile,
   // videos
   _blockVideosList: state => state.blockVideosList,
-  _successAddBlockVideo: state => state.successAddBlockVideo
+  _successAddBlockVideo: state => state.successAddBlockVideo,
+  // youtube
+  _blockYoutubeVideosList: state => state.blockYoutubeVideosList,
+  _successAddBlockYoutubeVideo: state => state.successAddBlockYoutubeVideo
 };
 
 const mutations = {
@@ -114,6 +119,16 @@ const mutations = {
   },
   successAddBlockVideo(state, payload) {
     state.successAddBlockVideo = payload;
+  },
+  /* youtube */
+  getBlockYoutubeVideosListStarted(state, payload) {
+    state.blockYoutubeVideosList = null;
+  },
+  getBlockYoutubeVideosList(state, payload) {
+    state.blockYoutubeVideosList = payload.data;
+  },
+  successAddBlockYoutubeVideo(state, payload) {
+    state.successAddBlockYoutubeVideo = payload;
   }
 };
 
@@ -166,12 +181,13 @@ const actions = {
       });
   },
   updateBlockData({ commit, dispatch }, payload) {
+    console.log(payload.data.post_date);
     const id = payload.id;
 
     const formData = new FormData();
     formData.append("block_category_id", payload.data.block_category_id.id);
     formData.append("url", payload.data.url);
-    formData.append("post_date", payload.data.post_date.toISOString());
+    formData.append("post_date", payload.post_date);
     formData.append("visible", payload.data.visible);
 
     if (payload.data.locales.ar) {
@@ -361,9 +377,67 @@ const actions = {
         dispatch("getBlockVideosList", { id });
       }
     });
-  }
+  },
 
   // ********************* block videos ***************************
+  // ############### youtube ##################
+  getBlockYoutubeVideoList({ commit }, payload) {
+    commit("getBlockYoutubeVideosListStarted");
+
+    const id = payload.id;
+    axios.get(`${apiUrl}/blocks/youtube-videos/${id}`).then(res => {
+      commit("getBlockYoutubeVideosList", res.data);
+    });
+  },
+  createBlockYoutubeVideo({ commit, dispatch }, payload) {
+    const id = payload.id;
+    const formData = new FormData();
+    formData.append("path", payload.path);
+    formData.append("en[title]", payload.title);
+    formData.append("en[description]", payload.description);
+    axios
+      .post(`${apiUrl}/blocks/youtube-videos/${id}`, formData, {})
+      .then(res => {
+        if (res.status === 201) {
+          commit("successAddBlockYoutubeVideo", res.data.data);
+          dispatch("getBlockYoutubeVideoList", { id });
+        }
+      });
+  },
+  updateBlockYoutubeVideo({ commit, dispatch }, payload) {
+    const id = payload.id;
+    const attachment_id = payload.attachment_id;
+    const formData = new FormData();
+    formData.append("path", payload.path);
+    formData.append("en[title]", payload.title);
+    formData.append("en[description]", payload.description);
+    formData.append("_method", "PUT");
+
+    axios
+      .post(
+        `${apiUrl}/blocks/youtube-videos/${id}/${attachment_id}`,
+        formData,
+        {}
+      )
+      .then(res => {
+        if (res.status === 201 || res.status === 200) {
+          commit("successAddBlockYoutubeVideo", res.data.data);
+          dispatch("getBlockYoutubeVideoList", { id });
+        }
+      });
+  },
+  deleteBlockYoutubeVideo({ commit, dispatch }, payload) {
+    const id = payload.blockId;
+    const attachment_id = payload.youtube_id;
+    axios
+      .delete(`${apiUrl}/blocks/youtube-videos/${id}/${attachment_id}`)
+      .then(res => {
+        if (res.status === 200) {
+          console.log();
+          dispatch("getBlockYoutubeVideoList", { id });
+        }
+      });
+  }
 };
 
 export default {

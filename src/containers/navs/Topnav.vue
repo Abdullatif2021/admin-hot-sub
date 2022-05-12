@@ -50,6 +50,7 @@
           <b-dropdown-item
             v-for="(l, index) in localeOptions"
             :key="index"
+            v-b-modal.modalbasic
             @click="changeLocale(l.id, l.direction)"
             >{{ l.name }}</b-dropdown-item
           >
@@ -208,6 +209,21 @@
         </b-dropdown>
       </div>
     </div>
+    <b-modal id="modalbasic" ref="modalbasic" :title="$t('modal.modal-title')">
+      Do you want to change your prefer language permanently ?
+      <template slot="modal-footer">
+        <b-button
+          variant="primary"
+          @click="change_Locale('modalbasic')"
+          class="mr-1"
+        >
+          {{ $t("button.change") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('modalbasic')">{{
+          $t("button.no")
+        }}</b-button>
+      </template>
+    </b-modal>
   </nav>
 </template>
 
@@ -248,7 +264,9 @@ export default {
       buyUrl,
       notifications,
       isDarkActive: false,
-      adminRoot
+      adminRoot,
+      _direction: null,
+      _locale: null
     };
   },
   methods: {
@@ -276,17 +294,25 @@ export default {
         this.searchKeyword = "";
       }
     },
+    change_Locale() {
+      this.changePreferLocale({ locale: this._locale });
+    },
 
     changeLocale(locale, direction) {
-      const currentDirection = getDirection().direction;
-      if (direction !== currentDirection) {
-        setDirection(direction);
-      }
-      this.setLang(locale);
-      this.changePreferLocale(locale);
+      this._locale = locale;
+      this._direction = direction;
+      console.log(locale, direction);
     },
     profile() {
       router.push("/user/profile");
+    },
+    hideModal(refname) {
+      const currentDirection = getDirection().direction;
+      if (this._direction !== currentDirection) {
+        setDirection(this._direction);
+      }
+      this.setLang({ locale: this._locale });
+      this.$refs[refname].hide();
     },
     logout() {
       this.signOut();
@@ -335,7 +361,8 @@ export default {
       currentUser: "currentUser",
       menuType: "getMenuType",
       menuClickCount: "getMenuClickCount",
-      selectedMenuHasSubItems: "getSelectedMenuHasSubItems"
+      selectedMenuHasSubItems: "getSelectedMenuHasSubItems",
+      _preferLocale: "_preferLocale"
     })
   },
   beforeDestroy() {
@@ -353,6 +380,15 @@ export default {
     },
     currentUser(val) {
       console.log("hi from watcher", val);
+    },
+    _preferLocale(val) {
+      this.$refs["modalbasic"].hide();
+
+      const currentDirection = getDirection().direction;
+      if (this._direction !== currentDirection) {
+        setDirection(this._direction);
+      }
+      this.setLang({ locale: this._locale });
     },
     isDarkActive(val) {
       let color = getThemeColor();

@@ -349,7 +349,8 @@
   "button": {
     "save": "Save",
     "changes": "Changes",
-
+    "change": "Change",
+    "no": "No",
     "default": "Bootstrap Default",
     "colors": "Colors",
     "rounded": "Rounded",
@@ -669,6 +670,7 @@
     "category": "Category",
     "url": "URL",
     "post-date": "Post date",
-    "visible": "Activated"
+    "visible": "Activated",
+    "path": "Path"
   }
 }

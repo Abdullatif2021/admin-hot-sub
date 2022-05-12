@@ -4,7 +4,7 @@ export const defaultMenuType = "menu-default"; // 'menu-default', 'menu-sub-hidd
 export const adminRoot = "/app";
 export const searchPath = `${adminRoot}/#`;
 export const buyUrl = "https://1.envato.market/nEyZa";
-export const apiUrl = "https://lilacmarketingevents.com/tarrab-api/public/api";
+export const apiUrl = "https://alqias-api.lilacdev.com/public/api";
 
 export const subHiddenBreakpoint = 1440;
 export const menuHiddenBreakpoint = 768;
@@ -14,7 +14,7 @@ export const defaultDirection = "ltr";
 export const localeOptions = [
   { id: "en", name: "English LTR", direction: "ltr" },
   { id: "es", name: "Español", direction: "ltr" },
-  { id: "enrtl", name: "English RTL", direction: "rtl" }
+  { id: "ar", name: "Arabic", direction: "rtl" }
 ];
 
 export const currentUser = {

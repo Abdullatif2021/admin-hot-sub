@@ -83,6 +83,9 @@ export const setDirection = localValue => {
     direction = localValue;
   }
   localStorage.setItem("direction", direction);
+  setTimeout(() => {
+    location.reload();
+  }, 1000);
 };
 
 export const getThemeColor = () => {

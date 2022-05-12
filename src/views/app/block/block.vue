@@ -57,6 +57,7 @@
                     :bootstrap-styling="true"
                     :placeholder="$t('form-components.date')"
                     v-model="blockData.post_date"
+                    @selected="selectedDate()"
                   ></datepicker>
 
                   <span>{{ $t("block.post-date") }}</span>
@@ -274,7 +275,7 @@ export default {
       ],
       sort: "",
       dataCount: 0,
-
+      dateSelected: false,
       // page: 1,
       perPage: 12,
       search: "",
@@ -417,6 +418,9 @@ export default {
       this.updateBlockData({
         id: this.blockData.id,
         data: this.blockData,
+        post_date: this.dateSelected
+          ? this.blockData.post_date.toISOString()
+          : this.blockData.post_date,
         image: this.image ? this.image[0] : null,
 
         file: this.file ? this.file[0] : null
@@ -425,7 +429,9 @@ export default {
     attach() {
       // this.getImageList({ id: this.blockId });
     },
-
+    selectedDate() {
+      this.dateSelected = true;
+    },
     onValitadeFormSubmit() {
       this.$v.$touch();
       console.log(
@@ -554,6 +560,7 @@ export default {
   watch: {
     _block(newOne, oldone) {
       this.blockData = newOne;
+      this.dateSelected = false;
     },
     _blockMetaList(newList, old) {
       this.$refs.vuetable.setData(newList);

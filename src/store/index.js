@@ -22,7 +22,7 @@ export default new Vuex.Store({
   },
   actions: {
     setLang({ commit }, payload) {
-      commit("changeLang", payload);
+      commit("changeLang", payload.locale);
     }
   },
   modules: {
