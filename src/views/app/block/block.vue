@@ -441,8 +441,7 @@ export default {
       "updateBlockMeta",
       "createBlockMeta",
       "getMetaTypeList",
-      "getBlockImageList",
-      "deleteBlockImage"
+      "getBlockImageList"
     ]),
 
     save() {

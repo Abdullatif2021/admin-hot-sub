@@ -11,31 +11,12 @@
               size="lg"
               >{{ $t("survey.add-new") }}</b-button
             >
-            <div class="row social-image-row gallery">
-              <b-colxx
-                xxs="4"
-                class="container"
-                v-for="(thumb, thumbIndex) in _pageImageList"
-                :key="`thumb_${thumbIndex}`"
-              >
-                <img
-                  class="img-fluid border-radius image-hover"
-                  :src="thumb.path"
-                  width="120"
-                  height="120"
-                  alt="thumbnail"
-                />
-                <div class="middle">
-                  <div class="text">
-                    <h3>{{ thumb.locales.en.title }}</h3>
-                    <p>{{ thumb.locales.en.description }}</p>
-                  </div>
-                  <div @click="deleteImage(thumb)" class="button">
-                    Delete
-                  </div>
-                </div>
-              </b-colxx>
-            </div>
+            <b-colxx lg="12" xl="12" class="mb-4">
+              <recent-orders
+                @deleteImage="deleteImage"
+                :_ImageList="_pageImageList"
+              />
+            </b-colxx>
           </div>
           <add-new-modal @AddNewImage="createImage"></add-new-modal>
         </b-tab>
@@ -329,6 +310,8 @@
 import { LightGallery } from "vue-light-gallery";
 import { mapGetters, mapActions } from "vuex";
 import VueDropzone from "vue2-dropzone";
+import RecentOrders from "../../../containers/appliaction/RecentOrders.vue";
+
 import VideoPlayer from "../../../components/Common/VideoPlayer.vue";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
@@ -345,7 +328,8 @@ export default {
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "vue-dropzone": VueDropzone,
     LightGallery,
-    "add-new-video-model": AddNewVideoModel
+    "add-new-video-model": AddNewVideoModel,
+    "recent-orders": RecentOrders
   },
   props: ["pageId"],
   data() {
@@ -603,9 +587,8 @@ export default {
       });
     },
     // -----------------------------gallery----------------------------
-    deleteImage(thumb) {
-      console.log(thumb);
-      this.deletePageImage({ id: this.pageId, attachment_id: thumb.id });
+    deleteImage(id) {
+      this.deletePageImage({ id: this.pageId, attachment_id: id });
     },
     // gallery
     // -------------------------------files---------------------------
