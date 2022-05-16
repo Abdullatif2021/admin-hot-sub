@@ -209,7 +209,11 @@
         </b-dropdown>
       </div>
     </div>
-    <b-modal id="modalbasic" ref="modalbasic" :title="$t('modal.modal-title')">
+    <b-modal
+      id="modalbasic"
+      ref="modalbasic"
+      :title="$t('modal.modal-lang-title')"
+    >
       Do you want to change your prefer language permanently ?
       <template slot="modal-footer">
         <b-button

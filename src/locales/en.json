@@ -188,6 +188,11 @@
   },
   "pages": {
     "add-new": "ADD NEW",
+    "en_desc": "English Description",
+    "ar_desc": "Arabic Description",
+    "ar_title": "Arabic Title",
+    "en_title": "English Title",
+    "image": "Image",
     "add-new-modal-title": "Add New Item",
     "display-options": "Display Options",
     "orderby": "Order By : ",
@@ -454,6 +459,10 @@
     "quill-bubble": "Quill Bubble"
   },
   "forms": {
+    "en_desc": "English Description",
+    "ar_desc": "Arabic Description",
+    "ar_title": "Arabic Title",
+    "en_title": "English Title",
     "basic": "Basic",
     "create": "Create",
     "description": "Description",
@@ -504,7 +513,11 @@
     "password-confirm": "Confirm Password",
     "validation-bootstrap": "Bootstrap Validation",
     "validation-vuelidate": "Vuelidate Validation",
-    "name": "Name"
+    "en_name": "English Name",
+    "ar_name": "Arabic Name",
+    "link1": "Link 1",
+    "link2": "Link 2",
+    "type": "Type"
   },
   "form-components": {
     "custom-inputs": "Custom Inputs",
@@ -578,6 +591,7 @@
   "modal": {
     "basic": "Basic",
     "modal-title": "Modal title",
+    "modal-lang-title": "Change language",
     "modal-video": "Add New Video",
     "launch-demo-modal": "Launch Demo Modal",
     "create-new-video": "Add New Video",

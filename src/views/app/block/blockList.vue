@@ -137,7 +137,7 @@ export default {
         {
           name: "visible",
           callback: value => {
-            return value === "1"
+            return value === 1
               ? `<span class="badge badge-pill badge-success handle mr-1">
                 Active
               </span>`
@@ -401,7 +401,7 @@ export default {
         this.sortOptions.push(
           new Object({
             column: option.id,
-            label: option.slug
+            label: option.slug.toUpperCase()
           })
         );
       });

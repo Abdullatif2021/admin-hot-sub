@@ -30,17 +30,64 @@
                     v-model="pageData.locales.en.name"
                     class="form-control"
                   />
-                  <span>{{ $t("forms.name") }}</span>
+                  <span>{{ $t("forms.en_name") }}</span>
                 </label>
-                <quill-editor
-                  ref="myTextEditor"
-                  v-model="pageData.locales.en.description"
-                  :options="editorOption"
-                  @blur="onEditorBlur($event)"
-                  @focus="onEditorFocus($event)"
-                  @ready="onEditorReady($event)"
-                >
-                </quill-editor>
+                <label class="form-group has-float-label">
+                  <quill-editor
+                    ref="myTextEditor"
+                    v-model="pageData.locales.en.description"
+                    :options="editorOption"
+                    @blur="onEditorBlur($event)"
+                    @focus="onEditorFocus($event)"
+                    @ready="onEditorReady($event)"
+                  >
+                  </quill-editor>
+                  <span>{{ $t("forms.en_desc") }}</span>
+                </label>
+                <label class="form-group has-float-label">
+                  <input
+                    type="text"
+                    v-model="pageData.locales.ar.name"
+                    class="form-control"
+                  />
+                  <span>{{ $t("forms.ar_name") }}</span>
+                </label>
+                <label class="form-group has-float-label">
+                  <quill-editor
+                    ref="myTextEditor"
+                    v-model="pageData.locales.ar.description"
+                    :options="editorOption"
+                    @blur="onEditorBlur($event)"
+                    @focus="onEditorFocus($event)"
+                    @ready="onEditorReady($event)"
+                  >
+                  </quill-editor>
+                  <span>{{ $t("forms.ar_desc") }}</span>
+                </label>
+                <label class="form-group has-float-label">
+                  <input
+                    type="text"
+                    v-model="pageData.type"
+                    class="form-control"
+                  />
+                  <span>{{ $t("forms.type") }}</span>
+                </label>
+                <label class="form-group has-float-label">
+                  <input
+                    type="text"
+                    v-model="pageData.link1"
+                    class="form-control"
+                  />
+                  <span>{{ $t("forms.link1") }}</span>
+                </label>
+                <label class="form-group has-float-label">
+                  <input
+                    type="text"
+                    v-model="pageData.link2"
+                    class="form-control"
+                  />
+                  <span>{{ $t("forms.link2") }}</span>
+                </label>
                 <label class="form-group has-float-label">
                   <b-colxx xxs="12" style="padding: 0px;margin-top: 20px;">
                     <vue-dropzone
@@ -143,10 +190,18 @@
                             >Please select an option!</b-form-invalid-feedback
                           >
                         </b-form-group>
-                        <b-form-group label="Details">
-                          <b-textarea v-model.trim="detail"></b-textarea>
+                        <b-form-group label="English Content">
+                          <b-textarea v-model.trim="en_detail"></b-textarea>
                           <b-form-invalid-feedback
-                            >Please enter some details!</b-form-invalid-feedback
+                            >Please enter some English
+                            content!</b-form-invalid-feedback
+                          >
+                        </b-form-group>
+                        <b-form-group label="Arabic Content">
+                          <b-textarea v-model.trim="ar_detail"></b-textarea>
+                          <b-form-invalid-feedback
+                            >Please enter some Arabic
+                            content!</b-form-invalid-feedback
                           >
                         </b-form-group>
 
@@ -205,7 +260,8 @@ export default {
       itemForEdit: null,
       selectOptions: [],
       select: "",
-      detail: "",
+      en_detail: "",
+      ar_detail: "",
       // vue table-2
       Options: [
         { name: "EDIT", value: 1 },
@@ -235,9 +291,19 @@ export default {
         {
           name: "locales",
           callback: value => {
+            return value.ar.meta_content;
+          },
+          title: "Arabic Content",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "40%"
+        },
+        {
+          name: "locales",
+          callback: value => {
             return value.en.meta_content;
           },
-          title: "Content",
+          title: "English Content",
           titleClass: "",
           dataClass: "text-muted",
           width: "40%"
@@ -263,7 +329,8 @@ export default {
         uploadMultiple: false,
         autoProcessQueue: false,
         previewTemplate: this.dropzoneTemplate(),
-        headers: {}
+        headers: {},
+        acceptedFiles: "image/jpeg,image/png,image/gif"
       },
       // vue dropezone
       // quillEditor
@@ -309,7 +376,10 @@ export default {
     select: {
       required
     },
-    detail: {
+    ar_detail: {
+      required
+    },
+    en_detail: {
       required
     }
   },
@@ -324,7 +394,6 @@ export default {
     ...mapActions([
       "getPage",
       "getPageMeta",
-      "updatePageData",
       "updatePageData",
       "getMetaList",
       "deleteMetaPage",
@@ -352,7 +421,8 @@ export default {
       console.log(
         JSON.stringify({
           select: this.select,
-          detail: this.detail
+          en_detail: this.en_detail,
+          ar_detail: this.ar_detail
         })
       );
       if (!this.edit) {
@@ -360,25 +430,23 @@ export default {
           meta_type_id: this.select,
           pageId: this.pageId,
           metadata_id: this.itemId,
-          content: this.detail
+          ar_content: this.ar_detail,
+          en_content: this.en_detail
         });
         setTimeout(() => {
           this.edit = false;
           this.select = null;
-          this.detail = null;
+          this.en_detail = null;
+          this.ar_detail = null;
         }, 1000);
       } else {
         this.updateMetaPage({
           meta_type_id: this.select,
           pageId: this.pageId,
           metadata_id: this.itemId,
-          content: this.detail
+          ar_content: this.ar_detail,
+          en_content: this.en_detail
         });
-        // setTimeout(() => {
-        //   this.edit = false;
-        //   this.select = null;
-        //   this.detail = null;
-        // }, 1000);
       }
     },
     onEditorBlur(editor) {
@@ -434,20 +502,21 @@ export default {
     // meta data
     meta() {
       this.getMetaList({ id: this.pageId });
-      setTimeout(() => {
-        this.getMetaTypeList();
-      }, 2000);
+      this.getMetaTypeList();
     },
     editAction(f, value, item) {
       if (value == 1) {
         this.edit = true;
         this.itemId = item.id;
         this.select = item.meta_type_id;
-        this.detail = item.locales.en.meta_content;
+        this.en_detail = item.locales.en.meta_content;
+        this.ar_detail = item.locales.ar.meta_content;
       } else {
         this.edit = false;
         this.select = null;
-        this.detail = null;
+        this.en_detail = null;
+        this.ar_detail = null;
+
         this.deleteMetaPage({ pageId: this.pageId, metadata_id: item.id });
       }
     }
@@ -455,7 +524,12 @@ export default {
     // meta data
   },
   computed: {
-    ...mapGetters(["_page", "_metaList", "_updateMetaPage", "_metaTypeList"]),
+    ...mapGetters([
+      "_page",
+      "_metaList",
+      "_updateMetaPage",
+      "_pageMetaTypeList"
+    ]),
     editor() {
       return this.$refs.myTextEditor.quill;
     }
@@ -472,7 +546,8 @@ export default {
       console.log("_updateMetaPage");
       this.edit = false;
       this.select = null;
-      this.detail = null;
+      this.en_detail = null;
+      this.ar_detail = null;
     },
     _pageMetaTypeList(newContent, old) {
       newContent.forEach(option => {

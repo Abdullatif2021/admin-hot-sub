@@ -17,7 +17,9 @@ const state = {
   metaList: null,
   updateMetaPage: false,
   pageVideosList: null,
-  successAddPageVideo: null
+  successAddPageVideo: null,
+  pageYoutubeVideosList: null,
+  successAddPageYoutubeVideo: null
 };
 
 const getters = {
@@ -39,7 +41,10 @@ const getters = {
   _sccussCreateFile: state => state.successAddPageFile,
   // videos
   _pageVideosList: state => state.pageVideosList,
-  _successAddPageVideo: state => state.successAddPageVideo
+  _successAddPageVideo: state => state.successAddPageVideo,
+  // youtube
+  _pageYoutubeVideosList: state => state.pageYoutubeVideosList,
+  _successAddPageYoutubeVideo: state => state.successAddPageYoutubeVideo
 };
 
 const mutations = {
@@ -106,6 +111,16 @@ const mutations = {
   },
   successAddPageVideo(state, payload) {
     state.successAddPageVideo = payload;
+  },
+  /* youtube */
+  getPageYoutubeVideosListStarted(state, payload) {
+    state.pageYoutubeVideosList = null;
+  },
+  getPageYoutubeVideosList(state, payload) {
+    state.pageYoutubeVideosList = payload.data;
+  },
+  successAddPageYoutubeVideo(state, payload) {
+    state.successAddPageYoutubeVideo = payload;
   }
 };
 
@@ -140,25 +155,26 @@ const actions = {
       commit("getPageSuccess", res.data);
     });
   },
-  updatePageData({ commit }, payload) {
+  updatePageData({ commit, dispatch }, payload) {
     const id = payload.id;
 
     const formData = new FormData();
 
-    if (payload.data.locales.ar) {
-      formData.append("ar[name]", payload.data.locales.ar.name);
-      formData.append("ar[description]", payload.data.locales.ar.description);
-    }
-    if (payload.data.locales.en) {
-      formData.append("en[name]", payload.data.locales.en.name);
-      formData.append("en[description]", payload.data.locales.en.description);
-    }
+    formData.append("link1", payload.data.link1);
+    formData.append("link2", payload.data.link2);
+    formData.append("type", payload.data.type);
+    formData.append("ar[name]", payload.data.locales.ar.name);
+    formData.append("ar[description]", payload.data.locales.ar.description);
+    formData.append("en[name]", payload.data.locales.en.name);
+    formData.append("en[description]", payload.data.locales.en.description);
+
     if (payload.file !== null) {
       formData.append("image", payload.file);
     }
     formData.append("_method", "PUT");
     axios.post(`${apiUrl}/pages/${id}`, formData, {}).then(res => {
       if (res.status === 200) {
+        dispatch("getPage", { id });
       }
     });
   },
@@ -178,8 +194,10 @@ const actions = {
     if (payload.image) {
       formData.append("path", payload.image);
     }
-    formData.append("en[title]", payload.title);
-    formData.append("en[description]", payload.description);
+    formData.append("ar[title]", payload.ar_title);
+    formData.append("ar[description]", payload.ar_description);
+    formData.append("en[title]", payload.en_title);
+    formData.append("en[description]", payload.en_description);
     axios.post(`${apiUrl}/pages/images/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddPageImage", res.data.data);
@@ -213,8 +231,10 @@ const actions = {
     if (payload.file) {
       formData.append("path", payload.file);
     }
-    formData.append("en[title]", payload.title);
-    formData.append("en[description]", payload.description);
+    formData.append("ar[title]", payload.ar_title);
+    formData.append("ar[description]", payload.ar_description);
+    formData.append("en[title]", payload.en_title);
+    formData.append("en[description]", payload.en_description);
     axios.post(`${apiUrl}/pages/files/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddPageFile", res.data.data);
@@ -247,7 +267,8 @@ const actions = {
       .post(
         `${apiUrl}/pages/metadata/${id}`,
         {
-          en: { meta_content: payload.content },
+          en: { meta_content: payload.en_content },
+          ar: { meta_content: payload.ar_content },
           meta_type_id: payload.meta_type_id
         },
         {}
@@ -262,14 +283,12 @@ const actions = {
   updateMetaPage({ commit, dispatch }, payload) {
     const metadata_id = payload.metadata_id;
     const id = payload.pageId;
-    const formData = new FormData();
-    formData.append(`${en}[meta_content]`, payload.content);
-    formData.append("meta_type_id", payload.meta_type_id);
     axios
       .put(
         `${apiUrl}/pages/metadata/${id}/${metadata_id}`,
         {
-          en: { meta_content: payload.content },
+          en: { meta_content: payload.en_content },
+          ar: { meta_content: payload.ar_content },
           meta_type_id: payload.meta_type_id
         },
         {}
@@ -310,8 +329,10 @@ const actions = {
     if (payload.video) {
       formData.append("path", payload.video);
     }
-    formData.append("en[title]", payload.title);
-    formData.append("en[description]", payload.description);
+    formData.append("ar[title]", payload.ar_title);
+    formData.append("ar[description]", payload.ar_description);
+    formData.append("en[title]", payload.en_title);
+    formData.append("en[description]", payload.en_description);
     axios.post(`${apiUrl}/pages/videos/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddPageVideo", res.data.data);
@@ -328,9 +349,72 @@ const actions = {
         dispatch("getPageVideosList", { id });
       }
     });
-  }
+  },
 
   // ********************* page videos ***************************
+
+  // ############### youtube ##################
+  getPageYoutubeVideoList({ commit }, payload) {
+    commit("getPageYoutubeVideosListStarted");
+
+    const id = payload.id;
+    axios.get(`${apiUrl}/pages/youtube-videos/${id}`).then(res => {
+      commit("getPageYoutubeVideosList", res.data);
+    });
+  },
+  createPageYoutubeVideo({ commit, dispatch }, payload) {
+    const id = payload.id;
+    const formData = new FormData();
+    formData.append("path", payload.path);
+    formData.append("ar[title]", payload.ar_title);
+    formData.append("ar[description]", payload.ar_description);
+    formData.append("en[title]", payload.en_title);
+    formData.append("en[description]", payload.en_description);
+    axios
+      .post(`${apiUrl}/pages/youtube-videos/${id}`, formData, {})
+      .then(res => {
+        if (res.status === 201) {
+          commit("successAddPageYoutubeVideo", res.data.data);
+          dispatch("getPageYoutubeVideoList", { id });
+        }
+      });
+  },
+  updatePageYoutubeVideo({ commit, dispatch }, payload) {
+    const id = payload.id;
+    const attachment_id = payload.attachment_id;
+    const formData = new FormData();
+    formData.append("path", payload.path);
+    formData.append("ar[title]", payload.ar_title);
+    formData.append("ar[description]", payload.ar_description);
+    formData.append("en[title]", payload.en_title);
+    formData.append("en[description]", payload.en_description);
+    formData.append("_method", "PUT");
+
+    axios
+      .post(
+        `${apiUrl}/pages/youtube-videos/${id}/${attachment_id}`,
+        formData,
+        {}
+      )
+      .then(res => {
+        if (res.status === 201 || res.status === 200) {
+          commit("successAddPageYoutubeVideo", res.data.data);
+          dispatch("getPageYoutubeVideoList", { id });
+        }
+      });
+  },
+  deletePageYoutubeVideo({ commit, dispatch }, payload) {
+    const id = payload.pageId;
+    const attachment_id = payload.youtube_id;
+    axios
+      .delete(`${apiUrl}/pages/youtube-videos/${id}/${attachment_id}`)
+      .then(res => {
+        if (res.status === 200) {
+          console.log();
+          dispatch("getPageYoutubeVideoList", { id });
+        }
+      });
+  }
 };
 
 export default {

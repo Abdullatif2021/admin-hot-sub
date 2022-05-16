@@ -7,27 +7,44 @@
     :no-close-on-backdrop="true"
   >
     <b-form>
-      <b-form-group :label="$t('todo.title')" class="has-float-label mb-4">
+      <b-form-group :label="$t('pages.en_title')" class="has-float-label mb-4">
         <b-form-input
           type="text"
-          v-model="$v.form.title.$model"
-          :state="!$v.form.title.$error"
+          v-model="$v.form.en_title.$model"
+          :state="!$v.form.en_title.$error"
         />
-        <b-form-invalid-feedback v-if="!$v.form.title.required"
-          >Please enter title</b-form-invalid-feedback
+        <b-form-invalid-feedback v-if="!$v.form.en_title.required"
+          >Please enter English title</b-form-invalid-feedback
         >
       </b-form-group>
-      <b-form-group
-        :label="$t('pages.description')"
-        class="has-float-label mb-4"
-      >
+      <b-form-group :label="$t('pages.en_desc')" class="has-float-label mb-4">
         <b-form-input
           type="text"
-          v-model="$v.form.description.$model"
-          :state="!$v.form.description.$error"
+          v-model="$v.form.en_description.$model"
+          :state="!$v.form.en_description.$error"
         />
-        <b-form-invalid-feedback v-if="!$v.form.description.required"
-          >Please enter description</b-form-invalid-feedback
+        <b-form-invalid-feedback v-if="!$v.form.en_description.required"
+          >Please enter English description</b-form-invalid-feedback
+        >
+      </b-form-group>
+      <b-form-group :label="$t('pages.ar_title')" class="has-float-label mb-4">
+        <b-form-input
+          type="text"
+          v-model="$v.form.ar_title.$model"
+          :state="!$v.form.ar_title.$error"
+        />
+        <b-form-invalid-feedback v-if="!$v.form.ar_title.required"
+          >Please enter Arabic title</b-form-invalid-feedback
+        >
+      </b-form-group>
+      <b-form-group :label="$t('pages.ar_desc')" class="has-float-label mb-4">
+        <b-form-input
+          type="text"
+          v-model="$v.form.ar_description.$model"
+          :state="!$v.form.ar_description.$error"
+        />
+        <b-form-invalid-feedback v-if="!$v.form.ar_description.required"
+          >Please enter Arabic description</b-form-invalid-feedback
         >
       </b-form-group>
       <label class="form-group has-float-label">
@@ -73,8 +90,10 @@ export default {
     return {
       file: null,
       form: {
-        title: "",
-        description: ""
+        ar_title: "",
+        ar_description: "",
+        en_title: "",
+        en_description: ""
       },
       dropzoneOptions: {
         url:
@@ -95,10 +114,16 @@ export default {
   mixins: [validationMixin],
   validations: {
     form: {
-      title: {
+      en_title: {
         required
       },
-      description: {
+      en_description: {
+        required
+      },
+      ar_title: {
+        required
+      },
+      ar_description: {
         required
       }
     }
@@ -107,8 +132,11 @@ export default {
     ...mapActions(["createPageVideo"]),
     hideModal(refname) {
       this.$refs[refname].hide();
-      this.form.title = null;
-      this.form.description = null;
+      this.form.en_title = null;
+      this.form.ar_title = null;
+
+      this.form.en_description = null;
+      this.form.ar_description = null;
     },
 
     formSubmit() {
@@ -117,8 +145,10 @@ export default {
       this.$v.form.$touch();
       if (!this.$v.form.$invalid) {
         this.$emit("AddNewVideo", {
-          title: this.form.title,
-          description: this.form.description,
+          en_title: this.form.en_title,
+          en_description: this.form.en_description,
+          ar_title: this.form.ar_title,
+          ar_description: this.form.ar_description,
           video: this.file ? this.file[0] : null
         });
       }
@@ -168,13 +198,19 @@ export default {
   watch: {
     _successAddPageVideo: function(val) {
       this.hideModal("modalbackdrop");
-      this.form.title = null;
-      this.form.description = null;
+      this.form.en_title = null;
+      this.form.ar_title = null;
+
+      this.form.en_description = null;
+      this.form.ar_description = null;
     },
     _successAddBlockVideo: function(val) {
       this.hideModal("modalbackdrop");
-      this.form.title = null;
-      this.form.description = null;
+      this.form.en_title = null;
+      this.form.ar_title = null;
+
+      this.form.en_description = null;
+      this.form.ar_description = null;
     }
   }
 };

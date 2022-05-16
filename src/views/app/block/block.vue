@@ -30,7 +30,7 @@
                     v-model="blockData.locales.en.name"
                     class="form-control"
                   />
-                  <span>{{ $t("forms.name") }}</span>
+                  <span>{{ $t("forms.en_name") }}</span>
                 </label>
                 <label class="form-group has-float-label">
                   <quill-editor
@@ -42,7 +42,27 @@
                     @ready="onEditorReady($event)"
                   >
                   </quill-editor>
-                  <span>{{ $t("forms.description") }}</span>
+                  <span>{{ $t("forms.en_desc") }}</span>
+                </label>
+                <label class="form-group has-float-label">
+                  <input
+                    type="text"
+                    v-model="blockData.locales.ar.name"
+                    class="form-control"
+                  />
+                  <span>{{ $t("forms.ar_name") }}</span>
+                </label>
+                <label class="form-group has-float-label">
+                  <quill-editor
+                    ref="myTextEditor"
+                    v-model="blockData.locales.ar.description"
+                    :options="editorOption"
+                    @blur="onEditorBlur($event)"
+                    @focus="onEditorFocus($event)"
+                    @ready="onEditorReady($event)"
+                  >
+                  </quill-editor>
+                  <span>{{ $t("forms.ar_desc") }}</span>
                 </label>
                 <label class="form-group has-float-label">
                   <b-form-select
@@ -196,10 +216,18 @@
                             >Please select an option!</b-form-invalid-feedback
                           >
                         </b-form-group>
-                        <b-form-group label="Details">
-                          <b-textarea v-model.trim="detail"></b-textarea>
+                        <b-form-group label="English Content">
+                          <b-textarea v-model.trim="en_detail"></b-textarea>
                           <b-form-invalid-feedback
-                            >Please enter some details!</b-form-invalid-feedback
+                            >Please enter some English
+                            content!</b-form-invalid-feedback
+                          >
+                        </b-form-group>
+                        <b-form-group label="Arabic Content">
+                          <b-textarea v-model.trim="ar_detail"></b-textarea>
+                          <b-form-invalid-feedback
+                            >Please enter some Arabic
+                            content!</b-form-invalid-feedback
                           >
                         </b-form-group>
 
@@ -261,7 +289,8 @@ export default {
       itemForEdit: null,
       selectOptions: [],
       select: "",
-      detail: "",
+      en_detail: "",
+      ar_detail: "",
       activeOptions: [
         "",
         { text: "Active", value: 1 },
@@ -387,7 +416,10 @@ export default {
     select: {
       required
     },
-    detail: {
+    ar_detail: {
+      required
+    },
+    en_detail: {
       required
     }
   },
@@ -437,7 +469,8 @@ export default {
       console.log(
         JSON.stringify({
           select: this.select,
-          detail: this.detail
+          en_detail: this.en_detail,
+          ar_detail: this.ar_detail
         })
       );
       if (!this.edit) {
@@ -445,25 +478,18 @@ export default {
           meta_type_id: this.select,
           blockId: this.blockId,
           metadata_id: this.itemId,
-          content: this.detail
+          ar_content: this.ar_detail,
+          en_content: this.en_detail
         });
-        setTimeout(() => {
-          this.edit = false;
-          this.select = null;
-          this.detail = null;
-        }, 1000);
       } else {
         this.updateBlockMeta({
           meta_type_id: this.select,
-          blockId: this.blockId,
           metadata_id: this.itemId,
-          content: this.detail
+
+          blockId: this.blockId,
+          ar_content: this.ar_detail,
+          en_content: this.en_detail
         });
-        // setTimeout(() => {
-        //   this.edit = false;
-        //   this.select = null;
-        //   this.detail = null;
-        // }, 1000);
       }
     },
     onEditorBlur(editor) {
@@ -534,11 +560,13 @@ export default {
         this.edit = true;
         this.itemId = item.id;
         this.select = item.meta_type_id;
-        this.detail = item.locales.en.meta_content;
+        this.en_detail = item.locales.en.meta_content;
+        this.ar_detail = item.locales.ar.meta_content;
       } else {
         this.edit = false;
         this.select = null;
-        this.detail = null;
+        this.en_detail = null;
+        this.ar_detail = null;
         this.deleteBlockMeta({ blockId: this.blockId, metadata_id: item.id });
       }
     }
@@ -569,7 +597,8 @@ export default {
     _updateMetaBlock(newActions, old) {
       this.edit = false;
       this.select = null;
-      this.detail = null;
+      this.en_detail = null;
+      this.ar_detail = null;
     },
     _blockCategories(newval, old) {
       newval.forEach(option => {

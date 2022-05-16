@@ -227,8 +227,10 @@ const actions = {
     if (payload.image) {
       formData.append("path", payload.image);
     }
-    formData.append("en[title]", payload.title);
-    formData.append("en[description]", payload.description);
+    formData.append("ar[title]", payload.ar_title);
+    formData.append("ar[description]", payload.ar_description);
+    formData.append("en[title]", payload.en_title);
+    formData.append("en[description]", payload.en_description);
     axios.post(`${apiUrl}/blocks/images/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddBlockImage", res.data.data);
@@ -262,8 +264,10 @@ const actions = {
     if (payload.file) {
       formData.append("path", payload.file);
     }
-    formData.append("en[title]", payload.title);
-    formData.append("en[description]", payload.description);
+    formData.append("ar[title]", payload.ar_title);
+    formData.append("ar[description]", payload.ar_description);
+    formData.append("en[title]", payload.en_title);
+    formData.append("en[description]", payload.en_description);
     axios.post(`${apiUrl}/blocks/files/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddBlockFile", res.data.data);
@@ -296,7 +300,8 @@ const actions = {
       .post(
         `${apiUrl}/blocks/metadata/${id}`,
         {
-          en: { meta_content: payload.content },
+          en: { meta_content: payload.en_content },
+          ar: { meta_content: payload.ar_content },
           meta_type_id: payload.meta_type_id
         },
         {}
@@ -304,7 +309,7 @@ const actions = {
       .then(res => {
         if (res.status === 201 || res.status === 200) {
           dispatch("getBlockMetaList", { id });
-          commit("updateBlockMetaSuccess");
+          commit("updateMetaBlockSuccess", res);
         }
       });
   },
@@ -312,13 +317,12 @@ const actions = {
     const metadata_id = payload.metadata_id;
     const id = payload.blockId;
     const formData = new FormData();
-    formData.append(`en[meta_content]`, payload.content);
-    formData.append("meta_type_id", payload.meta_type_id);
     axios
       .put(
         `${apiUrl}/blocks/metadata/${id}/${metadata_id}`,
         {
-          en: { meta_content: payload.content },
+          en: { meta_content: payload.en_content },
+          ar: { meta_content: payload.ar_content },
           meta_type_id: payload.meta_type_id
         },
         {}
@@ -359,8 +363,10 @@ const actions = {
     if (payload.video) {
       formData.append("path", payload.video);
     }
-    formData.append("en[title]", payload.title);
-    formData.append("en[description]", payload.description);
+    formData.append("ar[title]", payload.ar_title);
+    formData.append("ar[description]", payload.ar_description);
+    formData.append("en[title]", payload.en_title);
+    formData.append("en[description]", payload.en_description);
     axios.post(`${apiUrl}/blocks/videos/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddBlockVideo", res.data.data);
@@ -393,8 +399,10 @@ const actions = {
     const id = payload.id;
     const formData = new FormData();
     formData.append("path", payload.path);
-    formData.append("en[title]", payload.title);
-    formData.append("en[description]", payload.description);
+    formData.append("ar[title]", payload.ar_title);
+    formData.append("ar[description]", payload.ar_description);
+    formData.append("en[title]", payload.en_title);
+    formData.append("en[description]", payload.en_description);
     axios
       .post(`${apiUrl}/blocks/youtube-videos/${id}`, formData, {})
       .then(res => {
@@ -409,12 +417,13 @@ const actions = {
     const attachment_id = payload.attachment_id;
     const formData = new FormData();
     formData.append("path", payload.path);
-    formData.append("en[title]", payload.title);
-    formData.append("en[description]", payload.description);
-    formData.append("_method", "PUT");
+    formData.append("ar[title]", payload.ar_title);
+    formData.append("ar[description]", payload.ar_description);
+    formData.append("en[title]", payload.en_title);
+    formData.append("en[description]", payload.en_description);
 
     axios
-      .post(
+      .put(
         `${apiUrl}/blocks/youtube-videos/${id}/${attachment_id}`,
         formData,
         {}

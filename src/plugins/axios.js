@@ -4,8 +4,8 @@ import store from "../store";
 
 axios.interceptors.request.use(request => {
   request.headers = {
-    Authorization: "Bearer " + getAccessToken(),
-    locale: getCurrentLanguage()
+    Authorization: "Bearer " + getAccessToken()
+    // locale: getCurrentLanguage()
   };
   return request;
 });

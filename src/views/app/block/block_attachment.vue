@@ -80,30 +80,57 @@
                   class="av-tooltip tooltip-label-right"
                 >
                   <b-form-group
-                    :label="$t('block.title')"
+                    :label="$t('forms.en_title')"
                     class="has-float-label mb-4"
                   >
                     <b-form-input
                       type="text"
-                      v-model="$v.form.title.$model"
-                      :state="!$v.form.title.$error"
+                      v-model="$v.form.en_title.$model"
+                      :state="!$v.form.en_title.$error"
                     />
-                    <b-form-invalid-feedback v-if="!$v.form.title.required"
-                      >Please enter title</b-form-invalid-feedback
+                    <b-form-invalid-feedback v-if="!$v.form.en_title.required"
+                      >Please enter English title</b-form-invalid-feedback
                     >
                   </b-form-group>
                   <b-form-group
-                    :label="$t('block.description')"
+                    :label="$t('forms.en_desc')"
                     class="has-float-label mb-4"
                   >
                     <b-form-input
                       type="text"
-                      v-model="$v.form.description.$model"
-                      :state="!$v.form.description.$error"
+                      v-model="$v.form.en_description.$model"
+                      :state="!$v.form.en_description.$error"
                     />
                     <b-form-invalid-feedback
-                      v-if="!$v.form.description.required"
-                      >Please enter description</b-form-invalid-feedback
+                      v-if="!$v.form.en_description.required"
+                      >Please enter English description</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('forms.ar_title')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.form.ar_title.$model"
+                      :state="!$v.form.ar_title.$error"
+                    />
+                    <b-form-invalid-feedback v-if="!$v.form.ar_title.required"
+                      >Please enter Arabic title</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('forms.ar_desc')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.form.ar_description.$model"
+                      :state="!$v.form.ar_description.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.form.ar_description.required"
+                      >Please enter Arabic description</b-form-invalid-feedback
                     >
                   </b-form-group>
                   <label class="form-group has-float-label">
@@ -215,31 +242,59 @@
                   class="av-tooltip tooltip-label-right"
                 >
                   <b-form-group
-                    :label="$t('block.title')"
+                    :label="$t('forms.en_title')"
                     class="has-float-label mb-4"
                   >
                     <b-form-input
                       type="text"
-                      v-model="$v.youtube_form.title.$model"
-                      :state="!$v.youtube_form.title.$error"
+                      v-model="$v.youtube_form.en_title.$model"
+                      :state="!$v.youtube_form.en_title.$error"
                     />
                     <b-form-invalid-feedback
-                      v-if="!$v.youtube_form.title.required"
-                      >Please enter title</b-form-invalid-feedback
+                      v-if="!$v.youtube_form.en_title.required"
+                      >Please enter English title</b-form-invalid-feedback
                     >
                   </b-form-group>
                   <b-form-group
-                    :label="$t('block.description')"
+                    :label="$t('forms.en_desc')"
                     class="has-float-label mb-4"
                   >
                     <b-form-input
                       type="text"
-                      v-model="$v.youtube_form.description.$model"
-                      :state="!$v.youtube_form.description.$error"
+                      v-model="$v.youtube_form.en_description.$model"
+                      :state="!$v.youtube_form.en_description.$error"
                     />
                     <b-form-invalid-feedback
-                      v-if="!$v.youtube_form.description.required"
-                      >Please enter description</b-form-invalid-feedback
+                      v-if="!$v.youtube_form.en_description.required"
+                      >Please enter English description</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('forms.en_title')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.youtube_form.ar_title.$model"
+                      :state="!$v.youtube_form.ar_title.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.youtube_form.ar_title.required"
+                      >Please enter Arabic title</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('forms.ar_desc')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.youtube_form.ar_description.$model"
+                      :state="!$v.youtube_form.ar_description.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.youtube_form.ar_description.required"
+                      >Please enter Arabic description</b-form-invalid-feedback
                     >
                   </b-form-group>
                   <b-form-group
@@ -305,8 +360,6 @@ export default {
       file: null,
       itemForEdit: null,
       selectOptions: [],
-      select: "",
-      detail: "",
       // vue table-2
       Options: [
         { name: "DOWNLOAD", value: 1 },
@@ -434,8 +487,10 @@ export default {
         { name: "DELETE", value: 3 }
       ],
       youtube_form: {
-        title: "",
-        description: "",
+        en_title: "",
+        en_description: "",
+        ar_title: "",
+        ar_description: "",
         path: ""
       },
 
@@ -443,8 +498,10 @@ export default {
       //   files
       file: null,
       form: {
-        title: "",
-        description: ""
+        ar_title: "",
+        ar_description: "",
+        en_title: "",
+        en_description: ""
       },
       // vue dropezone
       dropzoneOptions: {
@@ -473,18 +530,30 @@ export default {
   mixins: [validationMixin],
   validations: {
     form: {
-      title: {
+      en_title: {
         required
       },
-      description: {
+      en_description: {
+        required
+      },
+      ar_title: {
+        required
+      },
+      ar_description: {
         required
       }
     },
     youtube_form: {
-      title: {
+      en_title: {
         required
       },
-      description: {
+      en_description: {
+        required
+      },
+      ar_title: {
+        required
+      },
+      ar_description: {
         required
       },
       path: {
@@ -519,8 +588,10 @@ export default {
     createImage(value) {
       console.log(value);
       this.createBlockImage({
-        title: value.title,
-        description: value.description,
+        en_title: value.en_title,
+        en_description: value.en_description,
+        ar_title: value.ar_title,
+        ar_description: value.ar_description,
         image: value.image ? value.image : null,
         id: this.blockId
       });
@@ -529,9 +600,11 @@ export default {
     createVideo(value) {
       console.log(value);
       this.createBlockVideo({
-        title: value.title,
-        description: value.description,
-        file: value.video ? value.video : null,
+        en_title: value.en_title,
+        en_description: value.en_description,
+        ar_title: value.ar_title,
+        ar_description: value.ar_description,
+        video: value.video ? value.video : null,
         id: this.blockId
       });
     },
@@ -583,8 +656,10 @@ export default {
             this.attachment_id = item.id;
             this.edit = true;
             console.log("update");
-            this.youtube_form.title = item.locales.en.title;
-            this.youtube_form.description = item.locales.en.description;
+            this.youtube_form.ar_title = item.locales.ar.title;
+            this.youtube_form.ar_description = item.locales.ar.description;
+            this.youtube_form.en_title = item.locales.en.title;
+            this.youtube_form.en_description = item.locales.en.description;
             this.youtube_form.path = item.path;
           }
           break;
@@ -615,15 +690,11 @@ export default {
       this.$v.$touch();
       this.$v.form.$touch();
       if (!this.$v.form.$invalid) {
-        console.log(
-          this.form.title,
-          this.form.description,
-          this.file[0],
-          this.blockId
-        );
         this.createBlockFile({
-          title: this.form.title,
-          description: this.form.description,
+          en_title: this.form.en_title,
+          en_description: this.form.en_description,
+          ar_title: this.form.ar_title,
+          ar_description: this.form.ar_description,
           file: this.file ? this.file[0] : null,
           id: this.blockId
         });
@@ -633,23 +704,21 @@ export default {
       this.$v.$touch();
       this.$v.youtube_form.$touch();
       if (!this.$v.youtube_form.$invalid) {
-        console.log(
-          this.youtube_form.title,
-          this.youtube_form.description,
-          this.youtube_form.path,
-          this.blockId
-        );
         if (!this.edit) {
           this.createBlockYoutubeVideo({
-            title: this.youtube_form.title,
-            description: this.youtube_form.description,
+            ar_title: this.youtube_form.ar_title,
+            ar_description: this.youtube_form.ar_description,
+            en_title: this.youtube_form.en_title,
+            en_description: this.youtube_form.en_description,
             path: this.youtube_form.path,
             id: this.blockId
           });
         } else {
           this.updateBlockYoutubeVideo({
-            title: this.youtube_form.title,
-            description: this.youtube_form.description,
+            ar_title: this.youtube_form.ar_title,
+            ar_description: this.youtube_form.ar_description,
+            en_title: this.youtube_form.en_title,
+            en_description: this.youtube_form.en_description,
             path: this.youtube_form.path,
             attachment_id: this.attachment_id,
             id: this.blockId
@@ -724,14 +793,18 @@ export default {
     },
     _blockYoutubeVideosList(newData, old) {
       this.$refs.youtubeVideo_vuetable.setData(newData);
-      this.youtube_form.title = null;
-      this.youtube_form.description = null;
+      this.youtube_form.ar_title = null;
+      this.youtube_form.ar_description = null;
+      this.youtube_form.en_title = null;
+      this.youtube_form.en_description = null;
       this.youtube_form.path = null;
       this.edit = false;
     },
     _sccussCreateBlockFile: function(val) {
-      this.form.title = null;
-      this.form.description = null;
+      this.form.en_title = null;
+      this.form.ar_title = null;
+      this.form.en_description = null;
+      this.form.ar_description = null;
       this.file = null;
       this.$refs.myVueDropzone.removeFile();
     }

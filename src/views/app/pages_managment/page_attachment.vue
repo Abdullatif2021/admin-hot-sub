@@ -21,10 +21,9 @@
                 <img
                   class="img-fluid border-radius image-hover"
                   :src="thumb.path"
-                  width="400"
-                  height="400"
+                  width="120"
+                  height="120"
                   alt="thumbnail"
-                  @click="onThumbClick(thumbIndex)"
                 />
                 <div class="middle">
                   <div class="text">
@@ -81,30 +80,57 @@
                   class="av-tooltip tooltip-label-right"
                 >
                   <b-form-group
-                    :label="$t('todo.title')"
+                    :label="$t('pages.en_title')"
                     class="has-float-label mb-4"
                   >
                     <b-form-input
                       type="text"
-                      v-model="$v.form.title.$model"
-                      :state="!$v.form.title.$error"
+                      v-model="$v.form.en_title.$model"
+                      :state="!$v.form.en_title.$error"
                     />
-                    <b-form-invalid-feedback v-if="!$v.form.title.required"
-                      >Please enter title</b-form-invalid-feedback
+                    <b-form-invalid-feedback v-if="!$v.form.en_title.required"
+                      >Please enter English title</b-form-invalid-feedback
                     >
                   </b-form-group>
                   <b-form-group
-                    :label="$t('pages.description')"
+                    :label="$t('pages.en_desc')"
                     class="has-float-label mb-4"
                   >
                     <b-form-input
                       type="text"
-                      v-model="$v.form.description.$model"
-                      :state="!$v.form.description.$error"
+                      v-model="$v.form.en_description.$model"
+                      :state="!$v.form.en_description.$error"
                     />
                     <b-form-invalid-feedback
-                      v-if="!$v.form.description.required"
-                      >Please enter description</b-form-invalid-feedback
+                      v-if="!$v.form.en_description.required"
+                      >Please enter English description</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('pages.ar_title')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.form.ar_title.$model"
+                      :state="!$v.form.ar_title.$error"
+                    />
+                    <b-form-invalid-feedback v-if="!$v.form.ar_title.required"
+                      >Please enter Arabic title</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('pages.ar_desc')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.form.ar_description.$model"
+                      :state="!$v.form.ar_description.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.form.ar_description.required"
+                      >Please enter Arabic description</b-form-invalid-feedback
                     >
                   </b-form-group>
                   <label class="form-group has-float-label">
@@ -172,6 +198,128 @@
             <add-new-video-model @AddNewVideo="createVideo" />
           </b-row>
         </b-tab>
+        <b-tab @click="openYoutubeVideo()" title="Youtube Videos">
+          <b-row>
+            <b-colxx xs="12" md="6" class="mb-3">
+              <b-card>
+                <vuetable
+                  ref="youtubeVideo_vuetable"
+                  :api-mode="false"
+                  :data-total="dataCount"
+                  :per-page="perPage"
+                  :reactive-api-url="true"
+                  :fields="youtube_fields"
+                >
+                  <template slot="actions" slot-scope="props">
+                    <b-dropdown
+                      id="langddm"
+                      class="ml-2"
+                      variant="light"
+                      size="sm"
+                      toggle-class="language-button"
+                    >
+                      <template #button-content>
+                        <i class="simple-icon-settings"></i>
+                      </template>
+                      <b-dropdown-item
+                        v-for="(item, index) in youtube_Options"
+                        :key="index"
+                        @click="youtube_Action(item.value, props.rowData)"
+                        >{{ item.name }}</b-dropdown-item
+                      >
+                    </b-dropdown>
+                  </template>
+                </vuetable>
+              </b-card>
+            </b-colxx>
+            <b-colxx xs="12" md="6" class="mb-3">
+              <b-card
+                class="mb-4"
+                :title="edit ? $t('forms.edit') : $t('forms.create')"
+              >
+                <b-form
+                  @submit.prevent="onValitadeYoutubeFormSubmit()"
+                  class="av-tooltip tooltip-label-right"
+                >
+                  <b-form-group
+                    :label="$t('forms.en_title')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.youtube_form.en_title.$model"
+                      :state="!$v.youtube_form.en_title.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.youtube_form.en_title.required"
+                      >Please enter English title</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('forms.en_desc')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.youtube_form.en_description.$model"
+                      :state="!$v.youtube_form.en_description.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.youtube_form.en_description.required"
+                      >Please enter English description</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('forms.en_title')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.youtube_form.ar_title.$model"
+                      :state="!$v.youtube_form.ar_title.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.youtube_form.ar_title.required"
+                      >Please enter Arabic title</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('forms.ar_desc')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.youtube_form.ar_description.$model"
+                      :state="!$v.youtube_form.ar_description.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.youtube_form.ar_description.required"
+                      >Please enter Arabic description</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                  <b-form-group
+                    :label="$t('block.path')"
+                    class="has-float-label mb-4"
+                  >
+                    <b-form-input
+                      type="text"
+                      v-model="$v.youtube_form.path.$model"
+                      :state="!$v.youtube_form.path.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.youtube_form.path.required"
+                      >Please enter Youtube Link</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+
+                  <b-button type="submit" variant="primary" class="mt-4">{{
+                    edit ? $t("forms.save") : $t("forms.submit")
+                  }}</b-button>
+                </b-form>
+              </b-card>
+            </b-colxx>
+          </b-row>
+        </b-tab>
       </b-tabs>
     </b-card>
   </b-colxx>
@@ -210,10 +358,6 @@ export default {
       thumbs: null,
       images: null,
       file: null,
-      itemForEdit: null,
-      selectOptions: [],
-      select: "",
-      detail: "",
       // vue table-2
       Options: [
         { name: "DOWNLOAD", value: 1 },
@@ -230,6 +374,47 @@ export default {
       lastPage: 0,
       items: [],
       selectedItems: [],
+      // youtube
+      youtube_fields: [
+        {
+          name: "id",
+          title: "ID",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "40%"
+        },
+        {
+          name: "locales",
+          callback: value => {
+            return value.en.title;
+          },
+          title: "Title",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "40%"
+        },
+
+        {
+          name: "__slot:actions",
+          title: "",
+          titleClass: "center aligned text-right",
+          dataClass: "center aligned text-right",
+          width: "20%"
+        }
+      ],
+      edit: false,
+      youtube_Options: [
+        { name: "OPEN", value: 1 },
+        { name: "UPDATE", value: 2 },
+        { name: "DELETE", value: 3 }
+      ],
+      youtube_form: {
+        en_title: "",
+        en_description: "",
+        ar_title: "",
+        ar_description: "",
+        path: ""
+      },
 
       fields: [
         {
@@ -309,8 +494,10 @@ export default {
       //   files
       file: null,
       form: {
-        title: "",
-        description: ""
+        ar_title: "",
+        ar_description: "",
+        en_title: "",
+        en_description: ""
       },
       // vue dropezone
       dropzoneOptions: {
@@ -339,10 +526,33 @@ export default {
   mixins: [validationMixin],
   validations: {
     form: {
-      title: {
+      en_title: {
         required
       },
-      description: {
+      en_description: {
+        required
+      },
+      ar_title: {
+        required
+      },
+      ar_description: {
+        required
+      }
+    },
+    youtube_form: {
+      en_title: {
+        required
+      },
+      en_description: {
+        required
+      },
+      ar_title: {
+        required
+      },
+      ar_description: {
+        required
+      },
+      path: {
         required
       }
     }
@@ -362,15 +572,21 @@ export default {
       "createPageImage",
       "getPageFileList",
       "getPageVideosList",
-      "createPageVideo"
+      "createPageVideo",
+      "getPageYoutubeVideoList",
+      "createPageYoutubeVideo",
+      "updatePageYoutubeVideo",
+      "deletePageYoutubeVideo"
     ]),
     // .....................upload new image ......................
 
     createImage(value) {
       console.log(value);
       this.createPageImage({
-        title: value.title,
-        description: value.description,
+        en_title: value.en_title,
+        en_description: value.en_description,
+        ar_title: value.ar_title,
+        ar_description: value.ar_description,
         image: value.image ? value.image : null,
         id: this.pageId
       });
@@ -378,8 +594,10 @@ export default {
     // .....................upload new video ......................
     createVideo(value) {
       this.createPageVideo({
-        title: value.title,
-        description: value.description,
+        en_title: value.en_title,
+        en_description: value.en_description,
+        ar_title: value.ar_title,
+        ar_description: value.ar_description,
         video: value.video ? value.video : null,
         id: this.pageId
       });
@@ -425,15 +643,11 @@ export default {
       this.$v.$touch();
       this.$v.form.$touch();
       if (!this.$v.form.$invalid) {
-        console.log(
-          this.form.title,
-          this.form.description,
-          this.file[0],
-          this.pageId
-        );
         this.createPageFile({
-          title: this.form.title,
-          description: this.form.description,
+          en_title: this.form.en_title,
+          en_description: this.form.en_description,
+          ar_title: this.form.ar_title,
+          ar_description: this.form.ar_description,
           file: this.file ? this.file[0] : null,
           id: this.pageId
         });
@@ -482,15 +696,77 @@ export default {
     // --------------------------------videos--------------------------
     openVideo() {
       this.getPageVideosList({ id: this.pageId });
-    }
+    },
     // videos
+    // youtube
+    openYoutubeVideo() {
+      this.getPageYoutubeVideoList({ id: this.blockId });
+    },
+
+    onValitadeYoutubeFormSubmit() {
+      this.$v.$touch();
+      this.$v.youtube_form.$touch();
+      if (!this.$v.youtube_form.$invalid) {
+        if (!this.edit) {
+          this.createPageYoutubeVideo({
+            ar_title: this.youtube_form.ar_title,
+            ar_description: this.youtube_form.ar_description,
+            en_title: this.youtube_form.en_title,
+            en_description: this.youtube_form.en_description,
+            path: this.youtube_form.path,
+            id: this.blockId
+          });
+        } else {
+          this.updatePageYoutubeVideo({
+            ar_title: this.youtube_form.ar_title,
+            ar_description: this.youtube_form.ar_description,
+            en_title: this.youtube_form.en_title,
+            en_description: this.youtube_form.en_description,
+            path: this.youtube_form.path,
+            attachment_id: this.attachment_id,
+            id: this.blockId
+          });
+        }
+      }
+    },
+    youtube_Action(value, item) {
+      switch (value) {
+        case 1:
+          {
+            window.open(item.path);
+          }
+          break;
+        case 2:
+          {
+            this.attachment_id = item.id;
+            this.edit = true;
+            console.log("update");
+            this.youtube_form.ar_title = item.locales.ar.title;
+            this.youtube_form.ar_description = item.locales.ar.description;
+            this.youtube_form.en_title = item.locales.en.title;
+            this.youtube_form.en_description = item.locales.en.description;
+            this.youtube_form.path = item.path;
+          }
+          break;
+        case 3:
+          {
+            console.log("delete");
+            this.deletePageYoutubeVideo({
+              blockId: this.blockId,
+              youtube_id: item.id
+            });
+          }
+          break;
+      }
+    }
   },
   computed: {
     ...mapGetters([
       "_pageImageList",
       "_pageFileList",
       "_sccussCreateFile",
-      "_pageVideosList"
+      "_pageVideosList",
+      "_pageYoutubeVideosList"
     ])
   },
   watch: {
@@ -505,8 +781,20 @@ export default {
       this.$refs.video_vuetable.setData(newData);
     },
     _sccussCreateFile(newData, old) {
-      this.form.title = null;
-      this.form.description = null;
+      this.form.en_title = null;
+      this.form.ar_title = null;
+      this.form.en_description = null;
+      this.form.ar_description = null;
+      this.file = null;
+    },
+    _pageYoutubeVideosList(newData, old) {
+      this.$refs.youtubeVideo_vuetable.setData(newData);
+      this.youtube_form.ar_title = null;
+      this.youtube_form.ar_description = null;
+      this.youtube_form.en_title = null;
+      this.youtube_form.en_description = null;
+      this.youtube_form.path = null;
+      this.edit = false;
     }
   }
 };
