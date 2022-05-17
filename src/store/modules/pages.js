@@ -19,7 +19,8 @@ const state = {
   pageVideosList: null,
   successAddPageVideo: null,
   pageYoutubeVideosList: null,
-  successAddPageYoutubeVideo: null
+  successAddPageYoutubeVideo: null,
+  successDeletePage: null
 };
 
 const getters = {
@@ -29,6 +30,8 @@ const getters = {
   _pagesPaginations: state => state.pagesPaginations,
   _Pages: state => state.Pages,
   _page: state => state.page,
+  _successDeletePage: state => state.successDeletePage,
+
   // meta
   _metaList: state => state.metaList,
   _updateMetaPage: state => state.updateMetaPage,
@@ -71,6 +74,9 @@ const mutations = {
     state.isLoadPages = false;
     state.PagesError = error;
     state.Pages = null;
+  },
+  deletePage(state, payload) {
+    state.successDeletePage = payload;
   },
   // metaData
   getMetaList(state, payload) {
@@ -175,6 +181,14 @@ const actions = {
     axios.post(`${apiUrl}/pages/${id}`, formData, {}).then(res => {
       if (res.status === 200) {
         dispatch("getPage", { id });
+      }
+    });
+  },
+  deletePage({ commit, dispatch }, payload) {
+    const id = payload.pageId;
+    axios.delete(`${apiUrl}/pages/${id}`).then(res => {
+      if (res.status === 200) {
+        commit("deletePage", res);
       }
     });
   },

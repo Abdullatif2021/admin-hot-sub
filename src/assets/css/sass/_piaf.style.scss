@@ -1039,6 +1039,17 @@ button {
     color: $foreground-color;
   }
 }
+.btn-outline-theme-6 {
+  background: unset;
+  color: red;
+  border-color: red;
+
+  &:hover {
+    background-color: red;
+    border-color: $theme-color-3;
+    color: $foreground-color;
+  }
+}
 
 .btn-outline-primary:not(:disabled):not(.disabled):active,
 .btn-outline-primary:not(:disabled):not(.disabled).active,
@@ -6118,7 +6129,6 @@ i.large-icon {
   }
   .text {
     color: rgb(0, 0, 0);
- 
   }
   .button {
     background-color: #aa0404;

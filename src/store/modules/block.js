@@ -18,7 +18,8 @@ const state = {
   blockVideosList: null,
   successAddBlockVideo: null,
   blockYoutubeVideosList: null,
-  successAddBlockYoutubeVideo: null
+  successAddBlockYoutubeVideo: null,
+  successDeleteBlock: null
 };
 
 const getters = {
@@ -28,6 +29,7 @@ const getters = {
   _blocks: state => state.blocks,
   _block: state => state.block,
   _blockCategories: state => state.blockCategories,
+  _successDeleteBlock: state => state.successDeleteBlock,
   // images
   _blockImageList: state => state.blockImageList,
   _successAddBlockImage: state => state.successAddBlockImage,
@@ -87,6 +89,9 @@ const mutations = {
   },
   successAddBlockImage(state, payload) {
     state.successAddBlockImage = payload;
+  },
+  deleteBlock(state, payload) {
+    state.successDeleteBlock = payload;
   },
 
   // metaData
@@ -208,6 +213,14 @@ const actions = {
     axios.post(`${apiUrl}/blocks/${id}`, formData, {}).then(res => {
       if (res.status === 200) {
         dispatch("getBlock", { id });
+      }
+    });
+  },
+  deleteBlock({ commit, dispatch }, payload) {
+    const id = payload.blockId;
+    axios.delete(`${apiUrl}/blocks/${id}`).then(res => {
+      if (res.status === 200) {
+        commit("deleteBlock", res);
       }
     });
   },

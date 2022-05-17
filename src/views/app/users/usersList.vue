@@ -10,6 +10,7 @@
       :cancle="cancle"
       :changeOrderBy="changeOrderBy"
       :from="from"
+      @add_new="add_New"
       :sort="sort"
       :to="to"
       :Filtered="true"
@@ -41,6 +42,13 @@
               @click="modify(props.rowData.id)"
             >
               <i class="simple-icon-settings"></i>
+            </b-button>
+            <b-button
+              variant="outline-theme-6"
+              class="icon-button"
+              @click="delete_user(props.rowData.id)"
+            >
+              <i class="simple-icon-trash"></i>
             </b-button>
           </template>
         </vuetable>
@@ -162,7 +170,7 @@ export default {
         {
           name: "active",
           callback: value => {
-            return value === "1"
+            return value === 1
               ? `<span class="badge badge-pill badge-success handle mr-1">
                 Active
               </span>`
@@ -200,7 +208,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["getUsersList"]),
+    ...mapActions(["getUsersList", "deleteUser"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -224,7 +232,11 @@ export default {
         query: { id: id }
       });
     },
-
+    add_New() {
+      this.$router.push({
+        path: `${adminRoot}/users/user`
+      });
+    },
     rowClicked(dataItem, event) {
       const itemId = dataItem.id;
       console.log(dataItem.id);
@@ -302,7 +314,9 @@ export default {
         });
       }
     },
-
+    delete_user(id) {
+      this.deleteUser({ userId: id });
+    },
     changePageSize(perPage) {
       console.log(perPage);
       this.limit = perPage;
@@ -375,7 +389,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["usersList", "ListActions"]),
+    ...mapGetters(["usersList", "ListActions", "_successDeleteUser"]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -392,6 +406,16 @@ export default {
         console.log("old", oldQuestion);
         console.log("new", newQuestion);
       }
+    },
+    _successDeleteUser(newVal, old) {
+      this.getUsersList({
+        role: this.sort.column,
+        dir: this.dir,
+        search: this.search,
+        order_by: this.order_by,
+        limit: this.limit,
+        page: this.page
+      });
     },
     usersList(newList, old) {
       this.$refs.vuetable.setData(newList);

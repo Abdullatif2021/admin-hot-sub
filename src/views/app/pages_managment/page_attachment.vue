@@ -697,7 +697,7 @@ export default {
             en_title: this.youtube_form.en_title,
             en_description: this.youtube_form.en_description,
             path: this.youtube_form.path,
-            id: this.blockId
+            id: this.pageId
           });
         } else {
           this.updatePageYoutubeVideo({
@@ -707,7 +707,7 @@ export default {
             en_description: this.youtube_form.en_description,
             path: this.youtube_form.path,
             attachment_id: this.attachment_id,
-            id: this.blockId
+            id: this.pageId
           });
         }
       }

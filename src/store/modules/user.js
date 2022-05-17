@@ -23,7 +23,8 @@ export default {
     ListActions: null,
     UserInfo: null,
     resetPasswordSuccess: null,
-    preferLocale: null
+    preferLocale: null,
+    successDeleteUser: null
   },
   getters: {
     currentUser: state => state.currentUser,
@@ -34,7 +35,8 @@ export default {
     loginError: state => state.loginError,
     forgotMailSuccess: state => state.forgotMailSuccess,
     resetPasswordSuccess: state => state.resetPasswordSuccess,
-    _preferLocale: state => state.preferLocale
+    _preferLocale: state => state.preferLocale,
+    _successDeleteUser: state => state.successDeleteUser
   },
   mutations: {
     setUser(state, payload) {
@@ -76,6 +78,9 @@ export default {
       state.currentUser = null;
       state.processing = false;
       state.resetPasswordSuccess = true;
+    },
+    successDeleteUser(state, payload) {
+      state.successDeleteUser = payload;
     },
     clearError(state) {
       state.loginError = null;
@@ -143,6 +148,22 @@ export default {
           commit("setUsersList", res.data);
         });
     },
+    createUser({ commit }, payload) {
+      axios
+        .post(`${apiUrl}/users`, {
+          first_name: payload.info.firstname,
+          last_name: payload.info.lastname,
+          phone_number: payload.info.phonenumber,
+          email: payload.info.email,
+          role: payload.role,
+          password: payload.pass
+        })
+        .then(res => {
+          if (res.status === 201) {
+            router.push(`${adminRoot}/users`);
+          }
+        });
+    },
     changePreferLocale({ commit }, payload) {
       axios
         .put(`${apiUrl}/users/prefer_locale`, {
@@ -153,6 +174,14 @@ export default {
             commit("updatePreferLocale", res);
           }
         });
+    },
+    deleteUser({ commit }, payload) {
+      const id = payload.userId;
+      axios.delete(`${apiUrl}/users/${id}`).then(res => {
+        if (res.status === 200) {
+          commit("successDeleteUser", res);
+        }
+      });
     },
     resetPassword({ commit }, payload) {
       commit("clearError");

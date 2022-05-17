@@ -1,7 +1,10 @@
 <template>
   <b-row>
     <b-colxx xxs="12">
-      <b-card class="mb-4" :title="$t('forms.grid')">
+      <b-card
+        class="mb-4"
+        :title="userId ? $t('forms.grid') : $t('forms.createUser')"
+      >
         <b-form @submit.prevent="onGridFormSubmit">
           <b-row>
             <b-colxx sm="6">
@@ -23,7 +26,11 @@
                 ></b-form-input>
               </b-form-group>
             </b-colxx>
-
+            <b-colxx v-if="!userId" sm="12">
+              <b-form-group :label="$t('forms.password')">
+                <b-form-input type="password" v-model="password"></b-form-input>
+              </b-form-group>
+            </b-colxx>
             <b-colxx sm="12">
               <b-form-group :label="$t('forms.phonenumber')">
                 <b-form-input
@@ -32,18 +39,23 @@
                 ></b-form-input>
               </b-form-group>
             </b-colxx>
-            <b-colxx sm="6">
+
+            <!-- <b-colxx v-if="!userId" sm="12">
               <b-form-group :label="$t('forms.role')">
                 <b-form-select
-                  @change="myFunc()"
-                  v-model="role"
+                  v-model="create_role"
                   :options="roleOptions"
                   plain
                 />
               </b-form-group>
+            </b-colxx> -->
+            <b-colxx :sm="userId ? 6 : 12">
+              <b-form-group :label="$t('forms.role')">
+                <b-form-select v-model="role" :options="roleOptions" plain />
+              </b-form-group>
             </b-colxx>
             <b-colxx sm="6">
-              <b-form-group :label="$t('forms.active')">
+              <b-form-group v-if="userId" :label="$t('forms.active')">
                 <b-form-select
                   selected
                   v-model="gridForm.active"
@@ -69,6 +81,8 @@ export default {
     return {
       userId: null,
       _role: null,
+      password: null,
+      create_role: null,
       sdfsdf: "sfsdfs",
       roleOptions: [
         "Select Role",
@@ -92,48 +106,30 @@ export default {
   },
   created() {
     this.userId = this.$route.query.id;
-    this.getUserInfo({ id: this.userId });
+    if (this.userId) {
+      this.getUserInfo({ id: this.userId });
+    } else {
+      console.log("i am here ", this.userId);
+    }
   },
   methods: {
-    ...mapActions(["getUserInfo", "updateUserInfo"]),
+    ...mapActions(["getUserInfo", "updateUserInfo", "createUser"]),
     onGridFormSubmit() {
-      console.log(this.gridForm);
-      // switch (this.gridForm.role) {
-      //   case "superadmin":
-      //     return 1;
-      //   case "admin":
-      //     return 2;
-      //   case "user":
-      //     return 3;
-      //   case "branchadmin":
-      //     return 4;
-      //   case "casher":
-      //     return 5;
-      //   case "guest":
-      //     return 6;
-      // }
-      console.log(this._role);
-      this.updateUserInfo({
-        role: this._role,
-        info: this.gridForm,
-        id: this.UserInfo.id
-      });
-    },
-    myFunc(fff) {
-      // switch (this._role) {
-      //   case "superadmin":
-      //     return console.log("case2444444444444444");
-      //   case "admin":
-      //     return console.log("case255555555555555555555555555555555555");
-      //   case 3:
-      //     return console.log(3);
-      //   case 4:
-      //     return console.log(4);
-      //   case 5:
-      //     return console.log(5);
-      //   case 6:
-      //     return console.log(6);
-      // }
+      console.log("hi from submit", this.gridForm, this._role);
+      if (this.userId) {
+        console.log(this._role);
+        this.updateUserInfo({
+          role: this._role,
+          info: this.gridForm,
+          id: this.UserInfo.id
+        });
+      } else {
+        this.createUser({
+          info: this.gridForm,
+          role: this._role,
+          pass: this.password
+        });
+      }
     }
   },
   computed: {
@@ -180,12 +176,12 @@ export default {
   },
   watch: {
     UserInfo(newInfo, oldOne) {
-      (this.gridForm.firstname = newInfo.first_name),
-        (this.gridForm.lastname = newInfo.last_name),
-        (this.gridForm.email = newInfo.email),
-        (this.gridForm.phonenumber = newInfo.phone_number);
-      (this.gridForm.role = newInfo.role[0]),
-        (this.gridForm.active = newInfo.active);
+      this.gridForm.firstname = newInfo.first_name;
+      this.gridForm.lastname = newInfo.last_name;
+      this.gridForm.email = newInfo.email;
+      this.gridForm.phonenumber = newInfo.phone_number;
+      this.gridForm.role = newInfo.role[0];
+      this.gridForm.active = newInfo.active;
     }
   }
 };

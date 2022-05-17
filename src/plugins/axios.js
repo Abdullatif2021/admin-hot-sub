@@ -22,9 +22,9 @@ axios.interceptors.response.use(
       setTimeout(() => {
         axios.request(error.config);
       }, 2000);
-      // setTimeout(() => {
-      //   location.reload();
-      // }, 2000);
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
     }
   }
 );

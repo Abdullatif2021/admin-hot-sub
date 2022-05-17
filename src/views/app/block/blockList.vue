@@ -42,6 +42,13 @@
             >
               <i class="simple-icon-settings"></i>
             </b-button>
+            <b-button
+              variant="outline-theme-6"
+              class="icon-button"
+              @click="delete_block(props.rowData.id)"
+            >
+              <i class="simple-icon-trash"></i>
+            </b-button>
           </template>
         </vuetable>
         <vuetable-pagination-bootstrap
@@ -176,13 +183,16 @@ export default {
     this.getBlockCategories();
   },
   methods: {
-    ...mapActions(["getBlocksList", "getBlockCategories"]),
+    ...mapActions(["getBlocksList", "getBlockCategories", "deleteBlock"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
         return "selected";
       }
       return "";
+    },
+    delete_block(id) {
+      this.deleteBlock({ blockId: id });
     },
     cancle() {
       this.this.getBlocksList({
@@ -367,7 +377,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["_blocks", "_blockPaginations", "_blockCategories"]),
+    ...mapGetters([
+      "_blocks",
+      "_blockPaginations",
+      "_blockCategories",
+      "_successDeleteBlock"
+    ]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -384,6 +399,16 @@ export default {
         console.log("old", oldQuestion);
         console.log("new", newQuestion);
       }
+    },
+    _successDeleteBlock(newVal, old) {
+      this.getBlocksList({
+        block_category_id: this.sort.column,
+        dir: this.dir,
+        search: this.search,
+        order_by: this.order_by,
+        limit: this.limit,
+        page: this.page
+      });
     },
     _blocks(newList, old) {
       this.$refs.vuetable.setData(newList);
