@@ -1,13 +1,13 @@
 <template>
   <div>
     <datatable-heading
-      :title="$t('menu.pages-table')"
+      :title="$t('menu.categories-table')"
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
       :changePageSize="changePageSize"
       :searchChange="searchChange"
-      :cancle="cancle"
       :from="from"
+      @add_new="add_New"
       :sort="sort"
       :to="to"
       :Filtered="false"
@@ -42,7 +42,7 @@
             <b-button
               variant="outline-theme-6"
               class="icon-button"
-              @click="delete_page(props.rowData.id)"
+              @click="delete_category(props.rowData.id)"
             >
               <i class="simple-icon-trash"></i>
             </b-button>
@@ -80,7 +80,6 @@ import { mapGetters, mapActions } from "vuex";
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
 export default {
-  props: ["title"],
   components: {
     vuetable: Vuetable,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
@@ -89,7 +88,6 @@ export default {
   data() {
     return {
       dir: null,
-      type: null,
       order_by: null,
       search: null,
       actions: null,
@@ -120,25 +118,28 @@ export default {
           title: "Image",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "20%"
+          width: "30%"
         },
         {
           name: "locales",
           callback: value => {
-            return value.en.name;
+            return value.en.title;
           },
-          sortField: "name",
-          title: "Name",
+          sortField: "title",
+          title: "Title",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "40%"
+          width: "30%"
         },
         {
-          name: "type",
-          sortField: "type",
-          title: "Type",
+          name: "locales",
+          callback: value => {
+            return value.en.description;
+          },
+          sortField: "description",
+          title: "Description",
           titleClass: "",
-          dataClass: "text-muted",
+          dataClass: "list-item-heading",
           width: "20%"
         },
         {
@@ -152,8 +153,7 @@ export default {
     };
   },
   created() {
-    this.getPagesList({
-      type: null,
+    this.getCategories({
       dir: null,
       search: null,
       order_by: null,
@@ -161,9 +161,8 @@ export default {
       page: null
     });
   },
-
   methods: {
-    ...mapActions(["getPagesList", "deletePage"]),
+    ...mapActions(["getCategories", "deleteCategory"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -171,20 +170,11 @@ export default {
       }
       return "";
     },
-    cancle() {
-      this.this.getUsersList({
-        role: null,
-        dir: null,
-        search: null,
-        order_by: null,
-        limit: null,
-        page: null
-      });
-    },
+
     modify(id) {
       console.log(id);
       this.$router.push({
-        path: `${adminRoot}/pages/page`,
+        path: `${adminRoot}/categories/category`,
         query: { id: id }
       });
     },
@@ -226,8 +216,7 @@ export default {
         if (sortOrder[0].direction == "asc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
-          this.getPagesList({
-            type: this.sort.column,
+          this.getCategories({
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -238,8 +227,7 @@ export default {
         if (sortOrder[0].direction == "desc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
-          this.getPagesList({
-            type: this.sort.column,
+          this.getCategories({
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -249,16 +237,15 @@ export default {
         }
       }
     },
-    delete_page(id) {
-      this.deletePage({ pageId: id });
+    delete_category(id) {
+      this.deleteCategory({ Id: id });
     },
     onChangePage(page) {
       if (page == "next" || page == "prev") {
         console.log(page);
       } else {
         this.page = page;
-        this.getPagesList({
-          type: this.sort.column,
+        this.getCategories({
           dir: this.dir,
           search: this.search,
           order_by: this.order_by,
@@ -271,8 +258,7 @@ export default {
     changePageSize(perPage) {
       console.log(perPage);
       this.limit = perPage;
-      this.getPagesList({
-        type: this.sort.column,
+      this.getCategories({
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
@@ -284,8 +270,7 @@ export default {
     searchChange(val) {
       console.log(val);
       this.search = val;
-      this.getPagesList({
-        type: this.sort.column,
+      this.getCategories({
         dir: this.dir,
         search: val,
         order_by: this.order_by,
@@ -325,10 +310,15 @@ export default {
         "context menu item clicked - " + action + ": ",
         this.selectedItems
       );
+    },
+    add_New() {
+      this.$router.push({
+        path: `${adminRoot}/categories/category`
+      });
     }
   },
   computed: {
-    ...mapGetters(["_Pages", "_pagesPaginations", "_successDeletePage"]),
+    ...mapGetters(["categories", "cate_paginations", "_successDeleteCategory"]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -346,9 +336,8 @@ export default {
         console.log("new", newQuestion);
       }
     },
-    _successDeletePage(newVal, old) {
+    _successDeleteCategory(newVal, old) {
       this.getPagesList({
-        type: this.sort.column,
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
@@ -356,11 +345,11 @@ export default {
         page: this.page
       });
     },
-    _Pages(newList, old) {
+    categories(newList, old) {
       console.log(newList);
       this.$refs.vuetable.setData(newList);
     },
-    _pagesPaginations(newActions, old) {
+    cate_paginations(newActions, old) {
       this.perPage = newActions.per_page;
       this.from = newActions.from;
       this.to = newActions.to;

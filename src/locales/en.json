@@ -119,7 +119,9 @@
     "users-table": "Users Table",
     "blocks-table": "Blocks Table",
     "pages-table": "Pages List",
+    "categories-table": "Categories List",
     "scrollable": "Scrollable",
+    "categoriesList": "Categories List",
     "responsive": "Responsive",
     "piaf": "Piaf",
     "second-menu": "Blogs",
@@ -131,7 +133,8 @@
     "second": "Blocks",
     "start": "Start",
     "settings": "Settings",
-    "settings-list": "Settings List"
+    "settings-list": "Settings List",
+    "categories": "Categories"
   },
   "dashboards": {
     "pending-orders": "Pending Orders",
@@ -461,6 +464,8 @@
   "forms": {
     "en_desc": "English Description",
     "ar_desc": "Arabic Description",
+    "createCate": "Create Category",
+    "editCate": "Edit Category",
     "ar_title": "Arabic Title",
     "en_title": "English Title",
     "basic": "Basic",
@@ -487,6 +492,7 @@
     "tags": "Tags",
     "date": "Date",
     "state": "State",
+    "image": "Image",
     "top-labels-in-input": "Top Labels In Input",
     "email-u": "E-MAIL",
     "password-u": "PASSWORD",

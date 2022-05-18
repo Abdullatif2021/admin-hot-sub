@@ -72,6 +72,31 @@ const routes = [
         ]
       },
       {
+        path: "categories",
+        component: () =>
+          import(
+            /* webpackChunkName: "second-menu" */ "./views/app/categories"
+          ),
+        redirect: `${adminRoot}/categories/categoriesList`,
+
+        children: [
+          {
+            path: "categoriesList",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/categories/categories_list"
+              )
+          },
+          {
+            path: "category",
+            component: () =>
+              import(
+                /* webpackChunkName: "blog" */ "./views/app/categories/category"
+              )
+          }
+        ]
+      },
+      {
         path: "pages",
         component: () =>
           import(

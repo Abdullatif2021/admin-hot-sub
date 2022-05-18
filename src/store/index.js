@@ -3,6 +3,7 @@ import Vuex from "vuex";
 
 import app from "../main";
 import menu from "./modules/menu";
+import categories from "./modules/categories";
 import block from "./modules/block";
 import user from "./modules/user";
 import pages from "./modules/pages";
@@ -29,6 +30,7 @@ export default new Vuex.Store({
     menu,
     user,
     block,
+    categories,
     test,
     settings,
     pages

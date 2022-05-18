@@ -24,6 +24,12 @@ const data = [
     to: `${adminRoot}/blocks`
   },
   {
+    id: "categories",
+    icon: "simple-icon-grid",
+    label: "menu.categories",
+    to: `${adminRoot}/categories`
+  },
+  {
     id: "Pages",
     icon: "iconsminds-digital-drawing",
     label: "menu.pages",
