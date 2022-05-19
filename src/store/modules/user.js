@@ -108,11 +108,12 @@ export default {
             axios.get(`${apiUrl}/auth/user`).then(res => {
               if (res.status) {
                 setCurrentUser(res.data.data);
+                commit("setUser", res.data.data);
                 dispatch("setLang", { locale: res.data.data.prefer_locale });
                 res.data.data.prefer_locale === "ar"
                   ? setDirection("rtl")
                   : setDirection("ltr");
-                commit("setUser", res.data.data);
+
                 commit("setProcessing", false);
               } else {
                 commit("getItemError", "error:getItem");
@@ -288,7 +289,10 @@ export default {
       axios.post(`${apiUrl}/auth/logout`).then(
         res => {
           sessionStorage.removeItem("accessToken");
-          sessionStorage.removeItem("currentUser");
+          setTimeout(() => {
+            console.log("timed out");
+            sessionStorage.removeItem("currentUser");
+          }, 1000);
           sessionStorage.removeItem("refreshToken");
           router.push("/");
           commit("setLogout");
