@@ -167,7 +167,7 @@ export default {
       if (val != null) {
         setTimeout(() => {
           this.$router.push(adminRoot);
-        }, 200);
+        }, 2000);
       }
     },
     loginError(val) {
