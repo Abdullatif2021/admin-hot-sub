@@ -30,7 +30,12 @@
               <span>Phone Number</span>
             </div>
             <div class="form-group has-float-label">
-              <input type="text" class="form-control" v-model="user.dob" />
+              <datepicker
+                :bootstrap-styling="true"
+                :placeholder="$t('form-components.date')"
+                v-model="user.dob"
+                @selected="selected_Date()"
+              ></datepicker>
               <span>Date of Birth</span>
             </div>
           </b-form>
@@ -81,23 +86,26 @@
 </template>
 <script>
 import VueDropzone from "vue2-dropzone";
-
+import router from "../../router";
 import vSelect from "vue-select";
+import { adminRoot } from "../../constants/config";
 import "vue-select/dist/vue-select.css";
 import Datepicker from "vuejs-datepicker";
 import InputTag from "../../components/Form/InputTag";
 import { getDirection, getCurrentUser } from "../../utils";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
+
 export default {
   components: {
     "input-tag": InputTag,
     "v-select": vSelect,
-    "vuejs-datepicker": Datepicker,
-    "vue-dropzone": VueDropzone
+    "vue-dropzone": VueDropzone,
+    datepicker: Datepicker
   },
   data() {
     return {
       user: null,
+      selectedDate: false,
       file: null,
       sendSuccess: false,
       genderOptions: [
@@ -137,7 +145,8 @@ export default {
     submit() {
       this.updateUserProfile({
         file: this.file ? this.file[0] : null,
-        user: this.user
+        user: this.user,
+        dob: this.selectedDate ? this.user.dob.toISOString() : this.user.dob
       });
     },
     onTopLabelsOverLineFormSubmit() {},
@@ -147,6 +156,10 @@ export default {
       } else {
       }
     },
+    selected_Date() {
+      this.selectedDate = true;
+    },
+
     fileAdded(file) {
       console.log(file);
       this.file = file;
@@ -178,6 +191,23 @@ export default {
                   <a href="#" class="remove" data-dz-remove> <i class="glyph-icon simple-icon-trash"></i> </a>
                 </div>
         `;
+    }
+  },
+  computed: {
+    ...mapGetters(["_updatedProfileSuccessfuly"])
+  },
+  watch: {
+    _updatedProfileSuccessfuly(newInfo, oldOne) {
+      this.selectedDate = false;
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Your Profile updated successfully",
+        { duration: 2000, permanent: false }
+      );
+      setTimeout(() => {
+        router.push(adminRoot);
+      }, 3000);
     }
   }
 };

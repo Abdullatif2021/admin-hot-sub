@@ -38,6 +38,7 @@
     "thumb-list": "Thumb List",
     "image-list": "Image List",
     "details": "Details",
+    "auction_list": "Auction List",
     "search": "Search",
     "invoice": "Invoice",
     "mailing": "Mailing",
@@ -119,6 +120,7 @@
     "users-table": "Users Table",
     "blocks-table": "Blocks Table",
     "pages-table": "Pages List",
+    "auctions-table": "Auctions Table",
     "categories-table": "Categories List",
     "scrollable": "Scrollable",
     "categoriesList": "Categories List",
@@ -134,7 +136,8 @@
     "start": "Start",
     "settings": "Settings",
     "settings-list": "Settings List",
-    "categories": "Categories"
+    "categories": "Categories",
+    "auctions": "Auctions"
   },
   "dashboards": {
     "pending-orders": "Pending Orders",
@@ -524,7 +527,13 @@
     "ar_name": "Arabic Name",
     "link1": "Link 1",
     "link2": "Link 2",
-    "type": "Type"
+    "type": "Type",
+    "opening_price": "Opening Price",
+    "minimum_price": "Minimum Price",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "category": "Category",
+    "location": "Location"
   },
   "form-components": {
     "custom-inputs": "Custom Inputs",

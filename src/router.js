@@ -97,6 +97,29 @@ const routes = [
         ]
       },
       {
+        path: "auctions",
+        component: () =>
+          import(/* webpackChunkName: "second-menu" */ "./views/app/auctions"),
+        redirect: `${adminRoot}/auctions/auction_list`,
+
+        children: [
+          {
+            path: "auction_list",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/auctions/auction_list"
+              )
+          },
+          {
+            path: "auction",
+            component: () =>
+              import(
+                /* webpackChunkName: "blog" */ "./views/app/auctions/auction"
+              )
+          }
+        ]
+      },
+      {
         path: "pages",
         component: () =>
           import(

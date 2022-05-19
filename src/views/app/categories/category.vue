@@ -173,14 +173,18 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["category"])
+    ...mapGetters(["category", "_updatedCategorySuccessfuly"])
   },
   watch: {
     category(newInfo, oldOne) {
       this.gridForm.ar_title = newInfo.locales.ar.title;
       this.gridForm.en_title = newInfo.locales.en.title;
       this.gridForm.ar_description = newInfo.locales.ar.description;
-      this.gridForm.ar_description = newInfo.locales.ar.description;
+      this.gridForm.en_description = newInfo.locales.en.description;
+    },
+    _updatedCategorySuccessfuly(newInfo, oldOne) {
+      console.log("hiiiiii");
+      this.$destroy();
     }
   }
 };

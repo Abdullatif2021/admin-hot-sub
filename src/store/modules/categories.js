@@ -1,11 +1,13 @@
 import axios from "../../plugins/axios";
 import { apiUrl } from "../../constants/config";
+import router from "../../router";
+import { adminRoot } from "../../constants/config";
 
 const state = {
   isLoadCategories: true,
   paginations: null,
   categories: null,
-  updatedSuccessfuly: false,
+  updated_Successfuly: null,
   Error: "",
   category: null,
   successDeleteCategory: null
@@ -18,7 +20,7 @@ const getters = {
   categories: state => state.categories,
   category: state => state.category,
 
-  updatedCategorySuccessfuly: state => state.updatedSuccessfuly,
+  _updatedCategorySuccessfuly: state => state.updated_Successfuly,
   _successDeleteCategory: state => state.successDeleteCategory
 };
 
@@ -35,8 +37,8 @@ const mutations = {
   getCategorySuccess(state, data) {
     state.category = data.data;
   },
-  updatedCategorySuccessfuly(state) {
-    state.updated_Successfuly = true;
+  updatedCategorySuccessfuly(state, data) {
+    state.updated_Successfuly = data;
   },
   getCategoriesError(state, error) {
     state.isLoadCategories = false;
@@ -77,24 +79,6 @@ const actions = {
       commit("getCategorySuccess", res.data);
     });
   },
-  updateCategories({ commit }, payload) {
-    const id = payload.id;
-    axios
-      .put(
-        `${apiUrl}/categories/${id}`,
-        {
-          key: payload.key,
-          value: payload.value
-        },
-        {}
-      )
-      .then(res => {
-        console.log(res);
-        if (res.status === 200) {
-          commit("updatedCategorySuccessfuly");
-        }
-      });
-  },
   createCategory({ commit, dispatch }, payload) {
     console.log(payload);
     const formData = new FormData();
@@ -108,7 +92,11 @@ const actions = {
       formData.append("image", payload.img);
     }
     axios.post(`${apiUrl}/categories`, formData, {}).then(res => {
-      console.log(res);
+      if (res.status === 201) {
+        console.log("hi from create");
+        router.push(`${adminRoot}/categories`);
+        commit("updatedCategorySuccessfuly", res);
+      }
     });
   },
   updateCategory({ commit, dispatch }, payload) {
@@ -125,7 +113,11 @@ const actions = {
       formData.append("image", payload.img);
     }
     axios.put(`${apiUrl}/categories/${id}`, formData, {}).then(res => {
-      console.log(res);
+      if (res.status === 200) {
+        console.log("updatedCategorySuccessfuly");
+        commit("updatedCategorySuccessfuly", res);
+        router.push(`${adminRoot}/categories`);
+      }
     });
   },
 

@@ -24,7 +24,8 @@ export default {
     UserInfo: null,
     resetPasswordSuccess: null,
     preferLocale: null,
-    successDeleteUser: null
+    successDeleteUser: null,
+    updatedProfile: null
   },
   getters: {
     currentUser: state => state.currentUser,
@@ -36,13 +37,17 @@ export default {
     forgotMailSuccess: state => state.forgotMailSuccess,
     resetPasswordSuccess: state => state.resetPasswordSuccess,
     _preferLocale: state => state.preferLocale,
-    _successDeleteUser: state => state.successDeleteUser
+    _successDeleteUser: state => state.successDeleteUser,
+    _updatedProfileSuccessfuly: state => state.updatedProfile
   },
   mutations: {
     setUser(state, payload) {
       state.currentUser = payload;
       state.processing = false;
       state.loginError = null;
+    },
+    updatedProfile(state, payload) {
+      state.updatedProfile = payload;
     },
     setUserInfo(state, payload) {
       state.UserInfo = payload;
@@ -231,14 +236,14 @@ export default {
       formData.append("last_name", payload.user.last_name);
       formData.append("email", payload.user.email);
       formData.append("phone_number", payload.user.phone_number);
-      formData.append("dob", payload.user.dob);
+      formData.append("dob", payload.dob);
       formData.append("gender", payload.user.gender);
       formData.append("_method", "PUT");
       axios.post(`${apiUrl}/auth`, formData, {}).then(res => {
         if (res.status === 200) {
           setCurrentUser(res.data.data);
           commit("setUser", res.data.data);
-          router.push(adminRoot);
+          commit("updatedProfile", res);
         }
       });
     },
@@ -288,12 +293,12 @@ export default {
     signOut({ commit }) {
       axios.post(`${apiUrl}/auth/logout`).then(
         res => {
-          sessionStorage.removeItem("accessToken");
+          localStorage.removeItem("accessToken");
           setTimeout(() => {
             console.log("timed out");
-            sessionStorage.removeItem("currentUser");
+            localStorage.removeItem("currentUser");
           }, 1000);
-          sessionStorage.removeItem("refreshToken");
+          localStorage.removeItem("refreshToken");
           router.push("/");
           commit("setLogout");
         },
@@ -303,7 +308,7 @@ export default {
     refreshToken() {
       axios
         .post(`${apiUrl}/auth/refresh_token`, {
-          refresh_token: sessionStorage.getItem("refreshToken")
+          refresh_token: localStorage.getItem("refreshToken")
         })
         .then(
           res => {
@@ -315,7 +320,7 @@ export default {
           _error => {
             console.log(_error);
             router.push("/");
-            sessionStorage.clear();
+            localStorage.clear();
           }
         );
     }

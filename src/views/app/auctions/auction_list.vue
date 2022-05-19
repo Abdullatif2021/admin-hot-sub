@@ -1,7 +1,7 @@
 <template>
   <div>
     <datatable-heading
-      :title="$t('menu.categories-table')"
+      :title="$t('menu.auctions-table')"
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
       :changePageSize="changePageSize"
@@ -42,7 +42,7 @@
             <b-button
               variant="outline-theme-6"
               class="icon-button"
-              @click="delete_category(props.rowData.id)"
+              @click="delete_auction(props.rowData.id)"
             >
               <i class="simple-icon-trash"></i>
             </b-button>
@@ -111,16 +111,6 @@ export default {
 
       fields: [
         {
-          name: "image",
-          callback: value => {
-            return `<img src="${value}" style="border-radius: 34%;" alt="Image" width="50" height="50">`;
-          },
-          title: "Image",
-          titleClass: "",
-          dataClass: "list-item-heading",
-          width: "30%"
-        },
-        {
           name: "locales",
           callback: value => {
             return value.en.title;
@@ -129,31 +119,58 @@ export default {
           title: "Title",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "30%"
+          width: "15%"
         },
         {
           name: "locales",
           callback: value => {
-            return value.en.description;
+            return value.en.terms_conditions;
           },
           sortField: "description",
           title: "Description",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "20%"
+          width: "15%"
+        },
+        {
+          name: "start_date",
+
+          sortField: "start_date",
+          title: "Start Date",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "15%"
+        },
+        {
+          name: "end_date",
+
+          sortField: "end_date",
+          title: "End Date",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "15%"
+        },
+        {
+          name: "opening_price",
+
+          sortField: "opening_price",
+          title: "Opening Price",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "15%"
         },
         {
           name: "__slot:actions",
           title: "",
           titleClass: "center aligned text-right",
           dataClass: "center aligned text-right",
-          width: "20%"
+          width: "25%"
         }
       ]
     };
   },
   created() {
-    this.getCategories({
+    this.getAuctions({
       dir: null,
       search: null,
       order_by: null,
@@ -162,7 +179,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["getCategories", "deleteCategory"]),
+    ...mapActions(["getAuctions", "deleteAuction"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -174,7 +191,7 @@ export default {
     modify(id) {
       console.log(id);
       this.$router.push({
-        path: `${adminRoot}/categories/category`,
+        path: `${adminRoot}/auctions/auction`,
         query: { id: id }
       });
     },
@@ -216,7 +233,7 @@ export default {
         if (sortOrder[0].direction == "asc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
-          this.getCategories({
+          this.getAuction({
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -227,7 +244,7 @@ export default {
         if (sortOrder[0].direction == "desc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
-          this.getCategories({
+          this.getAuction({
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -237,15 +254,15 @@ export default {
         }
       }
     },
-    delete_category(id) {
-      this.deleteCategory({ Id: id });
+    delete_auction(id) {
+      this.deleteAuction({ Id: id });
     },
     onChangePage(page) {
       if (page == "next" || page == "prev") {
         console.log(page);
       } else {
         this.page = page;
-        this.getCategories({
+        this.getAuction({
           dir: this.dir,
           search: this.search,
           order_by: this.order_by,
@@ -258,7 +275,7 @@ export default {
     changePageSize(perPage) {
       console.log(perPage);
       this.limit = perPage;
-      this.getCategories({
+      this.getAuction({
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
@@ -270,7 +287,7 @@ export default {
     searchChange(val) {
       console.log(val);
       this.search = val;
-      this.getCategories({
+      this.getAuction({
         dir: this.dir,
         search: val,
         order_by: this.order_by,
@@ -313,12 +330,12 @@ export default {
     },
     add_New() {
       this.$router.push({
-        path: `${adminRoot}/categories/category`
+        path: `${adminRoot}/auctions/auction`
       });
     }
   },
   computed: {
-    ...mapGetters(["categories", "cate_paginations", "_successDeleteCategory"]),
+    ...mapGetters(["auctions", "auction_paginations", "_successDeleteAuction"]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -336,9 +353,9 @@ export default {
         console.log("new", newQuestion);
       }
     },
-    _successDeleteCategory(newVal, old) {
-      console.log("delete category", old);
-      this.getCategories({
+    _successDeleteAuction(newVal, old) {
+      console.log("delete auction", old);
+      this.getAuctions({
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
@@ -346,11 +363,11 @@ export default {
         page: this.page
       });
     },
-    categories(newList, old) {
+    auctions(newList, old) {
       console.log(newList);
       this.$refs.vuetable.setData(newList);
     },
-    cate_paginations(newActions, old) {
+    auction_paginations(newActions, old) {
       this.perPage = newActions.per_page;
       this.from = newActions.from;
       this.to = newActions.to;

@@ -30,6 +30,12 @@ const data = [
     to: `${adminRoot}/categories`
   },
   {
+    id: "auctions",
+    icon: "simple-icon-folder",
+    label: "menu.auctions",
+    to: `${adminRoot}/auctions`
+  },
+  {
     id: "Pages",
     icon: "iconsminds-digital-drawing",
     label: "menu.pages",
