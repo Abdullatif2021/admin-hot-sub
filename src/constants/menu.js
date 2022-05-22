@@ -43,10 +43,17 @@ const data = [
     roles: ["superadmin"]
   },
   {
-    id: "users",
+    id: "admins",
+    icon: "simple-icon-user",
+    label: "menu.admins",
+    to: `${adminRoot}/admins`,
+    roles: ["superadmin"]
+  },
+  {
+    id: "accountant",
     icon: "simple-icon-people",
-    label: "menu.users",
-    to: `${adminRoot}/users`,
+    label: "menu.accountant",
+    to: `${adminRoot}/accountant`,
     roles: ["superadmin"]
   },
   {

@@ -7,6 +7,7 @@
       :changePageSize="changePageSize"
       :searchChange="searchChange"
       :sortOptions="sortOptions"
+      :reload="true"
       :category="category"
       :cancle="cancle"
       :changeOrderBy="changeOrderBy"

@@ -1,97 +1,104 @@
 <template>
-  <b-row>
-    <b-colxx xxs="12">
-      <b-card
-        class="mb-4"
-        :title="userId ? $t('forms.grid') : $t('forms.createUser')"
-      >
-        <b-form @submit.prevent="onGridFormSubmit">
-          <b-row>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.firstname')">
-                <b-form-input type="text" v-model="gridForm.firstname" />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.lastname')">
-                <b-form-input type="text" v-model="gridForm.lastname" />
-              </b-form-group>
-            </b-colxx>
+  <div>
+    <datatable-heading
+      :details="true"
+      :reload="true"
+      :title="userId ? $t('forms.grid') : $t('forms.createUser')"
+    ></datatable-heading>
+    <b-row>
+      <b-colxx xxs="12">
+        <template v-if="processing">
+          <b-card class="mb-4">
+            <b-form @submit.prevent="onGridFormSubmit">
+              <b-row>
+                <b-colxx sm="6">
+                  <b-form-group :label="$t('forms.firstname')">
+                    <b-form-input type="text" v-model="gridForm.firstname" />
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx sm="6">
+                  <b-form-group :label="$t('forms.lastname')">
+                    <b-form-input type="text" v-model="gridForm.lastname" />
+                  </b-form-group>
+                </b-colxx>
 
-            <b-colxx sm="12">
-              <b-form-group :label="$t('forms.email')">
-                <b-form-input
-                  type="email"
-                  v-model="gridForm.email"
-                ></b-form-input>
-              </b-form-group>
-            </b-colxx>
-            <b-colxx v-if="!userId" sm="12">
-              <b-form-group :label="$t('forms.password')">
-                <b-form-input type="password" v-model="password"></b-form-input>
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="12">
-              <b-form-group :label="$t('forms.phonenumber')">
-                <b-form-input
-                  type="text"
-                  v-model="gridForm.phonenumber"
-                ></b-form-input>
-              </b-form-group>
-            </b-colxx>
+                <b-colxx sm="12">
+                  <b-form-group :label="$t('forms.email')">
+                    <b-form-input
+                      type="email"
+                      v-model="gridForm.email"
+                    ></b-form-input>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx v-if="!userId" sm="12">
+                  <b-form-group :label="$t('forms.password')">
+                    <b-form-input
+                      type="password"
+                      v-model="password"
+                    ></b-form-input>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx sm="12">
+                  <b-form-group :label="$t('forms.phonenumber')">
+                    <b-form-input
+                      type="text"
+                      v-model="gridForm.phonenumber"
+                    ></b-form-input>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx :sm="userId ? 6 : 12">
+                  <b-form-group :label="$t('forms.role')">
+                    <b-form-select
+                      v-model="role"
+                      :options="roleOptions"
+                      plain
+                    />
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx sm="6">
+                  <b-form-group v-if="userId" :label="$t('forms.active')">
+                    <b-form-select
+                      selected
+                      v-model="gridForm.active"
+                      :options="activeOptions"
+                      plain
+                    />
+                  </b-form-group>
+                </b-colxx>
+              </b-row>
 
-            <!-- <b-colxx v-if="!userId" sm="12">
-              <b-form-group :label="$t('forms.role')">
-                <b-form-select
-                  v-model="create_role"
-                  :options="roleOptions"
-                  plain
-                />
-              </b-form-group>
-            </b-colxx> -->
-            <b-colxx :sm="userId ? 6 : 12">
-              <b-form-group :label="$t('forms.role')">
-                <b-form-select v-model="role" :options="roleOptions" plain />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group v-if="userId" :label="$t('forms.active')">
-                <b-form-select
-                  selected
-                  v-model="gridForm.active"
-                  :options="activeOptions"
-                  plain
-                />
-              </b-form-group>
-            </b-colxx>
-          </b-row>
-
-          <b-button type="submit" variant="primary" class="mt-4">{{
-            $t("forms.save")
-          }}</b-button>
-        </b-form>
-      </b-card>
-    </b-colxx>
-  </b-row>
+              <b-button type="submit" variant="primary" class="mt-4">{{
+                $t("forms.save")
+              }}</b-button>
+            </b-form>
+          </b-card>
+        </template>
+        <template v-else>
+          <div class="loading"></div>
+        </template>
+      </b-colxx>
+    </b-row>
+  </div>
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
+import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
+
 export default {
+  components: {
+    "datatable-heading": DatatableHeading
+  },
   data() {
     return {
       userId: null,
       _role: null,
+      type: null,
       password: null,
       create_role: null,
-      sdfsdf: "sfsdfs",
       roleOptions: [
-        "Select Role",
-        { text: "Super Admin", value: 1 },
-        { text: "Admin", value: 2 },
-        { text: "Branch Admin", value: 4 },
-        { text: "User", value: 3 },
-        { text: "Casher", value: 5 },
-        { text: "Guest", value: 6 }
+        // { text: "Super Admin", value: 1 },
+        // { text: "Admin", value: 2 },
+        // { text: "Accountant", value: 7 }
       ],
       activeOptions: ["", { text: "YES", value: 1 }, { text: "NO", value: 0 }],
       gridForm: {
@@ -105,11 +112,12 @@ export default {
     };
   },
   created() {
+    this.type = this.$route.fullPath.split("/")[2];
     this.userId = this.$route.query.id;
     if (this.userId) {
       this.getUserInfo({ id: this.userId });
     } else {
-      console.log("i am here ", this.userId);
+      this.creation(this.type);
     }
   },
   methods: {
@@ -119,21 +127,35 @@ export default {
       if (this.userId) {
         console.log(this._role);
         this.updateUserInfo({
+          type: this.type,
           role: this._role,
           info: this.gridForm,
           id: this.UserInfo.id
         });
       } else {
         this.createUser({
+          type: this.type,
           info: this.gridForm,
           role: this._role,
           pass: this.password
         });
       }
+    },
+    creation(type) {
+      console.log(type);
+      switch (type) {
+        case "admins":
+          return (this.roleOptions = [
+            { text: "Super Admin", value: 1 },
+            { text: "Admin", value: 2 }
+          ]);
+        case "accountant":
+          return (this.roleOptions = [{ text: "Accountant", value: 7 }]);
+      }
     }
   },
   computed: {
-    ...mapGetters(["UserInfo"]),
+    ...mapGetters(["UserInfo", "processing", "_updateUserInfo"]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -144,14 +166,8 @@ export default {
             return 1;
           case "admin":
             return 2;
-          case "user":
-            return 3;
-          case "branchadmin":
-            return 4;
-          case "casher":
-            return 5;
-          case "guest":
-            return 6;
+          case "accountant":
+            return 7;
         }
       },
       set(newRole) {
@@ -160,14 +176,8 @@ export default {
             return (this._role = 1);
           case 2:
             return (this._role = 2);
-          case 3:
-            return (this._role = 3);
-          case 4:
-            return (this._role = 4);
-          case 5:
-            return (this._role = 5);
-          case 6:
-            return (this._role = 6);
+          case 7:
+            return (this._role = 7);
         }
         console.log("new role", newRole);
         console.log(this._role);
@@ -182,6 +192,25 @@ export default {
       this.gridForm.phonenumber = newInfo.phone_number;
       this.gridForm.role = newInfo.role[0];
       this.gridForm.active = newInfo.active;
+    },
+
+    _updateUserInfo(newVal, odt) {
+      console.log("hereeee", newVal);
+      if (newVal === 200) {
+        this.$notify(
+          "success",
+          "Operation completed successfully",
+          "user info have been updated successfully",
+          { duration: 3000, permanent: false }
+        );
+      } else {
+        this.$notify(
+          "success",
+          "Operation completed successfully",
+          "user has been created successfully",
+          { duration: 3000, permanent: false }
+        );
+      }
     }
   }
 };

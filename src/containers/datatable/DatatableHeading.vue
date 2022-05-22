@@ -4,6 +4,7 @@
       <h1>{{ title }}</h1>
       <div class="top-right-button-container">
         <b-button
+          v-if="!details"
           v-b-modal.modalright
           variant="primary"
           size="lg"
@@ -12,10 +13,10 @@
           >{{ $t("todo.add-new") }}</b-button
         >
       </div>
-      <piaf-breadcrumb />
-      <div class="mb-2 mt-2">
+      <piaf-breadcrumb v-if="reload" />
+      <div v-if="!details" class="mb-2 mt-2">
         <b-collapse id="displayOptions" class="d-md-block">
-          <div class="d-block d-md-inline-block pt-1">
+          <div v-if="reload" class="d-block d-md-inline-block pt-1">
             <b-dropdown
               v-if="Filtered"
               id="ddown1"
@@ -89,7 +90,9 @@ export default {
     "perPage",
     "Filtered",
     "sortOptions",
-    "category"
+    "category",
+    "details",
+    "reload"
   ],
   data() {
     return {

@@ -11,6 +11,9 @@
                 class="form-control"
                 v-model="user.first_name"
               />
+              <b-form-invalid-feedback v-if="!$v.form.first_name.required"
+                >Please enter Arabic description</b-form-invalid-feedback
+              >
               <span>First Name</span>
             </label>
             <label class="form-group has-float-label">
@@ -30,12 +33,12 @@
               <span>Phone Number</span>
             </div>
             <div class="form-group has-float-label">
-              <datepicker
+              <!-- <datepicker
                 :bootstrap-styling="true"
                 :placeholder="$t('form-components.date')"
                 v-model="user.dob"
                 @selected="selected_Date()"
-              ></datepicker>
+              ></datepicker> -->
               <span>Date of Birth</span>
             </div>
           </b-form>
@@ -94,7 +97,8 @@ import Datepicker from "vuejs-datepicker";
 import InputTag from "../../components/Form/InputTag";
 import { getDirection, getCurrentUser } from "../../utils";
 import { mapActions, mapGetters } from "vuex";
-
+import { validationMixin } from "vuelidate";
+const { required } = require("vuelidate/lib/validators");
 export default {
   components: {
     "input-tag": InputTag,
@@ -113,8 +117,7 @@ export default {
         { text: "Male", value: 0 }
       ],
       dropzoneOptions: {
-        url:
-          "https://lilacmarketingevents.com/tarrab-api/public/api/blocks/images/54?en[title]=dddddddddddddd&en[description]=dddddddddddddd",
+        url: "https://lilacmarketingevents.com",
         thumbnailHeight: 160,
         maxFilesize: 2,
         thumbnailWidth: 150,

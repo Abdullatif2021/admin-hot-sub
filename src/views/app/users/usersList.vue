@@ -1,7 +1,11 @@
 <template>
   <div>
     <datatable-heading
-      :title="$t('menu.users-table')"
+      :title="
+        type === 'admins'
+          ? $t('menu.admins_table')
+          : $t('menu.accountant_table')
+      "
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
       :changePageSize="changePageSize"
@@ -13,50 +17,56 @@
       @add_new="add_New"
       :sort="sort"
       :to="to"
-      :Filtered="true"
+      :reload="reload"
+      :Filtered="type === 'admins' ? true : false"
       :sortOptions="sortOptions"
       :total="total"
       :perPage="perPage"
     ></datatable-heading>
     <b-row>
       <b-colxx xxs="12">
-        <vuetable
-          ref="vuetable"
-          class="table-divided order-with-arrow"
-          :api-mode="false"
-          :data-total="dataCount"
-          :per-page="perPage"
-          :data-manager="dataManager"
-          :reactive-api-url="true"
-          :fields="fields"
-          pagination-path
-          :row-class="onRowClass"
-          @vuetable:pagination-data="onPaginationData"
-          @vuetable:row-clicked="rowClicked"
-          @vuetable:cell-rightclicked="rightClicked"
-        >
-          <template slot="actions" slot-scope="props">
-            <b-button
-              variant="outline-theme-3"
-              class="icon-button"
-              @click="modify(props.rowData.id)"
-            >
-              <i class="simple-icon-settings"></i>
-            </b-button>
-            <b-button
-              variant="outline-theme-6"
-              class="icon-button"
-              @click="delete_user(props.rowData.id)"
-            >
-              <i class="simple-icon-trash"></i>
-            </b-button>
-          </template>
-        </vuetable>
-        <vuetable-pagination-bootstrap
-          class="mt-4"
-          ref="pagination"
-          @vuetable-pagination:change-page="onChangePage"
-        />
+        <template v-if="processing">
+          <vuetable
+            ref="vuetable"
+            class="table-divided order-with-arrow"
+            :api-mode="false"
+            :data-total="dataCount"
+            :per-page="perPage"
+            :data-manager="dataManager"
+            :reactive-api-url="true"
+            :fields="fields"
+            pagination-path
+            :row-class="onRowClass"
+            @vuetable:pagination-data="onPaginationData"
+            @vuetable:row-clicked="rowClicked"
+            @vuetable:cell-rightclicked="rightClicked"
+          >
+            <template slot="actions" slot-scope="props">
+              <b-button
+                variant="outline-theme-3"
+                class="icon-button"
+                @click="modify(props.rowData.id)"
+              >
+                <i class="simple-icon-settings"></i>
+              </b-button>
+              <b-button
+                variant="outline-theme-6"
+                class="icon-button"
+                @click="delete_user(props.rowData.id)"
+              >
+                <i class="simple-icon-trash"></i>
+              </b-button>
+            </template>
+          </vuetable>
+          <vuetable-pagination-bootstrap
+            class="mt-4"
+            ref="pagination"
+            @vuetable-pagination:change-page="onChangePage"
+          />
+        </template>
+        <template v-else>
+          <div class="loading"></div>
+        </template>
       </b-colxx>
     </b-row>
 
@@ -95,6 +105,8 @@ export default {
       dir: null,
       role: null,
       order_by: null,
+      type: null,
+      reload: true,
       search: null,
       actions: null,
       isLoad: false,
@@ -118,12 +130,12 @@ export default {
       selectedItems: [],
       sortOptions: [
         {
-          column: "user",
-          label: "User"
+          column: null,
+          label: "All"
         },
         {
-          column: "guest",
-          label: "Guest"
+          column: "admin",
+          label: "Admin"
         },
         {
           column: "superadmin",
@@ -194,11 +206,12 @@ export default {
       ]
     };
   },
-  mounted() {
-    this.$refs.vuetable.setData(this.usersList);
-  },
+
   created() {
+    this.type = this.$route.fullPath.split("/")[2];
+    console.log(this.type);
     this.getUsersList({
+      type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
       role: null,
       dir: null,
       search: null,
@@ -218,6 +231,8 @@ export default {
     },
     cancle() {
       this.this.getUsersList({
+        type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+
         role: null,
         dir: null,
         search: null,
@@ -228,13 +243,13 @@ export default {
     },
     modify(id) {
       this.$router.push({
-        path: `${adminRoot}/users/user`,
+        path: `${adminRoot}/${this.type}/user`,
         query: { id: id }
       });
     },
     add_New() {
       this.$router.push({
-        path: `${adminRoot}/users/user`
+        path: `${adminRoot}/${this.type}/user`
       });
     },
     rowClicked(dataItem, event) {
@@ -275,6 +290,9 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
           this.getUsersList({
+            type:
+              this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+
             role: this.sort.column,
             dir: this.dir,
             search: this.search,
@@ -287,6 +305,9 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
           this.getUsersList({
+            type:
+              this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+
             role: this.sort.column,
             dir: this.dir,
             search: this.search,
@@ -305,6 +326,9 @@ export default {
       } else {
         this.page = page;
         this.getUsersList({
+          type:
+            this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+
           role: this.sort.column,
           dir: this.dir,
           search: this.search,
@@ -321,6 +345,8 @@ export default {
       console.log(perPage);
       this.limit = perPage;
       this.getUsersList({
+        type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+
         role: this.sort.column,
         dir: this.dir,
         search: this.search,
@@ -334,6 +360,8 @@ export default {
       this.sort = sort;
 
       this.getUsersList({
+        type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+
         role: sort.column,
         dir: this.dir,
         search: this.search,
@@ -346,6 +374,8 @@ export default {
       console.log(val);
       this.search = val;
       this.getUsersList({
+        type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+
         role: this.sort.column,
         dir: this.dir,
         search: val,
@@ -389,7 +419,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["usersList", "ListActions", "_successDeleteUser"]),
+    ...mapGetters([
+      "usersList",
+      "ListActions",
+      "_successDeleteUser",
+      "processing"
+    ]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -401,6 +436,20 @@ export default {
     }
   },
   watch: {
+    $route(to, from) {
+      this.reload = false;
+      this.type = this.$route.fullPath.split("/")[2];
+      console.log("from watcher", this.type);
+      this.getUsersList({
+        type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+        role: null,
+        dir: null,
+        search: null,
+        order_by: null,
+        limit: null,
+        page: null
+      });
+    },
     searchChange(newQuestion, oldQuestion) {
       if (newQuestion) {
         console.log("old", oldQuestion);
@@ -419,6 +468,7 @@ export default {
     },
     usersList(newList, old) {
       this.$refs.vuetable.setData(newList);
+      this.reload = true;
     },
     ListActions(newActions, old) {
       this.perPage = newActions.per_page;
@@ -426,6 +476,9 @@ export default {
       this.to = newActions.to;
       this.total = newActions.total;
       this.$refs.pagination.setPaginationData(newActions);
+    },
+    type(newVal, old) {
+      console.log("type", newVal);
     }
   }
 };

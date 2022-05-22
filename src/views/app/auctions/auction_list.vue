@@ -8,6 +8,7 @@
       :searchChange="searchChange"
       :from="from"
       @add_new="add_New"
+      :reload="true"
       :sort="sort"
       :to="to"
       :Filtered="false"

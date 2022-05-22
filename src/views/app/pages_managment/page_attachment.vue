@@ -18,287 +18,322 @@
               />
             </b-colxx>
           </div>
-          <add-new-modal @AddNewImage="createImage"></add-new-modal>
+          <add-new-modal
+            :enable="enable"
+            @AddNewImage="createImage"
+          ></add-new-modal>
         </b-tab>
         <b-tab @click="openFile()" title="Files">
           <b-row>
-            <b-colxx xs="12" md="6" class="mb-3">
-              <b-card>
-                <vuetable
-                  ref="vuetable"
-                  :api-mode="false"
-                  :data-total="dataCount"
-                  :per-page="perPage"
-                  :reactive-api-url="true"
-                  :fields="fields"
-                >
-                  <template slot="actions" slot-scope="props">
-                    <b-dropdown
-                      id="langddm"
-                      class="ml-2"
-                      variant="light"
-                      size="sm"
-                      toggle-class="language-button"
-                    >
-                      <template #button-content>
-                        <i class="simple-icon-settings"></i>
-                      </template>
-                      <b-dropdown-item
-                        v-for="(item, index) in Options"
-                        :key="index"
-                        @click="file_Action(item.value, props.rowData)"
-                        >{{ item.name }}</b-dropdown-item
+            <template v-if="isLoadAttach">
+              <b-colxx xs="12" md="6" class="mb-3">
+                <b-card>
+                  <vuetable
+                    ref="vuetable"
+                    :api-mode="false"
+                    :data-total="dataCount"
+                    :per-page="perPage"
+                    :reactive-api-url="true"
+                    :fields="fields"
+                  >
+                    <template slot="actions" slot-scope="props">
+                      <b-dropdown
+                        id="langddm"
+                        class="ml-2"
+                        variant="light"
+                        size="sm"
+                        toggle-class="language-button"
                       >
-                    </b-dropdown>
-                  </template>
-                </vuetable>
-              </b-card>
-            </b-colxx>
-            <b-colxx xs="12" md="6" class="mb-3">
-              <b-card class="mb-4" :title="$t('forms.create')">
-                <b-form
-                  @submit.prevent="onValitadeFormSubmit()"
-                  class="av-tooltip tooltip-label-right"
-                >
-                  <b-form-group
-                    :label="$t('pages.en_title')"
-                    class="has-float-label mb-4"
+                        <template #button-content>
+                          <i class="simple-icon-settings"></i>
+                        </template>
+                        <b-dropdown-item
+                          v-for="(item, index) in Options"
+                          :key="index"
+                          @click="file_Action(item.value, props.rowData)"
+                          >{{ item.name }}</b-dropdown-item
+                        >
+                      </b-dropdown>
+                    </template>
+                  </vuetable>
+                </b-card>
+              </b-colxx>
+              <b-colxx xs="12" md="6" class="mb-3">
+                <b-card class="mb-4" :title="$t('forms.create')">
+                  <b-form
+                    @submit.prevent="onValitadeFormSubmit()"
+                    class="av-tooltip tooltip-label-right"
                   >
-                    <b-form-input
-                      type="text"
-                      v-model="$v.form.en_title.$model"
-                      :state="!$v.form.en_title.$error"
-                    />
-                    <b-form-invalid-feedback v-if="!$v.form.en_title.required"
-                      >Please enter English title</b-form-invalid-feedback
+                    <b-form-group
+                      :label="$t('pages.en_title')"
+                      class="has-float-label mb-4"
                     >
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('pages.en_desc')"
-                    class="has-float-label mb-4"
-                  >
-                    <b-form-input
-                      type="text"
-                      v-model="$v.form.en_description.$model"
-                      :state="!$v.form.en_description.$error"
-                    />
-                    <b-form-invalid-feedback
-                      v-if="!$v.form.en_description.required"
-                      >Please enter English description</b-form-invalid-feedback
+                      <b-form-input
+                        type="text"
+                        v-model="$v.form.en_title.$model"
+                        :state="!$v.form.en_title.$error"
+                      />
+                      <b-form-invalid-feedback v-if="!$v.form.en_title.required"
+                        >Please enter English title</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                    <b-form-group
+                      :label="$t('pages.en_desc')"
+                      class="has-float-label mb-4"
                     >
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('pages.ar_title')"
-                    class="has-float-label mb-4"
-                  >
-                    <b-form-input
-                      type="text"
-                      v-model="$v.form.ar_title.$model"
-                      :state="!$v.form.ar_title.$error"
-                    />
-                    <b-form-invalid-feedback v-if="!$v.form.ar_title.required"
-                      >Please enter Arabic title</b-form-invalid-feedback
+                      <b-form-input
+                        type="text"
+                        v-model="$v.form.en_description.$model"
+                        :state="!$v.form.en_description.$error"
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.form.en_description.required"
+                        >Please enter English
+                        description</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                    <b-form-group
+                      :label="$t('pages.ar_title')"
+                      class="has-float-label mb-4"
                     >
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('pages.ar_desc')"
-                    class="has-float-label mb-4"
-                  >
-                    <b-form-input
-                      type="text"
-                      v-model="$v.form.ar_description.$model"
-                      :state="!$v.form.ar_description.$error"
-                    />
-                    <b-form-invalid-feedback
-                      v-if="!$v.form.ar_description.required"
-                      >Please enter Arabic description</b-form-invalid-feedback
+                      <b-form-input
+                        type="text"
+                        v-model="$v.form.ar_title.$model"
+                        :state="!$v.form.ar_title.$error"
+                      />
+                      <b-form-invalid-feedback v-if="!$v.form.ar_title.required"
+                        >Please enter Arabic title</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                    <b-form-group
+                      :label="$t('pages.ar_desc')"
+                      class="has-float-label mb-4"
                     >
-                  </b-form-group>
-                  <label class="form-group has-float-label">
-                    <b-colxx xxs="12" style="padding: 0px;">
-                      <vue-dropzone
-                        ref="myVueDropzone"
-                        id="dropzone"
-                        :options="dropzoneOptions"
-                        @vdropzone-files-added="fileAdded"
-                        @vdropzone-complete="afterUploadComplete"
-                        @vdropzone-sending-multiple="sendMessage"
-                        @vdropzone-removed-file="fileRemoved"
-                      ></vue-dropzone>
-                    </b-colxx>
-                    <span>File</span>
-                  </label>
+                      <b-form-input
+                        type="text"
+                        v-model="$v.form.ar_description.$model"
+                        :state="!$v.form.ar_description.$error"
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.form.ar_description.required"
+                        >Please enter Arabic
+                        description</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                    <label class="form-group has-float-label">
+                      <b-colxx xxs="12" style="padding: 0px;">
+                        <vue-dropzone
+                          ref="myVueDropzone"
+                          id="dropzone"
+                          :options="dropzoneOptions"
+                          @vdropzone-files-added="fileAdded"
+                          @vdropzone-complete="afterUploadComplete"
+                          @vdropzone-sending-multiple="sendMessage"
+                          @vdropzone-removed-file="fileRemoved"
+                        ></vue-dropzone>
+                      </b-colxx>
+                      <span>File</span>
+                    </label>
 
-                  <b-button type="submit" variant="primary" class="mt-4">{{
-                    $t("forms.submit")
-                  }}</b-button>
-                </b-form>
-              </b-card>
-            </b-colxx>
+                    <b-button
+                      :disabled="enable"
+                      type="submit"
+                      variant="primary"
+                      class="mt-4"
+                      >{{ $t("forms.submit") }}</b-button
+                    >
+                  </b-form>
+                </b-card>
+              </b-colxx>
+            </template>
+            <template v-else>
+              <div class="loading"></div>
+            </template>
           </b-row>
         </b-tab>
         <b-tab @click="openVideo()" title="Videos">
           <b-row>
-            <b-colxx style="display: grid;" xs="12" md="12" class="mb-3">
-              <div class="top-right-button-container">
-                <b-button-group style="float: right;padding: 12px;">
-                  <b-button v-b-modal.modalbackdrop variant="primary">{{
-                    $t("modal.create-new-video")
-                  }}</b-button>
-                </b-button-group>
-              </div>
-              <b-card>
-                <vuetable
-                  ref="video_vuetable"
-                  :api-mode="false"
-                  :reactive-api-url="true"
-                  :fields="videos_fields"
-                >
-                  <template slot="actions" slot-scope="props">
-                    <b-dropdown
-                      id="langddm"
-                      class="ml-2"
-                      variant="light"
-                      size="sm"
-                      toggle-class="language-button"
-                    >
-                      <template #button-content>
-                        <i class="simple-icon-settings"></i>
-                      </template>
-                      <b-dropdown-item
-                        v-for="(item, index) in videos_Options"
-                        :key="index"
-                        @click="videos_Action(item.value, props.rowData)"
-                        >{{ item.name }}</b-dropdown-item
+            <template v-if="isLoadAttach">
+              <b-colxx style="display: grid;" xs="12" md="12" class="mb-3">
+                <div class="top-right-button-container">
+                  <b-button-group style="float: right;padding: 12px;">
+                    <b-button v-b-modal.modalbackdrop variant="primary">{{
+                      $t("modal.create-new-video")
+                    }}</b-button>
+                  </b-button-group>
+                </div>
+                <b-card>
+                  <vuetable
+                    ref="video_vuetable"
+                    :api-mode="false"
+                    :reactive-api-url="true"
+                    :fields="videos_fields"
+                  >
+                    <template slot="actions" slot-scope="props">
+                      <b-dropdown
+                        id="langddm"
+                        class="ml-2"
+                        variant="light"
+                        size="sm"
+                        toggle-class="language-button"
                       >
-                    </b-dropdown>
-                  </template>
-                </vuetable>
-              </b-card>
-            </b-colxx>
-            <add-new-video-model @AddNewVideo="createVideo" />
+                        <template #button-content>
+                          <i class="simple-icon-settings"></i>
+                        </template>
+                        <b-dropdown-item
+                          v-for="(item, index) in videos_Options"
+                          :key="index"
+                          @click="videos_Action(item.value, props.rowData)"
+                          >{{ item.name }}</b-dropdown-item
+                        >
+                      </b-dropdown>
+                    </template>
+                  </vuetable>
+                </b-card>
+              </b-colxx>
+              <add-new-video-model
+                :enable="enable"
+                @AddNewVideo="createVideo"
+              />
+            </template>
+            <template v-else>
+              <div class="loading"></div>
+            </template>
           </b-row>
         </b-tab>
         <b-tab @click="openYoutubeVideo()" title="Youtube Videos">
           <b-row>
-            <b-colxx xs="12" md="6" class="mb-3">
-              <b-card>
-                <vuetable
-                  ref="youtubeVideo_vuetable"
-                  :api-mode="false"
-                  :data-total="dataCount"
-                  :per-page="perPage"
-                  :reactive-api-url="true"
-                  :fields="youtube_fields"
-                >
-                  <template slot="actions" slot-scope="props">
-                    <b-dropdown
-                      id="langddm"
-                      class="ml-2"
-                      variant="light"
-                      size="sm"
-                      toggle-class="language-button"
-                    >
-                      <template #button-content>
-                        <i class="simple-icon-settings"></i>
-                      </template>
-                      <b-dropdown-item
-                        v-for="(item, index) in youtube_Options"
-                        :key="index"
-                        @click="youtube_Action(item.value, props.rowData)"
-                        >{{ item.name }}</b-dropdown-item
+            <template v-if="isLoadAttach">
+              <b-colxx xs="12" md="6" class="mb-3">
+                <b-card>
+                  <vuetable
+                    ref="youtubeVideo_vuetable"
+                    :api-mode="false"
+                    :data-total="dataCount"
+                    :per-page="perPage"
+                    :reactive-api-url="true"
+                    :fields="youtube_fields"
+                  >
+                    <template slot="actions" slot-scope="props">
+                      <b-dropdown
+                        id="langddm"
+                        class="ml-2"
+                        variant="light"
+                        size="sm"
+                        toggle-class="language-button"
                       >
-                    </b-dropdown>
-                  </template>
-                </vuetable>
-              </b-card>
-            </b-colxx>
-            <b-colxx xs="12" md="6" class="mb-3">
-              <b-card
-                class="mb-4"
-                :title="edit ? $t('forms.edit') : $t('forms.create')"
-              >
-                <b-form
-                  @submit.prevent="onValitadeYoutubeFormSubmit()"
-                  class="av-tooltip tooltip-label-right"
+                        <template #button-content>
+                          <i class="simple-icon-settings"></i>
+                        </template>
+                        <b-dropdown-item
+                          v-for="(item, index) in youtube_Options"
+                          :key="index"
+                          @click="youtube_Action(item.value, props.rowData)"
+                          >{{ item.name }}</b-dropdown-item
+                        >
+                      </b-dropdown>
+                    </template>
+                  </vuetable>
+                </b-card>
+              </b-colxx>
+              <b-colxx xs="12" md="6" class="mb-3">
+                <b-card
+                  class="mb-4"
+                  :title="edit ? $t('forms.edit') : $t('forms.create')"
                 >
-                  <b-form-group
-                    :label="$t('forms.en_title')"
-                    class="has-float-label mb-4"
+                  <b-form
+                    @submit.prevent="onValitadeYoutubeFormSubmit()"
+                    class="av-tooltip tooltip-label-right"
                   >
-                    <b-form-input
-                      type="text"
-                      v-model="$v.youtube_form.en_title.$model"
-                      :state="!$v.youtube_form.en_title.$error"
-                    />
-                    <b-form-invalid-feedback
-                      v-if="!$v.youtube_form.en_title.required"
-                      >Please enter English title</b-form-invalid-feedback
+                    <b-form-group
+                      :label="$t('forms.en_title')"
+                      class="has-float-label mb-4"
                     >
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('forms.en_desc')"
-                    class="has-float-label mb-4"
-                  >
-                    <b-form-input
-                      type="text"
-                      v-model="$v.youtube_form.en_description.$model"
-                      :state="!$v.youtube_form.en_description.$error"
-                    />
-                    <b-form-invalid-feedback
-                      v-if="!$v.youtube_form.en_description.required"
-                      >Please enter English description</b-form-invalid-feedback
+                      <b-form-input
+                        type="text"
+                        v-model="$v.youtube_form.en_title.$model"
+                        :state="!$v.youtube_form.en_title.$error"
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.youtube_form.en_title.required"
+                        >Please enter English title</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                    <b-form-group
+                      :label="$t('forms.en_desc')"
+                      class="has-float-label mb-4"
                     >
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('forms.en_title')"
-                    class="has-float-label mb-4"
-                  >
-                    <b-form-input
-                      type="text"
-                      v-model="$v.youtube_form.ar_title.$model"
-                      :state="!$v.youtube_form.ar_title.$error"
-                    />
-                    <b-form-invalid-feedback
-                      v-if="!$v.youtube_form.ar_title.required"
-                      >Please enter Arabic title</b-form-invalid-feedback
+                      <b-form-input
+                        type="text"
+                        v-model="$v.youtube_form.en_description.$model"
+                        :state="!$v.youtube_form.en_description.$error"
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.youtube_form.en_description.required"
+                        >Please enter English
+                        description</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                    <b-form-group
+                      :label="$t('forms.en_title')"
+                      class="has-float-label mb-4"
                     >
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('forms.ar_desc')"
-                    class="has-float-label mb-4"
-                  >
-                    <b-form-input
-                      type="text"
-                      v-model="$v.youtube_form.ar_description.$model"
-                      :state="!$v.youtube_form.ar_description.$error"
-                    />
-                    <b-form-invalid-feedback
-                      v-if="!$v.youtube_form.ar_description.required"
-                      >Please enter Arabic description</b-form-invalid-feedback
+                      <b-form-input
+                        type="text"
+                        v-model="$v.youtube_form.ar_title.$model"
+                        :state="!$v.youtube_form.ar_title.$error"
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.youtube_form.ar_title.required"
+                        >Please enter Arabic title</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                    <b-form-group
+                      :label="$t('forms.ar_desc')"
+                      class="has-float-label mb-4"
                     >
-                  </b-form-group>
-                  <b-form-group
-                    :label="$t('block.path')"
-                    class="has-float-label mb-4"
-                  >
-                    <b-form-input
-                      type="text"
-                      v-model="$v.youtube_form.path.$model"
-                      :state="!$v.youtube_form.path.$error"
-                    />
-                    <b-form-invalid-feedback
-                      v-if="!$v.youtube_form.path.required"
-                      >Please enter Youtube Link</b-form-invalid-feedback
+                      <b-form-input
+                        type="text"
+                        v-model="$v.youtube_form.ar_description.$model"
+                        :state="!$v.youtube_form.ar_description.$error"
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.youtube_form.ar_description.required"
+                        >Please enter Arabic
+                        description</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                    <b-form-group
+                      :label="$t('block.path')"
+                      class="has-float-label mb-4"
                     >
-                  </b-form-group>
+                      <b-form-input
+                        type="text"
+                        v-model="$v.youtube_form.path.$model"
+                        :state="!$v.youtube_form.path.$error"
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.youtube_form.path.required"
+                        >Please enter Youtube Link</b-form-invalid-feedback
+                      >
+                    </b-form-group>
 
-                  <b-button type="submit" variant="primary" class="mt-4">{{
-                    edit ? $t("forms.save") : $t("forms.submit")
-                  }}</b-button>
-                </b-form>
-              </b-card>
-            </b-colxx>
+                    <b-button
+                      :disabled="!enable"
+                      type="submit"
+                      variant="primary"
+                      class="mt-4"
+                      >{{
+                        edit ? $t("forms.save") : $t("forms.submit")
+                      }}</b-button
+                    >
+                  </b-form>
+                </b-card>
+              </b-colxx>
+            </template>
+            <template v-else>
+              <div class="loading"></div>
+            </template>
           </b-row>
         </b-tab>
       </b-tabs>
@@ -336,9 +371,11 @@ export default {
     return {
       pageData: null,
       _data: null,
+      enable: false,
       itemId: null,
       meta_type_id: null,
       textarea: null,
+      isLoadAttach: false,
       thumbs: null,
       images: null,
       file: null,
@@ -594,6 +631,7 @@ export default {
     // -------------------------------files---------------------------
     openFile() {
       this.getPageFileList({ id: this.pageId });
+      this.isLoadAttach = false;
     },
     file_Action(value, item) {
       console.log(item);
@@ -623,9 +661,12 @@ export default {
     },
     onValitadeFormSubmit() {
       // window.top.close();
+
       this.$v.$touch();
       this.$v.form.$touch();
       if (!this.$v.form.$invalid) {
+        this.enable = false;
+
         this.createPageFile({
           en_title: this.form.en_title,
           en_description: this.form.en_description,
@@ -679,17 +720,21 @@ export default {
     // --------------------------------videos--------------------------
     openVideo() {
       this.getPageVideosList({ id: this.pageId });
+      this.isLoadAttach = false;
     },
     // videos
     // youtube
     openYoutubeVideo() {
-      this.getPageYoutubeVideoList({ id: this.blockId });
+      this.getPageYoutubeVideoList({ id: this.pageId });
+      this.isLoadAttach = false;
     },
 
     onValitadeYoutubeFormSubmit() {
       this.$v.$touch();
       this.$v.youtube_form.$touch();
       if (!this.$v.youtube_form.$invalid) {
+        this.enable = false;
+
         if (!this.edit) {
           this.createPageYoutubeVideo({
             ar_title: this.youtube_form.ar_title,
@@ -755,15 +800,23 @@ export default {
   watch: {
     _pageImageList: function(val) {
       console.log("_pageImageList", val);
+      this.enable = true;
     },
     _pageFileList(newData, old) {
+      this.isLoadAttach = true;
+      this.enable = true;
+
       this.$refs.vuetable.setData(newData);
     },
     _pageVideosList(newData, old) {
+      this.isLoadAttach = true;
+      this.enable = true;
+
       console.log("i am here");
       this.$refs.video_vuetable.setData(newData);
     },
     _sccussCreateFile(newData, old) {
+      this.enable = true;
       this.form.en_title = null;
       this.form.ar_title = null;
       this.form.en_description = null;
@@ -771,6 +824,8 @@ export default {
       this.file = null;
     },
     _pageYoutubeVideosList(newData, old) {
+      this.isLoadAttach = true;
+      this.enable = true;
       this.$refs.youtubeVideo_vuetable.setData(newData);
       this.youtube_form.ar_title = null;
       this.youtube_form.ar_description = null;

@@ -4,45 +4,49 @@
       <piaf-breadcrumb :heading="$t('menu.settings-list')" />
       <div class="separator mb-5"></div>
     </b-colxx>
-
-    <b-colxx xxs="12" v-for="item in settings" :key="item.id">
-      <b-card class="mb-4" :title="item.key">
-        <b-form>
-          <b-row>
-            <b-colxx xxs="12">
-              <b-form-input
-                @change="process(item.id, item.key, item.value)"
-                v-model="item.value"
-                type="text"
-              ></b-form-input>
-            </b-colxx>
-          </b-row>
-        </b-form>
-      </b-card>
-    </b-colxx>
-    <b-colxx xxs="12">
-      <b-card v-if="!isLoadSettings" class="mb-4">
-        <b-form>
-          <b-row>
-            <b-colxx
-              xxs="12"
-              style="display: flex;align-items: center;justify-content: center;"
-            >
-              <!-- <h3>{{ items.length }}</h3> -->
-              <b-button
-                :disabled="!items"
-                @click="save()"
-                class="mb-2"
-                size="lg"
-                variant="primary"
-                >{{ $t("button.save") }} {{ items.length }}
-                {{ $t("button.changes") }}</b-button
+    <template v-if="!isLoadSettings">
+      <b-colxx xxs="12" v-for="item in settings" :key="item.id">
+        <b-card class="mb-4" :title="item.key">
+          <b-form>
+            <b-row>
+              <b-colxx xxs="12">
+                <b-form-input
+                  @change="process(item.id, item.key, item.value)"
+                  v-model="item.value"
+                  type="text"
+                ></b-form-input>
+              </b-colxx>
+            </b-row>
+          </b-form>
+        </b-card>
+      </b-colxx>
+      <b-colxx xxs="12">
+        <b-card v-if="!isLoadSettings" class="mb-4">
+          <b-form>
+            <b-row>
+              <b-colxx
+                xxs="12"
+                style="display: flex;align-items: center;justify-content: center;"
               >
-            </b-colxx>
-          </b-row>
-        </b-form>
-      </b-card>
-    </b-colxx>
+                <!-- <h3>{{ items.length }}</h3> -->
+                <b-button
+                  :disabled="!items"
+                  @click="save()"
+                  class="mb-2"
+                  size="lg"
+                  variant="primary"
+                  >{{ $t("button.save") }} {{ items.length }}
+                  {{ $t("button.changes") }}</b-button
+                >
+              </b-colxx>
+            </b-row>
+          </b-form>
+        </b-card>
+      </b-colxx>
+    </template>
+    <template v-else>
+      <div class="loading"></div>
+    </template>
   </b-row>
 </template>
 

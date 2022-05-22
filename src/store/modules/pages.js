@@ -56,15 +56,22 @@ const mutations = {
     state.isLoadPages = true;
     state.Pages = [];
   },
+  getPagesListEnded(state) {
+    state.isLoadPages = false;
+  },
   getPagesSuccess(state, payload) {
     state.isLoadPages = false;
     state.Pages = payload.data;
     state.pagesPaginations = payload;
   },
   getPageStarted(state) {
+    state.isLoadPages = true;
+
     state.page = null;
   },
   getPageSuccess(state, payload) {
+    state.isLoadPages = false;
+
     state.page = payload.data;
   },
   updatedSuccessfuly(state) {
@@ -147,11 +154,13 @@ const actions = {
         }
       })
       .then(res => {
-        if (res.status) {
-          commit("getPagesSuccess", res.data);
-        } else {
-          commit("getPagesError", "error:getPages");
+        if (res.status === 200) {
+          commit("getPagesListEnded", false);
         }
+        return res;
+      })
+      .then(res => {
+        commit("getPagesSuccess", res.data);
       });
   },
   getPage({ commit }, payload) {
