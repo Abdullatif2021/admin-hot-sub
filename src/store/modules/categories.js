@@ -4,17 +4,17 @@ import router from "../../router";
 import { adminRoot } from "../../constants/config";
 
 const state = {
-  isLoadCategories: true,
   paginations: null,
   categories: null,
   updated_Successfuly: null,
   Error: "",
   category: null,
-  successDeleteCategory: null
+  successDeleteCategory: null,
+  processing: false
 };
 
 const getters = {
-  isLoadCategories: state => state.isLoadCategories,
+  _isLoadCategories: state => state.processing,
   cateError: state => state.Error,
   cate_paginations: state => state.paginations,
   categories: state => state.categories,
@@ -25,14 +25,12 @@ const getters = {
 };
 
 const mutations = {
-  getCategoriesStarted(state) {
-    state.isLoadCategories = true;
-    state.categories = [];
-  },
   getCategoriesSuccess(state, categories) {
-    state.isLoadCategories = false;
     state.categories = categories.data;
     state.paginations = categories;
+  },
+  setProcessing(state, payload) {
+    state.processing = payload;
   },
   getCategorySuccess(state, data) {
     state.category = data.data;
@@ -41,7 +39,6 @@ const mutations = {
     state.updated_Successfuly = data;
   },
   getCategoriesError(state, error) {
-    state.isLoadCategories = false;
     state.Error = error;
     state.categories = null;
   },
@@ -51,10 +48,10 @@ const mutations = {
 };
 
 const actions = {
-  getCategories({ commit }, payload) {
-    commit("getCategoriesStarted");
+  getCategories: async ({ commit }, payload) => {
+    commit("setProcessing", false);
 
-    axios
+    await axios
       .get(`${apiUrl}/categories`, {
         params: {
           order_dir: payload.dir,
@@ -65,11 +62,14 @@ const actions = {
         }
       })
       .then(res => {
-        if (res.status) {
-          console.log(res);
+        console.log("here");
+        commit("setProcessing", true);
+        return res;
+      })
+
+      .then(res => {
+        if (res.status === 200) {
           commit("getCategoriesSuccess", res.data);
-        } else {
-          commit("getCategoriesError", "error:getCategories");
         }
       });
   },
@@ -123,7 +123,8 @@ const actions = {
 
   deleteCategory({ commit, dispatch }, payload) {
     const id = payload.Id;
-    axios.delete(`${apiUrl}/categories/${id}`).then(res => {
+    const block = null;
+    axios.delete(`${apiUrl}/${block}/categories/${id}`).then(res => {
       if (res.status === 200) {
         commit("deleteCategory", res);
       }

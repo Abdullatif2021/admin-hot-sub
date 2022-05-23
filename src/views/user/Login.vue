@@ -165,10 +165,7 @@ export default {
     },
     currentUser(val) {
       if (val != null) {
-        console.log("current user");
-        setTimeout(() => {
-          this.$router.push(adminRoot);
-        }, 500);
+        this.$router.push(adminRoot);
       }
     },
     loginError(val) {

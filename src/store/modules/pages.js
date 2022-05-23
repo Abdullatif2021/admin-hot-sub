@@ -20,12 +20,14 @@ const state = {
   successAddPageVideo: null,
   pageYoutubeVideosList: null,
   successAddPageYoutubeVideo: null,
-  successDeletePage: null
+  successDeletePage: null,
+  isLoadMeta: true
 };
 
 const getters = {
   // general
   _isLoadPages: state => state.isLoadPages,
+  _isLoadMeta: state => state.isLoadMeta,
   _PagesError: state => state._Error,
   _pagesPaginations: state => state.pagesPaginations,
   _Pages: state => state.Pages,
@@ -86,8 +88,14 @@ const mutations = {
     state.successDeletePage = payload;
   },
   // metaData
+  getmetaStarted(state, payload) {
+    state.isLoadMeta = true;
+  },
   getMetaList(state, payload) {
     state.metaList = payload.data;
+  },
+  getmetaEnded(state, payload) {
+    state.isLoadMeta = false;
   },
   updateMetaPageSuccess(state, payload) {
     state.updateMetaPage = true;
@@ -278,13 +286,22 @@ const actions = {
 
   // ------------------------- meta data --------------------
   getMetaList({ commit }, payload) {
+    commit("getmetaStarted");
     const id = payload.id;
-    axios.get(`${apiUrl}/pages/metadata/${id}`).then(res => {
-      commit("getMetaList", res.data);
-    });
+    axios
+      .get(`${apiUrl}/pages/metadata/${id}`)
+      .then(res => {
+        commit("getmetaEnded");
+        return res;
+      })
+      .then(res => {
+        commit("getMetaList", res.data);
+      });
   },
 
   createMetaPage({ commit, dispatch }, payload) {
+    commit("getmetaStarted");
+
     const id = payload.pageId;
     axios
       .post(
@@ -297,6 +314,10 @@ const actions = {
         {}
       )
       .then(res => {
+        commit("getmetaEnded");
+        return res;
+      })
+      .then(res => {
         if (res.status === 201 || res.status === 200) {
           dispatch("getMetaList", { id });
           commit("updateMetaPageSuccess");
@@ -304,6 +325,8 @@ const actions = {
       });
   },
   updateMetaPage({ commit, dispatch }, payload) {
+    commit("getmetaStarted");
+
     const metadata_id = payload.metadata_id;
     const id = payload.pageId;
     axios
@@ -317,6 +340,10 @@ const actions = {
         {}
       )
       .then(res => {
+        commit("getmetaEnded");
+        return res;
+      })
+      .then(res => {
         if (res.status === 200 || res.status === 201) {
           dispatch("getMetaList", { id });
           commit("updateMetaPageSuccess");
@@ -324,11 +351,19 @@ const actions = {
       });
   },
   deleteMetaPage({ commit, dispatch }, payload) {
+    commit("getmetaStarted");
+
     const metadata_id = payload.metadata_id;
     const id = payload.pageId;
-    axios.delete(`${apiUrl}/pages/metadata/${id}/${metadata_id}`).then(res => {
-      dispatch("getMetaList", { id });
-    });
+    axios
+      .delete(`${apiUrl}/pages/metadata/${id}/${metadata_id}`)
+      .then(res => {
+        commit("getmetaEnded");
+        return res;
+      })
+      .then(res => {
+        dispatch("getMetaList", { id });
+      });
   },
   getMetaTypeList({ commit }, payload) {
     axios.get(`${apiUrl}/metadata/meta-type`).then(res => {

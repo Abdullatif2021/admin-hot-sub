@@ -7,7 +7,7 @@ const state = {
   block: null,
   blockCategories: null,
   _Error: "",
-  isLoad: true,
+  isLoadBlock: true,
   blockImageList: null,
   successAddBlockImage: null,
   blockMetaList: null,
@@ -19,7 +19,8 @@ const state = {
   successAddBlockVideo: null,
   blockYoutubeVideosList: null,
   successAddBlockYoutubeVideo: null,
-  successDeleteBlock: null
+  successDeleteBlock: null,
+  processing: false
 };
 
 const getters = {
@@ -30,6 +31,7 @@ const getters = {
   _block: state => state.block,
   _blockCategories: state => state.blockCategories,
   _successDeleteBlock: state => state.successDeleteBlock,
+  _isLoadBlock: state => state.processing,
   // images
   _blockImageList: state => state.blockImageList,
   _successAddBlockImage: state => state.successAddBlockImage,
@@ -50,34 +52,25 @@ const getters = {
 
 const mutations = {
   //  general
-  getBlocksStarted(state) {
-    state.isLoad = true;
-    state.blocks = [];
-  },
   getBlocksSuccess(state, blocks) {
-    state.isLoad = true;
     state.blocks = blocks.data;
   },
   getPaginationsSuccess(state, data) {
-    state.isLoad = true;
     state._paginations = data;
   },
-  getBlockStarted(state) {
-    state.isLoad = false;
-    state.block = null;
+  setProcessing(state, payload) {
+    state.processing = payload;
   },
+
   getBlockSuccess(state, block) {
-    state.isLoad = true;
     state.block = block;
   },
   getBlockError(state, error) {
-    state.isLoad = false;
     state._Error = error;
     state.blocks = null;
     state.block = null;
   },
   get_BlockCategories(state, payload) {
-    state.isLoad = false;
     state.blockCategories = payload;
   },
   // image
@@ -139,9 +132,9 @@ const mutations = {
 
 const actions = {
   // -------------------- general block ---------------------
-  getBlocksList({ commit }, payload) {
-    commit("getBlocksStarted");
-    axios
+  getBlocksList: async ({ commit }, payload) => {
+    commit("setProcessing", false);
+    await axios
       .get(`${apiUrl}/blocks`, {
         params: {
           order_dir: payload.dir,
@@ -153,9 +146,13 @@ const actions = {
         }
       })
       .then(res => {
-        if (res.status) {
-          commit("getPaginationsSuccess", res.data);
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        if (res.status === 200) {
           commit("getBlocksSuccess", res.data);
+          commit("getPaginationsSuccess", res.data);
         }
       })
       .catch(error => {
@@ -163,14 +160,8 @@ const actions = {
         commit("getBlockError", error);
       });
   },
-  getBlockCategories({ commit }, payload) {
-    axios.get(`${apiUrl}/blocks/categories`).then(res => {
-      console.log("hi from categories", res);
-      commit("get_BlockCategories", res.data.data);
-    });
-  },
+
   getBlock({ commit }, payload) {
-    commit("getBlockStarted");
     const blockId = payload.id;
     axios
       .get(`${apiUrl}/blocks/${blockId}/slug`)
@@ -459,6 +450,29 @@ const actions = {
           dispatch("getBlockYoutubeVideoList", { id });
         }
       });
+  },
+  // ++++++++++++++++++++ Block Categories Managment +++++++++++++++++++++++
+  getBlockCategories: async ({ commit }, payload) => {
+    await axios.get(`${apiUrl}/blocks/categories`).then(res => {
+      console.log("hi from categories", res);
+      commit("get_BlockCategories", res.data.data);
+    });
+  },
+  createBlockCategory: async ({ commit }, payload) => {
+    await axios.post(`${apiUrl}/blocks/categories`).then(res => {
+      // commit("get_BlockCategories", res.data.data);
+    });
+  },
+  updateBlockCategory: async ({ commit }, payload) => {
+    await axios.put(`${apiUrl}/blocks/categories`).then(res => {
+      // commit("get_BlockCategories", res.data.data);
+    });
+  },
+  deleteBlockCategory: async ({ commit }, payload) => {
+    const id = payload.id;
+    await axios.delete(`${apiUrl}/blocks/categories/${id}`).then(res => {
+      commit("get_BlockCategories", res.data.data);
+    });
   }
 };
 

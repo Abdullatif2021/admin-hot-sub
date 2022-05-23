@@ -21,7 +21,7 @@ axios.interceptors.response.use(
       store.dispatch("refreshToken");
       setTimeout(() => {
         axios.request(error.config);
-      }, 2000);
+      }, 1000);
       setTimeout(() => {
         location.reload();
       }, 2000);

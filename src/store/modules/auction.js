@@ -10,7 +10,8 @@ const state = {
   updated_Successfuly: null,
   Error: "",
   auction: null,
-  successDeleteAuction: null
+  successDeleteAuction: null,
+  processing: false
 };
 
 const getters = {
@@ -19,20 +20,18 @@ const getters = {
   auction_paginations: state => state.paginations,
   auctions: state => state.auctions,
   auction: state => state.auction,
-
+  _isLoadAuctions: state => state.processing,
   _updatedAuctionSuccessfuly: state => state.updated_Successfuly,
   _successDeleteAuction: state => state.successDeleteAuction
 };
 
 const mutations = {
-  getAuctionsStarted(state) {
-    state.isLoadAuctions = true;
-    state.auctions = [];
-  },
   getAuctionsSuccess(state, auctions) {
-    state.isLoadAuctions = false;
     state.auctions = auctions.data;
     state.paginations = auctions;
+  },
+  setProcessing(state, payload) {
+    state.processing = payload;
   },
   getAuctionSuccess(state, data) {
     state.auction = data.data;
@@ -41,7 +40,6 @@ const mutations = {
     state.updated_Successfuly = data;
   },
   getAuctionsError(state, error) {
-    state.isLoadAuctions = false;
     state.Error = error;
     state.auctions = null;
   },
@@ -51,10 +49,10 @@ const mutations = {
 };
 
 const actions = {
-  getAuctions({ commit }, payload) {
-    commit("getAuctionsStarted");
+  getAuctions: async ({ commit }, payload) => {
+    commit("setProcessing", false);
 
-    axios
+    await axios
       .get(`${apiUrl}/auctions`, {
         params: {
           order_dir: payload.dir,
@@ -65,7 +63,11 @@ const actions = {
         }
       })
       .then(res => {
-        if (res.status) {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        if (res.status === 200) {
           console.log(res);
           commit("getAuctionsSuccess", res.data);
         } else {

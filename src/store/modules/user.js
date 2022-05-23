@@ -135,9 +135,6 @@ export default {
           commit("setProcessing", false);
 
           commit("setError", error.message);
-          setTimeout(() => {
-            commit("clearError");
-          }, 3000);
         });
     },
     getUsersList: async ({ commit }, payload) => {
@@ -221,9 +218,6 @@ export default {
           },
           err => {
             commit("setError", err.message);
-            setTimeout(() => {
-              commit("clearError");
-            }, 3000);
           }
         );
     },
@@ -249,15 +243,12 @@ export default {
       if (payload.file) {
         formData.append("image", payload.file);
       }
-      payload.user.foreach(item => {
-        formData.append(item, item);
-      });
-      // formData.append("first_name", payload.user.first_name);
-      // formData.append("last_name", payload.user.last_name);
-      // formData.append("email", payload.user.email);
-      // formData.append("phone_number", payload.user.phone_number);
-      // formData.append("dob", payload.dob);
-      // formData.append("gender", payload.user.gender);
+      formData.append("first_name", payload.user.first_name);
+      formData.append("last_name", payload.user.last_name);
+      formData.append("email", payload.user.email);
+      formData.append("phone_number", payload.user.phone_number);
+      formData.append("dob", payload.dob);
+      formData.append("gender", payload.gender);
       formData.append("_method", "PUT");
       axios
         .post(`${apiUrl}/auth`, formData, {})
@@ -316,26 +307,23 @@ export default {
           },
           err => {
             commit("setError", err.message);
-            setTimeout(() => {
-              commit("clearError");
-            }, 3000);
           }
         );
     },
     signOut({ commit }) {
-      axios.post(`${apiUrl}/auth/logout`).then(
-        res => {
+      axios
+        .post(`${apiUrl}/auth/logout`)
+        .then(res => {
           localStorage.removeItem("accessToken");
-          setTimeout(() => {
-            console.log("timed out");
-            localStorage.removeItem("currentUser");
-          }, 1000);
+
           localStorage.removeItem("refreshToken");
           router.push("/");
           commit("setLogout");
-        },
-        _error => {}
-      );
+          return res;
+        })
+        .then(res => {
+          localStorage.removeItem("currentUser");
+        });
     },
     refreshToken() {
       axios

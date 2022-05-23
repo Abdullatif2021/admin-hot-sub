@@ -485,6 +485,9 @@
     "description": "Description",
     "edit": "Edit",
     "email": "E-mail",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "phone_number": "Phone number",
     "email-muted": "We'll never share your email with anyone else.",
     "password": "Password",
     "custom-checkbox": "Check this custom checkbox",
@@ -710,5 +713,10 @@
     "post-date": "Post date",
     "visible": "Activated",
     "path": "Path"
-  }
+  },
+  "services": "Services",
+  "home-slider": "Home slider",
+  "blog": "Blog",
+  "product-of-the-week": "Product of week",
+  "collection-of-the-month": "Collection of month"
 }

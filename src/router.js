@@ -34,19 +34,25 @@ const routes = [
         ]
       },
       {
-        path: "second-menu",
+        path: "blockCategories",
         component: () =>
           import(
-            /* webpackChunkName: "second-menu" */ "./views/app/second-menu"
+            /* webpackChunkName: "second-menu" */ "./views/app/block_categories"
           ),
-        redirect: `${adminRoot}/second-menu/second`,
+        redirect: `${adminRoot}/block_categories/categories_List`,
+
         children: [
           {
-            path: "second",
+            path: "categories_List",
             component: () =>
               import(
-                /* webpackChunkName: "piaf" */ "./views/app/second-menu/Second"
+                /* webpackChunkName: "piaf" */ "./views/app/block_categories/categories_List"
               )
+          },
+          {
+            path: "block",
+            component: () =>
+              import(/* webpackChunkName: "blog" */ "./views/app/block/block")
           }
         ]
       },
@@ -58,7 +64,7 @@ const routes = [
 
         children: [
           {
-            path: "blockList",
+            path: "blockList/:id",
             component: () =>
               import(
                 /* webpackChunkName: "piaf" */ "./views/app/block/blockList"
@@ -71,6 +77,7 @@ const routes = [
           }
         ]
       },
+
       {
         path: "categories",
         component: () =>

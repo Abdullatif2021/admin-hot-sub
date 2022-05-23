@@ -17,43 +17,48 @@
     ></datatable-heading>
     <b-row>
       <b-colxx xxs="12">
-        <vuetable
-          ref="vuetable"
-          class="table-divided order-with-arrow"
-          :api-mode="false"
-          :data-total="dataCount"
-          :per-page="perPage"
-          :data-manager="dataManager"
-          :reactive-api-url="true"
-          :fields="fields"
-          pagination-path
-          :row-class="onRowClass"
-          @vuetable:pagination-data="onPaginationData"
-          @vuetable:row-clicked="rowClicked"
-          @vuetable:cell-rightclicked="rightClicked"
-        >
-          <template slot="actions" slot-scope="props">
-            <b-button
-              variant="outline-theme-3"
-              class="icon-button"
-              @click="modify(props.rowData.id)"
-            >
-              <i class="simple-icon-settings"></i>
-            </b-button>
-            <b-button
-              variant="outline-theme-6"
-              class="icon-button"
-              @click="delete_auction(props.rowData.id)"
-            >
-              <i class="simple-icon-trash"></i>
-            </b-button>
-          </template>
-        </vuetable>
-        <vuetable-pagination-bootstrap
-          class="mt-4"
-          ref="pagination"
-          @vuetable-pagination:change-page="onChangePage"
-        />
+        <template v-if="_isLoadAuctions">
+          <vuetable
+            ref="vuetable"
+            class="table-divided order-with-arrow"
+            :api-mode="false"
+            :data-total="dataCount"
+            :per-page="perPage"
+            :data-manager="dataManager"
+            :reactive-api-url="true"
+            :fields="fields"
+            pagination-path
+            :row-class="onRowClass"
+            @vuetable:pagination-data="onPaginationData"
+            @vuetable:row-clicked="rowClicked"
+            @vuetable:cell-rightclicked="rightClicked"
+          >
+            <template slot="actions" slot-scope="props">
+              <b-button
+                variant="outline-theme-3"
+                class="icon-button"
+                @click="modify(props.rowData.id)"
+              >
+                <i class="simple-icon-settings"></i>
+              </b-button>
+              <b-button
+                variant="outline-theme-6"
+                class="icon-button"
+                @click="delete_auction(props.rowData.id)"
+              >
+                <i class="simple-icon-trash"></i>
+              </b-button>
+            </template>
+          </vuetable>
+          <vuetable-pagination-bootstrap
+            class="mt-4"
+            ref="pagination"
+            @vuetable-pagination:change-page="onChangePage"
+          />
+        </template>
+        <template v-else>
+          <div class="loading"></div>
+        </template>
       </b-colxx>
     </b-row>
 
@@ -336,7 +341,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["auctions", "auction_paginations", "_successDeleteAuction"]),
+    ...mapGetters([
+      "auctions",
+      "auction_paginations",
+      "_successDeleteAuction",
+      "_isLoadAuctions"
+    ]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },

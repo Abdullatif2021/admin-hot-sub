@@ -60,11 +60,11 @@
               viewingParentMenu === item.id
           }"
           :data-parent="item.id"
-          :key="`sub_${item.id}`"
+          :key="`sub1_${itemIndex}`"
         >
           <li
             v-for="(sub, subIndex) in filteredMenuItems(item.subs)"
-            :key="`sub_${subIndex}`"
+            :key="`sub2_${subIndex}`"
             :class="{
               'has-sub-item': sub.subs && sub.subs.length > 0,
               active: $route.path.indexOf(sub.to) > -1
@@ -129,20 +129,22 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 import {
   menuHiddenBreakpoint,
   subHiddenBreakpoint
 } from "../../constants/config";
 import menuItems from "../../constants/menu";
 import { UserRole } from "../../utils/auth.roles";
+import { adminRoot } from "../../constants/config";
 
 export default {
   data() {
     return {
       selectedParentMenu: "",
       menuItems,
-      viewingParentMenu: ""
+      viewingParentMenu: "",
+      add: true
     };
   },
   mounted() {
@@ -150,10 +152,12 @@ export default {
     window.addEventListener("resize", this.handleWindowResize);
     document.addEventListener("click", this.handleDocumentClick);
     this.handleWindowResize();
+    this.getBlockCategories();
   },
   beforeDestroy() {
     document.removeEventListener("click", this.handleDocumentClick);
     window.removeEventListener("resize", this.handleWindowResize);
+    console.log("beforeDestroy");
   },
 
   methods: {
@@ -162,6 +166,7 @@ export default {
       "addMenuClassname",
       "changeSelectedMenuHasSubItems"
     ]),
+    ...mapActions(["getBlockCategories"]),
     selectMenu() {
       const currentParentUrl = this.$route.path
         .split("/")
@@ -197,7 +202,16 @@ export default {
 
       return isCurrentMenuHasSubItem;
     },
-
+    setMenuItems(val) {
+      val.forEach(item => {
+        menuItems.push({
+          id: item.id,
+          icon: "iconsminds-blogger",
+          label: item.slug,
+          to: `${adminRoot}/blocks/blockList/${item.id}`
+        });
+      });
+    },
     changeSelectedParentHasNoSubmenu(parentMenu) {
       this.selectedParentMenu = parentMenu;
       this.viewingParentMenu = parentMenu;
@@ -346,7 +360,8 @@ export default {
       currentUser: "currentUser",
       menuType: "getMenuType",
       menuClickCount: "getMenuClickCount",
-      selectedMenuHasSubItems: "getSelectedMenuHasSubItems"
+      selectedMenuHasSubItems: "getSelectedMenuHasSubItems",
+      _blockCategories: "_blockCategories"
     })
   },
   watch: {
@@ -368,6 +383,9 @@ export default {
 
         window.scrollTo(0, top);
       }
+    },
+    _blockCategories(newVal, old) {
+      this.setMenuItems(newVal);
     }
   }
 };

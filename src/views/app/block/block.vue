@@ -1,7 +1,11 @@
 <template>
   <b-row>
     <b-colxx xxs="12">
-      <h5 class="mb-4 card-title">{{ $t("block.block-details") }}</h5>
+      <datatable-heading
+        :details="true"
+        :reload="true"
+        :title="userId ? $t('forms.grid') : $t('forms.createUser')"
+      ></datatable-heading>
       <b-row>
         <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
           <b-card class="mb-4" no-body>
@@ -550,9 +554,7 @@ export default {
     // meta data
     meta() {
       this.getBlockMetaList({ id: this.blockId });
-      setTimeout(() => {
-        this.getMetaTypeList();
-      }, 2000);
+      this.getMetaTypeList();
     },
     editAction(f, value, item) {
       if (value == 1) {

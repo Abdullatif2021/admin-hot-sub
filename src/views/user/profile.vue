@@ -6,39 +6,57 @@
           <h6 class="mb-4">Update profile</h6>
           <b-form @submit.prevent="onTopLabelsOverLineFormSubmit">
             <label class="form-group has-float-label">
-              <input
-                type="email"
-                class="form-control"
-                v-model="user.first_name"
-              />
-              <b-form-invalid-feedback v-if="!$v.form.first_name.required"
-                >Please enter Arabic description</b-form-invalid-feedback
+              <b-form-group
+                :label="$t('forms.first_name')"
+                class="has-float-label mb-4"
               >
-              <span>First Name</span>
+                <b-form-input
+                  type="text"
+                  v-model="$v.form.first_name.$model"
+                  :state="!$v.form.first_name.$error"
+                />
+                <b-form-invalid-feedback v-if="!$v.form.first_name.required"
+                  >Please enter your first name</b-form-invalid-feedback
+                >
+              </b-form-group>
             </label>
             <label class="form-group has-float-label">
-              <input
-                type="text"
-                class="form-control"
-                v-model="user.last_name"
-              />
-              <span>Last Name</span>
+              <b-form-group
+                :label="$t('forms.last_name')"
+                class="has-float-label mb-4"
+              >
+                <b-form-input
+                  type="text"
+                  v-model="$v.form.last_name.$model"
+                  :state="!$v.form.last_name.$error"
+                />
+                <b-form-invalid-feedback v-if="!$v.form.last_name.required"
+                  >Please enter your last name</b-form-invalid-feedback
+                >
+              </b-form-group>
             </label>
             <div class="form-group has-float-label">
-              <input
-                type="number"
-                class="form-control"
-                v-model="user.phone_number"
-              />
-              <span>Phone Number</span>
+              <b-form-group
+                :label="$t('forms.phone_number')"
+                class="has-float-label mb-4"
+              >
+                <b-form-input
+                  type="number"
+                  v-model="$v.form.phone_number.$model"
+                  :state="!$v.form.phone_number.$error"
+                />
+                <b-form-invalid-feedback v-if="!$v.form.phone_number.required"
+                  >Please enter your phone number</b-form-invalid-feedback
+                >
+              </b-form-group>
             </div>
             <div class="form-group has-float-label">
-              <!-- <datepicker
+              <datepicker
                 :bootstrap-styling="true"
                 :placeholder="$t('form-components.date')"
-                v-model="user.dob"
+                v-model="dob"
                 @selected="selected_Date()"
-              ></datepicker> -->
+              ></datepicker>
               <span>Date of Birth</span>
             </div>
           </b-form>
@@ -48,15 +66,22 @@
 
           <b-form @submit.prevent="onTopLabelsOverLineFormSubmit">
             <label class="form-group has-float-label">
-              <input type="email" class="form-control" v-model="user.email" />
-              <span>Email</span>
+              <b-form-group
+                :label="$t('forms.email')"
+                class="has-float-label mb-4"
+              >
+                <b-form-input
+                  type="email"
+                  v-model="$v.form.email.$model"
+                  :state="!$v.form.email.$error"
+                />
+                <b-form-invalid-feedback v-if="!$v.form.email.required"
+                  >Please enter your email
+                </b-form-invalid-feedback>
+              </b-form-group>
             </label>
             <label class="form-group has-float-label">
-              <b-form-select
-                v-model="user.gender"
-                :options="genderOptions"
-                plain
-              />
+              <b-form-select v-model="gender" :options="genderOptions" plain />
               <span>Gender</span>
             </label>
             <label class="form-group has-float-label">
@@ -74,13 +99,9 @@
               <span>Image</span>
             </label>
 
-            <b-button
-              @click="submit()"
-              type="submit"
-              variant="primary"
-              class="mt-4"
-              >{{ $t("forms.submit") }}</b-button
-            >
+            <b-button type="submit" variant="primary" class="mt-4">{{
+              $t("forms.submit")
+            }}</b-button>
           </b-form>
         </div>
       </b-card>
@@ -98,7 +119,7 @@ import InputTag from "../../components/Form/InputTag";
 import { getDirection, getCurrentUser } from "../../utils";
 import { mapActions, mapGetters } from "vuex";
 import { validationMixin } from "vuelidate";
-const { required } = require("vuelidate/lib/validators");
+const { required, email } = require("vuelidate/lib/validators");
 export default {
   components: {
     "input-tag": InputTag,
@@ -111,11 +132,22 @@ export default {
       user: null,
       selectedDate: false,
       file: null,
+      dob: null,
+      gender: null,
       sendSuccess: false,
       genderOptions: [
         { text: "Female", value: 1 },
         { text: "Male", value: 0 }
       ],
+      form: {
+        first_name: "",
+        last_name: "",
+        phone_number: "",
+        dob: "",
+        email: "",
+        gender: "",
+        image: ""
+      },
       dropzoneOptions: {
         url: "https://lilacmarketingevents.com",
         thumbnailHeight: 160,
@@ -139,26 +171,62 @@ export default {
       }
     };
   },
+  mixins: [validationMixin],
+  validations: {
+    form: {
+      first_name: {
+        required
+      },
+      last_name: {
+        required
+      },
+      phone_number: {
+        required
+      },
+      email: {
+        required,
+        email
+      }
+    }
+  },
   created() {
     this.user = getCurrentUser();
+    this.setData(this.user);
   },
   methods: {
     ...mapActions(["updateUserProfile"]),
-
-    submit() {
-      this.updateUserProfile({
-        file: this.file ? this.file[0] : null,
-        user: this.user,
-        dob: this.selectedDate ? this.user.dob.toISOString() : this.user.dob
-      });
+    setData(user) {
+      this.form.first_name = user.first_name;
+      this.form.last_name = user.last_name;
+      this.form.email = user.email;
+      this.form.phone_number = user.phone_number;
+      this.gender = user.gender;
+      this.dob = user.dob;
+      console.log(this.form.last_name);
     },
-    onTopLabelsOverLineFormSubmit() {},
-    afterUploadComplete(response) {
-      if (response.status == "success") {
-        this.sendSuccess = true;
-      } else {
+    submit() {
+      this.$v.$touch();
+      this.$v.form.$touch();
+      if (this.$v.form.$invalid) {
+        console.log(this.form, this.gender, this.dob);
       }
     },
+    onTopLabelsOverLineFormSubmit() {
+      this.$v.$touch();
+      this.$v.form.$touch();
+      if (!this.$v.form.$invalid) {
+        console.log(this.form, this.gender, this.dob);
+        this.updateUserProfile({
+          file: this.file ? this.file[0] : null,
+          user: this.form,
+          gender: this.gender,
+          dob: this.selectedDate
+            ? this.dob.toISOString().split("T")[0]
+            : this.dob
+        });
+      }
+    },
+    afterUploadComplete(response) {},
     selected_Date() {
       this.selectedDate = true;
     },
@@ -200,6 +268,9 @@ export default {
     ...mapGetters(["_updatedProfileSuccessfuly"])
   },
   watch: {
+    user(newInfo, oldOne) {
+      console.log("user", newInfo);
+    },
     _updatedProfileSuccessfuly(newInfo, oldOne) {
       this.selectedDate = false;
       this.$notify(
