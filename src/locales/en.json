@@ -27,8 +27,12 @@
   "menu": {
     "home": "Home",
     "customers": "Customers",
+    "blocks-category": "Blocks Category",
+    "blockCategories": "Block Categories",
+    "categories_List": "Categories List",
     "accountant": "Accountant",
     "admins": "Admins",
+    "category": "Category",
     "page": "Page Details",
     "accountant_table": "Accountant Table",
     "admins_table": "Admins Table",
@@ -129,7 +133,8 @@
     "blocks-table": "Blocks Table",
     "pages-table": "Pages List",
     "auctions-table": "Auctions Table",
-    "categories-table": "Categories List",
+    "categories-table": "Categories Table",
+    "block-categories-table": "Block Categories Table",
     "scrollable": "Scrollable",
     "categoriesList": "Categories List",
     "responsive": "Responsive",
@@ -718,5 +723,9 @@
   "home-slider": "Home slider",
   "blog": "Blog",
   "product-of-the-week": "Product of week",
-  "collection-of-the-month": "Collection of month"
+  "collection-of-the-month": "Collection of month",
+  "edit_block": "Edit block Category",
+  "create_block": "Create block Category",
+  "edit_category": "Edit Category",
+  "create_category": "Create Category"
 }

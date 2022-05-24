@@ -1,65 +1,117 @@
 <template>
   <b-row>
     <b-colxx xxs="12">
-      <b-card
-        class="mb-4"
-        :title="categoryId ? $t('forms.editCate') : $t('forms.createCate')"
-      >
-        <b-form @submit.prevent="onGridFormSubmit">
-          <b-row>
-            <b-colxx v-if="categoryId" sm="12">
-              <label
-                style="display: flex;justify-content: center;"
-                class="form-group has-float-label"
-              >
-                <img
-                  :src="category.image"
-                  style="border-radius: 20%;"
-                  alt="Image"
-                  width="120"
-                  height="120"
-                />
-              </label>
-            </b-colxx>
+      <datatable-heading
+        :details="true"
+        :reload="true"
+        :title="$t(_type)"
+      ></datatable-heading>
+      <b-card class="mb-4">
+        <template v-if="!is_Load">
+          <b-form @submit.prevent="onGridFormSubmit">
+            <b-row>
+              <b-colxx v-if="is_edit" sm="12">
+                <label
+                  style="display: flex;justify-content: center;"
+                  class="form-group has-float-label"
+                >
+                  <img
+                    :src="image"
+                    style="border-radius: 20%;"
+                    alt="Image"
+                    width="120"
+                    height="120"
+                  />
+                </label>
+              </b-colxx>
 
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.en_title')">
-                <b-form-input type="text" v-model="gridForm.en_title" />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.ar_title')">
-                <b-form-input type="text" v-model="gridForm.ar_title" />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.en_desc')">
-                <b-form-input type="text" v-model="gridForm.en_description" />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
+              <b-colxx sm="6">
+                <b-form-group :label="$t('forms.en_title')">
+                  <b-form-input
+                    type="text"
+                    :state="!$v.gridForm.en_name.$error"
+                    v-model="$v.gridForm.en_name.$model"
+                  />
+                  <b-form-invalid-feedback v-if="!$v.gridForm.en_name.required"
+                    >Please enter Arabic title</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-colxx>
+              <b-colxx sm="6">
+                <b-form-group :label="$t('forms.ar_title')">
+                  <b-form-input
+                    type="text"
+                    :state="!$v.gridForm.ar_name.$error"
+                    v-model="$v.gridForm.ar_name.$model"
+                  />
+                  <b-form-invalid-feedback v-if="!$v.gridForm.ar_name.required"
+                    >Please enter English title</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-colxx>
+              <b-colxx sm="6">
+                <b-form-group :label="$t('forms.en_desc')">
+                  <b-form-input
+                    type="text"
+                    v-model="$v.gridForm.en_description.$model"
+                  />
+                </b-form-group>
+              </b-colxx>
+              <b-colxx sm="6">
+                <b-form-group :label="$t('forms.ar_desc')">
+                  <b-form-input
+                    type="text"
+                    :state="!$v.gridForm.ar_description.$error"
+                    v-model="$v.gridForm.ar_description.$model"
+                  />
+                </b-form-group>
+              </b-colxx>
+              <b-colxx v-if="is_block_category" sm="12">
+                <b-form-group label="Option">
+                  <b-form-select
+                    :state="!$v.gridForm.select.$error"
+                    v-model="$v.gridForm.select.$model"
+                    :options="typeOptions"
+                    plain
+                  />
+                  <b-form-invalid-feedback v-if="!$v.gridForm.select.required"
+                    >Please select category type</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-colxx>
+              <!-- <b-colxx v-if="category" sm="6">
               <b-form-group :label="$t('forms.ar_desc')">
-                <b-form-input type="text" v-model="gridForm.ar_description" />
+                <b-form-input type="text" v-model="gridForm.add_to_menu" />
               </b-form-group>
             </b-colxx>
-            <b-colxx xxs="12">
-              <b-form-group :label="$t('forms.image')">
-                <vue-dropzone
-                  ref="myVueDropzone"
-                  id="dropzone"
-                  :options="dropzoneOptions"
-                  @vdropzone-files-added="fileAdded"
-                  @vdropzone-sending-multiple="sendMessage"
-                  @vdropzone-removed-file="fileRemoved"
-                ></vue-dropzone>
+            <b-colxx sm="6">
+              <b-form-group v-if="category"  :label="$t('forms.add_to_menu')">
+                <b-form-input type="text" v-model="gridForm.perant_id" />
               </b-form-group>
-            </b-colxx>
-          </b-row>
+            </b-colxx> -->
 
-          <b-button type="submit" variant="primary" class="mt-4">{{
-            $t("forms.save")
-          }}</b-button>
-        </b-form>
+              <b-colxx xxs="12">
+                <b-form-group :label="$t('forms.image')">
+                  <vue-dropzone
+                    ref="myVueDropzone"
+                    id="dropzone"
+                    :options="dropzoneOptions"
+                    @vdropzone-files-added="fileAdded"
+                    @vdropzone-sending-multiple="sendMessage"
+                    @vdropzone-removed-file="fileRemoved"
+                  ></vue-dropzone>
+                </b-form-group>
+              </b-colxx>
+            </b-row>
+
+            <b-button type="submit" variant="primary" class="mt-4">{{
+              $t("forms.save")
+            }}</b-button>
+          </b-form>
+        </template>
+        <template v-else>
+          <div class="loading"></div>
+        </template>
       </b-card>
     </b-colxx>
   </b-row>
@@ -68,24 +120,48 @@
 import { mapGetters, mapActions } from "vuex";
 import { validationMixin } from "vuelidate";
 import VueDropzone from "vue2-dropzone";
+import DatatableHeading from "../../containers/datatable/DatatableHeading.vue";
+import router from "../../router";
+import { adminRoot } from "../../constants/config";
+
 const { required } = require("vuelidate/lib/validators");
 
 export default {
+  props: ["_id", "_type"],
   components: {
-    "vue-dropzone": VueDropzone
+    "vue-dropzone": VueDropzone,
+    "datatable-heading": DatatableHeading
   },
   data() {
     return {
       categoryId: null,
       _role: null,
+      is_Load: true,
+      is_edit: false,
+      type: null,
+      edit: true,
       password: null,
+      is_block_category: false,
+      image: null,
+      select: null,
       create_role: null,
       file: null,
+      typeOptions: [
+        "Photo Gallery",
+        "Video Gallery",
+        "Blog",
+        "Stuff",
+        "Slider",
+        "Events",
+        "News",
+        "Services"
+      ],
       gridForm: {
-        ar_title: "",
-        en_title: "",
+        ar_name: "",
+        en_name: "",
         en_description: "",
-        ar_description: ""
+        ar_description: "",
+        select: ""
       },
       dropzoneOptions: {
         url:
@@ -104,39 +180,63 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    form: {
-      en_title: {
+    gridForm: {
+      en_name: {
         required
       },
-      ar_title: {
+      ar_name: {
         required
-      }
+      },
+      en_description: {},
+      ar_description: {},
+      select: {}
     }
   },
   created() {
-    this.categoryId = this.$route.query.id;
-    if (this.categoryId) {
-      this.getCategory({ id: this.categoryId });
-    } else {
-      console.log("i am here ", this.categoryId);
-    }
+    if (this._type == "edit_block") this.getBlockCategory({ id: this._id });
+    else if (this._type == "edit_category") this.getCategory({ id: this._id });
+    else if (this._type == "create_block") {
+      this.is_block_category = true;
+      this.is_Load = false;
+    } else this.is_Load = false;
   },
   methods: {
-    ...mapActions(["getCategory", "updateCategory", "createCategory"]),
+    ...mapActions([
+      "getBlockCategory",
+      "updateBlockCategory",
+      "createBlockCategory",
+      "updateCategory",
+      "createCategory",
+      "getCategory"
+    ]),
     onGridFormSubmit() {
-      console.log("img", this.file);
-      console.log("hi from submit", this.gridForm);
-      if (this.categoryId) {
-        this.updateCategory({
-          info: this.gridForm,
-          img: this.file ? this.file[0] : null,
-          id: this.categoryId
-        });
-      } else {
-        this.createCategory({
-          info: this.gridForm,
-          img: this.file ? this.file[0] : null
-        });
+      this.$v.$touch();
+      this.$v.gridForm.$touch();
+      if (!this.$v.gridForm.$invalid) {
+        console.log("wrferfewrferferf");
+        if (this._type == "edit_block") {
+          this.updateBlockCategory({
+            info: this.gridForm,
+            img: this.file ? this.file[0] : null,
+            id: this._id
+          });
+        } else if (this._type == "edit_category") {
+          this.updateCategory({
+            info: this.gridForm,
+            img: this.file ? this.file[0] : null,
+            id: this._id
+          });
+        } else if (this._type == "create_block") {
+          this.createBlockCategory({
+            info: this.gridForm,
+            img: this.file ? this.file[0] : null
+          });
+        } else if (this._type == "create_category") {
+          this.createCategory({
+            info: this.gridForm,
+            img: this.file ? this.file[0] : null
+          });
+        } else console.log("no one");
       }
     },
     fileAdded(file) {
@@ -174,31 +274,87 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "category",
-      "_updatedCategorySuccessfuly",
-      "block_category",
-      "_updatedBlockCategorySuccessfuly"
+      "_category",
+      "_successUpdateCategory",
+      "_blockCategory",
+      "_successUpdateBlockCategory",
+      "_create_block_category_success",
+      "_create_category_success"
     ])
   },
   watch: {
-    category(newInfo, oldOne) {
-      this.gridForm.ar_title = newInfo.locales.ar.title;
-      this.gridForm.en_title = newInfo.locales.en.title;
-      this.gridForm.ar_description = newInfo.locales.ar.description;
-      this.gridForm.en_description = newInfo.locales.en.description;
+    _create_block_category_success(newInfo, oldOne) {
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Block Category have been created successfully",
+        { duration: 3000, permanent: false }
+      );
+      router.push(`${adminRoot}/blockCategories`);
     },
-    _updatedCategorySuccessfuly(newInfo, oldOne) {
+    _create_category_success(newInfo, oldOne) {
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Category have been created successfully",
+        { duration: 3000, permanent: false }
+      );
+      router.push(`${adminRoot}/blockCategories`);
+    },
+    _category(newInfo, oldOne) {
+      this.is_edit = true;
+      this.gridForm.ar_name = newInfo.locales.ar.name
+        ? newInfo.locales.ar.name
+        : null;
+      this.gridForm.en_name = newInfo.locales.en.name
+        ? newInfo.locales.en.name
+        : null;
+      this.gridForm.ar_description = newInfo.locales.ar.description
+        ? newInfo.locales.ar.description
+        : null;
+      this.gridForm.en_description = newInfo.locales.en.description
+        ? newInfo.locales.en.description
+        : null;
+      this.image = newInfo.image;
+      this.is_Load = false;
+    },
+    _successUpdateCategory(newInfo, oldOne) {
       console.log("hiiiiii");
-      this.$destroy();
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Category have been updated successfully",
+        { duration: 3000, permanent: false }
+      );
+      router.push(`${adminRoot}/categories`);
     },
-    block_category(newInfo, oldOne) {
-      this.gridForm.ar_title = newInfo.locales.ar.title;
-      this.gridForm.en_title = newInfo.locales.en.title;
-      this.gridForm.ar_description = newInfo.locales.ar.description;
-      this.gridForm.en_description = newInfo.locales.en.description;
+    _blockCategory(newInfo, oldOne) {
+      this.is_edit = true;
+      this.is_block_category = true;
+      this.gridForm.ar_name = newInfo.locales.ar.name
+        ? newInfo.locales.ar.name
+        : null;
+      this.gridForm.en_name = newInfo.locales.en.name
+        ? newInfo.locales.en.name
+        : null;
+      this.gridForm.ar_description = newInfo.locales.ar.description
+        ? newInfo.locales.ar.description
+        : null;
+      this.gridForm.en_description = newInfo.locales.en.description
+        ? newInfo.locales.en.description
+        : null;
+      this.image = newInfo.image;
+      this.gridForm.select = newInfo.type;
+      this.is_Load = false;
     },
-    _updatedBlockCategorySuccessfuly(newInfo, oldOne) {
-      this.$destroy();
+    _successUpdateBlockCategory(newInfo, oldOne) {
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Block Category have been updated successfully",
+        { duration: 3000, permanent: false }
+      );
+      router.push(`${adminRoot}/blockCategories`);
     }
   }
 };

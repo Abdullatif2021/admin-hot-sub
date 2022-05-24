@@ -1,7 +1,7 @@
 <template>
   <div>
     <datatable-heading
-      :title="$t('menu.categories-table')"
+      :title="$t('menu.block-categories-table')"
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
       :changePageSize="changePageSize"
@@ -41,13 +41,6 @@
               >
                 <i class="simple-icon-settings"></i>
               </b-button>
-              <b-button
-                variant="outline-theme-6"
-                class="icon-button"
-                @click="delete_category(props.rowData.id)"
-              >
-                <i class="simple-icon-trash"></i>
-              </b-button>
             </template>
           </vuetable>
           <vuetable-pagination-bootstrap
@@ -71,10 +64,6 @@
         <i class="simple-icon-drawer" />
         <span>Move to archive</span>
       </v-contextmenu-item>
-      <v-contextmenu-item @click="onContextMenuAction('delete')">
-        <i class="simple-icon-trash" />
-        <span>Delete</span>
-      </v-contextmenu-item>
     </v-contextmenu>
   </div>
 </template>
@@ -96,13 +85,12 @@ export default {
       dir: null,
       order_by: null,
       search: null,
-      actions: null,
-      isLoad: false,
-      apiBase: "/cakes/fordatatable",
       sort: {
         column: null,
         label: "All"
       },
+      actions: null,
+      isLoad: false,
       page: 1,
       limit: null,
       perPage: 8,
@@ -127,23 +115,19 @@ export default {
           width: "30%"
         },
         {
-          name: "locales",
-          callback: value => {
-            return value.en.title;
-          },
-          sortField: "title",
-          title: "Title",
+          name: "slug",
+
+          sortField: "slug",
+          title: "Slug",
           titleClass: "",
           dataClass: "list-item-heading",
           width: "30%"
         },
         {
-          name: "locales",
-          callback: value => {
-            return value.en.description;
-          },
-          sortField: "description",
-          title: "Description",
+          name: "type",
+
+          sortField: "type",
+          title: "Type",
           titleClass: "",
           dataClass: "list-item-heading",
           width: "20%"
@@ -159,7 +143,7 @@ export default {
     };
   },
   created() {
-    this.getCategories({
+    this.getBlockCategories({
       dir: null,
       search: null,
       order_by: null,
@@ -168,7 +152,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["getCategories", "deleteCategory"]),
+    ...mapActions(["getBlockCategories"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -180,7 +164,7 @@ export default {
     modify(id) {
       console.log(id);
       this.$router.push({
-        path: `${adminRoot}/categories/category`,
+        path: `${adminRoot}/blockCategories/category`,
         query: { id: id }
       });
     },
@@ -222,7 +206,7 @@ export default {
         if (sortOrder[0].direction == "asc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
-          this.getCategories({
+          this.getBlockCategories({
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -233,7 +217,7 @@ export default {
         if (sortOrder[0].direction == "desc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
-          this.getCategories({
+          this.getBlockCategories({
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -243,15 +227,12 @@ export default {
         }
       }
     },
-    delete_category(id) {
-      this.deleteCategory({ Id: id });
-    },
     onChangePage(page) {
       if (page == "next" || page == "prev") {
         console.log(page);
       } else {
         this.page = page;
-        this.getCategories({
+        this.getBlockCategories({
           dir: this.dir,
           search: this.search,
           order_by: this.order_by,
@@ -264,7 +245,7 @@ export default {
     changePageSize(perPage) {
       console.log(perPage);
       this.limit = perPage;
-      this.getCategories({
+      this.getBlockCategories({
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
@@ -276,7 +257,7 @@ export default {
     searchChange(val) {
       console.log(val);
       this.search = val;
-      this.getCategories({
+      this.getBlockCategories({
         dir: this.dir,
         search: val,
         order_by: this.order_by,
@@ -319,15 +300,14 @@ export default {
     },
     add_New() {
       this.$router.push({
-        path: `${adminRoot}/categories/category`
+        path: `${adminRoot}/blockCategories/category`
       });
     }
   },
   computed: {
     ...mapGetters([
-      "categories",
-      "cate_paginations",
-      "_successDeleteCategory",
+      "_blockCategories",
+      "_block_category_paginate",
       "_isLoadCategories"
     ]),
     isSelectedAll() {
@@ -347,21 +327,11 @@ export default {
         console.log("new", newQuestion);
       }
     },
-    _successDeleteCategory(newVal, old) {
-      console.log("delete category", old);
-      this.getCategories({
-        dir: this.dir,
-        search: this.search,
-        order_by: this.order_by,
-        limit: this.limit,
-        page: this.page
-      });
-    },
-    categories(newList, old) {
+    _blockCategories(newList, old) {
       console.log(newList);
       this.$refs.vuetable.setData(newList);
     },
-    cate_paginations(newActions, old) {
+    _block_category_paginate(newActions, old) {
       this.perPage = newActions.per_page;
       this.from = newActions.from;
       this.to = newActions.to;

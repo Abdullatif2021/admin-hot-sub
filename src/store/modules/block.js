@@ -20,7 +20,11 @@ const state = {
   blockYoutubeVideosList: null,
   successAddBlockYoutubeVideo: null,
   successDeleteBlock: null,
-  processing: false
+  category_paginate: null,
+  UpdateBlockCategory: null,
+  processing: false,
+  blockCategory: null,
+  create_block_category_success: null
 };
 
 const getters = {
@@ -30,8 +34,12 @@ const getters = {
   _blocks: state => state.blocks,
   _block: state => state.block,
   _blockCategories: state => state.blockCategories,
+  _block_category_paginate: state => state.category_paginate,
   _successDeleteBlock: state => state.successDeleteBlock,
   _isLoadBlock: state => state.processing,
+  _successUpdateBlockCategory: state => state.UpdateBlockCategory,
+  _blockCategory: state => state.blockCategory,
+  _create_block_category_success: state => state.create_block_category_success,
   // images
   _blockImageList: state => state.blockImageList,
   _successAddBlockImage: state => state.successAddBlockImage,
@@ -71,7 +79,8 @@ const mutations = {
     state.block = null;
   },
   get_BlockCategories(state, payload) {
-    state.blockCategories = payload;
+    state.blockCategories = payload.data;
+    state.category_paginate = payload;
   },
   // image
   getBlockImageListStarted(state, payload) {
@@ -127,6 +136,15 @@ const mutations = {
   },
   successAddBlockYoutubeVideo(state, payload) {
     state.successAddBlockYoutubeVideo = payload;
+  },
+  successUpdateBlockCategory(state, payload) {
+    state.UpdateBlockCategory = payload;
+  },
+  getBlockCategory(state, payload) {
+    state.blockCategory = payload;
+  },
+  create_block_category_success(state, payload) {
+    state.create_block_category_success = payload;
   }
 };
 
@@ -453,26 +471,64 @@ const actions = {
   },
   // ++++++++++++++++++++ Block Categories Managment +++++++++++++++++++++++
   getBlockCategories: async ({ commit }, payload) => {
-    await axios.get(`${apiUrl}/blocks/categories`).then(res => {
-      console.log("hi from categories", res);
-      commit("get_BlockCategories", res.data.data);
-    });
+    commit("setProcessing", false);
+    await axios
+      .get(`${apiUrl}/blocks/categories`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        console.log("hi from categories", res);
+        commit("get_BlockCategories", res.data);
+      });
+  },
+  getBlockCategory: async ({ commit }, payload) => {
+    const id = payload.id;
+    commit("setProcessing", false);
+
+    await axios
+      .get(`${apiUrl}/blocks/categories/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getBlockCategory", res.data.data);
+      });
   },
   createBlockCategory: async ({ commit }, payload) => {
-    await axios.post(`${apiUrl}/blocks/categories`).then(res => {
-      // commit("get_BlockCategories", res.data.data);
+    const formData = new FormData();
+    if (payload.img) {
+      formData.append("path", payload.img);
+    }
+    formData.append("ar[name]", payload.info.ar_name);
+    formData.append("ar[description]", payload.info.ar_description);
+    formData.append("en[name]", payload.info.en_name);
+    formData.append("en[description]", payload.info.en_description);
+    formData.append("type", payload.info.select);
+    await axios.post(`${apiUrl}/blocks/categories`, formData, {}).then(res => {
+      commit("create_block_category_success", res.data.data);
     });
   },
   updateBlockCategory: async ({ commit }, payload) => {
-    await axios.put(`${apiUrl}/blocks/categories`).then(res => {
-      // commit("get_BlockCategories", res.data.data);
-    });
-  },
-  deleteBlockCategory: async ({ commit }, payload) => {
     const id = payload.id;
-    await axios.delete(`${apiUrl}/blocks/categories/${id}`).then(res => {
-      commit("get_BlockCategories", res.data.data);
-    });
+    const formData = new FormData();
+    if (payload.img) {
+      formData.append("path", payload.img);
+    }
+    formData.append("ar[name]", payload.info.ar_name);
+    formData.append("ar[description]", payload.info.ar_description);
+    formData.append("en[name]", payload.info.en_name);
+    formData.append("en[description]", payload.info.en_description);
+    formData.append("type", payload.info.select);
+    formData.append("_method", "PUT");
+
+    await axios
+      .post(`${apiUrl}/blocks/categories/${id}`, formData, {})
+      .then(res => {
+        commit("successUpdateBlockCategory", res.data.data);
+      });
   }
 };
 

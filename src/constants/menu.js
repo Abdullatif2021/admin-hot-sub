@@ -17,12 +17,12 @@ const data = [
     ]
   },
 
-  // {
-  //   id: "blocks",
-  //   icon: "iconsminds-picasa",
-  //   label: "menu.blocks",
-  //   to: `${adminRoot}/blocks/services`
-  // },
+  {
+    id: "blockCategories",
+    icon: "iconsminds-picasa",
+    label: "menu.blocks-category",
+    to: `${adminRoot}/blockCategories`
+  },
   {
     id: "categories",
     icon: "simple-icon-grid",

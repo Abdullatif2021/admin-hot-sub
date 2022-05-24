@@ -39,7 +39,7 @@ const routes = [
           import(
             /* webpackChunkName: "second-menu" */ "./views/app/block_categories"
           ),
-        redirect: `${adminRoot}/block_categories/categories_List`,
+        redirect: `${adminRoot}/blockCategories/categories_List`,
 
         children: [
           {
@@ -50,9 +50,11 @@ const routes = [
               )
           },
           {
-            path: "block",
+            path: "category",
             component: () =>
-              import(/* webpackChunkName: "blog" */ "./views/app/block/block")
+              import(
+                /* webpackChunkName: "blog" */ "./views/app/block_categories/block_category"
+              )
           }
         ]
       },

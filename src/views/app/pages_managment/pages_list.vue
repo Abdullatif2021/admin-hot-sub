@@ -9,6 +9,7 @@
       :cancle="cancle"
       :from="from"
       :sort="sort"
+      :add_new="true"
       :to="to"
       :reload="true"
       :Filtered="false"
@@ -40,13 +41,6 @@
                 @click="modify(props.rowData.id)"
               >
                 <i class="simple-icon-settings"></i>
-              </b-button>
-              <b-button
-                variant="outline-theme-6"
-                class="icon-button"
-                @click="delete_page(props.rowData.id)"
-              >
-                <i class="simple-icon-trash"></i>
               </b-button>
             </template>
           </vuetable>
@@ -169,7 +163,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["getPagesList", "deletePage"]),
+    ...mapActions(["getPagesList"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -255,9 +249,7 @@ export default {
         }
       }
     },
-    delete_page(id) {
-      this.deletePage({ pageId: id });
-    },
+
     onChangePage(page) {
       if (page == "next" || page == "prev") {
         console.log(page);
@@ -334,12 +326,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      "_Pages",
-      "_pagesPaginations",
-      "_successDeletePage",
-      "_isLoadPages"
-    ]),
+    ...mapGetters(["_Pages", "_pagesPaginations", "_isLoadPages"]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -357,16 +344,7 @@ export default {
         console.log("new", newQuestion);
       }
     },
-    _successDeletePage(newVal, old) {
-      this.getPagesList({
-        type: this.sort.column,
-        dir: this.dir,
-        search: this.search,
-        order_by: this.order_by,
-        limit: this.limit,
-        page: this.page
-      });
-    },
+
     _Pages(newList, old) {
       console.log(newList);
       this.$refs.vuetable.setData(newList);

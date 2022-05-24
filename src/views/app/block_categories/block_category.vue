@@ -1,5 +1,5 @@
 <template>
-  <category_details :_id="id" :_type="category" />
+  <category_details :_id="id" :_type="blockCategory" />
 </template>
 
 <script>
@@ -10,7 +10,7 @@ export default {
   },
   data() {
     return {
-      category: null,
+      blockCategory: null,
       id: null
     };
   },
@@ -18,9 +18,9 @@ export default {
     this.id = this.$route.query.id;
     console.log(this.id);
     if (this.id) {
-      this.category = "edit_category";
+      this.blockCategory = "edit_block";
     } else {
-      this.category = "create_category";
+      this.blockCategory = "create_block";
     }
   }
 };

@@ -10,7 +10,9 @@ const state = {
   Error: "",
   category: null,
   successDeleteCategory: null,
-  processing: false
+  processing: false,
+  create_category_success: null,
+  successUpdateCategory: null
 };
 
 const getters = {
@@ -18,10 +20,11 @@ const getters = {
   cateError: state => state.Error,
   cate_paginations: state => state.paginations,
   categories: state => state.categories,
-  category: state => state.category,
-
+  _category: state => state.category,
+  _create_category_success: state => state.create_category_success,
   _updatedCategorySuccessfuly: state => state.updated_Successfuly,
-  _successDeleteCategory: state => state.successDeleteCategory
+  _successDeleteCategory: state => state.successDeleteCategory,
+  _successUpdateCategory: state => state.successUpdateCategory
 };
 
 const mutations = {
@@ -44,6 +47,12 @@ const mutations = {
   },
   deleteCategory(state, payload) {
     state.successDeleteCategory = payload;
+  },
+  create_category_success(state, payload) {
+    state.create_category_success = payload;
+  },
+  successUpdateCategory(state, payload) {
+    state.successUpdateCategory = payload;
   }
 };
 
@@ -83,9 +92,9 @@ const actions = {
     console.log(payload);
     const formData = new FormData();
 
-    formData.append("ar[title]", payload.info.ar_title);
+    formData.append("ar[name]", payload.info.ar_name);
     formData.append("ar[description]", payload.info.ar_description);
-    formData.append("en[title]", payload.info.en_title);
+    formData.append("en[name]", payload.info.en_name);
     formData.append("en[description]", payload.info.en_description);
 
     if (payload.img !== null) {
@@ -93,9 +102,7 @@ const actions = {
     }
     axios.post(`${apiUrl}/categories`, formData, {}).then(res => {
       if (res.status === 201) {
-        console.log("hi from create");
-        router.push(`${adminRoot}/categories`);
-        commit("updatedCategorySuccessfuly", res);
+        commit("create_category_success", res);
       }
     });
   },
@@ -104,9 +111,9 @@ const actions = {
     console.log(payload);
     const formData = new FormData();
 
-    formData.append("ar[title]", payload.info.ar_title);
+    formData.append("ar[name]", payload.info.ar_name);
     formData.append("ar[description]", payload.info.ar_description);
-    formData.append("en[title]", payload.info.en_title);
+    formData.append("en[name]", payload.info.en_name);
     formData.append("en[description]", payload.info.en_description);
 
     if (payload.img !== null) {
@@ -114,17 +121,15 @@ const actions = {
     }
     axios.put(`${apiUrl}/categories/${id}`, formData, {}).then(res => {
       if (res.status === 200) {
-        console.log("updatedCategorySuccessfuly");
-        commit("updatedCategorySuccessfuly", res);
-        router.push(`${adminRoot}/categories`);
+        commit("successUpdateCategory", res.data.data);
       }
     });
   },
 
   deleteCategory({ commit, dispatch }, payload) {
-    const id = payload.Id;
+    const id = payload.id;
     const block = null;
-    axios.delete(`${apiUrl}/${block}/categories/${id}`).then(res => {
+    axios.delete(`${apiUrl}/categories/${id}`).then(res => {
       if (res.status === 200) {
         commit("deleteCategory", res);
       }

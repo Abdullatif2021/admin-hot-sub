@@ -4,7 +4,7 @@
       <h1>{{ title }}</h1>
       <div class="top-right-button-container">
         <b-button
-          v-if="!details"
+          v-if="!details && !add_new"
           v-b-modal.modalright
           variant="primary"
           size="lg"
@@ -92,6 +92,7 @@ export default {
     "sortOptions",
     "category",
     "details",
+    "add_new",
     "reload"
   ],
   data() {

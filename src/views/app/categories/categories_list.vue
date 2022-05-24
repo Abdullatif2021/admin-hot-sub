@@ -244,7 +244,7 @@ export default {
       }
     },
     delete_category(id) {
-      this.deleteCategory({ Id: id });
+      this.deleteCategory({ id: id });
     },
     onChangePage(page) {
       if (page == "next" || page == "prev") {
@@ -349,6 +349,12 @@ export default {
     },
     _successDeleteCategory(newVal, old) {
       console.log("delete category", old);
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Category have been deleted successfully",
+        { duration: 3000, permanent: false }
+      );
       this.getCategories({
         dir: this.dir,
         search: this.search,
