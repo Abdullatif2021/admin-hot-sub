@@ -155,7 +155,7 @@ const actions = {
         params: {
           type: payload.role,
           order_dir: payload.dir,
-          name: payload.search,
+          keyword: payload.search,
           order_by: payload.order_by,
           limit: payload.limit,
           page: payload.page

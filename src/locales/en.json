@@ -31,6 +31,7 @@
     "blockCategories": "Block Categories",
     "categories_List": "Categories List",
     "accountant": "Accountant",
+    "auction": "Auction",
     "admins": "Admins",
     "category": "Category",
     "page": "Page Details",
@@ -480,6 +481,7 @@
   "forms": {
     "en_desc": "English Description",
     "ar_desc": "Arabic Description",
+    "type": "Type",
     "createCate": "Create Category",
     "editCate": "Edit Category",
     "ar_title": "Arabic Title",
@@ -543,7 +545,6 @@
     "ar_name": "Arabic Name",
     "link1": "Link 1",
     "link2": "Link 2",
-    "type": "Type",
     "opening_price": "Opening Price",
     "minimum_price": "Minimum Price",
     "start_date": "Start Date",

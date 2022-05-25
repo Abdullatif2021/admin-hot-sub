@@ -10,6 +10,7 @@ const state = {
   Error: "",
   category: null,
   successDeleteCategory: null,
+  successActiveCategory: null,
   processing: false,
   create_category_success: null,
   successUpdateCategory: null
@@ -24,6 +25,8 @@ const getters = {
   _create_category_success: state => state.create_category_success,
   _updatedCategorySuccessfuly: state => state.updated_Successfuly,
   _successDeleteCategory: state => state.successDeleteCategory,
+  _successActiveCategory: state => state.successActiveCategory,
+
   _successUpdateCategory: state => state.successUpdateCategory
 };
 
@@ -48,6 +51,9 @@ const mutations = {
   deleteCategory(state, payload) {
     state.successDeleteCategory = payload;
   },
+  activeCategory(state, payload) {
+    state.successActiveCategory = payload;
+  },
   create_category_success(state, payload) {
     state.create_category_success = payload;
   },
@@ -64,7 +70,7 @@ const actions = {
       .get(`${apiUrl}/categories`, {
         params: {
           order_dir: payload.dir,
-          title: payload.search,
+          keyword: payload.search,
           order_by: payload.order_by,
           limit: payload.limit,
           page: payload.page
@@ -132,6 +138,14 @@ const actions = {
     axios.delete(`${apiUrl}/categories/${id}`).then(res => {
       if (res.status === 200) {
         commit("deleteCategory", res);
+      }
+    });
+  },
+  categoryActivate({ commit, dispatch }, payload) {
+    const id = payload.id;
+    axios.post(`${apiUrl}/categories/${id}`).then(res => {
+      if (res.status === 200) {
+        commit("activeCategory", res);
       }
     });
   }

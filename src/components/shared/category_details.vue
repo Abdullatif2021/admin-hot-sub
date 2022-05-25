@@ -1,11 +1,6 @@
 <template>
   <b-row>
     <b-colxx xxs="12">
-      <datatable-heading
-        :details="true"
-        :reload="true"
-        :title="$t(_type)"
-      ></datatable-heading>
       <b-card class="mb-4">
         <template v-if="!is_Load">
           <b-form @submit.prevent="onGridFormSubmit">
@@ -67,7 +62,7 @@
                 </b-form-group>
               </b-colxx>
               <b-colxx v-if="is_block_category" sm="12">
-                <b-form-group label="Option">
+                <b-form-group :label="$t('forms.type')">
                   <b-form-select
                     :state="!$v.gridForm.select.$error"
                     v-model="$v.gridForm.select.$model"

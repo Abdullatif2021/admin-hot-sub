@@ -156,7 +156,7 @@ const actions = {
       .get(`${apiUrl}/blocks`, {
         params: {
           order_dir: payload.dir,
-          name: payload.search,
+          keyword: payload.search,
           order_by: payload.order_by,
           limit: payload.limit,
           block_category_id: payload.block_category_id,
@@ -473,7 +473,15 @@ const actions = {
   getBlockCategories: async ({ commit }, payload) => {
     commit("setProcessing", false);
     await axios
-      .get(`${apiUrl}/blocks/categories`)
+      .get(`${apiUrl}/blocks/categories`, {
+        params: {
+          order_dir: payload.dir,
+          keyword: payload.search,
+          order_by: payload.order_by,
+          limit: payload.limit,
+          page: payload.page
+        }
+      })
       .then(res => {
         commit("setProcessing", true);
         return res;

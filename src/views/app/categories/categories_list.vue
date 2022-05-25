@@ -35,6 +35,20 @@
           >
             <template slot="actions" slot-scope="props">
               <b-button
+                variant="outline-theme-7"
+                class="icon-button"
+                @click="active(props.rowData.id)"
+              >
+                <i class="iconsminds-radioactive"></i>
+                <!-- <b-tooltip
+                  :target="props.rowData"
+                  ref="statusTooltip"
+                  placement="top"
+                  title="Active"
+                  >Active</b-tooltip
+                > -->
+              </b-button>
+              <b-button
                 variant="outline-theme-3"
                 class="icon-button"
                 @click="modify(props.rowData.id)"
@@ -129,7 +143,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.en.title;
+            return value.en.name;
           },
           sortField: "title",
           title: "Title",
@@ -168,7 +182,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["getCategories", "deleteCategory"]),
+    ...mapActions(["getCategories", "categoryActivate", "deleteCategory"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -176,7 +190,9 @@ export default {
       }
       return "";
     },
-
+    active(id) {
+      this.categoryActivate({ id: id });
+    },
     modify(id) {
       console.log(id);
       this.$router.push({
@@ -328,6 +344,8 @@ export default {
       "categories",
       "cate_paginations",
       "_successDeleteCategory",
+      "_successActiveCategory",
+
       "_isLoadCategories"
     ]),
     isSelectedAll() {
@@ -354,6 +372,21 @@ export default {
         "Operation completed successfully",
         "Category have been deleted successfully",
         { duration: 3000, permanent: false }
+      );
+      this.getCategories({
+        dir: this.dir,
+        search: this.search,
+        order_by: this.order_by,
+        limit: this.limit,
+        page: this.page
+      });
+    },
+    _successActiveCategory(newVal, old) {
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "the state of Category have been changed successfully",
+        { duration: 4000, permanent: false }
       );
       this.getCategories({
         dir: this.dir,

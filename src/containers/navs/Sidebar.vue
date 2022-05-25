@@ -208,6 +208,8 @@ export default {
           id: item.id,
           icon: "iconsminds-blogger",
           label: item.slug,
+          roles: ["superadmin", "admin", "editor"],
+
           to: `${adminRoot}/blocks/blockList/${item.id}`
         });
       });

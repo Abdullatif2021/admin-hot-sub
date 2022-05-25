@@ -21,80 +21,50 @@ const data = [
     id: "blockCategories",
     icon: "iconsminds-picasa",
     label: "menu.blocks-category",
-    to: `${adminRoot}/blockCategories`
+    to: `${adminRoot}/blockCategories`,
+    roles: ["superadmin"]
   },
   {
     id: "categories",
     icon: "simple-icon-grid",
     label: "menu.categories",
-    to: `${adminRoot}/categories`
+    to: `${adminRoot}/categories`,
+    roles: ["superadmin"]
   },
   {
     id: "auctions",
     icon: "simple-icon-folder",
     label: "menu.auctions",
-    to: `${adminRoot}/auctions`
+    to: `${adminRoot}/auctions`,
+    roles: ["superadmin", "admin", "accountant"]
   },
   {
     id: "Pages",
     icon: "iconsminds-digital-drawing",
     label: "menu.pages",
     to: `${adminRoot}/pages`,
-    roles: ["superadmin"]
+    roles: ["superadmin", "admin", "editor"]
   },
   {
     id: "admins",
     icon: "simple-icon-user",
     label: "menu.admins",
     to: `${adminRoot}/admins`,
-    roles: ["superadmin"]
+    roles: ["superadmin", "admin"]
   },
   {
     id: "accountant",
     icon: "simple-icon-people",
     label: "menu.accountant",
     to: `${adminRoot}/accountant`,
-    roles: ["superadmin"]
+    roles: ["superadmin", "admin"]
   },
   {
     id: "Settings",
     icon: "simple-icon-settings",
     label: "menu.settings",
     to: `${adminRoot}/settings`,
-    roles: ["superadmin"]
+    roles: ["superadmin", "admin"]
   }
-
-  // {
-  //   id: "pages",
-  //   icon: "iconsminds-digital-drawing",
-  //   label: "menu.pages",
-  //   to: "/user/login",
-  //   subs: [
-  //     {
-  //       icon: "simple-icon-user-following",
-  //       label: "menu.login",
-  //       to: "/user/login",
-  //       newWindow: true
-  //     },
-  //     {
-  //       icon: "simple-icon-user-follow",
-  //       label: "menu.register",
-  //       to: "/user/register",
-  //       newWindow: true
-  //     },
-  //     {
-  //       icon: "simple-icon-user-unfollow",
-  //       label: "menu.forgot-password",
-  //       to: "/user/forgot-password",
-  //       newWindow: true
-  //     },
-  //     {
-  //       icon: "simple-icon-user-following",
-  //       label: "menu.reset-password",
-  //       to: "/user/reset-password",
-  //       newWindow: true
-  //     }
-  //   ]
-  // },
 ];
 export default data;

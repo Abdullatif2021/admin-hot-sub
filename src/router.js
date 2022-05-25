@@ -40,6 +40,7 @@ const routes = [
             /* webpackChunkName: "second-menu" */ "./views/app/block_categories"
           ),
         redirect: `${adminRoot}/blockCategories/categories_List`,
+        meta: { loginRequired: true, roles: ["superadmin"] },
 
         children: [
           {
@@ -63,6 +64,7 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "second-menu" */ "./views/app/block"),
         redirect: `${adminRoot}/blocks/blockList`,
+        meta: { loginRequired: true, roles: ["superadmin", "editor", "admin"] },
 
         children: [
           {
@@ -87,6 +89,7 @@ const routes = [
             /* webpackChunkName: "second-menu" */ "./views/app/categories"
           ),
         redirect: `${adminRoot}/categories/categoriesList`,
+        meta: { loginRequired: true, roles: ["superadmin"] },
 
         children: [
           {
@@ -110,6 +113,10 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "second-menu" */ "./views/app/auctions"),
         redirect: `${adminRoot}/auctions/auction_list`,
+        meta: {
+          loginRequired: true,
+          roles: ["superadmin", "admin", "accountant"]
+        },
 
         children: [
           {
@@ -135,9 +142,7 @@ const routes = [
             /* webpackChunkName: "second-menu" */ "./views/app/pages_managment"
           ),
         redirect: `${adminRoot}/pages/pageList`,
-
-        // meta: { loginRequired: true, roles: ["superadmin"] },
-
+        meta: { loginRequired: true, roles: ["superadmin", "editor", "admin"] },
         children: [
           {
             path: "pageList",
@@ -191,7 +196,7 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "second-menu" */ "./views/app/users"),
         redirect: `${adminRoot}/admins/usersList`,
-        meta: { loginRequired: true, roles: ["superadmin"] },
+        meta: { loginRequired: true, roles: ["superadmin", "admin"] },
 
         children: [
           {
@@ -215,7 +220,7 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "second-menu" */ "./views/app/users"),
         redirect: `${adminRoot}/accountant/usersList`,
-        meta: { loginRequired: true, roles: ["superadmin"] },
+        meta: { loginRequired: true, roles: ["superadmin", "admin"] },
 
         children: [
           {
@@ -238,7 +243,8 @@ const routes = [
       {
         path: "settings",
         component: () =>
-          import(/* webpackChunkName: "single" */ "./views/app/settings")
+          import(/* webpackChunkName: "single" */ "./views/app/settings"),
+        meta: { loginRequired: true, roles: ["superadmin", "admin"] }
       },
       {
         path: "profile",

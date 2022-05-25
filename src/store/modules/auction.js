@@ -7,6 +7,7 @@ const state = {
   isLoadAuctions: true,
   paginations: null,
   auctions: null,
+  created_Successfuly: null,
   updated_Successfuly: null,
   Error: "",
   auction: null,
@@ -22,6 +23,7 @@ const getters = {
   auction: state => state.auction,
   _isLoadAuctions: state => state.processing,
   _updatedAuctionSuccessfuly: state => state.updated_Successfuly,
+  _createAuctionSuccessfuly: state => state.created_Successfuly,
   _successDeleteAuction: state => state.successDeleteAuction
 };
 
@@ -38,6 +40,9 @@ const mutations = {
   },
   updatedAuctionSuccessfuly(state, data) {
     state.updated_Successfuly = data;
+  },
+  createAuctionSuccessfuly(state, data) {
+    state.created_Successfuly = data;
   },
   getAuctionsError(state, error) {
     state.Error = error;
@@ -56,7 +61,7 @@ const actions = {
       .get(`${apiUrl}/auctions`, {
         params: {
           order_dir: payload.dir,
-          title: payload.search,
+          keyword: payload.search,
           order_by: payload.order_by,
           limit: payload.limit,
           page: payload.page
@@ -76,10 +81,18 @@ const actions = {
       });
   },
   getAuction({ commit, dispatch }, payload) {
+    commit("setProcessing", false);
+
     const id = payload.id;
-    axios.get(`${apiUrl}/auctions/${id}`).then(res => {
-      commit("getAuctionSuccess", res.data);
-    });
+    axios
+      .get(`${apiUrl}/auctions/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getAuctionSuccess", res.data);
+      });
   },
   createAuction({ commit, dispatch }, payload) {
     const formData = new FormData();
@@ -90,18 +103,18 @@ const actions = {
     formData.append("en[terms_conditions]", payload.info.en_description);
 
     formData.append("minimum_price", payload.info.minimum_price);
+    formData.append("category_id", payload.info.categoryId);
+
     formData.append("opening_price", payload.info.opening_price);
     formData.append("start_date", payload.start_date);
     formData.append("end_date", payload.end_date);
 
-    formData.append("longitude", payload.info.longitude);
-    formData.append("latitude", payload.info.latitude);
+    formData.append("longitude", "25.19171507935199");
+    formData.append("latitude", "25.19171507935199");
 
     axios.post(`${apiUrl}/auctions`, formData, {}).then(res => {
       if (res.status === 201) {
-        console.log("hi from create");
-        router.push(`${adminRoot}/auctions`);
-        commit("updatedAuctionSuccessfuly", res);
+        commit("createAuctionSuccessfuly", res);
       }
     });
   },
@@ -134,16 +147,14 @@ const actions = {
           opening_price: payload.info.opening_price,
           start_date: payload.start_date,
           end_date: payload.end_date,
-          longitude: 25.19171507935199,
-          latitude: 44.15821996441933
+          longitude: "25.19171507935199",
+          latitude: "44.15821996441933"
         },
         {}
       )
       .then(res => {
         if (res.status === 200) {
-          console.log("updatedAuctionSuccessfuly");
           commit("updatedAuctionSuccessfuly", res);
-          router.push(`${adminRoot}/auctions`);
         }
       });
   },

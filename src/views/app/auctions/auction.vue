@@ -1,97 +1,167 @@
 <template>
   <b-row>
     <b-colxx xxs="12">
-      <b-card
-        class="mb-4"
+      <datatable-heading
+        :details="true"
+        :reload="true"
         :title="auctionId ? $t('forms.editCate') : $t('forms.createCate')"
-      >
-        <b-form @submit.prevent="onGridFormSubmit">
-          <b-row>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.en_title')">
-                <b-form-input type="text" v-model="gridForm.en_title" />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.ar_title')">
-                <b-form-input type="text" v-model="gridForm.ar_title" />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.en_desc')">
-                <b-form-input type="text" v-model="gridForm.en_description" />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.ar_desc')">
-                <b-form-input type="text" v-model="gridForm.ar_description" />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.minimum_price')">
-                <b-form-input type="text" v-model="gridForm.minimum_price" />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.opening_price')">
-                <b-form-input type="text" v-model="gridForm.opening_price" />
-              </b-form-group>
-            </b-colxx>
+      ></datatable-heading>
+      <template v-if="isLoadAuction">
+        <b-card class="mb-4">
+          <b-form @submit.prevent="onGridFormSubmit">
+            <b-row>
+              <b-colxx sm="6">
+                <b-form-group :label="$t('forms.en_title')">
+                  <b-form-input
+                    type="text"
+                    :state="!$v.gridForm.en_title.$error"
+                    v-model="$v.gridForm.en_title.$model"
+                  />
+                  <b-form-invalid-feedback v-if="!$v.gridForm.en_title.required"
+                    >Please enter English title</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-colxx>
+              <b-colxx sm="6">
+                <b-form-group :label="$t('forms.ar_title')">
+                  <b-form-input
+                    type="text"
+                    :state="!$v.gridForm.ar_title.$error"
+                    v-model="$v.gridForm.ar_title.$model"
+                  />
+                  <b-form-invalid-feedback v-if="!$v.gridForm.ar_title.required"
+                    >Please enter Arabic title</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-colxx>
+              <b-colxx sm="6">
+                <b-form-group :label="$t('forms.en_desc')">
+                  <b-form-input type="text" v-model="gridForm.en_description" />
+                </b-form-group>
+              </b-colxx>
+              <b-colxx sm="6">
+                <b-form-group :label="$t('forms.ar_desc')">
+                  <b-form-input type="text" v-model="gridForm.ar_description" />
+                </b-form-group>
+              </b-colxx>
+              <b-colxx sm="6">
+                <b-form-group :label="$t('forms.minimum_price')">
+                  <b-form-input
+                    type="number"
+                    :state="!$v.gridForm.minimum_price.$error"
+                    v-model="$v.gridForm.minimum_price.$model"
+                  />
+                  <b-form-invalid-feedback
+                    v-if="!$v.gridForm.minimum_price.required"
+                    >Please enter minimum price</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-colxx>
+              <b-colxx sm="6">
+                <b-form-group :label="$t('forms.opening_price')">
+                  <b-form-input
+                    type="number"
+                    :state="!$v.gridForm.opening_price.$error"
+                    v-model="$v.gridForm.opening_price.$model"
+                  />
+                  <b-form-invalid-feedback
+                    v-if="!$v.gridForm.opening_price.required"
+                    >Please enter opening price</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-colxx>
 
-            <b-colxx sm="6">
-              <label class="form-group has-float-label">
-                <b-form-select
-                  v-model="gridForm.categoryId"
-                  :options="categoryIdOptions"
-                  plain
-                />
-                <span>{{ $t("forms.category") }}</span>
-              </label>
-            </b-colxx>
-            <b-colxx sm="6">
-              <div class="form-group has-float-label">
-                <datepicker
-                  :bootstrap-styling="true"
-                  :placeholder="$t('form-components.date')"
-                  v-model="gridForm.start_date"
-                  @selected="selectedDate('start')"
-                ></datepicker>
+              <b-colxx sm="6">
+                <label class="form-group has-float-label">
+                  <b-form-select
+                    :state="!$v.gridForm.categoryId.$error"
+                    v-model="$v.gridForm.categoryId.$model"
+                    :options="categoryIdOptions"
+                    plain
+                  />
+                  <b-form-invalid-feedback
+                    v-if="!$v.gridForm.categoryId.required"
+                    >Please select category type</b-form-invalid-feedback
+                  >
+                  <span>{{ $t("forms.category") }}</span>
+                </label>
+              </b-colxx>
+              <b-colxx sm="6">
+                <div class="form-group has-float-label">
+                  <datepicker
+                    :bootstrap-styling="true"
+                    v-model="$v.gridForm.start_date.$model"
+                    @selected="selectedDate('start')"
+                  ></datepicker>
+                  <span>{{ $t("forms.start_date") }}</span>
+                  <div
+                    :class="{
+                      'invalid-feedback': true,
+                      'd-block':
+                        $v.gridForm.start_date.$error &&
+                        !$v.gridForm.start_date.required
+                    }"
+                  >
+                    Start Date required
+                  </div>
+                </div>
+              </b-colxx>
+              <b-colxx sm="6">
+                <div class="form-group has-float-label">
+                  <datepicker
+                    :bootstrap-styling="true"
+                    :state="true"
+                    v-model="$v.gridForm.end_date.$model"
+                    @selected="selectedDate('end')"
+                  >
+                  </datepicker>
+                  <span>{{ $t("forms.end_date") }}</span>
+                  <div
+                    :class="{
+                      'invalid-feedback': true,
+                      'd-block':
+                        $v.gridForm.end_date.$error &&
+                        !$v.gridForm.end_date.required
+                    }"
+                  >
+                    End Date required
+                  </div>
+                </div>
+              </b-colxx>
+            </b-row>
 
-                <span>{{ $t("forms.start_date") }}</span>
-              </div>
-            </b-colxx>
-            <b-colxx sm="6">
-              <div class="form-group has-float-label">
-                <datepicker
-                  :bootstrap-styling="true"
-                  :placeholder="$t('form-components.date')"
-                  v-model="gridForm.end_date"
-                  @selected="selectedDate('end')"
-                ></datepicker>
-
-                <span>{{ $t("forms.end_date") }}</span>
-              </div>
-            </b-colxx>
-          </b-row>
-
-          <b-button type="submit" variant="primary" class="mt-4">{{
-            $t("forms.save")
-          }}</b-button>
-        </b-form>
-      </b-card>
+            <b-button
+              :disabled="!disabled"
+              type="submit"
+              variant="primary"
+              class="mt-4"
+              >{{ $t("forms.save") }}</b-button
+            >
+          </b-form>
+        </b-card>
+      </template>
+      <template v-else>
+        <div class="loading"></div>
+      </template>
     </b-colxx>
   </b-row>
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
 import { validationMixin } from "vuelidate";
+import router from "../../../router";
+
 import Datepicker from "vuejs-datepicker";
 import VueDropzone from "vue2-dropzone";
 const { required } = require("vuelidate/lib/validators");
+import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
+import { adminRoot } from "../../../constants/config";
 
 export default {
   components: {
     "vue-dropzone": VueDropzone,
+    "datatable-heading": DatatableHeading,
+
     datepicker: Datepicker
   },
   data() {
@@ -99,13 +169,15 @@ export default {
       auctionId: null,
       _categoryId: null,
       password: null,
+      disabled: true,
       endDateSelected: false,
       startDateSelected: false,
+      isLoadAuction: false,
       categoryIdOptions: [],
       create_categoryId: null,
       gridForm: {
-        ar_title: "",
         en_title: "",
+        ar_title: "",
         en_description: "",
         ar_description: "",
         categoryId: "",
@@ -120,7 +192,7 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    form: {
+    gridForm: {
       en_title: {
         required
       },
@@ -133,6 +205,7 @@ export default {
       minimum_price: {
         required
       },
+
       start_date: {
         required
       },
@@ -150,6 +223,7 @@ export default {
       this.getAuction({ id: this.auctionId });
     } else {
       console.log("i am here ", this.auctionId);
+      this.isLoadAuction = true;
     }
     this.getCategories({
       dir: null,
@@ -169,22 +243,34 @@ export default {
     onGridFormSubmit() {
       console.log("img", this.file);
       console.log("hi from submit cate", this.gridForm.categoryId);
-      if (this.auctionId) {
-        this.updateAuction({
-          info: this.gridForm,
-          start_date: this.startDateSelected
-            ? this.gridForm.start_date.toISOString()
-            : this.gridForm.start_date,
-          end_date: this.endDateSelected
-            ? this.gridForm.end_date.toISOString()
-            : this.gridForm.end_date,
+      this.$v.$touch();
+      this.$v.gridForm.$touch();
+      if (!this.$v.gridForm.$invalid) {
+        this.disabled = false;
 
-          id: this.auctionId
-        });
-      } else {
-        this.createAuction({
-          info: this.gridForm
-        });
+        if (this.auctionId) {
+          this.updateAuction({
+            info: this.gridForm,
+            start_date: this.startDateSelected
+              ? this.gridForm.start_date.toISOString().split("T")[0]
+              : this.gridForm.start_date,
+            end_date: this.endDateSelected
+              ? this.gridForm.end_date.toISOString().split("T")[0]
+              : this.gridForm.end_date,
+
+            id: this.auctionId
+          });
+        } else {
+          this.createAuction({
+            info: this.gridForm,
+            start_date: this.startDateSelected
+              ? this.gridForm.start_date.toISOString().split("T")[0]
+              : this.gridForm.start_date,
+            end_date: this.endDateSelected
+              ? this.gridForm.end_date.toISOString().split("T")[0]
+              : this.gridForm.end_date
+          });
+        }
       }
     },
     selectedDate(data) {
@@ -230,15 +316,22 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["auction", "categories", "_updatedAuctionSuccessfuly"])
+    ...mapGetters([
+      "auction",
+      "categories",
+      "_updatedAuctionSuccessfuly",
+      "_createAuctionSuccessfuly"
+    ])
   },
   watch: {
     auction(newInfo, oldOne) {
+      console.log("wrfwrfwefwerfwef", newInfo);
+      this.isLoadAuction = true;
       this.gridForm.ar_title = newInfo.locales.ar.title;
       this.gridForm.en_title = newInfo.locales.en.title;
       this.gridForm.ar_description = newInfo.locales.ar.terms_conditions;
       this.gridForm.en_description = newInfo.locales.en.terms_conditions;
-      this.gridForm.categoryId = newInfo.categoryId;
+      this.gridForm.categoryId = newInfo.category_id;
       this.gridForm.opening_price = newInfo.opening_price;
       this.gridForm.minimum_price = newInfo.minimum_price;
       this.gridForm.start_date = newInfo.start_date;
@@ -246,8 +339,24 @@ export default {
     },
     _updatedAuctionSuccessfuly(newInfo, oldOne) {
       console.log("hiiiiii");
-      this.endDateSelected = false;
-      this.startDateSelected = false;
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Auction have been updated successfully",
+        { duration: 3000, permanent: false }
+      );
+      router.push(`${adminRoot}/auctions`);
+      this.$destroy();
+    },
+    _createAuctionSuccessfuly(newInfo, oldOne) {
+      console.log("hiiiiii");
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Auction have been created successfully",
+        { duration: 3000, permanent: false }
+      );
+      router.push(`${adminRoot}/auctions`);
       this.$destroy();
     },
     categories(newval, old) {
