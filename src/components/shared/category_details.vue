@@ -1,80 +1,83 @@
 <template>
-  <b-row>
-    <b-colxx xxs="12">
-      <b-card class="mb-4">
-        <template v-if="!is_Load">
-          <b-form @submit.prevent="onGridFormSubmit">
-            <b-row>
-              <b-colxx v-if="is_edit" sm="12">
-                <label
-                  style="display: flex;justify-content: center;"
-                  class="form-group has-float-label"
-                >
-                  <img
-                    :src="image"
-                    style="border-radius: 20%;"
-                    alt="Image"
-                    width="120"
-                    height="120"
-                  />
-                </label>
-              </b-colxx>
+  <b-colxx xxs="12">
+    <b-card class="mb-4">
+      <b-tabs card no-fade>
+        <b-tab title="Basis details" active title-item-class="w-50 text-center">
+          <template v-if="!is_Load">
+            <b-form @submit.prevent="onGridFormSubmit">
+              <b-row>
+                <b-colxx v-if="is_edit" sm="12">
+                  <label
+                    style="display: flex;justify-content: center;"
+                    class="form-group has-float-label"
+                  >
+                    <img
+                      :src="image"
+                      style="border-radius: 20%;"
+                      alt="Image"
+                      width="120"
+                      height="120"
+                    />
+                  </label>
+                </b-colxx>
 
-              <b-colxx sm="6">
-                <b-form-group :label="$t('forms.en_title')">
-                  <b-form-input
-                    type="text"
-                    :state="!$v.gridForm.en_name.$error"
-                    v-model="$v.gridForm.en_name.$model"
-                  />
-                  <b-form-invalid-feedback v-if="!$v.gridForm.en_name.required"
-                    >Please enter Arabic title</b-form-invalid-feedback
-                  >
-                </b-form-group>
-              </b-colxx>
-              <b-colxx sm="6">
-                <b-form-group :label="$t('forms.ar_title')">
-                  <b-form-input
-                    type="text"
-                    :state="!$v.gridForm.ar_name.$error"
-                    v-model="$v.gridForm.ar_name.$model"
-                  />
-                  <b-form-invalid-feedback v-if="!$v.gridForm.ar_name.required"
-                    >Please enter English title</b-form-invalid-feedback
-                  >
-                </b-form-group>
-              </b-colxx>
-              <b-colxx sm="6">
-                <b-form-group :label="$t('forms.en_desc')">
-                  <b-form-input
-                    type="text"
-                    v-model="$v.gridForm.en_description.$model"
-                  />
-                </b-form-group>
-              </b-colxx>
-              <b-colxx sm="6">
-                <b-form-group :label="$t('forms.ar_desc')">
-                  <b-form-input
-                    type="text"
-                    :state="!$v.gridForm.ar_description.$error"
-                    v-model="$v.gridForm.ar_description.$model"
-                  />
-                </b-form-group>
-              </b-colxx>
-              <b-colxx v-if="is_block_category" sm="12">
-                <b-form-group :label="$t('forms.type')">
-                  <b-form-select
-                    :state="!$v.gridForm.select.$error"
-                    v-model="$v.gridForm.select.$model"
-                    :options="typeOptions"
-                    plain
-                  />
-                  <b-form-invalid-feedback v-if="!$v.gridForm.select.required"
-                    >Please select category type</b-form-invalid-feedback
-                  >
-                </b-form-group>
-              </b-colxx>
-              <!-- <b-colxx v-if="category" sm="6">
+                <b-colxx sm="6">
+                  <b-form-group :label="$t('forms.en_title')">
+                    <b-form-input
+                      type="text"
+                      :state="!$v.gridForm.en_name.$error"
+                      v-model="$v.gridForm.en_name.$model"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.gridForm.en_name.required"
+                      >Please enter Arabic title</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx sm="6">
+                  <b-form-group :label="$t('forms.ar_title')">
+                    <b-form-input
+                      type="text"
+                      :state="!$v.gridForm.ar_name.$error"
+                      v-model="$v.gridForm.ar_name.$model"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.gridForm.ar_name.required"
+                      >Please enter English title</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx sm="6">
+                  <b-form-group :label="$t('forms.en_desc')">
+                    <b-form-input
+                      type="text"
+                      v-model="$v.gridForm.en_description.$model"
+                    />
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx sm="6">
+                  <b-form-group :label="$t('forms.ar_desc')">
+                    <b-form-input
+                      type="text"
+                      :state="!$v.gridForm.ar_description.$error"
+                      v-model="$v.gridForm.ar_description.$model"
+                    />
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx v-if="is_block_category" sm="12">
+                  <b-form-group :label="$t('forms.type')">
+                    <b-form-select
+                      :state="!$v.gridForm.select.$error"
+                      v-model="$v.gridForm.select.$model"
+                      :options="typeOptions"
+                      plain
+                    />
+                    <b-form-invalid-feedback v-if="!$v.gridForm.select.required"
+                      >Please select category type</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                </b-colxx>
+                <!-- <b-colxx v-if="category" sm="6">
               <b-form-group :label="$t('forms.ar_desc')">
                 <b-form-input type="text" v-model="gridForm.add_to_menu" />
               </b-form-group>
@@ -85,31 +88,35 @@
               </b-form-group>
             </b-colxx> -->
 
-              <b-colxx xxs="12">
-                <b-form-group :label="$t('forms.image')">
-                  <vue-dropzone
-                    ref="myVueDropzone"
-                    id="dropzone"
-                    :options="dropzoneOptions"
-                    @vdropzone-files-added="fileAdded"
-                    @vdropzone-sending-multiple="sendMessage"
-                    @vdropzone-removed-file="fileRemoved"
-                  ></vue-dropzone>
-                </b-form-group>
-              </b-colxx>
-            </b-row>
+                <b-colxx xxs="12">
+                  <b-form-group :label="$t('forms.image')">
+                    <vue-dropzone
+                      ref="myVueDropzone"
+                      id="dropzone"
+                      :options="dropzoneOptions"
+                      @vdropzone-files-added="fileAdded"
+                      @vdropzone-sending-multiple="sendMessage"
+                      @vdropzone-removed-file="fileRemoved"
+                    ></vue-dropzone>
+                  </b-form-group>
+                </b-colxx>
+              </b-row>
 
-            <b-button type="submit" variant="primary" class="mt-4">{{
-              $t("forms.save")
-            }}</b-button>
-          </b-form>
-        </template>
-        <template v-else>
-          <div class="loading"></div>
-        </template>
-      </b-card>
-    </b-colxx>
-  </b-row>
+              <b-button type="submit" variant="primary" class="mt-4">{{
+                $t("forms.save")
+              }}</b-button>
+            </b-form>
+          </template>
+          <template v-else>
+            <div class="loading"></div>
+          </template>
+        </b-tab>
+        <b-tab title="meta data" title-item-class="w-50 text-center">
+          <meta_data :id="_id" :type="_type" />
+        </b-tab>
+      </b-tabs>
+    </b-card>
+  </b-colxx>
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
@@ -118,14 +125,15 @@ import VueDropzone from "vue2-dropzone";
 import DatatableHeading from "../../containers/datatable/DatatableHeading.vue";
 import router from "../../router";
 import { adminRoot } from "../../constants/config";
-
+import meta_data from "./meta_data.vue";
 const { required } = require("vuelidate/lib/validators");
 
 export default {
   props: ["_id", "_type"],
   components: {
     "vue-dropzone": VueDropzone,
-    "datatable-heading": DatatableHeading
+    "datatable-heading": DatatableHeading,
+    meta_data: meta_data
   },
   data() {
     return {

@@ -152,7 +152,13 @@ export default {
     window.addEventListener("resize", this.handleWindowResize);
     document.addEventListener("click", this.handleDocumentClick);
     this.handleWindowResize();
-    this.getBlockCategories();
+    this.getBlockCategories({
+      dir: null,
+      search: null,
+      order_by: null,
+      limit: null,
+      page: null
+    });
   },
   beforeDestroy() {
     document.removeEventListener("click", this.handleDocumentClick);

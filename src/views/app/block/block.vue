@@ -4,253 +4,262 @@
       <datatable-heading
         :details="true"
         :reload="true"
-        :title="userId ? $t('forms.grid') : $t('forms.createUser')"
+        :title="$t('forms.edit_block')"
       ></datatable-heading>
       <b-row>
-        <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
-          <b-card class="mb-4" no-body>
-            <b-tabs card no-fade>
-              <b-tab
-                title="Basis details"
-                active
-                title-item-class="w-30 text-center"
-              >
-                <label
-                  style="display: flex;justify-content: center;"
-                  class="form-group has-float-label"
+        <template v-if="isLoadBlock">
+          <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
+            <b-card class="mb-4" no-body>
+              <b-tabs card no-fade>
+                <b-tab
+                  title="Basis details"
+                  active
+                  title-item-class="w-30 text-center"
                 >
-                  <img
-                    :src="blockData.image"
-                    style="border-radius: 20%;"
-                    alt="Image"
-                    width="120"
-                    height="120"
-                  />
-                </label>
-
-                <label class="form-group has-float-label">
-                  <input
-                    type="text"
-                    v-model="blockData.locales.en.name"
-                    class="form-control"
-                  />
-                  <span>{{ $t("forms.en_name") }}</span>
-                </label>
-                <label class="form-group has-float-label">
-                  <quill-editor
-                    ref="myTextEditor"
-                    v-model="blockData.locales.en.description"
-                    :options="editorOption"
-                    @blur="onEditorBlur($event)"
-                    @focus="onEditorFocus($event)"
-                    @ready="onEditorReady($event)"
+                  <label
+                    style="display: flex;justify-content: center;"
+                    class="form-group has-float-label"
                   >
-                  </quill-editor>
-                  <span>{{ $t("forms.en_desc") }}</span>
-                </label>
-                <label class="form-group has-float-label">
-                  <input
-                    type="text"
-                    v-model="blockData.locales.ar.name"
-                    class="form-control"
-                  />
-                  <span>{{ $t("forms.ar_name") }}</span>
-                </label>
-                <label class="form-group has-float-label">
-                  <quill-editor
-                    ref="myTextEditor"
-                    v-model="blockData.locales.ar.description"
-                    :options="editorOption"
-                    @blur="onEditorBlur($event)"
-                    @focus="onEditorFocus($event)"
-                    @ready="onEditorReady($event)"
+                    <img
+                      :src="blockData.image"
+                      style="border-radius: 20%;"
+                      alt="Image"
+                      width="120"
+                      height="120"
+                    />
+                  </label>
+
+                  <label class="form-group has-float-label">
+                    <input
+                      type="text"
+                      v-model="blockData.locales.en.name"
+                      class="form-control"
+                    />
+                    <span>{{ $t("forms.en_name") }}</span>
+                  </label>
+                  <label class="form-group has-float-label">
+                    <quill-editor
+                      ref="myTextEditor"
+                      v-model="blockData.locales.en.description"
+                      :options="editorOption"
+                      @blur="onEditorBlur($event)"
+                      @focus="onEditorFocus($event)"
+                      @ready="onEditorReady($event)"
+                    >
+                    </quill-editor>
+                    <span>{{ $t("forms.en_desc") }}</span>
+                  </label>
+                  <label class="form-group has-float-label">
+                    <input
+                      type="text"
+                      v-model="blockData.locales.ar.name"
+                      class="form-control"
+                    />
+                    <span>{{ $t("forms.ar_name") }}</span>
+                  </label>
+                  <label class="form-group has-float-label">
+                    <quill-editor
+                      ref="myTextEditor"
+                      v-model="blockData.locales.ar.description"
+                      :options="editorOption"
+                      @blur="onEditorBlur($event)"
+                      @focus="onEditorFocus($event)"
+                      @ready="onEditorReady($event)"
+                    >
+                    </quill-editor>
+                    <span>{{ $t("forms.ar_desc") }}</span>
+                  </label>
+                  <label class="form-group has-float-label">
+                    <b-form-select
+                      v-model="blockData.visible"
+                      :options="activeOptions"
+                      plain
+                    />
+                    <span>{{ $t("block.visible") }}</span>
+                  </label>
+                  <div class="form-group has-float-label">
+                    <datepicker
+                      :bootstrap-styling="true"
+                      :placeholder="$t('form-components.date')"
+                      v-model="blockData.post_date"
+                      @selected="selectedDate()"
+                    ></datepicker>
+
+                    <span>{{ $t("block.post-date") }}</span>
+                  </div>
+
+                  <label class="form-group has-float-label">
+                    <input
+                      type="text"
+                      v-model="blockData.url"
+                      class="form-control"
+                    />
+                    <span>{{ $t("block.url") }}</span>
+                  </label>
+                  <label class="form-group has-float-label">
+                    <b-form-select
+                      v-model="blockData.block_category_id.id"
+                      :options="categoryIdOptions"
+                      plain
+                    />
+                    <span>{{ $t("block.category") }}</span>
+                  </label>
+
+                  <label class="form-group has-float-label">
+                    <b-colxx xxs="12" style="padding: 0px;margin-top: 20px;">
+                      <vue-dropzone
+                        ref="myVueDropzone"
+                        id="dropzone"
+                        :options="dropzoneImageOptions"
+                        @vdropzone-files-added="imageAdded"
+                        @vdropzone-complete="afterUploadComplete"
+                        @vdropzone-sending-multiple="sendMessage"
+                        @vdropzone-removed-file="imageRemoved"
+                      ></vue-dropzone>
+                    </b-colxx>
+                    <span>{{ $t("block.image") }}</span>
+                  </label>
+                  <label class="form-group has-float-label">
+                    <b-colxx xxs="12" style="padding: 0px;margin-top: 20px;">
+                      <vue-dropzone
+                        ref="myVueDropzone"
+                        id="dropzone"
+                        :options="dropzoneFileOptions"
+                        @vdropzone-files-added="fileAdded"
+                        @vdropzone-complete="afterUploadComplete"
+                        @vdropzone-sending-multiple="sendMessage"
+                        @vdropzone-removed-file="fileRemoved"
+                      ></vue-dropzone>
+                    </b-colxx>
+                    <span>{{ $t("block.file") }}</span>
+                  </label>
+                  <b-colxx
+                    xxs="12"
+                    style="display: flex;align-items: center;justify-content: center;"
                   >
-                  </quill-editor>
-                  <span>{{ $t("forms.ar_desc") }}</span>
-                </label>
-                <label class="form-group has-float-label">
-                  <b-form-select
-                    v-model="blockData.visible"
-                    :options="activeOptions"
-                    plain
-                  />
-                  <span>{{ $t("block.visible") }}</span>
-                </label>
-                <div class="form-group has-float-label">
-                  <datepicker
-                    :bootstrap-styling="true"
-                    :placeholder="$t('form-components.date')"
-                    v-model="blockData.post_date"
-                    @selected="selectedDate()"
-                  ></datepicker>
-
-                  <span>{{ $t("block.post-date") }}</span>
-                </div>
-
-                <label class="form-group has-float-label">
-                  <input
-                    type="text"
-                    v-model="blockData.url"
-                    class="form-control"
-                  />
-                  <span>{{ $t("block.url") }}</span>
-                </label>
-                <label class="form-group has-float-label">
-                  <b-form-select
-                    v-model="blockData.block_category_id.id"
-                    :options="categoryIdOptions"
-                    plain
-                  />
-                  <span>{{ $t("block.category") }}</span>
-                </label>
-
-                <label class="form-group has-float-label">
-                  <b-colxx xxs="12" style="padding: 0px;margin-top: 20px;">
-                    <vue-dropzone
-                      ref="myVueDropzone"
-                      id="dropzone"
-                      :options="dropzoneImageOptions"
-                      @vdropzone-files-added="imageAdded"
-                      @vdropzone-complete="afterUploadComplete"
-                      @vdropzone-sending-multiple="sendMessage"
-                      @vdropzone-removed-file="imageRemoved"
-                    ></vue-dropzone>
+                    <!-- <h3>{{ items.length }}</h3> -->
+                    <b-button
+                      @click="save()"
+                      class="mb-2"
+                      size="lg"
+                      variant="primary"
+                      >{{ $t("button.save") }}
+                      {{ $t("button.changes") }}</b-button
+                    >
                   </b-colxx>
-                  <span>{{ $t("block.image") }}</span>
-                </label>
-                <label class="form-group has-float-label">
-                  <b-colxx xxs="12" style="padding: 0px;margin-top: 20px;">
-                    <vue-dropzone
-                      ref="myVueDropzone"
-                      id="dropzone"
-                      :options="dropzoneFileOptions"
-                      @vdropzone-files-added="fileAdded"
-                      @vdropzone-complete="afterUploadComplete"
-                      @vdropzone-sending-multiple="sendMessage"
-                      @vdropzone-removed-file="fileRemoved"
-                    ></vue-dropzone>
-                  </b-colxx>
-                  <span>{{ $t("block.file") }}</span>
-                </label>
-                <b-colxx
-                  xxs="12"
-                  style="display: flex;align-items: center;justify-content: center;"
+                </b-tab>
+                <b-tab
+                  @click="attach()"
+                  title="Attachment"
+                  title-item-class="w-30 text-center"
                 >
-                  <!-- <h3>{{ items.length }}</h3> -->
-                  <b-button
-                    @click="save()"
-                    class="mb-2"
-                    size="lg"
-                    variant="primary"
-                    >{{ $t("button.save") }}
-                    {{ $t("button.changes") }}</b-button
-                  >
-                </b-colxx>
-              </b-tab>
-              <b-tab
-                @click="attach()"
-                title="Attachment"
-                title-item-class="w-30 text-center"
-              >
-                <block_attachment :blockId="blockId" />
-              </b-tab>
-              <b-tab
-                @click="meta()"
-                title="Meta Data"
-                title-item-class="w-30 text-center"
-              >
-                <b-row>
-                  <b-colxx xs="12" md="6" class="mb-3">
-                    <b-card>
-                      <vuetable
-                        ref="vuetable"
-                        :api-mode="false"
-                        :data-total="dataCount"
-                        :per-page="perPage"
-                        :reactive-api-url="true"
-                        :fields="fields"
-                        pagination-path
-                      >
-                        <template slot="actions" slot-scope="props">
-                          <b-dropdown
-                            id="langddm"
-                            class="ml-2"
-                            variant="light"
-                            size="sm"
-                            toggle-class="language-button"
-                          >
-                            <template #button-content>
-                              <i class="simple-icon-settings"></i>
-                            </template>
-                            <b-dropdown-item
-                              v-for="(item, index) in Options"
-                              :key="index"
-                              @click="
-                                editAction(item.name, item.value, props.rowData)
-                              "
-                              >{{ item.name }}</b-dropdown-item
+                  <block_attachment :blockId="blockId" />
+                </b-tab>
+                <b-tab
+                  @click="meta()"
+                  title="Meta Data"
+                  title-item-class="w-30 text-center"
+                >
+                  <b-row>
+                    <b-colxx xs="12" md="6" class="mb-3">
+                      <b-card>
+                        <vuetable
+                          ref="vuetable"
+                          :api-mode="false"
+                          :data-total="dataCount"
+                          :per-page="perPage"
+                          :reactive-api-url="true"
+                          :fields="fields"
+                          pagination-path
+                        >
+                          <template slot="actions" slot-scope="props">
+                            <b-dropdown
+                              id="langddm"
+                              class="ml-2"
+                              variant="light"
+                              size="sm"
+                              toggle-class="language-button"
                             >
-                          </b-dropdown>
-                        </template>
-                      </vuetable>
-                    </b-card>
-                    <!-- <vuetable-pagination-bootstrap
+                              <template #button-content>
+                                <i class="simple-icon-settings"></i>
+                              </template>
+                              <b-dropdown-item
+                                v-for="(item, index) in Options"
+                                :key="index"
+                                @click="
+                                  editAction(
+                                    item.name,
+                                    item.value,
+                                    props.rowData
+                                  )
+                                "
+                                >{{ item.name }}</b-dropdown-item
+                              >
+                            </b-dropdown>
+                          </template>
+                        </vuetable>
+                      </b-card>
+                      <!-- <vuetable-pagination-bootstrap
                       class="mt-4"
                       ref="pagination"
                       @vuetable-pagination:change-page="onChangePage"
                     /> -->
-                  </b-colxx>
-                  <b-colxx xs="12" md="6" class="mb-3">
-                    <b-card
-                      class="mb-4"
-                      :title="edit ? $t('forms.edit') : $t('forms.create')"
-                    >
-                      <b-form
-                        @submit.prevent="onValitadeFormSubmit()"
-                        class="av-tooltip tooltip-label-right"
+                    </b-colxx>
+                    <b-colxx xs="12" md="6" class="mb-3">
+                      <b-card
+                        class="mb-4"
+                        :title="edit ? $t('forms.edit') : $t('forms.create')"
                       >
-                        <b-form-group label="Option">
-                          <b-form-select
-                            v-model.trim="select"
-                            :options="selectOptions"
-                            plain
-                          />
-
-                          <b-form-invalid-feedback
-                            >Please select an option!</b-form-invalid-feedback
-                          >
-                        </b-form-group>
-                        <b-form-group label="English Content">
-                          <b-textarea v-model.trim="en_detail"></b-textarea>
-                          <b-form-invalid-feedback
-                            >Please enter some English
-                            content!</b-form-invalid-feedback
-                          >
-                        </b-form-group>
-                        <b-form-group label="Arabic Content">
-                          <b-textarea v-model.trim="ar_detail"></b-textarea>
-                          <b-form-invalid-feedback
-                            >Please enter some Arabic
-                            content!</b-form-invalid-feedback
-                          >
-                        </b-form-group>
-
-                        <b-button
-                          type="submit"
-                          variant="primary"
-                          class="mt-4"
-                          >{{
-                            edit ? $t("forms.save") : $t("forms.submit")
-                          }}</b-button
+                        <b-form
+                          @submit.prevent="onValitadeFormSubmit()"
+                          class="av-tooltip tooltip-label-right"
                         >
-                      </b-form>
-                    </b-card>
-                  </b-colxx>
-                </b-row>
-              </b-tab>
-            </b-tabs>
-          </b-card>
-        </b-colxx>
+                          <b-form-group label="Option">
+                            <b-form-select
+                              v-model.trim="select"
+                              :options="selectOptions"
+                              plain
+                            />
+
+                            <b-form-invalid-feedback
+                              >Please select an option!</b-form-invalid-feedback
+                            >
+                          </b-form-group>
+                          <b-form-group label="English Content">
+                            <b-textarea v-model.trim="en_detail"></b-textarea>
+                            <b-form-invalid-feedback
+                              >Please enter some English
+                              content!</b-form-invalid-feedback
+                            >
+                          </b-form-group>
+                          <b-form-group label="Arabic Content">
+                            <b-textarea v-model.trim="ar_detail"></b-textarea>
+                            <b-form-invalid-feedback
+                              >Please enter some Arabic
+                              content!</b-form-invalid-feedback
+                            >
+                          </b-form-group>
+
+                          <b-button
+                            type="submit"
+                            variant="primary"
+                            class="mt-4"
+                            >{{
+                              edit ? $t("forms.save") : $t("forms.submit")
+                            }}</b-button
+                          >
+                        </b-form>
+                      </b-card>
+                    </b-colxx>
+                  </b-row>
+                </b-tab>
+              </b-tabs>
+            </b-card>
+          </b-colxx>
+        </template>
+        <template v-else>
+          <div class="loading"></div>
+        </template>
       </b-row>
     </b-colxx>
   </b-row>
@@ -268,12 +277,15 @@ import VuetablePaginationBootstrap from "../../../components/Common/VuetablePagi
 import AddNewModal from "../../../containers/appliaction/AddNewModal.vue";
 import { validationMixin } from "vuelidate";
 import Datepicker from "vuejs-datepicker";
+import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 const { required } = require("vuelidate/lib/validators");
 
 export default {
   components: {
     "add-new-modal": AddNewModal,
     "quill-editor": quillEditor,
+    "datatable-heading": DatatableHeading,
+
     vuetable: Vuetable,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "vue-dropzone": VueDropzone,
@@ -285,6 +297,7 @@ export default {
       blockId: null,
       blockData: null,
       _data: null,
+      isLoadBlock: false,
       itemId: null,
       meta_type_id: null,
       textarea: null,
@@ -433,7 +446,13 @@ export default {
     this.getBlock({ id: this.blockId });
 
     console.log("hi from here", this.blockId);
-    this.getBlockCategories();
+    this.getBlockCategories({
+      dir: null,
+      search: null,
+      order_by: null,
+      limit: null,
+      page: null
+    });
   },
   methods: {
     ...mapActions([
@@ -588,10 +607,13 @@ export default {
   },
   watch: {
     _block(newOne, oldone) {
+      this.isLoadBlock = true;
       this.blockData = newOne;
       this.dateSelected = false;
     },
     _blockMetaList(newList, old) {
+      this.isLoadBlock = true;
+
       this.$refs.vuetable.setData(newList);
     },
 

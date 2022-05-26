@@ -24,7 +24,10 @@ const state = {
   UpdateBlockCategory: null,
   processing: false,
   blockCategory: null,
-  create_block_category_success: null
+  create_block_category_success: null,
+  blockCategorymetadata: null,
+  successUpdateBlockCategoryMeta: null,
+  create_block_category_meta_success: null
 };
 
 const getters = {
@@ -55,7 +58,15 @@ const getters = {
   _successAddBlockVideo: state => state.successAddBlockVideo,
   // youtube
   _blockYoutubeVideosList: state => state.blockYoutubeVideosList,
-  _successAddBlockYoutubeVideo: state => state.successAddBlockYoutubeVideo
+  _successAddBlockYoutubeVideo: state => state.successAddBlockYoutubeVideo,
+
+  // block category metaData
+  _blockCategoryMeta: state => state.blockCategorymetadata,
+  _isLoadBlockCategoryMeta: state => state.processing,
+  _updateblockCategoryMetaSuccess: state =>
+    state.successUpdateBlockCategoryMeta,
+  _create_block_category_meta_success: state =>
+    state.create_block_category_meta_success
 };
 
 const mutations = {
@@ -145,6 +156,19 @@ const mutations = {
   },
   create_block_category_success(state, payload) {
     state.create_block_category_success = payload;
+  },
+  // category metaData
+  updateblockCategoryMetaSuccess(state, payload) {
+    state.successUpdateBlockCategoryMeta = payload;
+  },
+  getBlockCategorymetadata(state, payload) {
+    state.blockCategorymetadata = payload;
+  },
+  create_block_category_meta_success(state, payload) {
+    state.create_block_category_meta_success = payload;
+  },
+  delete_block_category_meta_success(state, payload) {
+    state.delete_block_category_meta_success = payload;
   }
 };
 
@@ -491,6 +515,7 @@ const actions = {
         commit("get_BlockCategories", res.data);
       });
   },
+
   getBlockCategory: async ({ commit }, payload) => {
     const id = payload.id;
     commit("setProcessing", false);
@@ -536,6 +561,68 @@ const actions = {
       .post(`${apiUrl}/blocks/categories/${id}`, formData, {})
       .then(res => {
         commit("successUpdateBlockCategory", res.data.data);
+      });
+  },
+
+  // $$$$$$$$$$$$ category metadata $$$$$$$$$$
+  getBlockCategoryMetadata: async ({ commit }, payload) => {
+    const id = payload.id;
+    commit("setProcessing", false);
+
+    await axios
+      .get(`${apiUrl}/blocks/categories/metadata/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getBlockCategorymetadata", res.data.data);
+      });
+  },
+  createBlockCategoryMetadata({ commit, dispatch }, payload) {
+    const id = payload.id;
+    axios
+      .post(
+        `${apiUrl}/blocks/categories/metadata/${id}`,
+        {
+          en: { meta_content: payload.en_content },
+          ar: { meta_content: payload.ar_content },
+          meta_type_id: payload.meta_type_id
+        },
+        {}
+      )
+      .then(res => {
+        if (res.status === 201 || res.status === 200) {
+          dispatch("getBlockCategoryMetadata", { id });
+          commit("create_block_category_meta_success", res);
+        }
+      });
+  },
+  updateBlockCategoryMeta({ commit, dispatch }, payload) {
+    const metadata_id = payload.metadata_id;
+    const id = payload.id;
+    axios
+      .put(
+        `${apiUrl}/blocks/categories/metadata/${id}/${metadata_id}`,
+        {
+          en: { meta_content: payload.en_content },
+          ar: { meta_content: payload.ar_content },
+          meta_type_id: payload.meta_type_id
+        },
+        {}
+      )
+      .then(res => {
+        if (res.status === 200 || res.status === 201) {
+          dispatch("getBlockCategoryMetadata", { id });
+          commit("updateblockCategoryMetaSuccess", res);
+        }
+      });
+  },
+  deleteBlockCategoryMetadata: async ({ commit, dispatch }, payload) => {
+    await axios
+      .delete(`${apiUrl}/blocks/categories/metadata/${id}`)
+      .then(res => {
+        dispatch("getBlockCategoryMetadata", { id });
       });
   }
 };

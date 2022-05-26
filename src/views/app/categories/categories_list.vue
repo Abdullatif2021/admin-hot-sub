@@ -35,9 +35,13 @@
           >
             <template slot="actions" slot-scope="props">
               <b-button
-                variant="outline-theme-7"
+                :variant="
+                  props.rowData.active === 1
+                    ? 'outline-theme-7'
+                    : 'outline-theme-6'
+                "
                 class="icon-button"
-                @click="active(props.rowData.id)"
+                @click="active(props.rowData.id, props.rowData.active)"
               >
                 <i class="iconsminds-radioactive"></i>
                 <!-- <b-tooltip
@@ -190,8 +194,8 @@ export default {
       }
       return "";
     },
-    active(id) {
-      this.categoryActivate({ id: id });
+    active(id, active) {
+      this.categoryActivate({ id: id, active: active === 1 ? 0 : 1 });
     },
     modify(id) {
       console.log(id);

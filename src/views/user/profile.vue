@@ -81,7 +81,11 @@
               </b-form-group>
             </label>
             <label class="form-group has-float-label">
-              <b-form-select v-model="gender" :options="genderOptions" plain />
+              <b-form-select
+                v-model="$v.form.gender.$model"
+                :options="genderOptions"
+                plain
+              />
               <span>Gender</span>
             </label>
             <label class="form-group has-float-label">
@@ -186,7 +190,8 @@ export default {
       email: {
         required,
         email
-      }
+      },
+      gender: {}
     }
   },
   created() {
@@ -200,7 +205,7 @@ export default {
       this.form.last_name = user.last_name;
       this.form.email = user.email;
       this.form.phone_number = user.phone_number;
-      this.gender = user.gender;
+      this.form.gender = user.gender;
       this.dob = user.dob;
       console.log(this.form.last_name);
     },
@@ -217,9 +222,13 @@ export default {
       if (!this.$v.form.$invalid) {
         console.log(this.form, this.gender, this.dob);
         this.updateUserProfile({
-          file: this.file ? this.file[0] : null,
-          user: this.form,
-          gender: this.gender,
+          first_name: this.form.first_name,
+          last_name: this.form.last_name,
+          email: this.form.email,
+          phone_number: this.form.phone_number,
+          _method: "PUT",
+          image: this.file ? this.file[0] : null,
+          gender: this.form.gender,
           dob: this.selectedDate
             ? this.dob.toISOString().split("T")[0]
             : this.dob

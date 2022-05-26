@@ -479,9 +479,11 @@
     "quill-bubble": "Quill Bubble"
   },
   "forms": {
+    "edit_block": "Edit block",
     "en_desc": "English Description",
     "ar_desc": "Arabic Description",
     "type": "Type",
+    "dob": "Date of Birth",
     "createCate": "Create Category",
     "editCate": "Edit Category",
     "ar_title": "Arabic Title",

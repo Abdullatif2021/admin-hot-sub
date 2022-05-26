@@ -13,7 +13,10 @@ const state = {
   successActiveCategory: null,
   processing: false,
   create_category_success: null,
-  successUpdateCategory: null
+  successUpdateCategory: null,
+  Categorymetadata: null,
+  successUpdateCategoryMeta: null,
+  create_category_meta_success: null
 };
 
 const getters = {
@@ -26,8 +29,12 @@ const getters = {
   _updatedCategorySuccessfuly: state => state.updated_Successfuly,
   _successDeleteCategory: state => state.successDeleteCategory,
   _successActiveCategory: state => state.successActiveCategory,
-
-  _successUpdateCategory: state => state.successUpdateCategory
+  _successUpdateCategory: state => state.successUpdateCategory,
+  // block category metaData
+  _CategoryMeta: state => state.Categorymetadata,
+  _isLoadCategoryMeta: state => state.processing,
+  _updateCategoryMetaSuccess: state => state.successUpdateCategoryMeta,
+  _create_category_meta_success: state => state.create_category_meta_success
 };
 
 const mutations = {
@@ -59,6 +66,19 @@ const mutations = {
   },
   successUpdateCategory(state, payload) {
     state.successUpdateCategory = payload;
+  },
+  // category metaData
+  updateCategoryMetaSuccess(state, payload) {
+    state.successUpdateCategoryMeta = payload;
+  },
+  getCategorymetadata(state, payload) {
+    state.Categorymetadata = payload;
+  },
+  create_category_meta_success(state, payload) {
+    state.create_category_meta_success = payload;
+  },
+  delete__category_meta_success(state, payload) {
+    state.delete_category_meta_success = payload;
   }
 };
 
@@ -134,7 +154,6 @@ const actions = {
 
   deleteCategory({ commit, dispatch }, payload) {
     const id = payload.id;
-    const block = null;
     axios.delete(`${apiUrl}/categories/${id}`).then(res => {
       if (res.status === 200) {
         commit("deleteCategory", res);
@@ -143,10 +162,80 @@ const actions = {
   },
   categoryActivate({ commit, dispatch }, payload) {
     const id = payload.id;
-    axios.post(`${apiUrl}/categories/${id}`).then(res => {
-      if (res.status === 200) {
-        commit("activeCategory", res);
-      }
+    const formData = new FormData();
+
+    formData.append("active", payload.active);
+    axios
+      .put(
+        `${apiUrl}/categories/${id}`,
+        {
+          active: payload.active
+        },
+        {}
+      )
+      .then(res => {
+        if (res.status === 200) {
+          commit("activeCategory", res);
+        }
+      });
+  },
+  // $$$$$$$$$$$$ category metadata $$$$$$$$$$
+  getCategoryMetadata: async ({ commit }, payload) => {
+    const id = payload.id;
+    commit("setProcessing", false);
+
+    await axios
+      .get(`${apiUrl}/categories/metadata/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getCategorymetadata", res.data.data);
+      });
+  },
+  createCategoryMetadata({ commit, dispatch }, payload) {
+    const id = payload.id;
+    axios
+      .post(
+        `${apiUrl}/categories/metadata/${id}`,
+        {
+          en: { meta_content: payload.en_content },
+          ar: { meta_content: payload.ar_content },
+          meta_type_id: payload.meta_type_id
+        },
+        {}
+      )
+      .then(res => {
+        if (res.status === 201 || res.status === 200) {
+          dispatch("getCategoryMetadata", { id });
+          commit("create_category_meta_success", res);
+        }
+      });
+  },
+  updateCategoryMeta({ commit, dispatch }, payload) {
+    const metadata_id = payload.metadata_id;
+    const id = payload.id;
+    axios
+      .put(
+        `${apiUrl}/categories/metadata/${id}/${metadata_id}`,
+        {
+          en: { meta_content: payload.en_content },
+          ar: { meta_content: payload.ar_content },
+          meta_type_id: payload.meta_type_id
+        },
+        {}
+      )
+      .then(res => {
+        if (res.status === 200 || res.status === 201) {
+          dispatch("getCategoryMetadata", { id });
+          commit("updateCategoryMetaSuccess", res);
+        }
+      });
+  },
+  deleteCategoryMetadata: async ({ commit, dispatch }, payload) => {
+    await axios.delete(`${apiUrl}/categories/metadata/${id}`).then(res => {
+      dispatch("getCategoryMetadata", { id });
     });
   }
 };

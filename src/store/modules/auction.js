@@ -96,7 +96,10 @@ const actions = {
   },
   createAuction({ commit, dispatch }, payload) {
     const formData = new FormData();
-
+    // Object.entries(payload.info).forEach(entry => {
+    //   const [key, value] = entry;
+    //   formData.append(key, value);
+    // });
     formData.append("ar[title]", payload.info.ar_title);
     formData.append("ar[terms_conditions]", payload.info.ar_description);
     formData.append("en[title]", payload.info.en_title);

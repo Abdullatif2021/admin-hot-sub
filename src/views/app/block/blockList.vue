@@ -186,7 +186,13 @@ export default {
       limit: 8,
       page: null
     });
-    this.getBlockCategories();
+    this.getBlockCategories({
+      dir: null,
+      search: null,
+      order_by: null,
+      limit: null,
+      page: null
+    });
   },
   methods: {
     ...mapActions(["getBlocksList", "getBlockCategories", "deleteBlock"]),

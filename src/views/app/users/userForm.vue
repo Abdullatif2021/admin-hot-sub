@@ -13,46 +13,115 @@
               <b-row>
                 <b-colxx sm="6">
                   <b-form-group :label="$t('forms.firstname')">
-                    <b-form-input type="text" v-model="gridForm.firstname" />
+                    <b-form-input
+                      type="text"
+                      :state="!$v.gridForm.first_name.$error"
+                      v-model="$v.gridForm.first_name.$model"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.gridForm.first_name.required"
+                      >Please enter first name</b-form-invalid-feedback
+                    >
                   </b-form-group>
                 </b-colxx>
                 <b-colxx sm="6">
                   <b-form-group :label="$t('forms.lastname')">
-                    <b-form-input type="text" v-model="gridForm.lastname" />
+                    <b-form-input
+                      type="text"
+                      :state="!$v.gridForm.last_name.$error"
+                      v-model="$v.gridForm.last_name.$model"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.gridForm.last_name.required"
+                      >Please enter last name</b-form-invalid-feedback
+                    >
                   </b-form-group>
                 </b-colxx>
-
                 <b-colxx sm="12">
                   <b-form-group :label="$t('forms.email')">
                     <b-form-input
                       type="email"
-                      v-model="gridForm.email"
-                    ></b-form-input>
+                      :state="!$v.gridForm.email.$error"
+                      v-model="$v.gridForm.email.$model"
+                    />
+                    <b-form-invalid-feedback v-if="!$v.gridForm.email.required"
+                      >Please enter email</b-form-invalid-feedback
+                    >
                   </b-form-group>
                 </b-colxx>
                 <b-colxx v-if="!userId" sm="12">
                   <b-form-group :label="$t('forms.password')">
                     <b-form-input
                       type="password"
-                      v-model="password"
-                    ></b-form-input>
+                      v-model.trim="$v.gridForm.password.$model"
+                      :state="!$v.gridForm.password.$error"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.gridForm.password.required"
+                      >Password is required!</b-form-invalid-feedback
+                    >
+                    <b-form-invalid-feedback
+                      v-else-if="!$v.gridForm.password.minLength"
+                      >Minimum 6</b-form-invalid-feedback
+                    >
+                    <b-form-invalid-feedback
+                      v-else-if="!$v.gridForm.password.maxLength"
+                      >Maximum 16</b-form-invalid-feedback
+                    >
                   </b-form-group>
                 </b-colxx>
+
                 <b-colxx sm="12">
                   <b-form-group :label="$t('forms.phonenumber')">
                     <b-form-input
-                      type="text"
-                      v-model="gridForm.phonenumber"
-                    ></b-form-input>
+                      type="number"
+                      :state="!$v.gridForm.phone_number.$error"
+                      v-model="$v.gridForm.phone_number.$model"
+                    />
+                    <b-form-invalid-feedback
+                      v-if="!$v.gridForm.phone_number.required"
+                      >Please enter phone number</b-form-invalid-feedback
+                    >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx :sm="userId ? 6 : 12">
+                <b-colxx v-if="!userId" sm="12">
                   <b-form-group :label="$t('forms.role')">
                     <b-form-select
-                      v-model="role"
+                      :state="!$v.gridForm.role.$error"
+                      v-model="$v.gridForm.role.$model"
                       :options="roleOptions"
                       plain
                     />
+                    <b-form-invalid-feedback v-if="!$v.gridForm.role.required"
+                      >Please select user role</b-form-invalid-feedback
+                    >
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx sm="12">
+                  <b-form-group :label="$t('forms.dob')">
+                    <datepicker
+                      :bootstrap-styling="true"
+                      v-model="$v.gridForm.dob.$model"
+                      @selected="selectedDate()"
+                    ></datepicker>
+                    <div
+                      :class="{
+                        'invalid-feedback': true,
+                        'd-block':
+                          $v.gridForm.dob.$error && !$v.gridForm.dob.required
+                      }"
+                    >
+                      Date of birth required
+                    </div>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx v-if="userId" sm="6">
+                  <b-form-group :label="$t('forms.role')">
+                    <b-form-input
+                      type="text"
+                      readonly
+                      v-model="gridForm.role"
+                    ></b-form-input>
                   </b-form-group>
                 </b-colxx>
                 <b-colxx sm="6">
@@ -83,17 +152,26 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
+import { validationMixin } from "vuelidate";
+import Datepicker from "vuejs-datepicker";
+const {
+  required,
+  email,
+  minLength,
+  maxLength
+} = require("vuelidate/lib/validators");
 
 export default {
   components: {
-    "datatable-heading": DatatableHeading
+    "datatable-heading": DatatableHeading,
+    datepicker: Datepicker
   },
   data() {
     return {
       userId: null,
       _role: null,
+      DateSelected: false,
       type: null,
-      password: null,
       create_role: null,
       roleOptions: [
         // { text: "Super Admin", value: 1 },
@@ -102,14 +180,46 @@ export default {
       ],
       activeOptions: ["", { text: "YES", value: 1 }, { text: "NO", value: 0 }],
       gridForm: {
-        firstname: "",
-        lastname: "",
+        first_name: "",
+        last_name: "",
         email: "",
-        phonenumber: "",
+        password: "",
+        phone_number: "",
         role: "",
-        active: ""
+        active: "",
+        dob: ""
       }
     };
+  },
+  mixins: [validationMixin],
+  validations: {
+    gridForm: {
+      first_name: {
+        required
+      },
+      last_name: {
+        required
+      },
+      dob: {
+        required
+      },
+      password: {
+        required,
+        maxLength: maxLength(16),
+        minLength: minLength(6)
+      },
+      email: {
+        required,
+        email
+      },
+      phone_number: {
+        required
+      },
+      role: {
+        required
+      },
+      active: {}
+    }
   },
   created() {
     this.type = this.$route.fullPath.split("/")[2];
@@ -123,23 +233,47 @@ export default {
   methods: {
     ...mapActions(["getUserInfo", "updateUserInfo", "createUser"]),
     onGridFormSubmit() {
-      console.log("hi from submit", this.gridForm, this._role);
       if (this.userId) {
-        console.log(this._role);
-        this.updateUserInfo({
-          type: this.type,
-          role: this._role,
-          info: this.gridForm,
-          id: this.UserInfo.id
-        });
+        // because of the form validation i set password
+        this.gridForm.password = "fr234f23f324";
+        this.$v.$touch();
+        this.$v.gridForm.$touch();
+        if (!this.$v.gridForm.$invalid) {
+          this.updateUserInfo({
+            user: {
+              first_name: this.gridForm.first_name,
+              last_name: this.gridForm.last_name,
+              phone_number: this.gridForm.phone_number,
+              email: this.gridForm.email,
+              role: this.gridForm.role,
+              dob: this.gridForm.dob,
+              active: this.gridForm.active
+            },
+            type: this.type,
+            id: this.UserInfo.id
+          });
+        }
       } else {
-        this.createUser({
-          type: this.type,
-          info: this.gridForm,
-          role: this._role,
-          pass: this.password
-        });
+        this.$v.$touch();
+        this.$v.gridForm.$touch();
+        if (!this.$v.gridForm.$invalid) {
+          this.createUser({
+            user: {
+              first_name: this.gridForm.first_name,
+              last_name: this.gridForm.last_name,
+              phone_number: this.gridForm.phone_number,
+              email: this.gridForm.email,
+              role: this.gridForm.role,
+              dob: this.gridForm.dob,
+              password: this.gridForm.password
+            },
+            type: this.type
+          });
+        }
       }
+    },
+    selectedDate() {
+      this.DateSelected = true;
     },
     creation(type) {
       console.log(type);
@@ -186,10 +320,11 @@ export default {
   },
   watch: {
     UserInfo(newInfo, oldOne) {
-      this.gridForm.firstname = newInfo.first_name;
-      this.gridForm.lastname = newInfo.last_name;
+      this.gridForm.first_name = newInfo.first_name;
+      this.gridForm.last_name = newInfo.last_name;
       this.gridForm.email = newInfo.email;
-      this.gridForm.phonenumber = newInfo.phone_number;
+      this.gridForm.dob = newInfo.dob;
+      this.gridForm.phone_number = newInfo.phone_number;
       this.gridForm.role = newInfo.role[0];
       this.gridForm.active = newInfo.active;
     },

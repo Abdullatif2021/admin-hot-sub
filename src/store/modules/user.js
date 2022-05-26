@@ -163,14 +163,7 @@ export default {
       const type = payload.type;
 
       axios
-        .post(`${apiUrl}/users`, {
-          first_name: payload.info.firstname,
-          last_name: payload.info.lastname,
-          phone_number: payload.info.phonenumber,
-          email: payload.info.email,
-          role: payload.role,
-          password: payload.pass
-        })
+        .post(`${apiUrl}/users`, payload.user)
         .then(res => {
           if (res.status === 201) {
             console.log("create");
@@ -240,22 +233,14 @@ export default {
     },
     updateUserProfile({ commit }, payload) {
       const formData = new FormData();
-      if (payload.file) {
-        formData.append("image", payload.file);
-      }
-      formData.append("first_name", payload.user.first_name);
-      formData.append("last_name", payload.user.last_name);
-      formData.append("email", payload.user.email);
-      formData.append("phone_number", payload.user.phone_number);
-      formData.append("dob", payload.dob);
-      formData.append("gender", payload.gender);
-      formData.append("_method", "PUT");
+      Object.entries(payload).forEach(entry => {
+        const [key, value] = entry;
+        formData.append(key, value);
+      });
       axios
         .post(`${apiUrl}/auth`, formData, {})
         .then(res => {
           if (res.status === 200) {
-            // setCurrentUser(res.data.data);
-            // commit("setUser", res.data.data);
             commit("updatedProfile", res);
           }
           return res;
@@ -270,18 +255,7 @@ export default {
       const id = payload.id;
       const type = payload.type;
       axios
-        .put(
-          `${apiUrl}/users/${id}`,
-          {
-            first_name: payload.info.firstname,
-            last_name: payload.info.lastname,
-            phone_number: payload.info.phonenumber,
-            email: payload.info.email,
-            role: payload.role,
-            active: payload.info.active
-          },
-          {}
-        )
+        .put(`${apiUrl}/users/${id}`, payload.user, {})
         .then(res => {
           console.log(res);
           if (res.status === 200) {

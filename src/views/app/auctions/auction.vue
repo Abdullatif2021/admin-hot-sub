@@ -70,7 +70,6 @@
                   >
                 </b-form-group>
               </b-colxx>
-
               <b-colxx sm="6">
                 <label class="form-group has-float-label">
                   <b-form-select
@@ -185,8 +184,8 @@ export default {
         start_date: "",
         end_date: "",
         opening_price: "",
-        latitude: "",
-        longitude: ""
+        latitude: "25.19171507935199",
+        longitude: "25.19171507935199"
       }
     };
   },
@@ -275,12 +274,25 @@ export default {
     },
     selectedDate(data) {
       console.log(data);
-      if (data === "start") {
-        console.log("startttttttttttt");
-        this.startDateSelected = true;
-      } else {
-        this.endDateSelected = true;
+      switch (data) {
+        case "start":
+          console.log("startttttttttttt");
+          this.startDateSelected = true;
+          break;
+        case "end":
+          console.log("enddddddddddddddd");
+          this.endDateSelected = true;
+          break;
+
+        default:
+          break;
       }
+      // if (data === "start") {
+      //   console.log("startttttttttttt");
+      //   this.startDateSelected = true;
+      // } else {
+      //   this.endDateSelected = true;
+      // }
     },
     fileAdded(file) {
       console.log(file);
