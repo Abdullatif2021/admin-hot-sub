@@ -6,7 +6,7 @@
           <template v-if="!is_Load">
             <b-form @submit.prevent="onGridFormSubmit">
               <b-row>
-                <b-colxx v-if="is_edit" sm="12">
+                <b-colxx sm="12">
                   <label
                     style="display: flex;justify-content: center;"
                     class="form-group has-float-label"
@@ -140,7 +140,6 @@ export default {
       categoryId: null,
       _role: null,
       is_Load: true,
-      is_edit: false,
       type: null,
       edit: true,
       password: null,
@@ -149,16 +148,7 @@ export default {
       select: null,
       create_role: null,
       file: null,
-      typeOptions: [
-        "Photo Gallery",
-        "Video Gallery",
-        "Blog",
-        "Stuff",
-        "Slider",
-        "Events",
-        "News",
-        "Services"
-      ],
+      typeOptions: [],
       gridForm: {
         ar_name: "",
         en_name: "",
@@ -196,50 +186,51 @@ export default {
     }
   },
   created() {
-    if (this._type == "edit_block") this.getBlockCategory({ id: this._id });
-    else if (this._type == "edit_category") this.getCategory({ id: this._id });
-    else if (this._type == "create_block") {
-      this.is_block_category = true;
-      this.is_Load = false;
-    } else this.is_Load = false;
+    this._type == "block"
+      ? ((this.is_block_category = true),
+        this.getBlockCategory({ id: this._id }),
+        this.getBlockCategoryTypes())
+      : this.getCategory({ id: this._id }),
+      (this.gridForm.select = "just for form submit");
   },
   methods: {
     ...mapActions([
       "getBlockCategory",
       "updateBlockCategory",
-      "createBlockCategory",
       "updateCategory",
-      "createCategory",
+      "getBlockCategoryTypes",
+
       "getCategory"
     ]),
     onGridFormSubmit() {
       this.$v.$touch();
       this.$v.gridForm.$touch();
       if (!this.$v.gridForm.$invalid) {
-        console.log("wrferfewrferferf");
-        if (this._type == "edit_block") {
+        if (this._type == "block") {
           this.updateBlockCategory({
-            info: this.gridForm,
-            img: this.file ? this.file[0] : null,
+            info: {
+              "ar[name]": this.gridForm.ar_name,
+              "ar[description]": this.gridForm.ar_description,
+              "en[name]": this.gridForm.en_name,
+              "en[description]": this.gridForm.en_description,
+              type: this.gridForm.select,
+              image: this.file ? this.file[0] : null
+            },
             id: this._id
           });
-        } else if (this._type == "edit_category") {
+        } else {
           this.updateCategory({
-            info: this.gridForm,
-            img: this.file ? this.file[0] : null,
+            info: {
+              "ar[name]": this.gridForm.ar_name,
+              "ar[description]": this.gridForm.ar_description,
+              "en[name]": this.gridForm.en_name,
+              "en[description]": this.gridForm.en_description,
+              image: this.file ? this.file[0] : null
+            },
+
             id: this._id
           });
-        } else if (this._type == "create_block") {
-          this.createBlockCategory({
-            info: this.gridForm,
-            img: this.file ? this.file[0] : null
-          });
-        } else if (this._type == "create_category") {
-          this.createCategory({
-            info: this.gridForm,
-            img: this.file ? this.file[0] : null
-          });
-        } else console.log("no one");
+        }
       }
     },
     fileAdded(file) {
@@ -273,39 +264,52 @@ export default {
                   <a href="#" class="remove" data-dz-remove> <i class="glyph-icon simple-icon-trash"></i> </a>
                 </div>
         `;
+    },
+    // metaaaa
+    onMetaSubmit(value) {
+      if (this._type == "block") {
+        this.updateBlockCategory({
+          info: {
+            "ar[name]": this.gridForm.ar_name,
+            "ar[description]": this.gridForm.ar_description,
+            "en[name]": this.gridForm.en_name,
+            "en[description]": this.gridForm.en_description,
+            type: this.gridForm.select,
+            image: this.file ? this.file[0] : null
+          },
+          id: this._id
+        });
+      } else {
+        this.updateCategory({
+          info: {
+            "ar[name]": this.gridForm.ar_name,
+            "ar[description]": this.gridForm.ar_description,
+            "en[name]": this.gridForm.en_name,
+            "en[description]": this.gridForm.en_description,
+            image: this.file ? this.file[0] : null
+          },
+
+          id: this._id
+        });
+      }
+    },
+    deleteMeta(id) {
+      console.log(id);
     }
   },
   computed: {
     ...mapGetters([
       "_category",
+      "_blockCategoryTypes",
+
       "_successUpdateCategory",
       "_blockCategory",
       "_successUpdateBlockCategory",
-      "_create_block_category_success",
-      "_create_category_success"
+      "_isLoadBlock"
     ])
   },
   watch: {
-    _create_block_category_success(newInfo, oldOne) {
-      this.$notify(
-        "success",
-        "Operation completed successfully",
-        "Block Category have been created successfully",
-        { duration: 3000, permanent: false }
-      );
-      router.push(`${adminRoot}/blockCategories`);
-    },
-    _create_category_success(newInfo, oldOne) {
-      this.$notify(
-        "success",
-        "Operation completed successfully",
-        "Category have been created successfully",
-        { duration: 3000, permanent: false }
-      );
-      router.push(`${adminRoot}/blockCategories`);
-    },
     _category(newInfo, oldOne) {
-      this.is_edit = true;
       this.gridForm.ar_name = newInfo.locales.ar.name
         ? newInfo.locales.ar.name
         : null;
@@ -332,7 +336,6 @@ export default {
       router.push(`${adminRoot}/categories`);
     },
     _blockCategory(newInfo, oldOne) {
-      this.is_edit = true;
       this.is_block_category = true;
       this.gridForm.ar_name = newInfo.locales.ar.name
         ? newInfo.locales.ar.name
@@ -358,6 +361,12 @@ export default {
         { duration: 3000, permanent: false }
       );
       router.push(`${adminRoot}/blockCategories`);
+    },
+    _blockCategoryTypes(newInfo, oldOne) {
+      console.log(newInfo);
+      newInfo.forEach(el => {
+        this.typeOptions.push(el);
+      });
     }
   }
 };

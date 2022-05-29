@@ -13,7 +13,6 @@ export const defaultLocale = "en";
 export const defaultDirection = "ltr";
 export const localeOptions = [
   { id: "en", name: "English LTR", direction: "ltr" },
-  { id: "es", name: "Español", direction: "ltr" },
   { id: "ar", name: "Arabic", direction: "rtl" }
 ];
 

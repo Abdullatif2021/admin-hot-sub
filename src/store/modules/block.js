@@ -26,6 +26,8 @@ const state = {
   blockCategory: null,
   create_block_category_success: null,
   blockCategorymetadata: null,
+  blockCategoryTypes: null,
+
   successUpdateBlockCategoryMeta: null,
   create_block_category_meta_success: null
 };
@@ -43,6 +45,7 @@ const getters = {
   _successUpdateBlockCategory: state => state.UpdateBlockCategory,
   _blockCategory: state => state.blockCategory,
   _create_block_category_success: state => state.create_block_category_success,
+  _blockCategoryTypes: state => state.blockCategoryTypes,
   // images
   _blockImageList: state => state.blockImageList,
   _successAddBlockImage: state => state.successAddBlockImage,
@@ -156,6 +159,9 @@ const mutations = {
   },
   create_block_category_success(state, payload) {
     state.create_block_category_success = payload;
+  },
+  getBlockCategoryTypes(state, payload) {
+    state.blockCategoryTypes = payload;
   },
   // category metaData
   updateblockCategoryMetaSuccess(state, payload) {
@@ -532,14 +538,10 @@ const actions = {
   },
   createBlockCategory: async ({ commit }, payload) => {
     const formData = new FormData();
-    if (payload.img) {
-      formData.append("path", payload.img);
-    }
-    formData.append("ar[name]", payload.info.ar_name);
-    formData.append("ar[description]", payload.info.ar_description);
-    formData.append("en[name]", payload.info.en_name);
-    formData.append("en[description]", payload.info.en_description);
-    formData.append("type", payload.info.select);
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      formData.append(key, value);
+    });
     await axios.post(`${apiUrl}/blocks/categories`, formData, {}).then(res => {
       commit("create_block_category_success", res.data.data);
     });
@@ -547,14 +549,10 @@ const actions = {
   updateBlockCategory: async ({ commit }, payload) => {
     const id = payload.id;
     const formData = new FormData();
-    if (payload.img) {
-      formData.append("path", payload.img);
-    }
-    formData.append("ar[name]", payload.info.ar_name);
-    formData.append("ar[description]", payload.info.ar_description);
-    formData.append("en[name]", payload.info.en_name);
-    formData.append("en[description]", payload.info.en_description);
-    formData.append("type", payload.info.select);
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      formData.append(key, value);
+    });
     formData.append("_method", "PUT");
 
     await axios
@@ -563,7 +561,21 @@ const actions = {
         commit("successUpdateBlockCategory", res.data.data);
       });
   },
+  getBlockCategoryTypes: async ({ commit }, payload) => {
+    commit("setProcessing", false);
 
+    await axios
+      .get(`${apiUrl}/blocks/categories/types`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        if (res.status === 200) {
+          commit("getBlockCategoryTypes", res.data.data);
+        }
+      });
+  },
   // $$$$$$$$$$$$ category metadata $$$$$$$$$$
   getBlockCategoryMetadata: async ({ commit }, payload) => {
     const id = payload.id;
@@ -619,8 +631,11 @@ const actions = {
       });
   },
   deleteBlockCategoryMetadata: async ({ commit, dispatch }, payload) => {
+    const id = payload.id;
+    const metadata_id = payload.metadata_id;
+
     await axios
-      .delete(`${apiUrl}/blocks/categories/metadata/${id}`)
+      .delete(`${apiUrl}/blocks/categories/metadata/${id}/${metadata_id}`)
       .then(res => {
         dispatch("getBlockCategoryMetadata", { id });
       });

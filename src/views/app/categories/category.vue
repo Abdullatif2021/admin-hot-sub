@@ -4,10 +4,10 @@
       <datatable-heading
         :details="true"
         :reload="true"
-        :title="$t(category)"
+        :title="id ? $t('edit_category') : $t('create_category')"
       ></datatable-heading>
-
-      <category_details :_id="id" :_type="category" />
+      <category_details v-if="id" :_id="id" :_type="category" />
+      <add_category v-if="!id" :_type="category" />
     </b-colxx>
   </b-row>
 </template>
@@ -15,26 +15,23 @@
 <script>
 import category_details from "../../../components/shared/category_details.vue";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
+import add_category from "../../../components/shared/add_category.vue";
 
 export default {
   components: {
     category_details,
+    add_category,
+
     "datatable-heading": DatatableHeading
   },
   data() {
     return {
-      category: null,
+      category: "category",
       id: null
     };
   },
   created() {
     this.id = this.$route.query.id;
-    console.log(this.id);
-    if (this.id) {
-      this.category = "edit_category";
-    } else {
-      this.category = "create_category";
-    }
   }
 };
 </script>

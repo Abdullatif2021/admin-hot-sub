@@ -214,7 +214,7 @@
       ref="modalbasic"
       :title="$t('modal.modal-lang-title')"
     >
-      Do you want to change your prefer language permanently ?
+      {{ $t("forms.languageQuestion") }}
       <template slot="modal-footer">
         <b-button
           variant="primary"

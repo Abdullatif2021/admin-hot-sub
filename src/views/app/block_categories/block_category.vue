@@ -3,36 +3,34 @@
     <datatable-heading
       :details="true"
       :reload="true"
-      :title="$t(blockCategory)"
+      :title="id ? $t('edit_block') : $t('create_block')"
     ></datatable-heading>
 
-    <category_details :_id="id" :_type="blockCategory" />
+    <category_details v-if="id" :_id="id" :_type="blockCategory" />
+    <add_category v-if="!id" :_type="blockCategory" />
   </b-colxx>
 </template>
 
 <script>
 import category_details from "../../../components/shared/category_details.vue";
+import add_category from "../../../components/shared/add_category.vue";
+
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 
 export default {
   components: {
     category_details,
+    add_category,
     "datatable-heading": DatatableHeading
   },
   data() {
     return {
-      blockCategory: null,
+      blockCategory: "block",
       id: null
     };
   },
   created() {
     this.id = this.$route.query.id;
-    console.log(this.id);
-    if (this.id) {
-      this.blockCategory = "edit_block";
-    } else {
-      this.blockCategory = "create_block";
-    }
   }
 };
 </script>

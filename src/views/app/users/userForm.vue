@@ -235,6 +235,7 @@ export default {
     onGridFormSubmit() {
       if (this.userId) {
         // because of the form validation i set password
+        this.getRole();
         this.gridForm.password = "fr234f23f324";
         this.$v.$touch();
         this.$v.gridForm.$touch();
@@ -245,7 +246,7 @@ export default {
               last_name: this.gridForm.last_name,
               phone_number: this.gridForm.phone_number,
               email: this.gridForm.email,
-              role: this.gridForm.role,
+              role: this.getRole(),
               dob: this.gridForm.dob,
               active: this.gridForm.active
             },
@@ -270,6 +271,16 @@ export default {
             type: this.type
           });
         }
+      }
+    },
+    getRole() {
+      switch (this.gridForm.role) {
+        case "superadmin":
+          return 1;
+        case "admin":
+          return 2;
+        case "accountant":
+          return 7;
       }
     },
     selectedDate() {
@@ -303,18 +314,6 @@ export default {
           case "accountant":
             return 7;
         }
-      },
-      set(newRole) {
-        switch (newRole) {
-          case 1:
-            return (this._role = 1);
-          case 2:
-            return (this._role = 2);
-          case 7:
-            return (this._role = 7);
-        }
-        console.log("new role", newRole);
-        console.log(this._role);
       }
     }
   },

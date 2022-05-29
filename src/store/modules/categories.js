@@ -117,15 +117,11 @@ const actions = {
   createCategory({ commit, dispatch }, payload) {
     console.log(payload);
     const formData = new FormData();
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      formData.append(key, value);
+    });
 
-    formData.append("ar[name]", payload.info.ar_name);
-    formData.append("ar[description]", payload.info.ar_description);
-    formData.append("en[name]", payload.info.en_name);
-    formData.append("en[description]", payload.info.en_description);
-
-    if (payload.img !== null) {
-      formData.append("image", payload.img);
-    }
     axios.post(`${apiUrl}/categories`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("create_category_success", res);
@@ -136,15 +132,11 @@ const actions = {
     const id = payload.id;
     console.log(payload);
     const formData = new FormData();
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      formData.append(key, value);
+    });
 
-    formData.append("ar[name]", payload.info.ar_name);
-    formData.append("ar[description]", payload.info.ar_description);
-    formData.append("en[name]", payload.info.en_name);
-    formData.append("en[description]", payload.info.en_description);
-
-    if (payload.img !== null) {
-      formData.append("image", payload.img);
-    }
     axios.put(`${apiUrl}/categories/${id}`, formData, {}).then(res => {
       if (res.status === 200) {
         commit("successUpdateCategory", res.data.data);
@@ -213,7 +205,7 @@ const actions = {
         }
       });
   },
-  updateCategoryMeta({ commit, dispatch }, payload) {
+  updateCategoryMetadata({ commit, dispatch }, payload) {
     const metadata_id = payload.metadata_id;
     const id = payload.id;
     axios
@@ -234,9 +226,13 @@ const actions = {
       });
   },
   deleteCategoryMetadata: async ({ commit, dispatch }, payload) => {
-    await axios.delete(`${apiUrl}/categories/metadata/${id}`).then(res => {
-      dispatch("getCategoryMetadata", { id });
-    });
+    const id = payload.id;
+    const metadata_id = payload.metadata_id;
+    await axios
+      .delete(`${apiUrl}/categories/metadata/${id}/${metadata_id}`)
+      .then(res => {
+        dispatch("getCategoryMetadata", { id });
+      });
   }
 };
 

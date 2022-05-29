@@ -3,7 +3,7 @@
     <b-colxx xxs="12">
       <b-row>
         <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
-          <template v-if="_isLoadBlockCategoryMeta">
+          <template v-if="_isLoadBlockCategoryMeta || _isLoadCategories">
             <b-card class="mb-4" no-body>
               <b-row>
                 <b-colxx xs="12" md="6" class="mb-3">
@@ -68,7 +68,7 @@
                           >Please select category type</b-form-invalid-feedback
                         >
                       </b-form-group>
-                      <b-form-group label="Arabic Content">
+                      <b-form-group label="English Content">
                         <b-textarea
                           :state="!$v.gridForm.en_detail.$error"
                           v-model="$v.gridForm.en_detail.$model"
@@ -153,7 +153,8 @@ export default {
       gridForm: {
         select: "",
         en_detail: "",
-        ar_detail: ""
+        ar_detail: "",
+        id: ""
       },
       to: 0,
       total: 0,
@@ -217,24 +218,11 @@ export default {
   },
 
   created() {
-    console.log(this.type);
+    console.log("hi from created", this.type);
     this.getMetaTypeList();
-    if (this.id) {
-      console.log(this.id);
-      this.edit = !this.edit;
-      switch (this.type) {
-        case "edit_block":
-          this.getBlockCategoryMetadata({ id: this.id });
-
-          break;
-        case "edit_category":
-          this.getCategoryMetadata({ id: this.id });
-
-          break;
-        default:
-          break;
-      }
-    }
+    this.type == "block"
+      ? this.getBlockCategoryMetadata({ id: this.id })
+      : this.getCategoryMetadata({ id: this.id });
   },
 
   methods: {
@@ -256,133 +244,120 @@ export default {
       this.$v.$touch();
       this.$v.gridForm.$touch();
       if (!this.$v.gridForm.$invalid) {
-        if (this.id) {
-          console.log("id is here");
-          if (this.gridForm.id) {
-            console.log("this.gridForm.id");
-            switch (this.type) {
-              case "edit_block":
-                this.updateBlockCategoryMeta({
-                  meta_type_id: this.gridForm.select,
-                  id: this.id,
-                  metadata_id: this.gridForm.id,
-                  ar_content: this.gridForm.ar_detail,
-                  en_content: this.gridForm.en_detail
-                });
-                break;
-              case "edit_category":
-                this.updateCategoryMeta({
-                  meta_type_id: this.gridForm.select,
-                  id: this.id,
-                  metadata_id: this.gridForm.id,
-                  ar_content: this.gridForm.ar_detail,
-                  en_content: this.gridForm.en_detail
-                });
-                break;
-            }
+        console.log(this.gridForm.id);
+        if (this.gridForm.id) {
+          if (this.type === "block") {
+            this.updateBlockCategoryMeta({
+              meta_type_id: this.gridForm.select,
+              id: this.id,
+              metadata_id: this.gridForm.id,
+              ar_content: this.gridForm.ar_detail,
+              en_content: this.gridForm.en_detail
+            });
           } else {
-            switch (this.type) {
-              case "create_block":
-                this.createBlockCategoryMetadata({
-                  meta_type_id: this.gridForm.select,
-                  id: this.id,
-                  ar_content: this.gridForm.ar_detail,
-                  en_content: this.gridForm.en_detail
-                });
-                break;
-              case "create_category":
-                this.createBlockCategoryMetadata({
-                  meta_type_id: this.gridForm.select,
-                  id: this.id,
-                  ar_content: this.gridForm.ar_detail,
-                  en_content: this.gridForm.en_detail
-                });
-                break;
-              default:
-                break;
-            }
+            this.updateCategoryMetadata({
+              meta_type_id: this.gridForm.select,
+              id: this.id,
+              metadata_id: this.gridForm.id,
+              ar_content: this.gridForm.ar_detail,
+              en_content: this.gridForm.en_detail
+            });
           }
         } else {
-          switch (this.type) {
-            case "create_block":
-              this.createBlockCategoryMetadata({
-                meta_type_id: this.gridForm.select,
-                id: this.id,
-                ar_content: this.gridForm.ar_detail,
-                en_content: this.gridForm.en_detail
-              });
-              break;
-            case "create_category":
-              this.createBlockCategoryMetadata({
-                meta_type_id: this.gridForm.select,
-                id: this.id,
-                ar_content: this.gridForm.ar_detail,
-                en_content: this.gridForm.en_detail
-              });
-              break;
-            default:
-              break;
+          if (this.type === "block") {
+            this.createBlockCategoryMetadata({
+              meta_type_id: this.gridForm.select,
+              id: this.id,
+              metadata_id: this.gridForm.id,
+              ar_content: this.gridForm.ar_detail,
+              en_content: this.gridForm.en_detail
+            });
+          } else {
+            this.createCategoryMetadata({
+              meta_type_id: this.gridForm.select,
+              id: this.id,
+              ar_content: this.gridForm.ar_detail,
+              en_content: this.gridForm.en_detail
+            });
           }
         }
       }
     },
-
-    // meta data
-    meta() {
-      this.getMetaList({ id: this.pageId });
-      this.getMetaTypeList();
-    },
     editAction(f, value, item) {
       if (value == 1) {
         this.edit = true;
-        this.itemId = item.id;
-        this.select = item.meta_type_id;
-        this.en_detail = item.locales.en.meta_content;
-        this.ar_detail = item.locales.ar.meta_content;
+        this.gridForm.id = item.id;
+        this.gridForm.select = item.meta_type_id;
+        this.gridForm.en_detail = item.locales.en.meta_content;
+        this.gridForm.ar_detail = item.locales.ar.meta_content;
       } else {
         this.edit = false;
-        this.select = null;
-        this.en_detail = null;
-        this.ar_detail = null;
-
-        this.deleteMetaPage({ pageId: this.pageId, metadata_id: item.id });
+        this.gridForm.select = null;
+        this.gridForm.en_detail = null;
+        this.gridForm.ar_detail = null;
+        this.type == "block"
+          ? this.deleteBlockCategoryMetadata({
+              id: this.id,
+              metadata_id: item.id
+            })
+          : this.deleteCategoryMetadata({
+              id: this.id,
+              metadata_id: item.id
+            });
       }
     }
-
-    // meta data
   },
   computed: {
     ...mapGetters([
       "_blockCategoryMeta",
       "_updateblockCategoryMetaSuccess",
       "_blockMetaTypeList",
-      "_isLoadBlockCategoryMeta"
+      "_isLoadBlockCategoryMeta",
+      "_CategoryMeta",
+      "_create_block_category_meta_success",
+      "_isLoadBlockCategoryMeta",
+      "_isLoadCategories",
+      "_updateCategoryMetaSuccess"
     ])
   },
   watch: {
-    _isLoadBlockCategoryMeta(newList, old) {
+    _create_block_category_meta_success(newData, oldest) {
+      console.log("_create_block_category_meta_success");
       this.edit = false;
-      this.select = null;
-      this.en_detail = null;
-      this.ar_detail = null;
+      this.gridForm.select = null;
+      this.gridForm.en_detail = null;
+      this.gridForm.ar_detail = null;
     },
-
     _blockCategoryMeta(newList, old) {
+      console.log("_blockCategoryMeta");
+
+      this.edit = false;
+      this.gridForm.select = null;
+      this.gridForm.en_detail = null;
+      this.gridForm.ar_detail = null;
       this.$refs.vuetable.setData(newList);
     },
-
+    _CategoryMeta(newList, old) {
+      console.log("_CategoryMeta");
+      this.edit = false;
+      this.gridForm.select = null;
+      this.gridForm.en_detail = null;
+      this.gridForm.ar_detail = null;
+      this.$refs.vuetable.setData(newList);
+    },
     _updateblockCategoryMetaSuccess(newActions, old) {
       console.log("_updateMetaPage");
       this.edit = false;
-      this.select = null;
-      this.en_detail = null;
-      this.ar_detail = null;
+      this.gridForm.select = null;
+      this.gridForm.en_detail = null;
+      this.gridForm.ar_detail = null;
     },
-    _isLoadMeta(v, o) {
+    _updateCategoryMetaSuccess(newActions, old) {
+      console.log("_updateMetaPage");
       this.edit = false;
-      this.select = null;
-      this.en_detail = null;
-      this.ar_detail = null;
+      this.gridForm.select = null;
+      this.gridForm.en_detail = null;
+      this.gridForm.ar_detail = null;
     },
     _blockMetaTypeList(newContent, old) {
       console.log("_blockMetaList");
