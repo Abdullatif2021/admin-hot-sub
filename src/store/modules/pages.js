@@ -21,19 +21,23 @@ const state = {
   pageYoutubeVideosList: null,
   successAddPageYoutubeVideo: null,
   successDeletePage: null,
-  isLoadMeta: true
+  isLoadMeta: true,
+  processing: false,
+  wrongYoutubeurl: null,
+  updatePageDetailsSuccess: null
 };
 
 const getters = {
   // general
-  _isLoadPages: state => state.isLoadPages,
-  _isLoadMeta: state => state.isLoadMeta,
+  _isLoadPages: state => state.processing,
+  _isLoadPage: state => state.processing,
+  _isLoadMeta: state => state.processing,
   _PagesError: state => state._Error,
   _pagesPaginations: state => state.pagesPaginations,
   _Pages: state => state.Pages,
   _page: state => state.page,
   _successDeletePage: state => state.successDeletePage,
-
+  _updatePageDetailsSuccess: state => state.updatePageDetailsSuccess,
   // meta
   _metaList: state => state.metaList,
   _updateMetaPage: state => state.updateMetaPage,
@@ -47,9 +51,12 @@ const getters = {
   // videos
   _pageVideosList: state => state.pageVideosList,
   _successAddPageVideo: state => state.successAddPageVideo,
+  _isLoadAttach: state => state.processing,
+
   // youtube
   _pageYoutubeVideosList: state => state.pageYoutubeVideosList,
-  _successAddPageYoutubeVideo: state => state.successAddPageYoutubeVideo
+  _successAddPageYoutubeVideo: state => state.successAddPageYoutubeVideo,
+  _wrongYoutubeurl: state => state.wrongYoutubeurl
 };
 
 const mutations = {
@@ -66,15 +73,11 @@ const mutations = {
     state.Pages = payload.data;
     state.pagesPaginations = payload;
   },
-  getPageStarted(state) {
-    state.isLoadPages = true;
-
-    state.page = null;
-  },
   getPageSuccess(state, payload) {
-    state.isLoadPages = false;
-
     state.page = payload.data;
+  },
+  setProcessing(state, payload) {
+    state.processing = payload;
   },
   updatedSuccessfuly(state) {
     state.updatedSuccessfuly = true;
@@ -142,13 +145,19 @@ const mutations = {
   },
   successAddPageYoutubeVideo(state, payload) {
     state.successAddPageYoutubeVideo = payload;
+  },
+  updatePageDetails(state, payload) {
+    state.updatePageDetailsSuccess = payload;
+  },
+  wrongYoutubeurl(state, payload) {
+    state.wrongYoutubeurl = payload;
   }
 };
 
 const actions = {
   // -------------------- general page ---------------------
   getPagesList({ commit }, payload) {
-    commit("getPagesListStarted");
+    commit("setProcessing", payload.sorting ? payload.sorting : false);
 
     axios
       .get(`${apiUrl}/pages`, {
@@ -162,9 +171,7 @@ const actions = {
         }
       })
       .then(res => {
-        if (res.status === 200) {
-          commit("getPagesListEnded", false);
-        }
+        commit("setProcessing", true);
         return res;
       })
       .then(res => {
@@ -172,25 +179,26 @@ const actions = {
       });
   },
   getPage({ commit }, payload) {
-    commit("getPageStarted");
+    commit("setProcessing", false);
     const id = payload.id;
-    axios.get(`${apiUrl}/pages/${id}`).then(res => {
-      commit("getPageSuccess", res.data);
-    });
+    axios
+      .get(`${apiUrl}/pages/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getPageSuccess", res.data);
+      });
   },
   updatePageData({ commit, dispatch }, payload) {
     const id = payload.id;
 
     const formData = new FormData();
-
-    formData.append("link1", payload.data.link1);
-    formData.append("link2", payload.data.link2);
-    formData.append("type", payload.data.type);
-    formData.append("ar[name]", payload.data.locales.ar.name);
-    formData.append("ar[description]", payload.data.locales.ar.description);
-    formData.append("en[name]", payload.data.locales.en.name);
-    formData.append("en[description]", payload.data.locales.en.description);
-
+    Object.entries(payload.data).forEach(entry => {
+      const [key, value] = entry;
+      formData.append(key, value);
+    });
     if (payload.file !== null) {
       formData.append("image", payload.file);
     }
@@ -198,6 +206,7 @@ const actions = {
     axios.post(`${apiUrl}/pages/${id}`, formData, {}).then(res => {
       if (res.status === 200) {
         dispatch("getPage", { id });
+        commit("updatePageDetails", res);
       }
     });
   },
@@ -213,11 +222,17 @@ const actions = {
 
   // -------------------------- page images ------------------------------
   getPageImageList({ commit }, payload) {
-    commit("getPageImageListStarted");
+    commit("setProcessing", false);
     const id = payload.id;
-    axios.get(`${apiUrl}/pages/images/${id}`).then(res => {
-      commit("getPageImageList", res.data);
-    });
+    axios
+      .get(`${apiUrl}/pages/images/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getPageImageList", res.data);
+      });
   },
   createPageImage({ commit, dispatch }, payload) {
     const id = payload.id;
@@ -249,12 +264,18 @@ const actions = {
 
   // --------------------files---------------------------
   getPageFileList({ commit }, payload) {
-    commit("getPageFileListStarted");
+    commit("setProcessing", false);
 
     const id = payload.id;
-    axios.get(`${apiUrl}/pages/files/${id}`).then(res => {
-      commit("getPageFileList", res.data);
-    });
+    axios
+      .get(`${apiUrl}/pages/files/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getPageFileList", res.data);
+      });
   },
   createPageFile({ commit, dispatch }, payload) {
     const id = payload.id;
@@ -286,12 +307,12 @@ const actions = {
 
   // ------------------------- meta data --------------------
   getMetaList({ commit }, payload) {
-    commit("getmetaStarted");
+    commit("setProcessing", false);
     const id = payload.id;
     axios
       .get(`${apiUrl}/pages/metadata/${id}`)
       .then(res => {
-        commit("getmetaEnded");
+        commit("setProcessing", true);
         return res;
       })
       .then(res => {
@@ -374,12 +395,18 @@ const actions = {
 
   // ********************* page videos ***************************
   getPageVideosList({ commit }, payload) {
-    commit("getPageVideosListStarted");
+    commit("setProcessing", false);
 
     const id = payload.id;
-    axios.get(`${apiUrl}/pages/videos/${id}`).then(res => {
-      commit("getPageVideosList", res.data);
-    });
+    axios
+      .get(`${apiUrl}/pages/videos/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getPageVideosList", res.data);
+      });
   },
   createPageVideo({ commit, dispatch }, payload) {
     const id = payload.id;
@@ -413,12 +440,18 @@ const actions = {
 
   // ############### youtube ##################
   getPageYoutubeVideoList({ commit }, payload) {
-    commit("getPageYoutubeVideosListStarted");
+    commit("setProcessing", false);
 
     const id = payload.id;
-    axios.get(`${apiUrl}/pages/youtube-videos/${id}`).then(res => {
-      commit("getPageYoutubeVideosList", res.data);
-    });
+    axios
+      .get(`${apiUrl}/pages/youtube-videos/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getPageYoutubeVideosList", res.data);
+      });
   },
   createPageYoutubeVideo({ commit, dispatch }, payload) {
     const id = payload.id;
@@ -435,6 +468,10 @@ const actions = {
           commit("successAddPageYoutubeVideo", res.data.data);
           dispatch("getPageYoutubeVideoList", { id });
         }
+      })
+      .catch(err => {
+        console.log("this is catch");
+        commit("wrongYoutubeurl", err);
       });
   },
   updatePageYoutubeVideo({ commit, dispatch }, payload) {
@@ -459,6 +496,10 @@ const actions = {
           commit("successAddPageYoutubeVideo", res.data.data);
           dispatch("getPageYoutubeVideoList", { id });
         }
+      })
+      .catch(err => {
+        console.log("this is catch");
+        commit("wrongYoutubeurl", err);
       });
   },
   deletePageYoutubeVideo({ commit, dispatch }, payload) {

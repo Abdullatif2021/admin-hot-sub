@@ -6,6 +6,7 @@ import {
   localeOptions,
   defaultLocale
 } from "../constants/config";
+import router from "../router";
 
 export const loaclee = "";
 

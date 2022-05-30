@@ -136,9 +136,13 @@
                 </b-colxx>
               </b-row>
 
-              <b-button type="submit" variant="primary" class="mt-4">{{
-                $t("forms.save")
-              }}</b-button>
+              <b-button
+                :disabled="enable"
+                type="submit"
+                variant="primary"
+                class="mt-4"
+                >{{ $t("forms.save") }}</b-button
+              >
             </b-form>
           </b-card>
         </template>
@@ -172,6 +176,7 @@ export default {
       _role: null,
       DateSelected: false,
       type: null,
+      enable: false,
       create_role: null,
       roleOptions: [
         // { text: "Super Admin", value: 1 },
@@ -240,6 +245,7 @@ export default {
         this.$v.$touch();
         this.$v.gridForm.$touch();
         if (!this.$v.gridForm.$invalid) {
+          this.enable = true;
           this.updateUserInfo({
             user: {
               first_name: this.gridForm.first_name,
@@ -258,6 +264,8 @@ export default {
         this.$v.$touch();
         this.$v.gridForm.$touch();
         if (!this.$v.gridForm.$invalid) {
+          this.enable = true;
+
           this.createUser({
             user: {
               first_name: this.gridForm.first_name,
@@ -300,7 +308,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["UserInfo", "processing", "_updateUserInfo"]),
+    ...mapGetters(["UserInfo", "_emailErr", "processing", "_updateUserInfo"]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -330,7 +338,7 @@ export default {
 
     _updateUserInfo(newVal, odt) {
       console.log("hereeee", newVal);
-      if (newVal === 200) {
+      if (newVal.status === 200) {
         this.$notify(
           "success",
           "Operation completed successfully",
@@ -345,6 +353,16 @@ export default {
           { duration: 3000, permanent: false }
         );
       }
+    },
+    _emailErr(newd, odt) {
+      this.enable = false;
+
+      this.$notify(
+        "error",
+        "Operation uncompleted",
+        "This Email Already Exists",
+        { duration: 4000, permanent: false }
+      );
     }
   }
 };

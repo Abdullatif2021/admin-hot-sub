@@ -18,7 +18,7 @@
     ></datatable-heading>
     <b-row>
       <b-colxx xxs="12">
-        <template v-if="!_isLoadPages">
+        <template v-if="_isLoadPages">
           <vuetable
             ref="vuetable"
             class="table-divided order-with-arrow"
@@ -227,6 +227,8 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
           this.getPagesList({
+            sorting: true,
+
             type: this.sort.column,
             dir: this.dir,
             search: this.search,
@@ -239,6 +241,8 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
           this.getPagesList({
+            sorting: true,
+
             type: this.sort.column,
             dir: this.dir,
             search: this.search,

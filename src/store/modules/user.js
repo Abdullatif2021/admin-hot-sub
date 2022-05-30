@@ -26,7 +26,8 @@ export default {
     preferLocale: null,
     successDeleteUser: null,
     updatedProfile: null,
-    updateUser_Info: null
+    updateUser_Info: null,
+    emailErr: null
   },
   getters: {
     currentUser: state => state.currentUser,
@@ -40,7 +41,8 @@ export default {
     _preferLocale: state => state.preferLocale,
     _successDeleteUser: state => state.successDeleteUser,
     _updatedProfileSuccessfuly: state => state.updatedProfile,
-    _updateUserInfo: state => state.updateUser_Info
+    _updateUserInfo: state => state.updateUser_Info,
+    _emailErr: state => state.emailErr
   },
   mutations: {
     setUser(state, payload) {
@@ -95,6 +97,9 @@ export default {
     },
     update_UserInfo(state, payload) {
       state.updateUser_Info = payload;
+    },
+    emailErr(state, payload) {
+      state.emailErr = payload;
     }
   },
   actions: {
@@ -138,7 +143,7 @@ export default {
         });
     },
     getUsersList: async ({ commit }, payload) => {
-      commit("setProcessing", false);
+      commit("setProcessing", payload.sorting ? payload.sorting : false);
       await axios
         .get(`${apiUrl}/users`, {
           params: {
@@ -167,12 +172,15 @@ export default {
         .then(res => {
           if (res.status === 201) {
             console.log("create");
-            commit("update_UserInfo", res.status);
+            commit("update_UserInfo", res);
           }
           return res;
         })
         .then(res => {
           router.push(`${adminRoot}/${type}`);
+        })
+        .catch(err => {
+          commit("emailErr", err);
         });
     },
     changePreferLocale({ commit }, payload) {
@@ -257,9 +265,9 @@ export default {
       axios
         .put(`${apiUrl}/users/${id}`, payload.user, {})
         .then(res => {
-          console.log(res);
+          console.log("updateUserInfo", res);
           if (res.status === 200) {
-            commit("update_UserInfo", res.status);
+            commit("update_UserInfo", res);
           }
           return res;
         })

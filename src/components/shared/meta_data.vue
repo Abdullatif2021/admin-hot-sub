@@ -88,9 +88,15 @@
                           >Please enter Arabic details</b-form-invalid-feedback
                         >
                       </b-form-group>
-                      <b-button type="submit" variant="primary" class="mt-4">{{
-                        edit ? $t("forms.save") : $t("forms.submit")
-                      }}</b-button>
+                      <b-button
+                        :disabled="enable"
+                        type="submit"
+                        variant="primary"
+                        class="mt-4"
+                        >{{
+                          edit ? $t("forms.save") : $t("forms.submit")
+                        }}</b-button
+                      >
                     </b-form>
                   </b-card>
                 </b-colxx>
@@ -133,7 +139,7 @@ export default {
       pageData: null,
       _data: null,
       itemId: null,
-
+      enable: false,
       meta_type_id: null,
       textarea: null,
       file: null,
@@ -244,6 +250,7 @@ export default {
       this.$v.$touch();
       this.$v.gridForm.$touch();
       if (!this.$v.gridForm.$invalid) {
+        this.enable = true;
         console.log(this.gridForm.id);
         if (this.gridForm.id) {
           if (this.type === "block") {
@@ -323,6 +330,8 @@ export default {
   watch: {
     _create_block_category_meta_success(newData, oldest) {
       console.log("_create_block_category_meta_success");
+      this.enable = false;
+
       this.edit = false;
       this.gridForm.select = null;
       this.gridForm.en_detail = null;
@@ -330,6 +339,7 @@ export default {
     },
     _blockCategoryMeta(newList, old) {
       console.log("_blockCategoryMeta");
+      this.enable = false;
 
       this.edit = false;
       this.gridForm.select = null;
@@ -339,6 +349,8 @@ export default {
     },
     _CategoryMeta(newList, old) {
       console.log("_CategoryMeta");
+      this.enable = false;
+
       this.edit = false;
       this.gridForm.select = null;
       this.gridForm.en_detail = null;
@@ -347,6 +359,8 @@ export default {
     },
     _updateblockCategoryMetaSuccess(newActions, old) {
       console.log("_updateMetaPage");
+      this.enable = false;
+
       this.edit = false;
       this.gridForm.select = null;
       this.gridForm.en_detail = null;
@@ -354,6 +368,8 @@ export default {
     },
     _updateCategoryMetaSuccess(newActions, old) {
       console.log("_updateMetaPage");
+      this.enable = false;
+
       this.edit = false;
       this.gridForm.select = null;
       this.gridForm.en_detail = null;

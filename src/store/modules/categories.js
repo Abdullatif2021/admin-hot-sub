@@ -84,7 +84,7 @@ const mutations = {
 
 const actions = {
   getCategories: async ({ commit }, payload) => {
-    commit("setProcessing", false);
+    commit("setProcessing", payload.sorting ? payload.sorting : false);
 
     await axios
       .get(`${apiUrl}/categories`, {
@@ -121,7 +121,9 @@ const actions = {
       const [key, value] = entry;
       formData.append(key, value);
     });
-
+    if (payload.image !== null) {
+      formData.append("image", payload.image);
+    }
     axios.post(`${apiUrl}/categories`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("create_category_success", res);
@@ -136,8 +138,11 @@ const actions = {
       const [key, value] = entry;
       formData.append(key, value);
     });
-
-    axios.put(`${apiUrl}/categories/${id}`, formData, {}).then(res => {
+    formData.append("_method", "PUT");
+    if (payload.image !== null) {
+      formData.append("image", payload.image);
+    }
+    axios.post(`${apiUrl}/categories/${id}`, formData, {}).then(res => {
       if (res.status === 200) {
         commit("successUpdateCategory", res.data.data);
       }

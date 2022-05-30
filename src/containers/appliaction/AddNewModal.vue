@@ -5,28 +5,33 @@
     :title="$t('pages.add-new-title')"
     modal-class="modal-right"
   >
-    <b-form>
-      <b-form-group :label="$t('pages.en_title')" class="has-float-label mb-4">
-        <b-form-input
-          type="text"
-          v-model="$v.form.en_title.$model"
-          :state="!$v.form.en_title.$error"
-        />
-        <b-form-invalid-feedback v-if="!$v.form.en_title.required"
-          >Please enter English title</b-form-invalid-feedback
+    <div v-for="ticket in tickets" :key="ticket.title">
+      <b-form>
+        <b-form-group
+          :label="$t('pages.en_title')"
+          class="has-float-label mb-4"
         >
-      </b-form-group>
-      <b-form-group :label="$t('pages.en_desc')" class="has-float-label mb-4">
-        <b-form-input
-          type="text"
-          v-model="$v.form.en_description.$model"
-          :state="!$v.form.en_description.$error"
-        />
-        <b-form-invalid-feedback v-if="!$v.form.en_description.required"
-          >Please enter English description</b-form-invalid-feedback
-        >
-      </b-form-group>
-      <b-form-group :label="$t('pages.ar_title')" class="has-float-label mb-4">
+          {{ ticket.title }}
+          <b-form-input
+            type="text"
+            v-model="$v.form.en_title.$model"
+            :state="!$v.form.en_title.$error"
+          />
+          <b-form-invalid-feedback v-if="!$v.form.en_title.required"
+            >Please enter English title</b-form-invalid-feedback
+          >
+        </b-form-group>
+        <b-form-group :label="$t('pages.en_desc')" class="has-float-label mb-4">
+          <b-form-input
+            type="text"
+            v-model="$v.form.en_description.$model"
+            :state="!$v.form.en_description.$error"
+          />
+          <b-form-invalid-feedback v-if="!$v.form.en_description.required"
+            >Please enter English description</b-form-invalid-feedback
+          >
+        </b-form-group>
+        <!-- <b-form-group :label="$t('pages.ar_title')" class="has-float-label mb-4">
         <b-form-input
           type="text"
           v-model="$v.form.ar_title.$model"
@@ -46,6 +51,7 @@
           >Please enter Arabic description</b-form-invalid-feedback
         >
       </b-form-group>
+     
       <label class="form-group has-float-label">
         <b-colxx xxs="12" style="padding: 0px;">
           <vue-dropzone
@@ -59,8 +65,9 @@
           ></vue-dropzone>
         </b-colxx>
         <span>{{ $t("pages.image") }}</span>
-      </label>
-    </b-form>
+      </label> -->
+      </b-form>
+    </div>
     <template slot="modal-footer">
       <b-button variant="outline-secondary" @click="hideModal('modalright')">{{
         $t("survey.cancel")
@@ -89,6 +96,29 @@ export default {
   data() {
     return {
       file: null,
+      tickets: [
+        {
+          title: "srferferf"
+        },
+        {
+          title: "srferferf"
+        },
+        {
+          title: "srferferf"
+        },
+        {
+          title: "srferferf"
+        },
+        {
+          title: "srferferf"
+        },
+        {
+          title: "srferferf"
+        },
+        {
+          title: "srferferf"
+        }
+      ],
       form: {
         ar_title: "",
         ar_description: "",

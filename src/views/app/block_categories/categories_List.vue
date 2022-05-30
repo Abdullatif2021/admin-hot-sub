@@ -207,6 +207,7 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
           this.getBlockCategories({
+            sorting: true,
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -218,6 +219,8 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
           this.getBlockCategories({
+            sorting: true,
+
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,

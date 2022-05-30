@@ -149,9 +149,9 @@ export default {
           callback: value => {
             return value.en.name;
           },
-          sortField: "title",
+          sortField: "slug",
           title: "Title",
-          titleClass: "",
+          titleClass: "title",
           dataClass: "list-item-heading",
           width: "30%"
         },
@@ -243,6 +243,7 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
           this.getCategories({
+            sorting: true,
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -254,6 +255,8 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
           this.getCategories({
+            sorting: true,
+
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,

@@ -317,6 +317,14 @@ export default {
       }
       this.setLang({ locale: this._locale });
       this.$refs[refname].hide();
+      // router.push("/");
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      // setTimeout(() => {
+      //   router.push("/user/login");
+      // }, 5000);
     },
     logout() {
       this.signOut();
@@ -393,6 +401,14 @@ export default {
         setDirection(this._direction);
       }
       this.setLang({ locale: this._locale });
+      router.push("/user/login");
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+      // setTimeout(() => {
+      //   router.push("/user/login");
+      // }, 5000);
     },
     isDarkActive(val) {
       let color = getThemeColor();

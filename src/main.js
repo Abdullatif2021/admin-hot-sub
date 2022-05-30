@@ -9,6 +9,8 @@ import store from "./store";
 // Multi Language Add
 import en from "./locales/en.json";
 import ar from "./locales/ar.json";
+import es from "./locales/es.json";
+
 import VueI18n from "vue-i18n";
 import { firebaseConfig } from "./constants/config";
 // Notification Component Add
@@ -29,7 +31,7 @@ import { getCurrentLanguage } from "./utils";
 
 Vue.use(BootstrapVue);
 Vue.use(VueI18n);
-const messages = { en: en, ar: ar };
+const messages = { en: en, ar: ar, es: es };
 const locale = getCurrentLanguage();
 const i18n = new VueI18n({
   locale: locale,

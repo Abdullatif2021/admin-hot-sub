@@ -101,6 +101,7 @@ export default {
       role: null,
       order_by: null,
       search: null,
+      type: null,
       actions: null,
       category: true,
       sortOptions: [],
@@ -177,9 +178,10 @@ export default {
 
   created() {
     const type = this.$route.fullPath.split("/")[4];
+    this.type = type;
     console.log(type);
     this.getBlocksList({
-      block_category_id: type,
+      block_category_id: this.type,
       dir: null,
       search: null,
       order_by: null,
@@ -208,6 +210,7 @@ export default {
     },
     cancle() {
       this.this.getBlocksList({
+        block_category_id: this.type,
         block_category_id: null,
         dir: null,
         search: null,
@@ -262,7 +265,8 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
           this.getBlocksList({
-            block_category_id: this.sort.column,
+            sorting: true,
+            block_category_id: this.type,
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -274,7 +278,8 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
           this.getBlocksList({
-            block_category_id: this.sort.column,
+            sorting: true,
+            block_category_id: this.type,
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -308,8 +313,9 @@ export default {
       } else {
         this.page = _page;
         this.getBlocksList({
-          block_category_id: this.sort.column,
+          block_category_id: this.type,
           dir: this.dir,
+          block_category_id: this.type,
           search: this.search,
           order_by: this.order_by,
           limit: this.limit,
@@ -322,7 +328,7 @@ export default {
       console.log(perPage);
       this.limit = perPage;
       this.getBlocksList({
-        block_category_id: this.sort.column,
+        block_category_id: this.type,
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
@@ -335,6 +341,7 @@ export default {
       this.sort = sort;
 
       this.getBlocksList({
+        block_category_id: this.type,
         block_category_id: sort.column,
         dir: this.dir,
         search: this.search,
@@ -346,7 +353,7 @@ export default {
     searchChange(val) {
       this.search = val;
       this.getBlocksList({
-        block_category_id: this.sort.column,
+        block_category_id: this.type,
         dir: this.dir,
         search: val,
         order_by: this.order_by,
@@ -408,9 +415,9 @@ export default {
   },
   watch: {
     $route(to, from) {
+      console.log("routeeeeeee", to, from);
       const type = this.$route.fullPath.split("/")[4];
-      console.log(type);
-
+      this.type = type;
       this.getBlocksList({
         block_category_id: type,
         dir: null,
@@ -428,8 +435,9 @@ export default {
     },
     _successDeleteBlock(newVal, old) {
       this.getBlocksList({
-        block_category_id: this.sort.column,
+        block_category_id: this.type,
         dir: this.dir,
+        block_category_id: this.type,
         search: this.search,
         order_by: this.order_by,
         limit: this.limit,

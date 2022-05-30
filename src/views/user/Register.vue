@@ -1,6 +1,6 @@
 <template>
   <b-row class="h-100">
-    <b-colxx xxs="12" md=10  class="mx-auto my-auto">
+    <!-- <b-colxx xxs="12" md=10  class="mx-auto my-auto">
       <b-card class="auth-card" no-body>
           <div class="position-relative image-side ">
             <p class=" text-white h2">{{ $t('dashboards.magic-is-in-the-details') }}</p>
@@ -30,25 +30,25 @@
           </b-form>
         </div>
       </b-card>
-    </b-colxx>
+    </b-colxx> -->
   </b-row>
 </template>
 <script>
-import { adminRoot } from '../../constants/config';
+import { adminRoot } from "../../constants/config";
 
 export default {
-  data () {
+  data() {
     return {
-      fullname: '',
-      email: '',
-      password: ''
-    }
+      fullname: "",
+      email: "",
+      password: ""
+    };
   },
   methods: {
-    formSubmit () {
-      console.log('register')
-      this.$router.push(adminRoot)
+    formSubmit() {
+      console.log("register");
+      this.$router.push(adminRoot);
     }
   }
-}
+};
 </script>

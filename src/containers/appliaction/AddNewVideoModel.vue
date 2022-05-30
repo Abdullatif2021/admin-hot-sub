@@ -63,7 +63,11 @@
       </label>
     </b-form>
     <template slot="modal-footer">
-      <b-button variant="primary" @click="formSubmit()" class="mr-1"
+      <b-button
+        variant="primary"
+        :disabled="enable"
+        @click="formSubmit()"
+        class="mr-1"
         >Add New</b-button
       >
       <b-button variant="secondary" @click="hideModal('modalbackdrop')"
@@ -89,6 +93,7 @@ export default {
   data() {
     return {
       file: null,
+      enable: false,
       form: {
         ar_title: "",
         ar_description: "",
@@ -144,6 +149,7 @@ export default {
       this.$v.$touch();
       this.$v.form.$touch();
       if (!this.$v.form.$invalid) {
+        this.enable = true;
         this.$emit("AddNewVideo", {
           en_title: this.form.en_title,
           en_description: this.form.en_description,
@@ -193,22 +199,49 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["_successAddPageVideo", "_successAddBlockVideo"])
+    ...mapGetters([
+      "_successAddPageVideo",
+      "_successAddBlockVideo",
+      "_errorAddBlockVideo"
+    ])
   },
   watch: {
     _successAddPageVideo: function(val) {
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Video have been added successfully",
+        { duration: 3000, permanent: false }
+      );
       this.hideModal("modalbackdrop");
       this.form.en_title = null;
       this.form.ar_title = null;
 
       this.form.en_description = null;
       this.form.ar_description = null;
+      this.enable = false;
+    },
+    _errorAddBlockVideo: function(val) {
+      console.log(val);
+      this.$notify(
+        "error",
+        "Operation uncompleted",
+        "Video type is not valid",
+        { duration: 3000, permanent: false }
+      );
+      this.enable = false;
     },
     _successAddBlockVideo: function(val) {
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Video have been added successfully",
+        { duration: 3000, permanent: false }
+      );
       this.hideModal("modalbackdrop");
       this.form.en_title = null;
       this.form.ar_title = null;
-
+      this.enable = false;
       this.form.en_description = null;
       this.form.ar_description = null;
     }

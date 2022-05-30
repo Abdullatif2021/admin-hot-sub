@@ -25,7 +25,7 @@
         </b-tab>
         <b-tab @click="openFile()" title="Files">
           <b-row>
-            <template v-if="isLoadAttach">
+            <template v-if="_isLoadAttach">
               <b-colxx xs="12" md="6" class="mb-3">
                 <b-card>
                   <vuetable
@@ -136,7 +136,7 @@
                     </label>
 
                     <b-button
-                      :disabled="enable"
+                      :disabled="!enable"
                       type="submit"
                       variant="primary"
                       class="mt-4"
@@ -153,7 +153,7 @@
         </b-tab>
         <b-tab @click="openVideo()" title="Videos">
           <b-row>
-            <template v-if="isLoadAttach">
+            <template v-if="_isLoadAttach">
               <b-colxx style="display: grid;" xs="12" md="12" class="mb-3">
                 <div class="top-right-button-container">
                   <b-button-group style="float: right;padding: 12px;">
@@ -191,10 +191,7 @@
                   </vuetable>
                 </b-card>
               </b-colxx>
-              <add-new-video-model
-                :enable="enable"
-                @AddNewVideo="createVideo"
-              />
+              <add-new-video-model @AddNewVideo="createVideo" />
             </template>
             <template v-else>
               <div class="loading"></div>
@@ -203,7 +200,7 @@
         </b-tab>
         <b-tab @click="openYoutubeVideo()" title="Youtube Videos">
           <b-row>
-            <template v-if="isLoadAttach">
+            <template v-if="_isLoadAttach">
               <b-colxx xs="12" md="6" class="mb-3">
                 <b-card>
                   <vuetable
@@ -794,7 +791,9 @@ export default {
       "_pageFileList",
       "_sccussCreateFile",
       "_pageVideosList",
-      "_pageYoutubeVideosList"
+      "_isLoadAttach",
+      "_pageYoutubeVideosList",
+      "_wrongYoutubeurl"
     ])
   },
   watch: {
@@ -814,6 +813,17 @@ export default {
 
       console.log("i am here");
       this.$refs.video_vuetable.setData(newData);
+    },
+    _wrongYoutubeurl(newData, old) {
+      this.enable = true;
+      this.youtube_form.path = null;
+
+      this.$notify(
+        "error",
+        "Error via Create",
+        "This Youtube Url isn't valid",
+        { duration: 4000, permanent: false }
+      );
     },
     _sccussCreateFile(newData, old) {
       this.enable = true;

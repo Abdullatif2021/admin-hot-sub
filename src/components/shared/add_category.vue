@@ -71,9 +71,13 @@
               </b-form-group>
             </b-colxx>
           </b-row>
-          <b-button type="submit" variant="primary" class="mt-4">{{
-            $t("forms.save")
-          }}</b-button>
+          <b-button
+            :disabled="enable"
+            type="submit"
+            variant="primary"
+            class="mt-4"
+            >{{ $t("forms.save") }}</b-button
+          >
         </b-form>
       </template>
       <template v-else>
@@ -101,6 +105,7 @@ export default {
     return {
       is_block_category: false,
       file: null,
+      enable: false,
       typeOptions: [],
       gridForm: {
         ar_name: "",
@@ -154,6 +159,7 @@ export default {
       this.$v.$touch();
       this.$v.gridForm.$touch();
       if (!this.$v.gridForm.$invalid) {
+        this.enable = true;
         if (this._type == "block") {
           this.createBlockCategory({
             info: {
@@ -161,9 +167,9 @@ export default {
               "ar[description]": this.gridForm.ar_description,
               "en[name]": this.gridForm.en_name,
               "en[description]": this.gridForm.en_description,
-              type: this.gridForm.select,
-              image: this.file ? this.file[0] : null
-            }
+              type: this.gridForm.select
+            },
+            image: this.file ? this.file[0] : null
           });
         } else {
           this.createCategory({
@@ -171,9 +177,9 @@ export default {
               "ar[name]": this.gridForm.ar_name,
               "ar[description]": this.gridForm.ar_description,
               "en[name]": this.gridForm.en_name,
-              "en[description]": this.gridForm.en_description,
-              image: this.file ? this.file[0] : null
-            }
+              "en[description]": this.gridForm.en_description
+            },
+            image: this.file ? this.file[0] : null
           });
         }
       }

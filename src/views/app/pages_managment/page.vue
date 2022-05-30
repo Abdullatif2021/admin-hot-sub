@@ -8,14 +8,15 @@
       ></datatable-heading>
       <b-row>
         <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
-          <template v-if="!_isLoadPages">
-            <b-card class="mb-4" no-body>
-              <b-tabs card no-fade>
-                <b-tab
-                  title="Basis details"
-                  active
-                  title-item-class="w-30 text-center"
-                >
+          <!-- <template> -->
+          <b-card class="mb-4" no-body>
+            <b-tabs card no-fade>
+              <b-tab
+                title="Basis details"
+                active
+                title-item-class="w-30 text-center"
+              >
+                <template v-if="_isLoadPage">
                   <label
                     style="display: flex;justify-content: center;"
                     class="form-group has-float-label"
@@ -115,130 +116,134 @@
                     <b-button
                       @click="save()"
                       class="mb-2"
+                      :disabled="enable"
                       size="lg"
                       variant="primary"
                       >{{ $t("button.save") }}
                       {{ $t("button.changes") }}</b-button
                     >
                   </b-colxx>
-                </b-tab>
-                <b-tab
-                  @click="attach()"
-                  title="Attachment"
-                  title-item-class="w-30 text-center"
-                >
-                  <page_attachment :pageId="pageId" />
-                </b-tab>
-                <b-tab
-                  @click="meta()"
-                  title="Meta Data"
-                  title-item-class="w-30 text-center"
-                >
-                  <b-row>
-                    <template v-if="!_isLoadMeta">
-                      <b-colxx xs="12" md="6" class="mb-3">
-                        <b-card>
-                          <vuetable
-                            ref="vuetable"
-                            :api-mode="false"
-                            :data-total="dataCount"
-                            :per-page="perPage"
-                            :reactive-api-url="true"
-                            :fields="fields"
-                            pagination-path
-                          >
-                            <template slot="actions" slot-scope="props">
-                              <b-dropdown
-                                id="langddm"
-                                class="ml-2"
-                                variant="light"
-                                size="sm"
-                                toggle-class="language-button"
+                </template>
+                <template v-else>
+                  <div class="loading"></div>
+                </template>
+              </b-tab>
+              <b-tab
+                @click="attach()"
+                title="Attachment"
+                title-item-class="w-30 text-center"
+              >
+                <page_attachment :pageId="pageId" />
+              </b-tab>
+              <b-tab
+                @click="meta()"
+                title="Meta Data"
+                title-item-class="w-30 text-center"
+              >
+                <b-row>
+                  <template v-if="_isLoadMeta">
+                    <b-colxx xs="12" md="6" class="mb-3">
+                      <b-card>
+                        <vuetable
+                          ref="vuetable"
+                          :api-mode="false"
+                          :data-total="dataCount"
+                          :per-page="perPage"
+                          :reactive-api-url="true"
+                          :fields="fields"
+                          pagination-path
+                        >
+                          <template slot="actions" slot-scope="props">
+                            <b-dropdown
+                              id="langddm"
+                              class="ml-2"
+                              variant="light"
+                              size="sm"
+                              toggle-class="language-button"
+                            >
+                              <template #button-content>
+                                <i class="simple-icon-settings"></i>
+                              </template>
+                              <b-dropdown-item
+                                v-for="(item, index) in Options"
+                                :key="index"
+                                @click="
+                                  editAction(
+                                    item.name,
+                                    item.value,
+                                    props.rowData
+                                  )
+                                "
+                                >{{ item.name }}</b-dropdown-item
                               >
-                                <template #button-content>
-                                  <i class="simple-icon-settings"></i>
-                                </template>
-                                <b-dropdown-item
-                                  v-for="(item, index) in Options"
-                                  :key="index"
-                                  @click="
-                                    editAction(
-                                      item.name,
-                                      item.value,
-                                      props.rowData
-                                    )
-                                  "
-                                  >{{ item.name }}</b-dropdown-item
-                                >
-                              </b-dropdown>
-                            </template>
-                          </vuetable>
-                        </b-card>
-                        <!-- <vuetable-pagination-bootstrap
+                            </b-dropdown>
+                          </template>
+                        </vuetable>
+                      </b-card>
+                      <!-- <vuetable-pagination-bootstrap
                       class="mt-4"
                       ref="pagination"
                       @vuetable-pagination:change-page="onChangePage"
                     /> -->
-                      </b-colxx>
-                      <b-colxx xs="12" md="6" class="mb-3">
-                        <b-card
-                          class="mb-4"
-                          :title="edit ? $t('forms.edit') : $t('forms.create')"
+                    </b-colxx>
+                    <b-colxx xs="12" md="6" class="mb-3">
+                      <b-card
+                        class="mb-4"
+                        :title="edit ? $t('forms.edit') : $t('forms.create')"
+                      >
+                        <b-form
+                          @submit.prevent="onValitadeFormSubmit()"
+                          class="av-tooltip tooltip-label-right"
                         >
-                          <b-form
-                            @submit.prevent="onValitadeFormSubmit()"
-                            class="av-tooltip tooltip-label-right"
-                          >
-                            <b-form-group label="Option">
-                              <b-form-select
-                                v-model.trim="select"
-                                :options="selectOptions"
-                                plain
-                              />
+                          <b-form-group label="Option">
+                            <b-form-select
+                              v-model.trim="select"
+                              :options="selectOptions"
+                              plain
+                            />
 
-                              <b-form-invalid-feedback
-                                >Please select an
-                                option!</b-form-invalid-feedback
-                              >
-                            </b-form-group>
-                            <b-form-group label="English Content">
-                              <b-textarea v-model.trim="en_detail"></b-textarea>
-                              <b-form-invalid-feedback
-                                >Please enter some English
-                                content!</b-form-invalid-feedback
-                              >
-                            </b-form-group>
-                            <b-form-group label="Arabic Content">
-                              <b-textarea v-model.trim="ar_detail"></b-textarea>
-                              <b-form-invalid-feedback
-                                >Please enter some Arabic
-                                content!</b-form-invalid-feedback
-                              >
-                            </b-form-group>
-
-                            <b-button
-                              type="submit"
-                              variant="primary"
-                              class="mt-4"
-                              >{{
-                                edit ? $t("forms.save") : $t("forms.submit")
-                              }}</b-button
+                            <b-form-invalid-feedback
+                              >Please select an option!</b-form-invalid-feedback
                             >
-                          </b-form>
-                        </b-card>
-                      </b-colxx>
-                    </template>
-                    <template v-else>
-                      <div class="loading"></div>
-                    </template>
-                  </b-row>
-                </b-tab>
-              </b-tabs>
-            </b-card>
-          </template>
+                          </b-form-group>
+                          <b-form-group label="English Content">
+                            <b-textarea v-model.trim="en_detail"></b-textarea>
+                            <b-form-invalid-feedback
+                              >Please enter some English
+                              content!</b-form-invalid-feedback
+                            >
+                          </b-form-group>
+                          <b-form-group label="Arabic Content">
+                            <b-textarea v-model.trim="ar_detail"></b-textarea>
+                            <b-form-invalid-feedback
+                              >Please enter some Arabic
+                              content!</b-form-invalid-feedback
+                            >
+                          </b-form-group>
+
+                          <b-button
+                            type="submit"
+                            variant="primary"
+                            class="mt-4"
+                            >{{
+                              edit ? $t("forms.save") : $t("forms.submit")
+                            }}</b-button
+                          >
+                        </b-form>
+                      </b-card>
+                    </b-colxx>
+                  </template>
+                  <template v-else>
+                    <div class="loading"></div>
+                  </template>
+                </b-row>
+              </b-tab>
+            </b-tabs>
+          </b-card>
+          <!-- </template>
           <template v-else>
             <div class="loading"></div>
-          </template>
+          </template> -->
         </b-colxx>
       </b-row>
     </b-colxx>
@@ -279,6 +284,7 @@ export default {
       textarea: null,
       file: null,
       itemForEdit: null,
+      enable: false,
       selectOptions: [],
       select: "",
       en_detail: "",
@@ -427,9 +433,18 @@ export default {
 
     save() {
       console.log(this.pageData);
+      this.enable = true;
       this.updatePageData({
         id: this.pageData.id,
-        data: this.pageData,
+        data: {
+          link1: this.pageData.link1,
+          link2: this.pageData.link2,
+          type: this.pageData.type,
+          "ar[name]": this.pageData.locales.ar.name,
+          "ar[description]": this.pageData.locales.ar.description,
+          "en[name]": this.pageData.locales.en.name,
+          "en[description]": this.pageData.locales.en.description
+        },
         file: this.file ? this.file[0] : null
       });
     },
@@ -544,8 +559,9 @@ export default {
       "_metaList",
       "_updateMetaPage",
       "_pageMetaTypeList",
-      "_isLoadPages",
-      "_isLoadMeta"
+      "_isLoadPage",
+      "_isLoadMeta",
+      "_updatePageDetailsSuccess"
     ]),
     editor() {
       return this.$refs.myTextEditor.quill;
@@ -554,9 +570,18 @@ export default {
   watch: {
     _page(newpage, oldone) {
       this.pageData = newpage;
+      this.enable = false;
     },
     _metaList(newList, old) {
       this.$refs.vuetable.setData(newList);
+    },
+    _updatePageDetailsSuccess(newOne, old) {
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Page Details have been updated successfully",
+        { duration: 3000, permanent: false }
+      );
     },
 
     _updateMetaPage(newActions, old) {

@@ -157,6 +157,7 @@ export default {
           name: "first_name",
           sortField: "first_name",
           title: "Name",
+          direction: "asc",
           titleClass: "",
           dataClass: "list-item-heading",
           width: "20%"
@@ -292,6 +293,7 @@ export default {
           this.getUsersList({
             type:
               this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+            sorting: true,
 
             role: this.sort.column,
             dir: this.dir,
@@ -305,6 +307,8 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
           this.getUsersList({
+            sorting: true,
+
             type:
               this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
 

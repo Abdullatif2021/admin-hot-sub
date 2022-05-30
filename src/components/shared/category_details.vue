@@ -30,7 +30,7 @@
                     />
                     <b-form-invalid-feedback
                       v-if="!$v.gridForm.en_name.required"
-                      >Please enter Arabic title</b-form-invalid-feedback
+                      >Please enter English title</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
@@ -43,7 +43,7 @@
                     />
                     <b-form-invalid-feedback
                       v-if="!$v.gridForm.ar_name.required"
-                      >Please enter English title</b-form-invalid-feedback
+                      >Please enter Arabic title</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
@@ -102,9 +102,13 @@
                 </b-colxx>
               </b-row>
 
-              <b-button type="submit" variant="primary" class="mt-4">{{
-                $t("forms.save")
-              }}</b-button>
+              <b-button
+                :disabled="enable"
+                type="submit"
+                variant="primary"
+                class="mt-4"
+                >{{ $t("forms.save") }}</b-button
+              >
             </b-form>
           </template>
           <template v-else>
@@ -141,6 +145,7 @@ export default {
       _role: null,
       is_Load: true,
       type: null,
+      enable: false,
       edit: true,
       password: null,
       is_block_category: false,
@@ -206,6 +211,7 @@ export default {
       this.$v.$touch();
       this.$v.gridForm.$touch();
       if (!this.$v.gridForm.$invalid) {
+        this.enable = true;
         if (this._type == "block") {
           this.updateBlockCategory({
             info: {
@@ -213,9 +219,9 @@ export default {
               "ar[description]": this.gridForm.ar_description,
               "en[name]": this.gridForm.en_name,
               "en[description]": this.gridForm.en_description,
-              type: this.gridForm.select,
-              image: this.file ? this.file[0] : null
+              type: this.gridForm.select
             },
+            image: this.file ? this.file[0] : null,
             id: this._id
           });
         } else {
@@ -224,10 +230,9 @@ export default {
               "ar[name]": this.gridForm.ar_name,
               "ar[description]": this.gridForm.ar_description,
               "en[name]": this.gridForm.en_name,
-              "en[description]": this.gridForm.en_description,
-              image: this.file ? this.file[0] : null
+              "en[description]": this.gridForm.en_description
             },
-
+            image: this.file ? this.file[0] : null,
             id: this._id
           });
         }

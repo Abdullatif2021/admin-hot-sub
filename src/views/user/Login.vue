@@ -76,7 +76,6 @@
                 :disabled="processing"
                 :class="{
                   'btn-multiple-state btn-shadow': true,
-                  'show-spinner': processing,
                   'show-success': !processing && loginError === false,
                   'show-fail': !processing && loginError
                 }"
@@ -161,7 +160,7 @@ export default {
   },
   watch: {
     processing: function(value) {
-      console.log(value);
+      console.log("processing", value);
     },
     currentUser(val) {
       if (val != null) {

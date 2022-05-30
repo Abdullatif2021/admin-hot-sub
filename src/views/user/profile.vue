@@ -103,9 +103,13 @@
               <span>Image</span>
             </label>
 
-            <b-button type="submit" variant="primary" class="mt-4">{{
-              $t("forms.submit")
-            }}</b-button>
+            <b-button
+              :disabled="enable"
+              type="submit"
+              variant="primary"
+              class="mt-4"
+              >{{ $t("forms.submit") }}</b-button
+            >
           </b-form>
         </div>
       </b-card>
@@ -136,6 +140,7 @@ export default {
       user: null,
       selectedDate: false,
       file: null,
+      enable: false,
       dob: null,
       gender: null,
       sendSuccess: false,
@@ -221,6 +226,7 @@ export default {
       this.$v.form.$touch();
       if (!this.$v.form.$invalid) {
         console.log(this.form, this.gender, this.dob);
+        this.enable = true;
         this.updateUserProfile({
           first_name: this.form.first_name,
           last_name: this.form.last_name,

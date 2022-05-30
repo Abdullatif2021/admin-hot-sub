@@ -139,6 +139,7 @@
                   >
                     <!-- <h3>{{ items.length }}</h3> -->
                     <b-button
+                      :disabled="enable_basic"
                       @click="save()"
                       class="mb-2"
                       size="lg"
@@ -161,96 +162,112 @@
                   title-item-class="w-30 text-center"
                 >
                   <b-row>
-                    <b-colxx xs="12" md="6" class="mb-3">
-                      <b-card>
-                        <vuetable
-                          ref="vuetable"
-                          :api-mode="false"
-                          :data-total="dataCount"
-                          :per-page="perPage"
-                          :reactive-api-url="true"
-                          :fields="fields"
-                          pagination-path
-                        >
-                          <template slot="actions" slot-scope="props">
-                            <b-dropdown
-                              id="langddm"
-                              class="ml-2"
-                              variant="light"
-                              size="sm"
-                              toggle-class="language-button"
-                            >
-                              <template #button-content>
-                                <i class="simple-icon-settings"></i>
-                              </template>
-                              <b-dropdown-item
-                                v-for="(item, index) in Options"
-                                :key="index"
-                                @click="
-                                  editAction(
-                                    item.name,
-                                    item.value,
-                                    props.rowData
-                                  )
-                                "
-                                >{{ item.name }}</b-dropdown-item
+                    <template v-if="_isLoadBlockMeta">
+                      <b-colxx xs="12" md="6" class="mb-3">
+                        <b-card>
+                          <vuetable
+                            ref="vuetable"
+                            :api-mode="false"
+                            :data-total="dataCount"
+                            :per-page="perPage"
+                            :reactive-api-url="true"
+                            :fields="fields"
+                            pagination-path
+                          >
+                            <template slot="actions" slot-scope="props">
+                              <b-dropdown
+                                id="langddm"
+                                class="ml-2"
+                                variant="light"
+                                size="sm"
+                                toggle-class="language-button"
                               >
-                            </b-dropdown>
-                          </template>
-                        </vuetable>
-                      </b-card>
-                      <!-- <vuetable-pagination-bootstrap
+                                <template #button-content>
+                                  <i class="simple-icon-settings"></i>
+                                </template>
+                                <b-dropdown-item
+                                  v-for="(item, index) in Options"
+                                  :key="index"
+                                  @click="
+                                    editAction(
+                                      item.name,
+                                      item.value,
+                                      props.rowData
+                                    )
+                                  "
+                                  >{{ item.name }}</b-dropdown-item
+                                >
+                              </b-dropdown>
+                            </template>
+                          </vuetable>
+                        </b-card>
+                        <!-- <vuetable-pagination-bootstrap
                       class="mt-4"
                       ref="pagination"
                       @vuetable-pagination:change-page="onChangePage"
                     /> -->
-                    </b-colxx>
-                    <b-colxx xs="12" md="6" class="mb-3">
-                      <b-card
-                        class="mb-4"
-                        :title="edit ? $t('forms.edit') : $t('forms.create')"
-                      >
-                        <b-form
-                          @submit.prevent="onValitadeFormSubmit()"
-                          class="av-tooltip tooltip-label-right"
+                      </b-colxx>
+                      <b-colxx xs="12" md="6" class="mb-3">
+                        <b-card
+                          class="mb-4"
+                          :title="edit ? $t('forms.edit') : $t('forms.create')"
                         >
-                          <b-form-group label="Option">
-                            <b-form-select
-                              v-model.trim="select"
-                              :options="selectOptions"
-                              plain
-                            />
-
-                            <b-form-invalid-feedback
-                              >Please select an option!</b-form-invalid-feedback
-                            >
-                          </b-form-group>
-                          <b-form-group label="English Content">
-                            <b-textarea v-model.trim="en_detail"></b-textarea>
-                            <b-form-invalid-feedback
-                              >Please enter some English
-                              content!</b-form-invalid-feedback
-                            >
-                          </b-form-group>
-                          <b-form-group label="Arabic Content">
-                            <b-textarea v-model.trim="ar_detail"></b-textarea>
-                            <b-form-invalid-feedback
-                              >Please enter some Arabic
-                              content!</b-form-invalid-feedback
-                            >
-                          </b-form-group>
-
-                          <b-button
-                            type="submit"
-                            variant="primary"
-                            class="mt-4"
-                            >{{
-                              edit ? $t("forms.save") : $t("forms.submit")
-                            }}</b-button
+                          <b-form
+                            @submit.prevent="onValitadeFormSubmit()"
+                            class="av-tooltip tooltip-label-right"
                           >
-                        </b-form>
-                      </b-card>
-                    </b-colxx>
+                            <b-form-group label="Option">
+                              <b-form-select
+                                :state="!$v.meta_form.select.$error"
+                                v-model="$v.meta_form.select.$model"
+                                :options="selectOptions"
+                                plain
+                              />
+                              <b-form-invalid-feedback
+                                v-if="!$v.meta_form.select.required"
+                                >Please select an
+                                option!</b-form-invalid-feedback
+                              >
+                            </b-form-group>
+                            <b-form-group label="English Content">
+                              <b-textarea
+                                v-model="$v.meta_form.en_detail.$model"
+                                :state="!$v.meta_form.en_detail.$error"
+                              ></b-textarea>
+                              <b-form-invalid-feedback
+                                v-if="!$v.meta_form.en_detail.required"
+                                >Please enter some English
+                                content!</b-form-invalid-feedback
+                              >
+                            </b-form-group>
+                            <b-form-group label="Arabic Content">
+                              <b-textarea
+                                v-model="$v.meta_form.ar_detail.$model"
+                                :state="!$v.meta_form.ar_detail.$error"
+                              ></b-textarea>
+                              <b-form-invalid-feedback
+                                v-if="!$v.meta_form.ar_detail.required"
+                                >Please enter some Arabic
+                                content!</b-form-invalid-feedback
+                              >
+                            </b-form-group>
+
+                            <b-button
+                              type="submit"
+                              :disabled="enable"
+                              variant="primary"
+                              class="mt-4"
+                              >{{
+                                edit ? $t("forms.save") : $t("forms.submit")
+                              }}</b-button
+                            >
+                          </b-form>
+                        </b-card>
+                      </b-colxx>
+                    </template>
+                    <template v-else>
+                      <div class="loading"></div>
+                    </template>
                   </b-row>
                 </b-tab>
               </b-tabs>
@@ -298,16 +315,21 @@ export default {
       blockData: null,
       _data: null,
       isLoadBlock: false,
+      enable_basic: false,
       itemId: null,
       meta_type_id: null,
       textarea: null,
+      enable: false,
       image: null,
       file: null,
       itemForEdit: null,
       selectOptions: [],
-      select: "",
-      en_detail: "",
-      ar_detail: "",
+      meta_form: {
+        select: "",
+        en_detail: "",
+        ar_detail: ""
+      },
+
       activeOptions: [
         "",
         { text: "Active", value: 1 },
@@ -430,14 +452,16 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    select: {
-      required
-    },
-    ar_detail: {
-      required
-    },
-    en_detail: {
-      required
+    meta_form: {
+      select: {
+        required
+      },
+      ar_detail: {
+        required
+      },
+      en_detail: {
+        required
+      }
     }
   },
 
@@ -469,6 +493,7 @@ export default {
 
     save() {
       console.log(this.blockData);
+      this.enable_basic = true;
       this.updateBlockData({
         id: this.blockData.id,
         data: this.blockData,
@@ -488,30 +513,27 @@ export default {
     },
     onValitadeFormSubmit() {
       this.$v.$touch();
-      console.log(
-        JSON.stringify({
-          select: this.select,
-          en_detail: this.en_detail,
-          ar_detail: this.ar_detail
-        })
-      );
-      if (!this.edit) {
-        this.createBlockMeta({
-          meta_type_id: this.select,
-          blockId: this.blockId,
-          metadata_id: this.itemId,
-          ar_content: this.ar_detail,
-          en_content: this.en_detail
-        });
-      } else {
-        this.updateBlockMeta({
-          meta_type_id: this.select,
-          metadata_id: this.itemId,
+      this.$v.meta_form.$touch();
+      if (!this.$v.meta_form.$invalid) {
+        this.enable = true;
+        if (!this.edit) {
+          this.createBlockMeta({
+            meta_type_id: this.meta_form.select,
+            blockId: this.blockId,
+            metadata_id: this.itemId,
+            ar_content: this.meta_form.ar_detail,
+            en_content: this.meta_form.en_detail
+          });
+        } else {
+          this.updateBlockMeta({
+            meta_type_id: this.meta_form.select,
+            metadata_id: this.itemId,
 
-          blockId: this.blockId,
-          ar_content: this.ar_detail,
-          en_content: this.en_detail
-        });
+            blockId: this.blockId,
+            ar_content: this.meta_form.ar_detail,
+            en_content: this.meta_form.en_detail
+          });
+        }
       }
     },
     onEditorBlur(editor) {
@@ -579,14 +601,14 @@ export default {
       if (value == 1) {
         this.edit = true;
         this.itemId = item.id;
-        this.select = item.meta_type_id;
-        this.en_detail = item.locales.en.meta_content;
-        this.ar_detail = item.locales.ar.meta_content;
+        this.meta_form.select = item.meta_type_id;
+        this.meta_form.en_detail = item.locales.en.meta_content;
+        this.meta_form.ar_detail = item.locales.ar.meta_content;
       } else {
         this.edit = false;
-        this.select = null;
-        this.en_detail = null;
-        this.ar_detail = null;
+        this.meta_form.select = null;
+        this.meta_form.en_detail = null;
+        this.meta_form.ar_detail = null;
         this.deleteBlockMeta({ blockId: this.blockId, metadata_id: item.id });
       }
     }
@@ -599,13 +621,24 @@ export default {
       "_blockMetaList",
       "_updateMetaBlock",
       "_blockMetaTypeList",
-      "_blockCategories"
+      "_blockCategories",
+      "_updateBlockBasicData",
+      "_isLoadBlockMeta"
     ]),
     editor() {
       return this.$refs.myTextEditor.quill;
     }
   },
   watch: {
+    _updateBlockBasicData(newInfo, oldOne) {
+      this.enable_basic = false;
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Block Details have been updated successfully",
+        { duration: 3000, permanent: false }
+      );
+    },
     _block(newOne, oldone) {
       this.isLoadBlock = true;
       this.blockData = newOne;
@@ -613,15 +646,17 @@ export default {
     },
     _blockMetaList(newList, old) {
       this.isLoadBlock = true;
-
+      this.enable = false;
       this.$refs.vuetable.setData(newList);
     },
 
     _updateMetaBlock(newActions, old) {
       this.edit = false;
-      this.select = null;
-      this.en_detail = null;
-      this.ar_detail = null;
+      this.enable = false;
+
+      this.meta_form.select = null;
+      this.meta_form.en_detail = null;
+      this.meta_form.ar_detail = null;
     },
     _blockCategories(newval, old) {
       newval.forEach(option => {
