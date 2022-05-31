@@ -8,7 +8,7 @@ import {
   getAccessToken,
   setTokens,
   getCurrentUser,
-  getCurrentLanguage,
+  getLanguages,
   setDirection
 } from "../../utils";
 import { adminRoot } from "../../constants/config";
@@ -121,6 +121,7 @@ export default {
             axios.get(`${apiUrl}/auth/user`).then(res => {
               if (res.status) {
                 setCurrentUser(res.data.data);
+                getLanguages();
                 commit("setUser", res.data.data);
                 dispatch("setLang", { locale: res.data.data.prefer_locale });
                 res.data.data.prefer_locale === "ar"

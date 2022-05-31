@@ -152,7 +152,8 @@ export default {
     window.addEventListener("resize", this.handleWindowResize);
     document.addEventListener("click", this.handleDocumentClick);
     this.handleWindowResize();
-    this.getBlockCategories({
+    console.info("windowwwwwwwwwwwwww");
+    this.getBlock_Categories({
       dir: null,
       search: null,
       order_by: null,
@@ -172,7 +173,7 @@ export default {
       "addMenuClassname",
       "changeSelectedMenuHasSubItems"
     ]),
-    ...mapActions(["getBlockCategories"]),
+    ...mapActions(["getBlock_Categories"]),
     selectMenu() {
       const currentParentUrl = this.$route.path
         .split("/")
@@ -219,6 +220,11 @@ export default {
           to: `${adminRoot}/blocks/blockList/${item.id}`
         });
       });
+      this._blockCategories = null;
+      console.log(
+        "setMenuItemsssssssssssssssssssssssssss",
+        this._blockCategories
+      );
     },
     changeSelectedParentHasNoSubmenu(parentMenu) {
       this.selectedParentMenu = parentMenu;
@@ -369,7 +375,7 @@ export default {
       menuType: "getMenuType",
       menuClickCount: "getMenuClickCount",
       selectedMenuHasSubItems: "getSelectedMenuHasSubItems",
-      _blockCategories: "_blockCategories"
+      _Block_Categories: "_Block_Categories"
     })
   },
   watch: {
@@ -392,7 +398,7 @@ export default {
         window.scrollTo(0, top);
       }
     },
-    _blockCategories(newVal, old) {
+    _Block_Categories(newVal, old) {
       this.setMenuItems(newVal);
     }
   }

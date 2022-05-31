@@ -7,46 +7,34 @@
     :no-close-on-backdrop="true"
   >
     <b-form>
-      <b-form-group :label="$t('pages.en_title')" class="has-float-label mb-4">
-        <b-form-input
-          type="text"
-          v-model="$v.form.en_title.$model"
-          :state="!$v.form.en_title.$error"
-        />
-        <b-form-invalid-feedback v-if="!$v.form.en_title.required"
-          >Please enter English title</b-form-invalid-feedback
+      <div v-for="(lang, index) in $v.video_form.$each.$iter" :key="index">
+        <b-form-group
+          :label="$t(`pages.${lang.name.$model}_title`)"
+          class="has-float-label mb-4"
         >
-      </b-form-group>
-      <b-form-group :label="$t('pages.en_desc')" class="has-float-label mb-4">
-        <b-form-input
-          type="text"
-          v-model="$v.form.en_description.$model"
-          :state="!$v.form.en_description.$error"
-        />
-        <b-form-invalid-feedback v-if="!$v.form.en_description.required"
-          >Please enter English description</b-form-invalid-feedback
+          <b-form-input
+            type="text"
+            v-model="lang.title.$model"
+            :state="!lang.title.$error"
+          />
+          <b-form-invalid-feedback v-if="!lang.title.required"
+            >Please enter title</b-form-invalid-feedback
+          >
+        </b-form-group>
+        <b-form-group
+          :label="$t(`pages.${lang.name.$model}_desc`)"
+          class="has-float-label mb-4"
         >
-      </b-form-group>
-      <b-form-group :label="$t('pages.ar_title')" class="has-float-label mb-4">
-        <b-form-input
-          type="text"
-          v-model="$v.form.ar_title.$model"
-          :state="!$v.form.ar_title.$error"
-        />
-        <b-form-invalid-feedback v-if="!$v.form.ar_title.required"
-          >Please enter Arabic title</b-form-invalid-feedback
-        >
-      </b-form-group>
-      <b-form-group :label="$t('pages.ar_desc')" class="has-float-label mb-4">
-        <b-form-input
-          type="text"
-          v-model="$v.form.ar_description.$model"
-          :state="!$v.form.ar_description.$error"
-        />
-        <b-form-invalid-feedback v-if="!$v.form.ar_description.required"
-          >Please enter Arabic description</b-form-invalid-feedback
-        >
-      </b-form-group>
+          <b-form-input
+            type="text"
+            v-model="lang.description.$model"
+            :state="!lang.description.$error"
+          />
+          <b-form-invalid-feedback v-if="!lang.description.required"
+            >Please enter description</b-form-invalid-feedback
+          >
+        </b-form-group>
+      </div>
       <label class="form-group has-float-label">
         <b-colxx xxs="12" style="padding: 0px;">
           <vue-dropzone
@@ -94,6 +82,8 @@ export default {
     return {
       file: null,
       enable: false,
+      video_form: [],
+
       form: {
         ar_title: "",
         ar_description: "",
@@ -118,23 +108,31 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    form: {
-      en_title: {
-        required
-      },
-      en_description: {
-        required
-      },
-      ar_title: {
-        required
-      },
-      ar_description: {
-        required
+    video_form: {
+      $each: {
+        title: {
+          required
+        },
+        description: {},
+        name: {}
       }
     }
   },
+  created() {
+    this.langs = localStorage.getItem("Languages");
+    this.make_video_form(this.langs);
+  },
   methods: {
-    ...mapActions(["createPageVideo"]),
+    make_video_form(langs) {
+      JSON.parse(langs).forEach(el => {
+        this.video_form.push({
+          title: "",
+          description: "",
+          name: el.name
+        });
+        console.log(this.video_form);
+      });
+    },
     hideModal(refname) {
       this.$refs[refname].hide();
       this.form.en_title = null;
@@ -147,14 +145,11 @@ export default {
     formSubmit() {
       // window.top.close();
       this.$v.$touch();
-      this.$v.form.$touch();
-      if (!this.$v.form.$invalid) {
+      this.$v.video_form.$touch();
+      if (!this.$v.video_form.$invalid) {
         this.enable = true;
         this.$emit("AddNewVideo", {
-          en_title: this.form.en_title,
-          en_description: this.form.en_description,
-          ar_title: this.form.ar_title,
-          ar_description: this.form.ar_description,
+          info: this.$v.video_form.$model,
           video: this.file ? this.file[0] : null
         });
       }

@@ -604,10 +604,7 @@ export default {
     createImage(value) {
       console.log(value);
       this.createPageImage({
-        en_title: value.en_title,
-        en_description: value.en_description,
-        ar_title: value.ar_title,
-        ar_description: value.ar_description,
+        info: value.info,
         image: value.image ? value.image : null,
         id: this.pageId
       });

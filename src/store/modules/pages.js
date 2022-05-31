@@ -240,10 +240,15 @@ const actions = {
     if (payload.image) {
       formData.append("path", payload.image);
     }
-    formData.append("ar[title]", payload.ar_title);
-    formData.append("ar[description]", payload.ar_description);
-    formData.append("en[title]", payload.en_title);
-    formData.append("en[description]", payload.en_description);
+    console.log(" payload.info", payload.info);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el.name}[description]`, el.description);
+    });
+    // formData.append("ar[title]", payload.ar_title);
+    // formData.append("ar[description]", payload.ar_description);
+    // formData.append("en[title]", payload.en_title);
+    // formData.append("en[description]", payload.en_description);
     axios.post(`${apiUrl}/pages/images/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddPageImage", res.data.data);
@@ -414,10 +419,10 @@ const actions = {
     if (payload.video) {
       formData.append("path", payload.video);
     }
-    formData.append("ar[title]", payload.ar_title);
-    formData.append("ar[description]", payload.ar_description);
-    formData.append("en[title]", payload.en_title);
-    formData.append("en[description]", payload.en_description);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el.name}[description]`, el.description);
+    });
     axios.post(`${apiUrl}/pages/videos/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddPageVideo", res.data.data);

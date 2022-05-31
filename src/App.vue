@@ -7,7 +7,7 @@
 
 <script>
 import ColorSwitcher from "./components/Common/ColorSwitcher";
-import { getDirection } from "./utils";
+import { getDirection, getLanguages } from "./utils";
 
 export default {
   components: {
@@ -30,6 +30,10 @@ export default {
       document.dir = "ltr";
       document.body.classList.remove("rtl");
     }
+  },
+  created() {
+    console.info("getLanguagessssssssssssssssssss");
+    const Languages = getLanguages();
   }
 };
 </script>

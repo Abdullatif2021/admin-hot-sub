@@ -601,10 +601,7 @@ export default {
     createImage(value) {
       console.log(value);
       this.createPageImage({
-        en_title: value.en_title,
-        en_description: value.en_description,
-        ar_title: value.ar_title,
-        ar_description: value.ar_description,
+        info: value.info,
         image: value.image ? value.image : null,
         id: this.pageId
       });
@@ -612,10 +609,7 @@ export default {
     // .....................upload new video ......................
     createVideo(value) {
       this.createPageVideo({
-        en_title: value.en_title,
-        en_description: value.en_description,
-        ar_title: value.ar_title,
-        ar_description: value.ar_description,
+        info: value.info,
         video: value.video ? value.video : null,
         id: this.pageId
       });

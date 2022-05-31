@@ -23,6 +23,7 @@ const state = {
   category_paginate: null,
   UpdateBlockCategory: null,
   processing: false,
+  Block_Categories: null,
   blockCategory: null,
   create_block_category_success: null,
   blockCategorymetadata: null,
@@ -43,6 +44,7 @@ const getters = {
   _isLoadBlockMeta: state => state.processing,
   _updateBlockBasicData: state => state.updateBlockBasicData,
   _block: state => state.block,
+  _Block_Categories: state => state.Block_Categories,
   _blockCategories: state => state.blockCategories,
   _block_category_paginate: state => state.category_paginate,
   _successDeleteBlock: state => state.successDeleteBlock,
@@ -189,6 +191,9 @@ const mutations = {
   },
   delete_block_category_meta_success(state, payload) {
     state.delete_block_category_meta_success = payload;
+  },
+  get_Block_Categories(state, data) {
+    state.Block_Categories = data.data;
   }
 };
 
@@ -294,10 +299,10 @@ const actions = {
     if (payload.image) {
       formData.append("path", payload.image);
     }
-    formData.append("ar[title]", payload.ar_title);
-    formData.append("ar[description]", payload.ar_description);
-    formData.append("en[title]", payload.en_title);
-    formData.append("en[description]", payload.en_description);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el.name}[description]`, el.description);
+    });
     axios.post(`${apiUrl}/blocks/images/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddBlockImage", res.data.data);
@@ -337,10 +342,10 @@ const actions = {
     if (payload.file) {
       formData.append("path", payload.file);
     }
-    formData.append("ar[title]", payload.ar_title);
-    formData.append("ar[description]", payload.ar_description);
-    formData.append("en[title]", payload.en_title);
-    formData.append("en[description]", payload.en_description);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el.name}[description]`, el.description);
+    });
     axios.post(`${apiUrl}/blocks/files/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddBlockFile", res.data.data);
@@ -450,10 +455,10 @@ const actions = {
     if (payload.video) {
       formData.append("path", payload.video);
     }
-    formData.append("ar[title]", payload.ar_title);
-    formData.append("ar[description]", payload.ar_description);
-    formData.append("en[title]", payload.en_title);
-    formData.append("en[description]", payload.en_description);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el.name}[description]`, el.description);
+    });
     axios
       .post(`${apiUrl}/blocks/videos/${id}`, formData, {})
       .then(res => {
@@ -496,11 +501,14 @@ const actions = {
   createBlockYoutubeVideo({ commit, dispatch }, payload) {
     const id = payload.id;
     const formData = new FormData();
-    formData.append("path", payload.path);
-    formData.append("ar[title]", payload.ar_title);
-    formData.append("ar[description]", payload.ar_description);
-    formData.append("en[title]", payload.en_title);
-    formData.append("en[description]", payload.en_description);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el.name}[description]`, el.description);
+    });
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      formData.append(key, value);
+    });
     axios
       .post(`${apiUrl}/blocks/youtube-videos/${id}`, formData, {})
       .then(res => {
@@ -517,13 +525,12 @@ const actions = {
   updateBlockYoutubeVideo({ commit, dispatch }, payload) {
     const id = payload.id;
     const attachment_id = payload.attachment_id;
-    // const formData = new FormData();
-    // formData.append("path", payload.path);
-    // formData.append("ar[title]", payload.ar_title);
-    // formData.append("ar[description]", payload.ar_description);
-    // formData.append("en[title]", payload.en_title);
-    // formData.append("en[description]", payload.en_description);
+    const formData = new FormData();
 
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      formData.append(key, value);
+    });
     axios
       .put(
         `${apiUrl}/blocks/youtube-videos/${id}/${attachment_id}`,
@@ -571,7 +578,19 @@ const actions = {
         commit("get_BlockCategories", res.data);
       });
   },
-
+  getBlock_Categories: async ({ commit }, payload) => {
+    commit("setProcessing", payload.sorting ? payload.sorting : false);
+    await axios
+      .get(`${apiUrl}/blocks/categories`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        console.log("hi from categories", res);
+        commit("get_Block_Categories", res.data);
+      });
+  },
   getBlockCategory: async ({ commit }, payload) => {
     const id = payload.id;
     commit("setProcessing", false);

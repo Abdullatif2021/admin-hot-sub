@@ -1,66 +1,13 @@
 # Installation
 
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Current route is: {{ $route.path }}
-
-_Italic_, **bold**, and `monospace`
-
-```js
-<script>const foo = 'bar'; console.log(foo);</script>
+```cmd
+<script>npm install</script>
 ```
 
-Itemized lists look like:
+## documentation
 
-- this one
-- that one
-- the other one
+to build the documentation use the following command:
 
-> Block quotes are
-> written like so.
->
-> They can span multiple paragraphs,
-> if you like.
-
-## This is a sub heading
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-## Another subheading
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab
-aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
-
-### h3 Subheading
+```cmd
+<script>npm install</script>
+```

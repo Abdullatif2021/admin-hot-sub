@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   defaultDirection,
   defaultColor,
@@ -7,7 +8,7 @@ import {
   defaultLocale
 } from "../constants/config";
 import router from "../router";
-
+import { apiUrl } from "../constants/config";
 export const loaclee = "";
 
 export const mapOrder = (array, order, key) => {
@@ -150,6 +151,17 @@ export const getAccessToken = () => {
   try {
     const accessToken = localStorage.getItem("accessToken");
     return accessToken;
+  } catch (error) {
+    console.log(">>>> src/utils/index.js : setCurrentLanguage -> error", error);
+    return error;
+  }
+};
+export const getLanguages = () => {
+  try {
+    axios.get(`${apiUrl}/languages`).then(res => {
+      console.log(res);
+      localStorage.setItem("Languages", JSON.stringify(res.data.data));
+    });
   } catch (error) {
     console.log(">>>> src/utils/index.js : setCurrentLanguage -> error", error);
     return error;

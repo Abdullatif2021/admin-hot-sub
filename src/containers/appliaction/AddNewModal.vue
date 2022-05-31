@@ -5,53 +5,35 @@
     :title="$t('pages.add-new-title')"
     modal-class="modal-right"
   >
-    <div v-for="ticket in tickets" :key="ticket.title">
-      <b-form>
+    <form>
+      <div v-for="(lang, index) in $v.image_form.$each.$iter" :key="index">
         <b-form-group
-          :label="$t('pages.en_title')"
+          :label="$t(`pages.${lang.name.$model}_title`)"
           class="has-float-label mb-4"
         >
-          {{ ticket.title }}
           <b-form-input
             type="text"
-            v-model="$v.form.en_title.$model"
-            :state="!$v.form.en_title.$error"
+            v-model="lang.title.$model"
+            :state="!lang.title.$error"
           />
-          <b-form-invalid-feedback v-if="!$v.form.en_title.required"
-            >Please enter English title</b-form-invalid-feedback
+          <b-form-invalid-feedback v-if="!lang.title.required"
+            >Please enter title</b-form-invalid-feedback
           >
         </b-form-group>
-        <b-form-group :label="$t('pages.en_desc')" class="has-float-label mb-4">
+        <b-form-group
+          :label="$t(`pages.${lang.name.$model}_desc`)"
+          class="has-float-label mb-4"
+        >
           <b-form-input
             type="text"
-            v-model="$v.form.en_description.$model"
-            :state="!$v.form.en_description.$error"
+            v-model="lang.description.$model"
+            :state="!lang.description.$error"
           />
-          <b-form-invalid-feedback v-if="!$v.form.en_description.required"
-            >Please enter English description</b-form-invalid-feedback
+          <b-form-invalid-feedback v-if="!lang.description.required"
+            >Please enter description</b-form-invalid-feedback
           >
         </b-form-group>
-        <!-- <b-form-group :label="$t('pages.ar_title')" class="has-float-label mb-4">
-        <b-form-input
-          type="text"
-          v-model="$v.form.ar_title.$model"
-          :state="!$v.form.ar_title.$error"
-        />
-        <b-form-invalid-feedback v-if="!$v.form.ar_title.required"
-          >Please enter Arabic title</b-form-invalid-feedback
-        >
-      </b-form-group>
-      <b-form-group :label="$t('pages.ar_desc')" class="has-float-label mb-4">
-        <b-form-input
-          type="text"
-          v-model="$v.form.ar_description.$model"
-          :state="!$v.form.ar_description.$error"
-        />
-        <b-form-invalid-feedback v-if="!$v.form.ar_description.required"
-          >Please enter Arabic description</b-form-invalid-feedback
-        >
-      </b-form-group>
-     
+      </div>
       <label class="form-group has-float-label">
         <b-colxx xxs="12" style="padding: 0px;">
           <vue-dropzone
@@ -65,9 +47,8 @@
           ></vue-dropzone>
         </b-colxx>
         <span>{{ $t("pages.image") }}</span>
-      </label> -->
-      </b-form>
-    </div>
+      </label>
+    </form>
     <template slot="modal-footer">
       <b-button variant="outline-secondary" @click="hideModal('modalright')">{{
         $t("survey.cancel")
@@ -85,7 +66,7 @@ import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
 import { mapGetters, mapActions } from "vuex";
 import { validationMixin } from "vuelidate";
-const { required } = require("vuelidate/lib/validators");
+const { required, email } = require("vuelidate/lib/validators");
 export default {
   components: {
     "v-select": vSelect,
@@ -96,35 +77,8 @@ export default {
   data() {
     return {
       file: null,
-      tickets: [
-        {
-          title: "srferferf"
-        },
-        {
-          title: "srferferf"
-        },
-        {
-          title: "srferferf"
-        },
-        {
-          title: "srferferf"
-        },
-        {
-          title: "srferferf"
-        },
-        {
-          title: "srferferf"
-        },
-        {
-          title: "srferferf"
-        }
-      ],
-      form: {
-        ar_title: "",
-        ar_description: "",
-        en_title: "",
-        en_description: ""
-      },
+      langs: [],
+      image_form: [],
       dropzoneOptions: {
         url:
           "https://lilacmarketingevents.com/tarrab-api/public/api/blocks/images/54?en[title]=dddddddddddddd&en[description]=dddddddddddddd",
@@ -142,41 +96,50 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    form: {
-      en_title: {
-        required
-      },
-      en_description: {
-        required
-      },
-      ar_title: {
-        required
-      },
-      ar_description: {
-        required
+    image_form: {
+      $each: {
+        title: {
+          required
+        },
+        description: {},
+        name: {}
       }
     }
   },
+  created() {
+    this.langs = localStorage.getItem("Languages");
+    this.make_collaction(this.langs);
+  },
   methods: {
     ...mapActions(["createPageImage"]),
+    make_collaction(langs) {
+      JSON.parse(langs).forEach(el => {
+        this.image_form.push({
+          title: "",
+          description: "",
+          name: el.name
+        });
+        console.log(this.image_form);
+      });
+    },
     hideModal(refname) {
       this.$refs[refname].hide();
-      this.form.en_title = null;
-      this.form.ar_title = null;
-
-      this.form.en_description = null;
-      this.form.ar_description = null;
+      // this.form.en_title = null;
+      // this.form.ar_title = null;
+      // this.form.en_description = null;
+      // this.form.ar_description = null;
     },
     formSubmit() {
-      // window.top.close();
+      console.log("here from submit");
       this.$v.$touch();
-      this.$v.form.$touch();
-      if (!this.$v.form.$invalid) {
+      this.$v.image_form.$touch();
+      if (!this.$v.image_form.$invalid) {
+        console.log("here from submit invalid", this.$v.image_form.$model);
+        this.$v.image_form.$model.forEach(el => {
+          console.log(el);
+        });
         this.$emit("AddNewImage", {
-          en_title: this.form.en_title,
-          en_description: this.form.en_description,
-          ar_title: this.form.ar_title,
-          ar_description: this.form.ar_description,
+          info: this.$v.image_form.$model,
           image: this.file ? this.file[0] : null
         });
       }
