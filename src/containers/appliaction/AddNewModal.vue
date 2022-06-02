@@ -53,9 +53,13 @@
       <b-button variant="outline-secondary" @click="hideModal('modalright')">{{
         $t("survey.cancel")
       }}</b-button>
-      <b-button variant="primary" @click="formSubmit()" class="mr-1">{{
-        $t("survey.submit")
-      }}</b-button>
+      <b-button
+        :disabled="enable"
+        variant="primary"
+        @click="formSubmit()"
+        class="mr-1"
+        >{{ $t("survey.submit") }}</b-button
+      >
     </template>
   </b-modal>
 </template>
@@ -72,13 +76,13 @@ export default {
     "v-select": vSelect,
     "vue-dropzone": VueDropzone
   },
-  props: ["pageId"],
 
   data() {
     return {
       file: null,
       langs: [],
       image_form: [],
+      enable: false,
       dropzoneOptions: {
         url:
           "https://lilacmarketingevents.com/tarrab-api/public/api/blocks/images/54?en[title]=dddddddddddddd&en[description]=dddddddddddddd",
@@ -135,6 +139,7 @@ export default {
       this.$v.image_form.$touch();
       if (!this.$v.image_form.$invalid) {
         console.log("here from submit invalid", this.$v.image_form.$model);
+        this.enable = true;
         this.$v.image_form.$model.forEach(el => {
           console.log(el);
         });
@@ -188,20 +193,19 @@ export default {
   },
   watch: {
     _sccussCreateImage: function(val) {
+      this.enable = false;
       this.hideModal("modalright");
-      this.form.en_title = null;
-      this.form.ar_title = null;
-
-      this.form.en_description = null;
-      this.form.ar_description = null;
+      this.image_form.forEach(el => {
+        (el.title = null), (el.description = null);
+      });
     },
     _successAddBlockImage: function(val) {
-      this.hideModal("modalright");
-      this.form.en_title = null;
-      this.form.ar_title = null;
+      this.enable = false;
 
-      this.form.en_description = null;
-      this.form.ar_description = null;
+      this.hideModal("modalright");
+      this.image_form.forEach(el => {
+        (el.title = null), (el.description = null);
+      });
     }
   }
 };

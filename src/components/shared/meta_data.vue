@@ -57,37 +57,35 @@
                     >
                       <b-form-group label="Option">
                         <b-form-select
-                          :state="!$v.gridForm.select.$error"
-                          v-model="$v.gridForm.select.$model"
+                          :state="!$v.select_form.select.$error"
+                          v-model="$v.select_form.select.$model"
                           :options="selectOptions"
                           plain
                         />
 
                         <b-form-invalid-feedback
-                          v-if="!$v.gridForm.select.required"
+                          v-if="!$v.select_form.select.required"
                           >Please select category type</b-form-invalid-feedback
                         >
                       </b-form-group>
-                      <b-form-group label="English Content">
-                        <b-textarea
-                          :state="!$v.gridForm.en_detail.$error"
-                          v-model="$v.gridForm.en_detail.$model"
-                        ></b-textarea>
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.en_detail.required"
-                          >Please enter English details</b-form-invalid-feedback
+                      <div
+                        v-for="(lang, index) in $v.meta_form.$each.$iter"
+                        :key="index"
+                      >
+                        <b-form-group
+                          :label="$t(`forms.${lang.name.$model}_content`)"
+                          class="has-float-label mb-4"
                         >
-                      </b-form-group>
-                      <b-form-group label="Arabic Content">
-                        <b-textarea
-                          :state="!$v.gridForm.ar_detail.$error"
-                          v-model="$v.gridForm.ar_detail.$model"
-                        ></b-textarea>
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.ar_detail.required"
-                          >Please enter Arabic details</b-form-invalid-feedback
-                        >
-                      </b-form-group>
+                          <b-form-input
+                            type="text"
+                            v-model="lang.content.$model"
+                            :state="!lang.content.$error"
+                          />
+                          <b-form-invalid-feedback v-if="!lang.content.required"
+                            >Please enter content</b-form-invalid-feedback
+                          >
+                        </b-form-group>
+                      </div>
                       <b-button
                         :disabled="enable"
                         type="submit"
@@ -156,16 +154,15 @@ export default {
       perPage: 12,
       search: "",
       from: 0,
-      gridForm: {
-        select: "",
-        en_detail: "",
-        ar_detail: "",
-        id: ""
-      },
       to: 0,
       total: 0,
       lastPage: 0,
       items: [],
+      meta_form: [],
+      select_form: {
+        select: ""
+      },
+
       selectedItems: [],
       edit: false,
       fields: [
@@ -210,25 +207,28 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    gridForm: {
-      select: {
-        required
+    meta_form: {
+      $each: {
+        content: {
+          required
+        },
+        name: {}
       },
-      ar_detail: {
-        required
-      },
-      en_detail: {
-        required
-      }
+      id: {}
+    },
+    select_form: {
+      select: { required }
     }
   },
 
   created() {
     console.log("hi from created", this.type);
-    this.getMetaTypeList();
+    this.langs = localStorage.getItem("Languages");
+    this.getCategoryMetaTypeList();
     this.type == "block"
       ? this.getBlockCategoryMetadata({ id: this.id })
       : this.getCategoryMetadata({ id: this.id });
+    this.make_collaction(this.langs, this.meta_form);
   },
 
   methods: {
@@ -238,53 +238,58 @@ export default {
       "createBlockCategoryMetadata",
       "updateBlockCategoryMeta",
       "deleteBlockCategoryMetadata",
-      "getMetaTypeList",
+      "getCategoryMetaTypeList",
       // category
       "getCategoryMetadata",
       "createCategoryMetadata",
       "updateCategoryMetadata",
       "deleteCategoryMetadata"
     ]),
-
+    make_collaction(langs, form) {
+      console.log(langs, form);
+      JSON.parse(langs).forEach(el => {
+        form.push({
+          content: "",
+          name: el.name
+        });
+      });
+      console.log("meta_form", this.meta_form);
+    },
     onValitadeFormSubmit() {
       this.$v.$touch();
-      this.$v.gridForm.$touch();
-      if (!this.$v.gridForm.$invalid) {
+      this.$v.meta_form.$touch();
+      this.$v.select_form.$touch();
+      if (!this.$v.meta_form.$invalid && !this.$v.select_form.$invalid) {
         this.enable = true;
-        console.log(this.gridForm.id);
-        if (this.gridForm.id) {
+        if (this.meta_form.id) {
           if (this.type === "block") {
             this.updateBlockCategoryMeta({
-              meta_type_id: this.gridForm.select,
               id: this.id,
-              metadata_id: this.gridForm.id,
-              ar_content: this.gridForm.ar_detail,
-              en_content: this.gridForm.en_detail
+              metadata_id: this.meta_form.id,
+              meta_type_id: this.select_form.select,
+              info: this.$v.meta_form.$model
             });
           } else {
             this.updateCategoryMetadata({
-              meta_type_id: this.gridForm.select,
               id: this.id,
-              metadata_id: this.gridForm.id,
-              ar_content: this.gridForm.ar_detail,
-              en_content: this.gridForm.en_detail
+              metadata_id: this.meta_form.id,
+
+              meta_type_id: this.select_form.select,
+              info: this.$v.meta_form.$model
             });
           }
         } else {
           if (this.type === "block") {
             this.createBlockCategoryMetadata({
-              meta_type_id: this.gridForm.select,
               id: this.id,
-              metadata_id: this.gridForm.id,
-              ar_content: this.gridForm.ar_detail,
-              en_content: this.gridForm.en_detail
+              meta_type_id: this.select_form.select,
+              info: this.$v.meta_form.$model
             });
           } else {
             this.createCategoryMetadata({
-              meta_type_id: this.gridForm.select,
               id: this.id,
-              ar_content: this.gridForm.ar_detail,
-              en_content: this.gridForm.en_detail
+              meta_type_id: this.select_form.select,
+              info: this.$v.meta_form.$model
             });
           }
         }
@@ -292,16 +297,30 @@ export default {
     },
     editAction(f, value, item) {
       if (value == 1) {
+        console.log(item);
         this.edit = true;
-        this.gridForm.id = item.id;
-        this.gridForm.select = item.meta_type_id;
-        this.gridForm.en_detail = item.locales.en.meta_content;
-        this.gridForm.ar_detail = item.locales.ar.meta_content;
+        this.meta_form.id = item.id;
+        console.log(this.meta_form.id);
+
+        this.select_form.select = item.meta_type_id;
+        this.meta_form.forEach(el => {
+          switch (el.name) {
+            case "en":
+              el.content = item.locales.en.meta_content;
+              break;
+            case "ar":
+              el.content = item.locales.ar.meta_content;
+              break;
+            default:
+              break;
+          }
+        });
       } else {
         this.edit = false;
-        this.gridForm.select = null;
-        this.gridForm.en_detail = null;
-        this.gridForm.ar_detail = null;
+        this.select_form.select = null;
+        this.meta_form.forEach(el => {
+          el.content = null;
+        });
         this.type == "block"
           ? this.deleteBlockCategoryMetadata({
               id: this.id,
@@ -318,7 +337,7 @@ export default {
     ...mapGetters([
       "_blockCategoryMeta",
       "_updateblockCategoryMetaSuccess",
-      "_blockMetaTypeList",
+      "_categoryMetaTypeList",
       "_isLoadBlockCategoryMeta",
       "_CategoryMeta",
       "_create_block_category_meta_success",
@@ -333,18 +352,20 @@ export default {
       this.enable = false;
 
       this.edit = false;
-      this.gridForm.select = null;
-      this.gridForm.en_detail = null;
-      this.gridForm.ar_detail = null;
+      this.meta_form.forEach(el => {
+        el.content = null;
+      });
+      this.select_form.select = null;
     },
     _blockCategoryMeta(newList, old) {
       console.log("_blockCategoryMeta");
       this.enable = false;
 
       this.edit = false;
-      this.gridForm.select = null;
-      this.gridForm.en_detail = null;
-      this.gridForm.ar_detail = null;
+      this.meta_form.forEach(el => {
+        el.content = null;
+      });
+      this.select_form.select = null;
       this.$refs.vuetable.setData(newList);
     },
     _CategoryMeta(newList, old) {
@@ -352,30 +373,33 @@ export default {
       this.enable = false;
 
       this.edit = false;
-      this.gridForm.select = null;
-      this.gridForm.en_detail = null;
-      this.gridForm.ar_detail = null;
+      this.meta_form.forEach(el => {
+        el.content = null;
+      });
+      this.select_form.select = null;
       this.$refs.vuetable.setData(newList);
     },
     _updateblockCategoryMetaSuccess(newActions, old) {
       console.log("_updateMetaPage");
       this.enable = false;
-
+      this.meta_form.id = null;
       this.edit = false;
-      this.gridForm.select = null;
-      this.gridForm.en_detail = null;
-      this.gridForm.ar_detail = null;
+      this.meta_form.forEach(el => {
+        el.content = null;
+      });
+      this.select_form.select = null;
     },
     _updateCategoryMetaSuccess(newActions, old) {
       console.log("_updateMetaPage");
       this.enable = false;
-
+      this.meta_form.id = null;
       this.edit = false;
-      this.gridForm.select = null;
-      this.gridForm.en_detail = null;
-      this.gridForm.ar_detail = null;
+      this.meta_form.forEach(el => {
+        el.content = null;
+      });
+      this.select_form.select = null;
     },
-    _blockMetaTypeList(newContent, old) {
+    _categoryMetaTypeList(newContent, old) {
       console.log("_blockMetaList");
       newContent.forEach(option => {
         this.selectOptions.push(

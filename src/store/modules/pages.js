@@ -31,7 +31,7 @@ const getters = {
   // general
   _isLoadPages: state => state.processing,
   _isLoadPage: state => state.processing,
-  _isLoadMeta: state => state.processing,
+  is_LoadMeta: state => state.processing,
   _PagesError: state => state._Error,
   _pagesPaginations: state => state.pagesPaginations,
   _Pages: state => state.Pages,
@@ -245,10 +245,7 @@ const actions = {
       formData.append(`${el.name}[title]`, el.title);
       formData.append(`${el.name}[description]`, el.description);
     });
-    // formData.append("ar[title]", payload.ar_title);
-    // formData.append("ar[description]", payload.ar_description);
-    // formData.append("en[title]", payload.en_title);
-    // formData.append("en[description]", payload.en_description);
+
     axios.post(`${apiUrl}/pages/images/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddPageImage", res.data.data);
@@ -288,10 +285,10 @@ const actions = {
     if (payload.file) {
       formData.append("path", payload.file);
     }
-    formData.append("ar[title]", payload.ar_title);
-    formData.append("ar[description]", payload.ar_description);
-    formData.append("en[title]", payload.en_title);
-    formData.append("en[description]", payload.en_description);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el.name}[description]`, el.description);
+    });
     axios.post(`${apiUrl}/pages/files/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("successAddPageFile", res.data.data);
@@ -327,18 +324,15 @@ const actions = {
 
   createMetaPage({ commit, dispatch }, payload) {
     commit("getmetaStarted");
-
+    console.log("getmetaStarted", payload.info);
     const id = payload.pageId;
+    const formData = new FormData();
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[meta_content]`, el.content);
+    });
+    formData.append(`meta_type_id`, payload.meta_type_id);
     axios
-      .post(
-        `${apiUrl}/pages/metadata/${id}`,
-        {
-          en: { meta_content: payload.en_content },
-          ar: { meta_content: payload.ar_content },
-          meta_type_id: payload.meta_type_id
-        },
-        {}
-      )
+      .post(`${apiUrl}/pages/metadata/${id}`, formData, {})
       .then(res => {
         commit("getmetaEnded");
         return res;
@@ -355,16 +349,15 @@ const actions = {
 
     const metadata_id = payload.metadata_id;
     const id = payload.pageId;
+    const formData = new FormData();
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[meta_content]`, el.content);
+    });
+    formData.append(`meta_type_id`, payload.meta_type_id);
+    formData.append("_method", "PUT");
+
     axios
-      .put(
-        `${apiUrl}/pages/metadata/${id}/${metadata_id}`,
-        {
-          en: { meta_content: payload.en_content },
-          ar: { meta_content: payload.ar_content },
-          meta_type_id: payload.meta_type_id
-        },
-        {}
-      )
+      .put(`${apiUrl}/pages/metadata/${id}/${metadata_id}`, formData, {})
       .then(res => {
         commit("getmetaEnded");
         return res;
@@ -462,10 +455,10 @@ const actions = {
     const id = payload.id;
     const formData = new FormData();
     formData.append("path", payload.path);
-    formData.append("ar[title]", payload.ar_title);
-    formData.append("ar[description]", payload.ar_description);
-    formData.append("en[title]", payload.en_title);
-    formData.append("en[description]", payload.en_description);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el.name}[description]`, el.description);
+    });
     axios
       .post(`${apiUrl}/pages/youtube-videos/${id}`, formData, {})
       .then(res => {
@@ -484,10 +477,10 @@ const actions = {
     const attachment_id = payload.attachment_id;
     const formData = new FormData();
     formData.append("path", payload.path);
-    formData.append("ar[title]", payload.ar_title);
-    formData.append("ar[description]", payload.ar_description);
-    formData.append("en[title]", payload.en_title);
-    formData.append("en[description]", payload.en_description);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el.name}[description]`, el.description);
+    });
     formData.append("_method", "PUT");
 
     axios

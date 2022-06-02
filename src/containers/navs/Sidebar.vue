@@ -221,10 +221,6 @@ export default {
         });
       });
       this._blockCategories = null;
-      console.log(
-        "setMenuItemsssssssssssssssssssssssssss",
-        this._blockCategories
-      );
     },
     changeSelectedParentHasNoSubmenu(parentMenu) {
       this.selectedParentMenu = parentMenu;

@@ -4,28 +4,25 @@ module.exports = {
   description: "Just playing around",
   themeConfig: {
     lastUpdated: "Last Updated",
-    nav: [],
-    sidebar: [
+    nav: [
+      { text: "Home", link: "/" },
+      { text: "Guide", link: "/guide/" },
       {
-        title: "Group 1", // required
-        path: "/guide/", // optional, which should be a absolute path.
-        collapsable: false, // optional, defaults to true
-        sidebarDepth: 1, // optional, defaults to 1
-        children: [
-          "/guide/",
-          "/installation/",
-          "/advanced/",
-          "/installation/",
-          "/views/",
-          "/components/",
-          "/containers/",
-          "/constants/",
-          "/plugins/"
+        text: "Languages",
+        items: [
+          { text: "Chinese", link: "/language/chinese/" },
+          { text: "Japanese", link: "/language/japanese/" }
         ]
       },
+      { text: "External", link: "https://google.com" }
+    ],
+    sidebar: [
       {
-        title: "Group 2",
-        children: ["/installation/", "/advanced/", "/guide/"]
+        title: "Guide", // required
+        path: "/foo/", // optional, which should be a absolute path.
+        collapsable: false, // optional, defaults to true
+        sidebarDepth: 1, // optional, defaults to 1
+        children: ["/installation/", "/components/", "/plugins/", "/test/"]
       }
     ]
   }

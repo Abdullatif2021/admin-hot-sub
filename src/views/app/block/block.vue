@@ -218,39 +218,36 @@
                           >
                             <b-form-group label="Option">
                               <b-form-select
-                                :state="!$v.meta_form.select.$error"
-                                v-model="$v.meta_form.select.$model"
+                                :state="!$v.select_form.select.$error"
+                                v-model="$v.select_form.select.$model"
                                 :options="selectOptions"
                                 plain
                               />
                               <b-form-invalid-feedback
-                                v-if="!$v.meta_form.select.required"
+                                v-if="!$v.select_form.select.required"
                                 >Please select an
                                 option!</b-form-invalid-feedback
                               >
                             </b-form-group>
-                            <b-form-group label="English Content">
-                              <b-textarea
-                                v-model="$v.meta_form.en_detail.$model"
-                                :state="!$v.meta_form.en_detail.$error"
-                              ></b-textarea>
-                              <b-form-invalid-feedback
-                                v-if="!$v.meta_form.en_detail.required"
-                                >Please enter some English
-                                content!</b-form-invalid-feedback
+                            <div
+                              v-for="(lang, index) in $v.meta_form.$each.$iter"
+                              :key="index"
+                            >
+                              <b-form-group
+                                :label="$t(`forms.${lang.name.$model}_content`)"
+                                class="has-float-label mb-4"
                               >
-                            </b-form-group>
-                            <b-form-group label="Arabic Content">
-                              <b-textarea
-                                v-model="$v.meta_form.ar_detail.$model"
-                                :state="!$v.meta_form.ar_detail.$error"
-                              ></b-textarea>
-                              <b-form-invalid-feedback
-                                v-if="!$v.meta_form.ar_detail.required"
-                                >Please enter some Arabic
-                                content!</b-form-invalid-feedback
-                              >
-                            </b-form-group>
+                                <b-form-input
+                                  type="text"
+                                  v-model="lang.content.$model"
+                                  :state="!lang.content.$error"
+                                />
+                                <b-form-invalid-feedback
+                                  v-if="!lang.content.required"
+                                  >Please enter content</b-form-invalid-feedback
+                                >
+                              </b-form-group>
+                            </div>
 
                             <b-button
                               type="submit"
@@ -324,12 +321,7 @@ export default {
       file: null,
       itemForEdit: null,
       selectOptions: [],
-      meta_form: {
-        select: "",
-        en_detail: "",
-        ar_detail: ""
-      },
-
+      meta_form: [],
       activeOptions: [
         "",
         { text: "Active", value: 1 },
@@ -348,6 +340,9 @@ export default {
       perPage: 12,
       search: "",
       from: 0,
+      select_form: {
+        select: ""
+      },
       to: 0,
       total: 0,
       lastPage: 0,
@@ -453,22 +448,24 @@ export default {
   mixins: [validationMixin],
   validations: {
     meta_form: {
-      select: {
-        required
-      },
-      ar_detail: {
-        required
-      },
-      en_detail: {
-        required
+      $each: {
+        content: {
+          required
+        },
+        name: {}
       }
+    },
+    select_form: {
+      select: { required }
     }
   },
 
   created() {
     this.blockId = this.$route.query.id;
     this.getBlock({ id: this.blockId });
-
+    this.langs = localStorage.getItem("Languages");
+    console.log("Languages", this.langs);
+    this.make_collaction(this.langs, this.meta_form);
     console.log("hi from here", this.blockId);
     this.getBlockCategories({
       dir: null,
@@ -477,6 +474,7 @@ export default {
       limit: null,
       page: null
     });
+    this.getBlockMetaTypeList();
   },
   methods: {
     ...mapActions([
@@ -487,10 +485,19 @@ export default {
       "getBlockCategories",
       "updateBlockMeta",
       "createBlockMeta",
-      "getMetaTypeList",
+      "getBlockMetaTypeList",
       "getBlockImageList"
     ]),
-
+    make_collaction(langs, form) {
+      console.log(langs, form);
+      JSON.parse(langs).forEach(el => {
+        form.push({
+          content: "",
+          name: el.name
+        });
+      });
+      console.log("meta_form", this.meta_form);
+    },
     save() {
       console.log(this.blockData);
       this.enable_basic = true;
@@ -514,24 +521,24 @@ export default {
     onValitadeFormSubmit() {
       this.$v.$touch();
       this.$v.meta_form.$touch();
-      if (!this.$v.meta_form.$invalid) {
+      this.$v.select_form.$touch();
+
+      if (!this.$v.meta_form.$invalid && !this.$v.select_form.$invalid) {
         this.enable = true;
         if (!this.edit) {
           this.createBlockMeta({
-            meta_type_id: this.meta_form.select,
+            meta_type_id: this.select_form.select,
             blockId: this.blockId,
             metadata_id: this.itemId,
-            ar_content: this.meta_form.ar_detail,
-            en_content: this.meta_form.en_detail
+            info: this.$v.meta_form.$model
           });
         } else {
           this.updateBlockMeta({
-            meta_type_id: this.meta_form.select,
+            meta_type_id: this.select_form.select,
             metadata_id: this.itemId,
 
             blockId: this.blockId,
-            ar_content: this.meta_form.ar_detail,
-            en_content: this.meta_form.en_detail
+            info: this.$v.meta_form.$model
           });
         }
       }
@@ -595,20 +602,31 @@ export default {
     // meta data
     meta() {
       this.getBlockMetaList({ id: this.blockId });
-      this.getMetaTypeList();
     },
     editAction(f, value, item) {
       if (value == 1) {
         this.edit = true;
         this.itemId = item.id;
-        this.meta_form.select = item.meta_type_id;
-        this.meta_form.en_detail = item.locales.en.meta_content;
-        this.meta_form.ar_detail = item.locales.ar.meta_content;
+        this.select_form.select = item.meta_type_id;
+        this.meta_form.forEach(el => {
+          switch (el.name) {
+            case "en":
+              el.content = item.locales.en.meta_content;
+              break;
+            case "ar":
+              el.content = item.locales.ar.meta_content;
+              break;
+            default:
+              break;
+          }
+        });
       } else {
         this.edit = false;
-        this.meta_form.select = null;
-        this.meta_form.en_detail = null;
-        this.meta_form.ar_detail = null;
+        this.select_form.select = null;
+        this.meta_form.forEach(el => {
+          el.content = null;
+        });
+
         this.deleteBlockMeta({ blockId: this.blockId, metadata_id: item.id });
       }
     }
@@ -647,6 +665,10 @@ export default {
     _blockMetaList(newList, old) {
       this.isLoadBlock = true;
       this.enable = false;
+      this.meta_form.forEach(el => {
+        el.content = null;
+      });
+      this.select_form.select = null;
       this.$refs.vuetable.setData(newList);
     },
 
@@ -654,9 +676,10 @@ export default {
       this.edit = false;
       this.enable = false;
 
-      this.meta_form.select = null;
-      this.meta_form.en_detail = null;
-      this.meta_form.ar_detail = null;
+      this.meta_form.forEach(el => {
+        el.content = null;
+      });
+      this.select_form.select = null;
     },
     _blockCategories(newval, old) {
       newval.forEach(option => {

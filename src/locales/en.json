@@ -480,7 +480,8 @@
   },
   "forms": {
     "languageQuestion": "Do you want to change your prefer language permanently ?",
-
+    "ar_content": "Arabic Content",
+    "en_content": "English Content",
     "edit_block": "Edit block",
     "en_desc": "English Description",
     "ar_desc": "Arabic Description",

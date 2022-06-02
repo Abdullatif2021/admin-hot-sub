@@ -1,23 +1,45 @@
 # Hello VuePress
 
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
+Axios plugin
 
-Current route is: {{ $route.path }}
+# main function
 
-_Italic_, **bold**, and `monospace`
+Responsible for monitoring requests and adding the token to each request while it is being sent.
 
 ```js
-<script>const foo = 'bar'; console.log(foo);</script>
+<script>
+axios.interceptors.request.use(request => {
+  request.headers = {
+    Authorization: "Bearer " + getAccessToken()
+    // locale: getCurrentLanguage()
+  };
+  return request;
+});</script>
 ```
 
-Itemized lists look like:
+# another function
 
-- this one
-- that one
-- the other one
+It is also responsible for monitoring the time period of the access token during the process of calling the backend to replace it through the fresh token in the event of its expiry date and re-installation in the local storage
 
-> Block quotes are
-> written like so.
->
-> They can span multiple paragraphs,
-> if you like.
+```js
+<script>
+axios.interceptors.response.use(
+  response => {
+    return response;
+  },
+  function(error) {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      store.dispatch("refreshToken");
+      setTimeout(() => {
+        axios.request(error.config);
+      }, 1000);
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
+    }
+  }
+);
+</script>
+```

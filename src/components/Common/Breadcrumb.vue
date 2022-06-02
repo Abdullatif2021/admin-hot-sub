@@ -20,7 +20,17 @@ export default {
   },
   methods: {
     getUrl(path, sub, index) {
-      return "/" + path.split(sub)[0] + sub;
+      if (this.$route.path === "/app/blocks/block") {
+        console.log(
+          "sfwefwefwefsefsefsefsefsef",
+          this.$route.path,
+          this.$route.query.id,
+          sub
+        );
+        return "/" + path.split(sub)[0] + sub + "/blockList/" + 1;
+      } else {
+        return "/" + path.split(sub)[0] + sub;
+      }
     }
   },
   mounted() {

@@ -1,44 +1,115 @@
----
-home: true
-heroImage: /hero.png
-heroText: Hero Title
-tagline: Hero subtitle
-actionText: Get Started →
-actionLink: /guide/
-features:
-- title: Simplicity First
-  details: Minimal setup with markdown-centered project structure helps you focus on writing.
-- title: Vue-Powered
-  details: Enjoy the dev experience of Vue + webpack, use Vue components in markdown, and develop custom themes with Vue.
-- title: Performant
-  details: VuePress generates pre-rendered static HTML for each page, and runs as an SPA once a page is loaded.
-footer: MIT Licensed | Copyright © 2018-present Evan You
----
+# components
 
-# Hello VuePress
+A set of components ready to use
 
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
+# Shared
 
-Current route is: {{ $route.path }}
+> add_category  
+> attachment
+> basic_details  
+> category_details  
+> meta_data
 
-*Italic*, **bold**, and `monospace`
+# add_category
+
+shared component between block category and auction category managment helps to add new category for both of them.
+
+check the type of category is to send request according to it.
+
+```js
+<script>if (this._type == "block") </script>
+```
+
+# attachment
+
+responsible for all attachment of the pages and blocks lists
+
+# basic_details
+
+responsible for main details of the page and block
+
+# category_details
+
+shared component between block category and auction category managment helps to manage category details for both of them.
+get props for perent and send it to meta_data
+
+```js
+<script>props: ["_id", "_type"]</script>
+```
+
+check the type of category to get the corresponding data
 
 ```js
 <script>
-  const foo = 'bar';
-  console.log(foo);
-</script>
+    created() {
+    this._type == "block"
+      ? ((this.is_block_category = true),
+        this.getBlockCategory({ id: this._id }),
+        this.getBlockCategoryTypes())
+      : this.getCategory({ id: this._id }),
+      (this.gridForm.select = "just for form submit");
+  },
+    </script>
+
 
 ```
 
-Itemized lists look like:
+# meta_data
 
-  * this one
-  * that one
-  * the other one
+responsible for meta data of auctions category and block category
 
-> Block quotes are
-> written like so.
->
-> They can span multiple paragraphs,
-> if you like.
+check the type of category and the id to update or create the correct meta data
+
+```js
+<script>
+  onValitadeFormSubmit() {
+     this.$v.$touch();
+     this.$v.gridForm.$touch();
+     if (!this.$v.gridForm.$invalid) {
+       this.enable = true;
+       console.log(this.gridForm.id);
+       if (this.gridForm.id) {
+         if (this.type === "block") {
+           this.updateBlockCategoryMeta({
+             meta_type_id: this.gridForm.select,
+             id: this.id,
+             metadata_id: this.gridForm.id,
+             ar_content: this.gridForm.ar_detail,
+             en_content: this.gridForm.en_detail
+           });
+         } else {
+           this.updateCategoryMetadata({
+             meta_type_id: this.gridForm.select,
+             id: this.id,
+             metadata_id: this.gridForm.id,
+             ar_content: this.gridForm.ar_detail,
+             en_content: this.gridForm.en_detail
+           });
+         }
+       } else {
+         if (this.type === "block") {
+           this.createBlockCategoryMetadata({
+             meta_type_id: this.gridForm.select,
+             id: this.id,
+             metadata_id: this.gridForm.id,
+             ar_content: this.gridForm.ar_detail,
+             en_content: this.gridForm.en_detail
+           });
+         } else {
+           this.createCategoryMetadata({
+             meta_type_id: this.gridForm.select,
+             id: this.id,
+             ar_content: this.gridForm.ar_detail,
+             en_content: this.gridForm.en_detail
+           });
+         }
+       }
+     }
+   },
+
+
+
+   </script>
+
+
+```

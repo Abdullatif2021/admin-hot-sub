@@ -29,7 +29,7 @@
                       height="120"
                     />
                   </label>
-
+                  <!-- <div v-for="(lang, index) in langs" :key="index"> -->
                   <label class="form-group has-float-label">
                     <input
                       type="text"
@@ -50,6 +50,7 @@
                     </quill-editor>
                     <span>{{ $t("forms.en_desc") }}</span>
                   </label>
+                  <!-- </div> -->
                   <label class="form-group has-float-label">
                     <input
                       type="text"
@@ -141,7 +142,7 @@
                 title-item-class="w-30 text-center"
               >
                 <b-row>
-                  <template v-if="_isLoadMeta">
+                  <template v-if="is_LoadMeta">
                     <b-colxx xs="12" md="6" class="mb-3">
                       <b-card>
                         <vuetable
@@ -197,34 +198,41 @@
                         >
                           <b-form-group label="Option">
                             <b-form-select
-                              v-model.trim="select"
+                              v-model="$v.select_form.select.$model"
+                              :state="!$v.select_form.select.$error"
                               :options="selectOptions"
                               plain
                             />
-
                             <b-form-invalid-feedback
+                              v-if="!$v.select_form.select.required"
                               >Please select an option!</b-form-invalid-feedback
                             >
                           </b-form-group>
-                          <b-form-group label="English Content">
-                            <b-textarea v-model.trim="en_detail"></b-textarea>
-                            <b-form-invalid-feedback
-                              >Please enter some English
-                              content!</b-form-invalid-feedback
+                          <div
+                            v-for="(lang, index) in $v.meta_form.$each.$iter"
+                            :key="index"
+                          >
+                            <b-form-group
+                              :label="$t(`forms.${lang.name.$model}_content`)"
+                              class="has-float-label mb-4"
                             >
-                          </b-form-group>
-                          <b-form-group label="Arabic Content">
-                            <b-textarea v-model.trim="ar_detail"></b-textarea>
-                            <b-form-invalid-feedback
-                              >Please enter some Arabic
-                              content!</b-form-invalid-feedback
-                            >
-                          </b-form-group>
+                              <b-form-input
+                                type="text"
+                                v-model="lang.content.$model"
+                                :state="!lang.content.$error"
+                              />
+                              <b-form-invalid-feedback
+                                v-if="!lang.content.required"
+                                >Please enter content</b-form-invalid-feedback
+                              >
+                            </b-form-group>
+                          </div>
 
                           <b-button
                             type="submit"
                             variant="primary"
                             class="mt-4"
+                            :disabled="enable"
                             >{{
                               edit ? $t("forms.save") : $t("forms.submit")
                             }}</b-button
@@ -240,10 +248,6 @@
               </b-tab>
             </b-tabs>
           </b-card>
-          <!-- </template>
-          <template v-else>
-            <div class="loading"></div>
-          </template> -->
         </b-colxx>
       </b-row>
     </b-colxx>
@@ -286,7 +290,12 @@ export default {
       itemForEdit: null,
       enable: false,
       selectOptions: [],
-      select: "",
+      langs: null,
+      meta_form: [],
+      select_form: {
+        select: ""
+      },
+      // select: "",
       en_detail: "",
       ar_detail: "",
       // vue table-2
@@ -400,21 +409,25 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    select: {
-      required
+    meta_form: {
+      $each: {
+        content: {
+          required
+        },
+        name: {}
+      }
     },
-    ar_detail: {
-      required
-    },
-    en_detail: {
-      required
+    select_form: {
+      select: { required }
     }
   },
 
   created() {
     this.pageId = this.$route.query.id;
     this.getPage({ id: this.pageId });
-
+    this.langs = localStorage.getItem("Languages");
+    console.log("Languages", this.langs);
+    this.make_collaction(this.langs, this.meta_form);
     console.log("hi from here", this.pageId);
   },
   methods: {
@@ -430,7 +443,16 @@ export default {
       "getPageImageList",
       "deletePageImage"
     ]),
-
+    make_collaction(langs, form) {
+      console.log(langs, form);
+      JSON.parse(langs).forEach(el => {
+        form.push({
+          content: "",
+          name: el.name
+        });
+      });
+      console.log("meta_form", this.meta_form);
+    },
     save() {
       console.log(this.pageData);
       this.enable = true;
@@ -449,34 +471,33 @@ export default {
       });
     },
     attach() {
-      // this.getPageImageList({ id: this.pageId });
+      this.getPageImageList({ id: this.pageId });
     },
 
     onValitadeFormSubmit() {
       this.$v.$touch();
-      console.log(
-        JSON.stringify({
-          select: this.select,
-          en_detail: this.en_detail,
-          ar_detail: this.ar_detail
-        })
-      );
-      if (!this.edit) {
-        this.createMetaPage({
-          meta_type_id: this.select,
-          pageId: this.pageId,
-          metadata_id: this.itemId,
-          ar_content: this.ar_detail,
-          en_content: this.en_detail
-        });
-      } else {
-        this.updateMetaPage({
-          meta_type_id: this.select,
-          pageId: this.pageId,
-          metadata_id: this.itemId,
-          ar_content: this.ar_detail,
-          en_content: this.en_detail
-        });
+      this.$v.meta_form.$touch();
+      this.$v.select_form.$touch();
+
+      console.log(this.$v.meta_form.$model);
+
+      if (!this.$v.meta_form.$invalid && !this.$v.select_form.$invalid) {
+        this.enable = true;
+
+        if (!this.edit) {
+          this.createMetaPage({
+            meta_type_id: this.select_form.select,
+            pageId: this.pageId,
+            info: this.$v.meta_form.$model
+          });
+        } else {
+          this.updateMetaPage({
+            meta_type_id: this.select_form.select,
+            pageId: this.pageId,
+            metadata_id: this.itemId,
+            info: this.$v.meta_form.$model
+          });
+        }
       }
     },
     onEditorBlur(editor) {
@@ -538,14 +559,25 @@ export default {
       if (value == 1) {
         this.edit = true;
         this.itemId = item.id;
-        this.select = item.meta_type_id;
-        this.en_detail = item.locales.en.meta_content;
-        this.ar_detail = item.locales.ar.meta_content;
+        this.select_form.select = item.meta_type_id;
+        this.meta_form.forEach(el => {
+          switch (el.name) {
+            case "en":
+              el.content = item.locales.en.meta_content;
+              break;
+            case "ar":
+              el.content = item.locales.ar.meta_content;
+              break;
+            default:
+              break;
+          }
+        });
       } else {
         this.edit = false;
-        this.select = null;
-        this.en_detail = null;
-        this.ar_detail = null;
+        this.select_form.select = null;
+        this.meta_form.forEach(el => {
+          el.content = null;
+        });
 
         this.deleteMetaPage({ pageId: this.pageId, metadata_id: item.id });
       }
@@ -560,7 +592,7 @@ export default {
       "_updateMetaPage",
       "_pageMetaTypeList",
       "_isLoadPage",
-      "_isLoadMeta",
+      "is_LoadMeta",
       "_updatePageDetailsSuccess"
     ]),
     editor() {
@@ -573,6 +605,13 @@ export default {
       this.enable = false;
     },
     _metaList(newList, old) {
+      this.enable = false;
+
+      this.meta_form.forEach(el => {
+        el.content = null;
+      });
+      this.select_form.select = null;
+
       this.$refs.vuetable.setData(newList);
     },
     _updatePageDetailsSuccess(newOne, old) {
@@ -587,15 +626,13 @@ export default {
     _updateMetaPage(newActions, old) {
       console.log("_updateMetaPage");
       this.edit = false;
-      this.select = null;
-      this.en_detail = null;
-      this.ar_detail = null;
+      this.select_form.select = null;
+      this.meta_form.forEach(el => {
+        el.content = null;
+      });
     },
-    _isLoadMeta(v, o) {
+    is_LoadMeta(v, o) {
       this.edit = false;
-      this.select = null;
-      this.en_detail = null;
-      this.ar_detail = null;
     },
     _pageMetaTypeList(newContent, old) {
       newContent.forEach(option => {

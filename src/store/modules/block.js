@@ -12,7 +12,7 @@ const state = {
   successAddBlockImage: null,
   blockMetaList: null,
   updateMetaBlock: null,
-  metaTypeList: null,
+  blockMetaTypeList: null,
   blockFileList: null,
   successAddBlockFile: null,
   blockVideosList: null,
@@ -59,7 +59,7 @@ const getters = {
   // meta
   _blockMetaList: state => state.blockMetaList,
   _updateMetaBlock: state => state.updateMetaBlock,
-  _blockMetaTypeList: state => state.metaTypeList,
+  _blockMetaTypeList: state => state.blockMetaTypeList,
   // file
   _blockFileList: state => state.blockFileList,
   _sccussCreateBlockFile: state => state.successAddBlockFile,
@@ -127,8 +127,8 @@ const mutations = {
   updateMetaBlockSuccess(state, payload) {
     state.updateMetaBlock = payload.data;
   },
-  getMetaTypeList(state, payload) {
-    state.metaTypeList = payload.data;
+  getBlockMetaTypeList(state, payload) {
+    state.blockMetaTypeList = payload.data;
   },
 
   // files
@@ -382,37 +382,30 @@ const actions = {
 
   createBlockMeta({ commit, dispatch }, payload) {
     const id = payload.blockId;
-    axios
-      .post(
-        `${apiUrl}/blocks/metadata/${id}`,
-        {
-          en: { meta_content: payload.en_content },
-          ar: { meta_content: payload.ar_content },
-          meta_type_id: payload.meta_type_id
-        },
-        {}
-      )
-      .then(res => {
-        if (res.status === 201 || res.status === 200) {
-          dispatch("getBlockMetaList", { id });
-          commit("updateMetaBlockSuccess", res);
-        }
-      });
+    const formData = new FormData();
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[meta_content]`, el.content);
+    });
+    formData.append(`meta_type_id`, payload.meta_type_id);
+    axios.post(`${apiUrl}/blocks/metadata/${id}`, formData, {}).then(res => {
+      if (res.status === 201 || res.status === 200) {
+        dispatch("getBlockMetaList", { id });
+        commit("updateMetaBlockSuccess", res);
+      }
+    });
   },
   updateBlockMeta({ commit, dispatch }, payload) {
     const metadata_id = payload.metadata_id;
     const id = payload.blockId;
     const formData = new FormData();
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[meta_content]`, el.content);
+    });
+    formData.append(`meta_type_id`, payload.meta_type_id);
+    formData.append("_method", "PUT");
+
     axios
-      .put(
-        `${apiUrl}/blocks/metadata/${id}/${metadata_id}`,
-        {
-          en: { meta_content: payload.en_content },
-          ar: { meta_content: payload.ar_content },
-          meta_type_id: payload.meta_type_id
-        },
-        {}
-      )
+      .post(`${apiUrl}/blocks/metadata/${id}/${metadata_id}`, formData, {})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           dispatch("getBlockMetaList", { id });
@@ -427,9 +420,9 @@ const actions = {
       dispatch("getBlockMetaList", { id });
     });
   },
-  getMetaTypeList({ commit }, payload) {
+  getBlockMetaTypeList({ commit }, payload) {
     axios.get(`${apiUrl}/metadata/meta-type`).then(res => {
-      commit("getMetaTypeList", res.data);
+      commit("getBlockMetaTypeList", res.data);
     });
   },
   // ------------------------- meta data --------------------
@@ -501,13 +494,10 @@ const actions = {
   createBlockYoutubeVideo({ commit, dispatch }, payload) {
     const id = payload.id;
     const formData = new FormData();
+    formData.append("path", payload.path);
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
       formData.append(`${el.name}[description]`, el.description);
-    });
-    Object.entries(payload.info).forEach(entry => {
-      const [key, value] = entry;
-      formData.append(key, value);
     });
     axios
       .post(`${apiUrl}/blocks/youtube-videos/${id}`, formData, {})
@@ -525,16 +515,18 @@ const actions = {
   updateBlockYoutubeVideo({ commit, dispatch }, payload) {
     const id = payload.id;
     const attachment_id = payload.attachment_id;
+    console.log("edsessef payloadddddddddddd", payload.info);
     const formData = new FormData();
-
-    Object.entries(payload.info).forEach(entry => {
-      const [key, value] = entry;
-      formData.append(key, value);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el.name}[description]`, el.description);
     });
+    formData.append("_method", "PUT");
+    formData.append("path", payload.path);
     axios
-      .put(
+      .post(
         `${apiUrl}/blocks/youtube-videos/${id}/${attachment_id}`,
-        payload.info,
+        formData,
         {}
       )
       .then(res => {
@@ -667,16 +659,13 @@ const actions = {
   },
   createBlockCategoryMetadata({ commit, dispatch }, payload) {
     const id = payload.id;
+    const formData = new FormData();
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[meta_content]`, el.content);
+    });
+    formData.append(`meta_type_id`, payload.meta_type_id);
     axios
-      .post(
-        `${apiUrl}/blocks/categories/metadata/${id}`,
-        {
-          en: { meta_content: payload.en_content },
-          ar: { meta_content: payload.ar_content },
-          meta_type_id: payload.meta_type_id
-        },
-        {}
-      )
+      .post(`${apiUrl}/blocks/categories/metadata/${id}`, formData, {})
       .then(res => {
         if (res.status === 201 || res.status === 200) {
           dispatch("getBlockCategoryMetadata", { id });
@@ -687,14 +676,16 @@ const actions = {
   updateBlockCategoryMeta({ commit, dispatch }, payload) {
     const metadata_id = payload.metadata_id;
     const id = payload.id;
+    const formData = new FormData();
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[meta_content]`, el.content);
+    });
+    formData.append(`meta_type_id`, payload.meta_type_id);
+    formData.append("_method", "PUT");
     axios
-      .put(
+      .post(
         `${apiUrl}/blocks/categories/metadata/${id}/${metadata_id}`,
-        {
-          en: { meta_content: payload.en_content },
-          ar: { meta_content: payload.ar_content },
-          meta_type_id: payload.meta_type_id
-        },
+        formData,
         {}
       )
       .then(res => {

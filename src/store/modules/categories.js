@@ -16,7 +16,8 @@ const state = {
   successUpdateCategory: null,
   Categorymetadata: null,
   successUpdateCategoryMeta: null,
-  create_category_meta_success: null
+  create_category_meta_success: null,
+  categoryMetaTypeList: null
 };
 
 const getters = {
@@ -30,6 +31,7 @@ const getters = {
   _successDeleteCategory: state => state.successDeleteCategory,
   _successActiveCategory: state => state.successActiveCategory,
   _successUpdateCategory: state => state.successUpdateCategory,
+  _categoryMetaTypeList: state => state.categoryMetaTypeList,
   // block category metaData
   _CategoryMeta: state => state.Categorymetadata,
   _isLoadCategoryMeta: state => state.processing,
@@ -79,6 +81,9 @@ const mutations = {
   },
   delete__category_meta_success(state, payload) {
     state.delete_category_meta_success = payload;
+  },
+  getCategoryMetaTypeList(state, payload) {
+    state.categoryMetaTypeList = payload.data;
   }
 };
 
@@ -193,16 +198,13 @@ const actions = {
   },
   createCategoryMetadata({ commit, dispatch }, payload) {
     const id = payload.id;
+    const formData = new FormData();
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[meta_content]`, el.content);
+    });
+    formData.append(`meta_type_id`, payload.meta_type_id);
     axios
-      .post(
-        `${apiUrl}/categories/metadata/${id}`,
-        {
-          en: { meta_content: payload.en_content },
-          ar: { meta_content: payload.ar_content },
-          meta_type_id: payload.meta_type_id
-        },
-        {}
-      )
+      .post(`${apiUrl}/categories/metadata/${id}`, formData, {})
       .then(res => {
         if (res.status === 201 || res.status === 200) {
           dispatch("getCategoryMetadata", { id });
@@ -213,16 +215,14 @@ const actions = {
   updateCategoryMetadata({ commit, dispatch }, payload) {
     const metadata_id = payload.metadata_id;
     const id = payload.id;
+    const formData = new FormData();
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[meta_content]`, el.content);
+    });
+    formData.append(`meta_type_id`, payload.meta_type_id);
+    formData.append("_method", "PUT");
     axios
-      .put(
-        `${apiUrl}/categories/metadata/${id}/${metadata_id}`,
-        {
-          en: { meta_content: payload.en_content },
-          ar: { meta_content: payload.ar_content },
-          meta_type_id: payload.meta_type_id
-        },
-        {}
-      )
+      .post(`${apiUrl}/categories/metadata/${id}/${metadata_id}`, formData, {})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           dispatch("getCategoryMetadata", { id });
@@ -238,6 +238,11 @@ const actions = {
       .then(res => {
         dispatch("getCategoryMetadata", { id });
       });
+  },
+  getCategoryMetaTypeList({ commit }, payload) {
+    axios.get(`${apiUrl}/metadata/meta-type`).then(res => {
+      commit("getCategoryMetaTypeList", res.data);
+    });
   }
 };
 

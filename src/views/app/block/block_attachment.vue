@@ -18,7 +18,10 @@
               />
             </b-colxx>
           </div>
-          <add-new-modal @AddNewImage="createImage"></add-new-modal>
+          <add-new-modal
+            :enable="enable"
+            @AddNewImage="createImage"
+          ></add-new-modal>
         </b-tab>
         <b-tab @click="openFile()" title="Files">
           <b-row>
@@ -108,9 +111,13 @@
                       <span>File</span>
                     </label>
 
-                    <b-button type="submit" variant="primary" class="mt-4">{{
-                      $t("forms.submit")
-                    }}</b-button>
+                    <b-button
+                      :disabled="enable"
+                      type="submit"
+                      variant="primary"
+                      class="mt-4"
+                      >{{ $t("forms.submit") }}</b-button
+                    >
                   </b-form>
                 </b-card>
               </b-colxx>
@@ -249,11 +256,11 @@
                     >
                       <b-form-input
                         type="text"
-                        v-model="$v.youtube_form.path.$model"
-                        :state="!$v.youtube_form.path.$error"
+                        v-model="$v.path_form.path.$model"
+                        :state="!$v.path_form.path.$error"
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.youtube_form.path.required"
+                        v-if="!$v.path_form.path.required"
                         >Please enter Youtube Link</b-form-invalid-feedback
                       >
                     </b-form-group>
@@ -314,9 +321,15 @@ export default {
       meta_type_id: null,
       textarea: null,
       thumbs: null,
+      youtube_form: [],
+      path_form: {
+        path: ""
+      },
       images: null,
       enable_tube: false,
       file: null,
+      enable: false,
+      file_form: [],
       itemForEdit: null,
       selectOptions: [],
       // vue table-2
@@ -446,13 +459,6 @@ export default {
         { name: "UPDATE", value: 2 },
         { name: "DELETE", value: 3 }
       ],
-      youtube_form: {
-        en_title: "",
-        en_description: "",
-        ar_title: "",
-        ar_description: "",
-        path: ""
-      },
 
       // vue table-2
       //   files
@@ -489,13 +495,9 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    file_form: {
-      $each: {
-        title: {
-          required
-        },
-        description: {},
-        name: {}
+    path_form: {
+      path: {
+        required
       }
     },
     file_form: {
@@ -513,10 +515,7 @@ export default {
           required
         },
         description: {},
-        name: {},
-        path: {
-          required
-        }
+        name: {}
       }
     }
     //   files
@@ -525,7 +524,9 @@ export default {
     console.log(this.blockId);
     this.getBlockImageList({ id: this.blockId });
     this.langs = localStorage.getItem("Languages");
-    this.make_collaction(this.langs);
+    // this.make_collaction(this.langs);
+    this.make_collaction(this.langs, this.youtube_form);
+    this.make_collaction(this.langs, this.file_form);
   },
   methods: {
     ...mapActions([
@@ -544,24 +545,25 @@ export default {
       "updateBlockYoutubeVideo",
       "deleteBlockYoutubeVideo"
     ]),
-    make_collaction(langs) {
+    make_collaction(langs, form) {
       JSON.parse(langs).forEach(el => {
-        this.file_form.push({
+        form.push({
           title: "",
           description: "",
           name: el.name
         });
-        console.log(this.file_form);
+        console.log(this.form);
       });
     },
     // .....................upload new image ......................
 
     createImage(value) {
       console.log(value);
+      this.enable = true;
       this.createBlockImage({
         info: value.info,
         image: value.image ? value.image : null,
-        id: this.pageId
+        id: this.blockId
       });
     },
     // .....................upload new video ......................
@@ -617,12 +619,23 @@ export default {
           {
             this.attachment_id = item.id;
             this.edit = true;
-            console.log("update");
-            this.youtube_form.ar_title = item.locales.ar.title;
-            this.youtube_form.ar_description = item.locales.ar.description;
-            this.youtube_form.en_title = item.locales.en.title;
-            this.youtube_form.en_description = item.locales.en.description;
-            this.youtube_form.path = item.path;
+            this.youtube_form.forEach(el => {
+              switch (el.name) {
+                case "en":
+                  el.title = item.locales.en.title;
+                  el.description = item.locales.en.description;
+
+                  break;
+                case "ar":
+                  el.title = item.locales.ar.title;
+                  el.description = item.locales.ar.description;
+                  break;
+                default:
+                  break;
+              }
+            });
+
+            this.path_form.path = item.path;
           }
           break;
         case 3:
@@ -652,6 +665,7 @@ export default {
       this.$v.$touch();
       this.$v.file_form.$touch();
       if (!this.$v.file_form.$invalid) {
+        this.enable = true;
         this.createBlockFile({
           info: this.$v.file_form.$model,
           file: this.file ? this.file[0] : null,
@@ -659,31 +673,24 @@ export default {
         });
       }
     },
+
     onValitadeYoutubeFormSubmit() {
       this.$v.$touch();
       this.$v.youtube_form.$touch();
-      if (!this.$v.youtube_form.$invalid) {
+      this.$v.path_form.$touch();
+      if (!this.$v.youtube_form.$invalid && !this.$v.path_form.$invalid) {
         this.enable_tube = true;
         if (!this.edit) {
           this.createBlockYoutubeVideo({
-            info: {
-              "ar[title]": this.youtube_form.ar_title,
-              "ar[description]": this.youtube_form.ar_description,
-              "en[title]": this.youtube_form.en_title,
-              "en[description]": this.youtube_form.en_description,
-              path: this.youtube_form.path
-            },
+            info: this.$v.youtube_form.$model,
+            path: this.path_form.path,
             id: this.blockId
           });
         } else {
+          console.log("erfwefwe");
           this.updateBlockYoutubeVideo({
-            info: {
-              "ar[title]": this.youtube_form.ar_title,
-              "ar[description]": this.youtube_form.ar_description,
-              "en[title]": this.youtube_form.en_title,
-              "en[description]": this.youtube_form.en_description,
-              path: this.youtube_form.path
-            },
+            info: this.$v.youtube_form.$model,
+            path: this.path_form.path,
             attachment_id: this.attachment_id,
             id: this.blockId
           });
@@ -753,8 +760,11 @@ export default {
     ])
   },
   watch: {
-    _blockImageList: function(val) {},
+    _blockImageList: function(val) {
+      this.enable = false;
+    },
     _blockFileList(newData, old) {
+      this.enable = false;
       this.$refs.vuetable.setData(newData);
     },
 
@@ -764,20 +774,27 @@ export default {
     },
     _blockYoutubeVideosList(newData, old) {
       this.$refs.youtubeVideo_vuetable.setData(newData);
-
+      this.youtube_form.forEach(el => {
+        console.log(el, "aedfsedfsefsefsef");
+        el.title = null;
+        el.description = null;
+      });
+      this.path_form.path = null;
       this.edit = false;
     },
     _successAddBlockYoutubeVideo: function(val) {
       this.enable_tube = false;
-      this.youtube_form.ar_title = null;
-      this.youtube_form.ar_description = null;
-      this.youtube_form.en_title = null;
-      this.youtube_form.en_description = null;
-      this.youtube_form.path = null;
+      this.youtube_form.forEach(el => {
+        console.log(el, "aedfsedfsefsefsef");
+        el.title = null;
+        el.description = null;
+      });
+      this.path_form.path = null;
+      this.path_form.path = null;
     },
     _BwrongYoutubeurl: function(val) {
       this.enable_tube = false;
-      this.youtube_form.path = null;
+      this.path_form.path = null;
 
       this.$notify(
         "error",
@@ -787,12 +804,11 @@ export default {
       );
     },
     _sccussCreateBlockFile: function(val) {
-      this.form.en_title = null;
-      this.form.ar_title = null;
-      this.form.en_description = null;
-      this.form.ar_description = null;
+      this.file_form.forEach(el => {
+        (el.title = null), (el.description = null);
+      });
       this.file = null;
-      this.$refs.myVueDropzone.removeFile();
+      this.enable = false;
     }
   }
 };

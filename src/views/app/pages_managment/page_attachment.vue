@@ -64,62 +64,38 @@
                     @submit.prevent="onValitadeFormSubmit()"
                     class="av-tooltip tooltip-label-right"
                   >
-                    <b-form-group
-                      :label="$t('pages.en_title')"
-                      class="has-float-label mb-4"
+                    <div
+                      v-for="(lang, index) in $v.file_form.$each.$iter"
+                      :key="index"
                     >
-                      <b-form-input
-                        type="text"
-                        v-model="$v.form.en_title.$model"
-                        :state="!$v.form.en_title.$error"
-                      />
-                      <b-form-invalid-feedback v-if="!$v.form.en_title.required"
-                        >Please enter English title</b-form-invalid-feedback
+                      <b-form-group
+                        :label="$t(`pages.${lang.name.$model}_title`)"
+                        class="has-float-label mb-4"
                       >
-                    </b-form-group>
-                    <b-form-group
-                      :label="$t('pages.en_desc')"
-                      class="has-float-label mb-4"
-                    >
-                      <b-form-input
-                        type="text"
-                        v-model="$v.form.en_description.$model"
-                        :state="!$v.form.en_description.$error"
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.form.en_description.required"
-                        >Please enter English
-                        description</b-form-invalid-feedback
+                        <b-form-input
+                          type="text"
+                          v-model="lang.title.$model"
+                          :state="!lang.title.$error"
+                        />
+                        <b-form-invalid-feedback v-if="!lang.title.required"
+                          >Please enter title</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                      <b-form-group
+                        :label="$t(`pages.${lang.name.$model}_desc`)"
+                        class="has-float-label mb-4"
                       >
-                    </b-form-group>
-                    <b-form-group
-                      :label="$t('pages.ar_title')"
-                      class="has-float-label mb-4"
-                    >
-                      <b-form-input
-                        type="text"
-                        v-model="$v.form.ar_title.$model"
-                        :state="!$v.form.ar_title.$error"
-                      />
-                      <b-form-invalid-feedback v-if="!$v.form.ar_title.required"
-                        >Please enter Arabic title</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                    <b-form-group
-                      :label="$t('pages.ar_desc')"
-                      class="has-float-label mb-4"
-                    >
-                      <b-form-input
-                        type="text"
-                        v-model="$v.form.ar_description.$model"
-                        :state="!$v.form.ar_description.$error"
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.form.ar_description.required"
-                        >Please enter Arabic
-                        description</b-form-invalid-feedback
-                      >
-                    </b-form-group>
+                        <b-form-input
+                          type="text"
+                          v-model="lang.description.$model"
+                          :state="!lang.description.$error"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!lang.description.required"
+                          >Please enter description</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </div>
                     <label class="form-group has-float-label">
                       <b-colxx xxs="12" style="padding: 0px;">
                         <vue-dropzone
@@ -136,7 +112,7 @@
                     </label>
 
                     <b-button
-                      :disabled="!enable"
+                      :disabled="enable"
                       type="submit"
                       variant="primary"
                       class="mt-4"
@@ -242,81 +218,56 @@
                     @submit.prevent="onValitadeYoutubeFormSubmit()"
                     class="av-tooltip tooltip-label-right"
                   >
-                    <b-form-group
-                      :label="$t('forms.en_title')"
-                      class="has-float-label mb-4"
+                    <div
+                      v-for="(lang, index) in $v.youtube_form.$each.$iter"
+                      :key="index"
                     >
-                      <b-form-input
-                        type="text"
-                        v-model="$v.youtube_form.en_title.$model"
-                        :state="!$v.youtube_form.en_title.$error"
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.youtube_form.en_title.required"
-                        >Please enter English title</b-form-invalid-feedback
+                      <b-form-group
+                        :label="$t(`pages.${lang.name.$model}_title`)"
+                        class="has-float-label mb-4"
                       >
-                    </b-form-group>
-                    <b-form-group
-                      :label="$t('forms.en_desc')"
-                      class="has-float-label mb-4"
-                    >
-                      <b-form-input
-                        type="text"
-                        v-model="$v.youtube_form.en_description.$model"
-                        :state="!$v.youtube_form.en_description.$error"
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.youtube_form.en_description.required"
-                        >Please enter English
-                        description</b-form-invalid-feedback
+                        <b-form-input
+                          type="text"
+                          v-model="lang.title.$model"
+                          :state="!lang.title.$error"
+                        />
+                        <b-form-invalid-feedback v-if="!lang.title.required"
+                          >Please enter title</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                      <b-form-group
+                        :label="$t(`pages.${lang.name.$model}_desc`)"
+                        class="has-float-label mb-4"
                       >
-                    </b-form-group>
-                    <b-form-group
-                      :label="$t('forms.en_title')"
-                      class="has-float-label mb-4"
-                    >
-                      <b-form-input
-                        type="text"
-                        v-model="$v.youtube_form.ar_title.$model"
-                        :state="!$v.youtube_form.ar_title.$error"
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.youtube_form.ar_title.required"
-                        >Please enter Arabic title</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                    <b-form-group
-                      :label="$t('forms.ar_desc')"
-                      class="has-float-label mb-4"
-                    >
-                      <b-form-input
-                        type="text"
-                        v-model="$v.youtube_form.ar_description.$model"
-                        :state="!$v.youtube_form.ar_description.$error"
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.youtube_form.ar_description.required"
-                        >Please enter Arabic
-                        description</b-form-invalid-feedback
-                      >
-                    </b-form-group>
+                        <b-form-input
+                          type="text"
+                          v-model="lang.description.$model"
+                          :state="!lang.description.$error"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!lang.description.required"
+                          >Please enter description</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </div>
+
                     <b-form-group
                       :label="$t('block.path')"
                       class="has-float-label mb-4"
                     >
                       <b-form-input
                         type="text"
-                        v-model="$v.youtube_form.path.$model"
-                        :state="!$v.youtube_form.path.$error"
+                        v-model="$v.path_form.path.$model"
+                        :state="!$v.path_form.path.$error"
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.youtube_form.path.required"
+                        v-if="!$v.path_form.path.required"
                         >Please enter Youtube Link</b-form-invalid-feedback
                       >
                     </b-form-group>
 
                     <b-button
-                      :disabled="!enable"
+                      :disabled="enable"
                       type="submit"
                       variant="primary"
                       class="mt-4"
@@ -368,6 +319,9 @@ export default {
     return {
       pageData: null,
       _data: null,
+      image_form: [],
+      file_form: [],
+      youtube_form: [],
       enable: false,
       itemId: null,
       meta_type_id: null,
@@ -387,6 +341,9 @@ export default {
       perPage: 12,
       search: "",
       from: 0,
+      path_form: {
+        path: ""
+      },
       to: 0,
       total: 0,
       lastPage: 0,
@@ -426,13 +383,6 @@ export default {
         { name: "UPDATE", value: 2 },
         { name: "DELETE", value: 3 }
       ],
-      youtube_form: {
-        en_title: "",
-        en_description: "",
-        ar_title: "",
-        ar_description: "",
-        path: ""
-      },
 
       fields: [
         {
@@ -511,12 +461,7 @@ export default {
       // vue table-2
       //   files
       file: null,
-      form: {
-        ar_title: "",
-        ar_description: "",
-        en_title: "",
-        en_description: ""
-      },
+
       // vue dropezone
       dropzoneOptions: {
         url: "https://lilacmarketingevents.com",
@@ -543,42 +488,35 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    form: {
-      en_title: {
-        required
-      },
-      en_description: {
-        required
-      },
-      ar_title: {
-        required
-      },
-      ar_description: {
-        required
+    file_form: {
+      $each: {
+        title: {
+          required
+        },
+        description: {},
+        name: {}
       }
     },
     youtube_form: {
-      en_title: {
-        required
-      },
-      en_description: {
-        required
-      },
-      ar_title: {
-        required
-      },
-      ar_description: {
-        required
-      },
-      path: {
-        required
+      $each: {
+        title: {
+          required
+        },
+        description: {},
+        name: {}
       }
+    },
+    path_form: {
+      path: { required }
     }
     //   files
   },
   created() {
     console.log(this.pageId);
     this.getPageImageList({ id: this.pageId });
+    this.langs = localStorage.getItem("Languages");
+    this.make_collaction(this.langs, this.file_form);
+    this.make_collaction(this.langs, this.youtube_form);
   },
   methods: {
     ...mapActions([
@@ -596,10 +534,20 @@ export default {
       "updatePageYoutubeVideo",
       "deletePageYoutubeVideo"
     ]),
+    make_collaction(langs, form) {
+      JSON.parse(langs).forEach(el => {
+        form.push({
+          title: "",
+          description: "",
+          name: el.name
+        });
+      });
+    },
     // .....................upload new image ......................
 
     createImage(value) {
       console.log(value);
+      this.enable = true;
       this.createPageImage({
         info: value.info,
         image: value.image ? value.image : null,
@@ -622,6 +570,7 @@ export default {
     // -------------------------------files---------------------------
     openFile() {
       this.getPageFileList({ id: this.pageId });
+
       this.isLoadAttach = false;
     },
     file_Action(value, item) {
@@ -651,18 +600,13 @@ export default {
       this.$refs[refname].hide();
     },
     onValitadeFormSubmit() {
-      // window.top.close();
-
       this.$v.$touch();
-      this.$v.form.$touch();
-      if (!this.$v.form.$invalid) {
-        this.enable = false;
-
+      this.$v.file_form.$touch();
+      if (!this.$v.file_form.$invalid) {
+        console.log(this.$v.file_form.$model);
+        this.enable = true;
         this.createPageFile({
-          en_title: this.form.en_title,
-          en_description: this.form.en_description,
-          ar_title: this.form.ar_title,
-          ar_description: this.form.ar_description,
+          info: this.$v.file_form.$model,
           file: this.file ? this.file[0] : null,
           id: this.pageId
         });
@@ -723,25 +667,21 @@ export default {
     onValitadeYoutubeFormSubmit() {
       this.$v.$touch();
       this.$v.youtube_form.$touch();
-      if (!this.$v.youtube_form.$invalid) {
-        this.enable = false;
+      this.$v.path_form.$touch();
+      if (!this.$v.youtube_form.$invalid && !this.$v.path_form.$invalid) {
+        console.log("this.$v.image_form.$invalid");
+        this.enable = true;
 
         if (!this.edit) {
           this.createPageYoutubeVideo({
-            ar_title: this.youtube_form.ar_title,
-            ar_description: this.youtube_form.ar_description,
-            en_title: this.youtube_form.en_title,
-            en_description: this.youtube_form.en_description,
-            path: this.youtube_form.path,
+            info: this.$v.youtube_form.$model,
+            path: this.path_form.path,
             id: this.pageId
           });
         } else {
           this.updatePageYoutubeVideo({
-            ar_title: this.youtube_form.ar_title,
-            ar_description: this.youtube_form.ar_description,
-            en_title: this.youtube_form.en_title,
-            en_description: this.youtube_form.en_description,
-            path: this.youtube_form.path,
+            info: this.$v.youtube_form.$model,
+            path: this.path_form.path,
             attachment_id: this.attachment_id,
             id: this.pageId
           });
@@ -759,19 +699,30 @@ export default {
           {
             this.attachment_id = item.id;
             this.edit = true;
-            console.log("update");
-            this.youtube_form.ar_title = item.locales.ar.title;
-            this.youtube_form.ar_description = item.locales.ar.description;
-            this.youtube_form.en_title = item.locales.en.title;
-            this.youtube_form.en_description = item.locales.en.description;
-            this.youtube_form.path = item.path;
+            this.youtube_form.forEach(el => {
+              switch (el.name) {
+                case "en":
+                  el.title = item.locales.en.title;
+                  el.description = item.locales.en.description;
+
+                  break;
+                case "ar":
+                  el.title = item.locales.ar.title;
+                  el.description = item.locales.ar.description;
+                  break;
+                default:
+                  break;
+              }
+            });
+
+            this.path_form.path = item.path;
           }
           break;
         case 3:
           {
             console.log("delete");
             this.deletePageYoutubeVideo({
-              blockId: this.blockId,
+              pageId: this.pageId,
               youtube_id: item.id
             });
           }
@@ -793,24 +744,23 @@ export default {
   watch: {
     _pageImageList: function(val) {
       console.log("_pageImageList", val);
-      this.enable = true;
+      this.enable = false;
     },
     _pageFileList(newData, old) {
       this.isLoadAttach = true;
-      this.enable = true;
-
+      this.enable = false;
       this.$refs.vuetable.setData(newData);
     },
     _pageVideosList(newData, old) {
       this.isLoadAttach = true;
-      this.enable = true;
+      this.enable = false;
 
       console.log("i am here");
       this.$refs.video_vuetable.setData(newData);
     },
     _wrongYoutubeurl(newData, old) {
-      this.enable = true;
-      this.youtube_form.path = null;
+      this.enable = false;
+      this.path_form.path = null;
 
       this.$notify(
         "error",
@@ -820,22 +770,23 @@ export default {
       );
     },
     _sccussCreateFile(newData, old) {
-      this.enable = true;
-      this.form.en_title = null;
-      this.form.ar_title = null;
-      this.form.en_description = null;
-      this.form.ar_description = null;
+      this.enable = false;
+      this.file_form.forEach(el => {
+        (el.title = null), (el.description = null);
+      });
       this.file = null;
     },
     _pageYoutubeVideosList(newData, old) {
       this.isLoadAttach = true;
-      this.enable = true;
+      this.enable = false;
       this.$refs.youtubeVideo_vuetable.setData(newData);
-      this.youtube_form.ar_title = null;
-      this.youtube_form.ar_description = null;
-      this.youtube_form.en_title = null;
-      this.youtube_form.en_description = null;
-      this.youtube_form.path = null;
+
+      this.youtube_form.forEach(el => {
+        console.log(el, "aedfsedfsefsefsef");
+        el.title = null;
+        el.description = null;
+      });
+      this.path_form.path = null;
       this.edit = false;
     }
   }
