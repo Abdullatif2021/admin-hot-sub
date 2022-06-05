@@ -24,6 +24,7 @@ const state = {
   UpdateBlockCategory: null,
   processing: false,
   Block_Categories: null,
+  createBlockSuccess: null,
   blockCategory: null,
   create_block_category_success: null,
   blockCategorymetadata: null,
@@ -53,6 +54,7 @@ const getters = {
   _blockCategory: state => state.blockCategory,
   _create_block_category_success: state => state.create_block_category_success,
   _blockCategoryTypes: state => state.blockCategoryTypes,
+  _createBlockSuccess: state => state.createBlockSuccess,
   // images
   _blockImageList: state => state.blockImageList,
   _successAddBlockImage: state => state.successAddBlockImage,
@@ -173,6 +175,9 @@ const mutations = {
   create_block_category_success(state, payload) {
     state.create_block_category_success = payload;
   },
+  createBlockSuccess(state, payload) {
+    state.createBlockSuccess = payload;
+  },
   getBlockCategoryTypes(state, payload) {
     state.blockCategoryTypes = payload;
   },
@@ -242,6 +247,32 @@ const actions = {
         console.log("hi from catch", error);
         commit("getBlockError", error);
       });
+  },
+  createBlock({ commit, dispatch }, payload) {
+    console.log(payload);
+    const formData = new FormData();
+    payload.info.forEach(el => {
+      formData.append(`${el._name}[name]`, el.name);
+      formData.append(`${el._name}[description]`, el.description);
+    });
+    Object.entries(payload.data).forEach(entry => {
+      const [key, value] = entry;
+      formData.append(key, value);
+    });
+    // formData.append("url", payload.url);
+    // formData.append("post_date", payload.post_date);
+    // block_category_id
+    if (payload.file !== null) {
+      formData.append("file", payload.file);
+    }
+    if (payload.image !== null) {
+      formData.append("image", payload.image);
+    }
+    axios.post(`${apiUrl}/blocks`, formData, {}).then(res => {
+      if (res.status === 201) {
+        commit("createBlockSuccess", res);
+      }
+    });
   },
   updateBlockData({ commit, dispatch }, payload) {
     console.log(payload.data.post_date);
@@ -599,10 +630,11 @@ const actions = {
   },
   createBlockCategory: async ({ commit }, payload) => {
     const formData = new FormData();
-    Object.entries(payload.info).forEach(entry => {
-      const [key, value] = entry;
-      formData.append(key, value);
+    payload.info.forEach(el => {
+      formData.append(`${el._name}[name]`, el.name);
+      formData.append(`${el._name}[description]`, el.description);
     });
+    formData.append(`type`, payload.type);
     if (payload.image !== null) {
       formData.append("image", payload.image);
     }

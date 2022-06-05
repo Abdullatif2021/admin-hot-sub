@@ -26,6 +26,7 @@
   },
   "menu": {
     "home": "Home",
+    "add-block": "Add block",
     "customers": "Customers",
     "blocks-category": "Blocks Category",
     "blockCategories": "Block Categories",
@@ -485,6 +486,7 @@
     "edit_block": "Edit block",
     "en_desc": "English Description",
     "ar_desc": "Arabic Description",
+    "create_block": "Create block",
     "type": "Type",
     "dob": "Date of Birth",
     "createCate": "Create Category",

@@ -3,74 +3,72 @@
     <b-card class="mb-4">
       <template v-if="_isLoadBlock">
         <b-form @submit.prevent="onGridFormSubmit">
-          <b-row>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.en_title')">
+          <div
+            v-for="(lang, index) in $v.category_form.$each.$iter"
+            :key="index"
+          >
+            <b-colxx sm="12">
+              <b-form-group
+                class="has-float-label mb-4"
+                :label="$t(`forms.${lang._name.$model}_name`)"
+              >
                 <b-form-input
                   type="text"
-                  :state="!$v.gridForm.en_name.$error"
-                  v-model="$v.gridForm.en_name.$model"
+                  :state="!lang.name.$error"
+                  v-model="lang.name.$model"
                 />
-                <b-form-invalid-feedback v-if="!$v.gridForm.en_name.required"
-                  >Please enter Arabic title</b-form-invalid-feedback
+                <b-form-invalid-feedback v-if="!lang.name.required"
+                  >Please enter title</b-form-invalid-feedback
                 >
               </b-form-group>
             </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.ar_title')">
+            <b-colxx sm="12">
+              <b-form-group
+                class="has-float-label mb-4"
+                :label="$t(`forms.${lang._name.$model}_desc`)"
+              >
                 <b-form-input
                   type="text"
-                  :state="!$v.gridForm.ar_name.$error"
-                  v-model="$v.gridForm.ar_name.$model"
+                  :state="!lang.description.$error"
+                  v-model="lang.description.$model"
                 />
-                <b-form-invalid-feedback v-if="!$v.gridForm.ar_name.required"
-                  >Please enter English title</b-form-invalid-feedback
+                <b-form-invalid-feedback v-if="!lang.description.required"
+                  >Please enter description</b-form-invalid-feedback
                 >
               </b-form-group>
             </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.en_desc')">
-                <b-form-input
-                  type="text"
-                  v-model="$v.gridForm.en_description.$model"
-                />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group :label="$t('forms.ar_desc')">
-                <b-form-input
-                  type="text"
-                  :state="!$v.gridForm.ar_description.$error"
-                  v-model="$v.gridForm.ar_description.$model"
-                />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx v-if="is_block_category" sm="12">
-              <b-form-group :label="$t('forms.type')">
-                <b-form-select
-                  :state="!$v.gridForm.select.$error"
-                  v-model="$v.gridForm.select.$model"
-                  :options="typeOptions"
-                  plain
-                />
-                <b-form-invalid-feedback v-if="!$v.gridForm.select.required"
-                  >Please select category type</b-form-invalid-feedback
-                >
-              </b-form-group>
-            </b-colxx>
-            <b-colxx xxs="12">
-              <b-form-group :label="$t('forms.image')">
-                <vue-dropzone
-                  ref="myVueDropzone"
-                  id="dropzone"
-                  :options="dropzoneOptions"
-                  @vdropzone-files-added="fileAdded"
-                  @vdropzone-sending-multiple="sendMessage"
-                  @vdropzone-removed-file="fileRemoved"
-                ></vue-dropzone>
-              </b-form-group>
-            </b-colxx>
-          </b-row>
+          </div>
+          <b-colxx v-if="is_block_category" sm="12">
+            <b-form-group
+              class="has-float-label mb-4"
+              :label="$t('forms.type')"
+            >
+              <b-form-select
+                :state="!$v.gridForm.select.$error"
+                v-model="$v.gridForm.select.$model"
+                :options="typeOptions"
+                plain
+              />
+              <b-form-invalid-feedback v-if="!$v.gridForm.select.required"
+                >Please select category type</b-form-invalid-feedback
+              >
+            </b-form-group>
+          </b-colxx>
+          <b-colxx xxs="12">
+            <b-form-group
+              class="has-float-label mb-4"
+              :label="$t('forms.image')"
+            >
+              <vue-dropzone
+                ref="myVueDropzone"
+                id="dropzone"
+                :options="dropzoneOptions"
+                @vdropzone-files-added="fileAdded"
+                @vdropzone-sending-multiple="sendMessage"
+                @vdropzone-removed-file="fileRemoved"
+              ></vue-dropzone>
+            </b-form-group>
+          </b-colxx>
           <b-button
             :disabled="enable"
             type="submit"
@@ -107,11 +105,8 @@ export default {
       file: null,
       enable: false,
       typeOptions: [],
+      category_form: [],
       gridForm: {
-        ar_name: "",
-        en_name: "",
-        en_description: "",
-        ar_description: "",
         select: ""
       },
       dropzoneOptions: {
@@ -130,15 +125,16 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
+    category_form: {
+      $each: {
+        name: {
+          required
+        },
+        description: {},
+        _name: {}
+      }
+    },
     gridForm: {
-      en_name: {
-        required
-      },
-      ar_name: {
-        required
-      },
-      en_description: {},
-      ar_description: {},
       select: {
         required
       }
@@ -148,6 +144,8 @@ export default {
     this._type == "block"
       ? ((this.is_block_category = true), this.getBlockCategoryTypes())
       : (this.gridForm.select = "just for form submit");
+    this.langs = localStorage.getItem("Languages");
+    this.make_collaction(this.langs, this.category_form);
   },
   methods: {
     ...mapActions([
@@ -155,30 +153,30 @@ export default {
       "createCategory",
       "getBlockCategoryTypes"
     ]),
+    make_collaction(langs, form) {
+      JSON.parse(langs).forEach(el => {
+        form.push({
+          name: "",
+          description: "",
+          _name: el.name
+        });
+      });
+    },
     onGridFormSubmit() {
       this.$v.$touch();
       this.$v.gridForm.$touch();
-      if (!this.$v.gridForm.$invalid) {
+      this.$v.category_form.$touch();
+      if (!this.$v.gridForm.$invalid && !this.$v.category_form.$invalid) {
         this.enable = true;
         if (this._type == "block") {
           this.createBlockCategory({
-            info: {
-              "ar[name]": this.gridForm.ar_name,
-              "ar[description]": this.gridForm.ar_description,
-              "en[name]": this.gridForm.en_name,
-              "en[description]": this.gridForm.en_description,
-              type: this.gridForm.select
-            },
+            info: this.$v.category_form.$model,
+            type: this.gridForm.select,
             image: this.file ? this.file[0] : null
           });
         } else {
           this.createCategory({
-            info: {
-              "ar[name]": this.gridForm.ar_name,
-              "ar[description]": this.gridForm.ar_description,
-              "en[name]": this.gridForm.en_name,
-              "en[description]": this.gridForm.en_description
-            },
+            info: this.$v.category_form.$model,
             image: this.file ? this.file[0] : null
           });
         }

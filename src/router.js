@@ -9,7 +9,7 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    component: () => import(/* webpackChunkName: "home" */ "./views/home"),
+    // component: () => import(/* webpackChunkName: "home" */ "./views/home"),
     redirect: `/user/login`
   },
   {
@@ -78,6 +78,13 @@ const routes = [
             path: "block",
             component: () =>
               import(/* webpackChunkName: "blog" */ "./views/app/block/block")
+          },
+          {
+            path: "add-block",
+            component: () =>
+              import(
+                /* webpackChunkName: "blog" */ "./views/app/block/add_block"
+              )
           }
         ]
       },

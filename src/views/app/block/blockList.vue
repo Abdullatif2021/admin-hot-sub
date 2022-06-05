@@ -9,6 +9,7 @@
       :sortOptions="sortOptions"
       :reload="true"
       :category="category"
+      @add_new="add_New"
       :cancle="cancle"
       :changeOrderBy="changeOrderBy"
       :from="from"
@@ -224,6 +225,12 @@ export default {
       this.$router.push({
         path: `${adminRoot}/blocks/block`,
         query: { id: id }
+      });
+    },
+    add_New() {
+      this.$router.push({
+        path: `${adminRoot}/blocks/add-block`,
+        query: { id: this.type }
       });
     },
 

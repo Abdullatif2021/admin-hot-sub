@@ -1,23 +1,17 @@
-# Hello VuePress
+# contants
 
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum veritatis autem beatae. Eligendi obcaecati pariatur facilis non, consequatur reiciendis voluptate deserunt quo omnis. Ab aspernatur repellendus maxime, sapiente aut recusandae.
+the main configration of the app
 
-Current route is: {{ $route.path }}
+# config.js
 
-_Italic_, **bold**, and `monospace`
+it contains the basic configuration of the application
 
-```js
-<script>const foo = 'bar'; console.log(foo);</script>
-```
+> apiUrl  
+> defaultLocale
+> localeOptions  
+> defaultColor  
+> themeRadiusStorageKey
 
-Itemized lists look like:
+# menu.js
 
-- this one
-- that one
-- the other one
-
-> Block quotes are
-> written like so.
->
-> They can span multiple paragraphs,
-> if you like.
+The main menu of the application including sub-menus.

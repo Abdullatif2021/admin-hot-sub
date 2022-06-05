@@ -4,7 +4,7 @@
       <b-row>
         <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
           <template v-if="_isLoadBlockCategoryMeta || _isLoadCategories">
-            <b-card class="mb-4" no-body>
+            <b-card style="box-shadow: none;" class="mb-4" no-body>
               <b-row>
                 <b-colxx xs="12" md="6" class="mb-3">
                   <b-card>

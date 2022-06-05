@@ -122,9 +122,9 @@ const actions = {
   createCategory({ commit, dispatch }, payload) {
     console.log(payload);
     const formData = new FormData();
-    Object.entries(payload.info).forEach(entry => {
-      const [key, value] = entry;
-      formData.append(key, value);
+    payload.info.forEach(el => {
+      formData.append(`${el._name}[name]`, el.name);
+      formData.append(`${el._name}[description]`, el.description);
     });
     if (payload.image !== null) {
       formData.append("image", payload.image);

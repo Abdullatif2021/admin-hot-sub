@@ -17,7 +17,7 @@ shared component between block category and auction category managment helps to 
 check the type of category is to send request according to it.
 
 ```js
-<script>if (this._type == "block") </script>
+if (this._type == "block")
 ```
 
 # attachment
@@ -34,13 +34,12 @@ shared component between block category and auction category managment helps to 
 get props for perent and send it to meta_data
 
 ```js
-<script>props: ["_id", "_type"]</script>
+props: ['_id', '_type'];
 ```
 
 check the type of category to get the corresponding data
 
 ```js
-<script>
     created() {
     this._type == "block"
       ? ((this.is_block_category = true),
@@ -49,9 +48,6 @@ check the type of category to get the corresponding data
       : this.getCategory({ id: this._id }),
       (this.gridForm.select = "just for form submit");
   },
-    </script>
-
-
 ```
 
 # meta_data
@@ -61,7 +57,6 @@ responsible for meta data of auctions category and block category
 check the type of category and the id to update or create the correct meta data
 
 ```js
-<script>
   onValitadeFormSubmit() {
      this.$v.$touch();
      this.$v.gridForm.$touch();
@@ -106,10 +101,4 @@ check the type of category and the id to update or create the correct meta data
        }
      }
    },
-
-
-
-   </script>
-
-
 ```

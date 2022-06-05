@@ -596,9 +596,7 @@ export default {
         });
       }
     },
-    hideModal(refname) {
-      this.$refs[refname].hide();
-    },
+
     onValitadeFormSubmit() {
       this.$v.$touch();
       this.$v.file_form.$touch();
