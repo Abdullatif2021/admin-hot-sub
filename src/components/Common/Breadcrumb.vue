@@ -20,14 +20,14 @@ export default {
   },
   methods: {
     getUrl(path, sub, index) {
-      if (this.$route.path === "/app/blocks/block") {
+      if (this.$route.path === "/app/blocks") {
         console.log(
           "sfwefwefwefsefsefsefsefsef",
           this.$route.path,
           this.$route.query.id,
           sub
         );
-        return "/" + path.split(sub)[0] + sub + "/blockList/" + 1;
+        return;
       } else {
         return "/" + path.split(sub)[0] + sub;
       }

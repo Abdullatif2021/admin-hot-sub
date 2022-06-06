@@ -2,7 +2,7 @@
   <b-colxx xxs="12" xs="12" lg="12">
     <b-card class="mb-4" no-body>
       <b-tabs card no-fade>
-        <b-tab title="Images" active>
+        <b-tab :title="$t('forms.images')" active>
           <div style="display: grid;">
             <b-button
               v-b-modal.modalright
@@ -23,7 +23,7 @@
             @AddNewImage="createImage"
           ></add-new-modal>
         </b-tab>
-        <b-tab @click="openFile()" title="Files">
+        <b-tab @click="openFile()" :title="$t('forms.files')">
           <b-row>
             <template v-if="_isLoadAttach">
               <b-colxx xs="12" md="6" class="mb-3">
@@ -51,7 +51,7 @@
                           v-for="(item, index) in Options"
                           :key="index"
                           @click="file_Action(item.value, props.rowData)"
-                          >{{ item.name }}</b-dropdown-item
+                          >{{ $t(item.name) }}</b-dropdown-item
                         >
                       </b-dropdown>
                     </template>
@@ -77,9 +77,9 @@
                           v-model="lang.title.$model"
                           :state="!lang.title.$error"
                         />
-                        <b-form-invalid-feedback v-if="!lang.title.required"
-                          >Please enter title</b-form-invalid-feedback
-                        >
+                        <b-form-invalid-feedback v-if="!lang.title.required">{{
+                          $t("forms.title_filed")
+                        }}</b-form-invalid-feedback>
                       </b-form-group>
                       <b-form-group
                         :label="$t(`pages.${lang.name.$model}_desc`)"
@@ -92,7 +92,8 @@
                         />
                         <b-form-invalid-feedback
                           v-if="!lang.description.required"
-                          >Please enter description</b-form-invalid-feedback
+                        >
+                          {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
                         >
                       </b-form-group>
                     </div>
@@ -108,7 +109,7 @@
                           @vdropzone-removed-file="fileRemoved"
                         ></vue-dropzone>
                       </b-colxx>
-                      <span>File</span>
+                      <span>{{ $t("block.file") }}</span>
                     </label>
 
                     <b-button
@@ -127,7 +128,7 @@
             </template>
           </b-row>
         </b-tab>
-        <b-tab @click="openVideo()" title="Videos">
+        <b-tab @click="openVideo()" :title="$t('forms.videos')">
           <b-row>
             <template v-if="_isLoadAttach">
               <b-colxx style="display: grid;" xs="12" md="12" class="mb-3">
@@ -160,7 +161,7 @@
                           v-for="(item, index) in videos_Options"
                           :key="index"
                           @click="videos_Action(item.value, props.rowData)"
-                          >{{ item.name }}</b-dropdown-item
+                          >{{ $t(item.name) }}</b-dropdown-item
                         >
                       </b-dropdown>
                     </template>
@@ -174,7 +175,7 @@
             </template>
           </b-row>
         </b-tab>
-        <b-tab @click="openYoutubeVideo()" title="Youtube Videos">
+        <b-tab @click="openYoutubeVideo()" :title="$t('forms.youtube_videos')">
           <b-row>
             <template v-if="_isLoadAttach">
               <b-colxx xs="12" md="6" class="mb-3">
@@ -202,7 +203,7 @@
                           v-for="(item, index) in youtube_Options"
                           :key="index"
                           @click="youtube_Action(item.value, props.rowData)"
-                          >{{ item.name }}</b-dropdown-item
+                          >{{ $t(item.name) }}</b-dropdown-item
                         >
                       </b-dropdown>
                     </template>
@@ -231,9 +232,9 @@
                           v-model="lang.title.$model"
                           :state="!lang.title.$error"
                         />
-                        <b-form-invalid-feedback v-if="!lang.title.required"
-                          >Please enter title</b-form-invalid-feedback
-                        >
+                        <b-form-invalid-feedback v-if="!lang.title.required">{{
+                          $t("forms.title_filed")
+                        }}</b-form-invalid-feedback>
                       </b-form-group>
                       <b-form-group
                         :label="$t(`pages.${lang.name.$model}_desc`)"
@@ -246,7 +247,8 @@
                         />
                         <b-form-invalid-feedback
                           v-if="!lang.description.required"
-                          >Please enter description</b-form-invalid-feedback
+                        >
+                          {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
                         >
                       </b-form-group>
                     </div>
@@ -262,7 +264,9 @@
                       />
                       <b-form-invalid-feedback
                         v-if="!$v.path_form.path.required"
-                        >Please enter Youtube Link</b-form-invalid-feedback
+                        >{{
+                          $t("forms.youtube_filed")
+                        }}</b-form-invalid-feedback
                       >
                     </b-form-group>
 

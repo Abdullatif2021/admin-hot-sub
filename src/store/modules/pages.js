@@ -199,6 +199,10 @@ const actions = {
       const [key, value] = entry;
       formData.append(key, value);
     });
+    payload.info.forEach(el => {
+      formData.append(`${el._name}[name]`, el.name);
+      formData.append(`${el._name}[description]`, el.description);
+    });
     if (payload.file !== null) {
       formData.append("image", payload.file);
     }
@@ -328,7 +332,7 @@ const actions = {
     const id = payload.pageId;
     const formData = new FormData();
     payload.info.forEach(el => {
-      formData.append(`${el.name}[meta_content]`, el.content);
+      formData.append(`${el._name}[meta_content]`, el.content);
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
     axios

@@ -200,12 +200,13 @@
               />
             </span>
           </template>
-          <b-dropdown-item @click="profile">Account</b-dropdown-item>
-          <b-dropdown-item>Features</b-dropdown-item>
-          <b-dropdown-item>History</b-dropdown-item>
-          <b-dropdown-item>Support</b-dropdown-item>
+          <b-dropdown-item @click="profile">{{
+            $t("forms.account")
+          }}</b-dropdown-item>
           <b-dropdown-divider />
-          <b-dropdown-item @click="logout">Sign out</b-dropdown-item>
+          <b-dropdown-item @click="logout">{{
+            $t("forms.sign_out")
+          }}</b-dropdown-item>
         </b-dropdown>
       </div>
     </div>

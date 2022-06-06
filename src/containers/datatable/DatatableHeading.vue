@@ -22,8 +22,8 @@
               id="ddown1"
               :text="
                 category
-                  ? `${$t('todo.orderbycategory')} ${sort.label}`
-                  : `${$t('todo.orderbyrole')} ${sort.label}`
+                  ? `${$t('todo.orderbycategory')} ${$t(sort.label)}`
+                  : `${$t('todo.orderbyrole')} ${$t(sort.label)}`
               "
               variant="outline-dark"
               class="mr-1 float-md-left btn-group"
@@ -33,7 +33,7 @@
                 v-for="(order, index) in sortOptions"
                 :key="`order${index}`"
                 @click="changeOrderBy(order)"
-                >{{ order.label }}</b-dropdown-item
+                >{{ $t(order.label) }}</b-dropdown-item
               >
             </b-dropdown>
 
@@ -47,7 +47,7 @@
           </div>
           <div class="float-md-right pt-1">
             <span class="text-muted text-small mr-1 mb-2"
-              >{{ from }}-{{ to }} of {{ total }}</span
+              >{{ from }}-{{ to }} {{ $t("forms.of") }} {{ total }}</span
             >
             <b-dropdown
               id="ddown2"

@@ -17,9 +17,9 @@
             v-model="lang.title.$model"
             :state="!lang.title.$error"
           />
-          <b-form-invalid-feedback v-if="!lang.title.required"
-            >Please enter title</b-form-invalid-feedback
-          >
+          <b-form-invalid-feedback v-if="!lang.title.required">{{
+            $t("forms.title_filed")
+          }}</b-form-invalid-feedback>
         </b-form-group>
         <b-form-group
           :label="$t(`pages.${lang.name.$model}_desc`)"
@@ -30,8 +30,8 @@
             v-model="lang.description.$model"
             :state="!lang.description.$error"
           />
-          <b-form-invalid-feedback v-if="!lang.description.required"
-            >Please enter description</b-form-invalid-feedback
+          <b-form-invalid-feedback v-if="!lang.description.required">
+            {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
           >
         </b-form-group>
       </div>
@@ -47,7 +47,7 @@
             @vdropzone-removed-file="fileRemoved"
           ></vue-dropzone>
         </b-colxx>
-        <span>Video</span>
+        <span>{{ $t("forms.video") }}</span>
       </label>
     </b-form>
     <template slot="modal-footer">
@@ -56,11 +56,11 @@
         :disabled="enable"
         @click="formSubmit()"
         class="mr-1"
-        >Add New</b-button
+        >{{ $t("pages.add-new") }}</b-button
       >
-      <b-button variant="secondary" @click="hideModal('modalbackdrop')"
-        >Cancel</b-button
-      >
+      <b-button variant="secondary" @click="hideModal('modalbackdrop')">{{
+        $t("pages.cancel")
+      }}</b-button>
     </template>
   </b-modal>
 </template>

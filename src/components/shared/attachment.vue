@@ -51,7 +51,7 @@
                           v-for="(item, index) in Options"
                           :key="index"
                           @click="file_Action(item.value, props.rowData)"
-                          >{{ item.name }}</b-dropdown-item
+                          >{{ $t(item.name) }}</b-dropdown-item
                         >
                       </b-dropdown>
                     </template>
@@ -73,8 +73,9 @@
                         v-model="$v.form.en_title.$model"
                         :state="!$v.form.en_title.$error"
                       />
-                      <b-form-invalid-feedback v-if="!$v.form.en_title.required"
-                        >Please enter English title</b-form-invalid-feedback
+                      <b-form-invalid-feedback
+                        v-if="!$v.form.en_title.required"
+                        >{{ $t("forms.en_massege") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
                     <b-form-group
@@ -101,8 +102,9 @@
                         v-model="$v.form.ar_title.$model"
                         :state="!$v.form.ar_title.$error"
                       />
-                      <b-form-invalid-feedback v-if="!$v.form.ar_title.required"
-                        >Please enter Arabic title</b-form-invalid-feedback
+                      <b-form-invalid-feedback
+                        v-if="!$v.form.ar_title.required"
+                        >{{ $t("forms.ar_massege") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
                     <b-form-group
@@ -184,7 +186,7 @@
                           v-for="(item, index) in videos_Options"
                           :key="index"
                           @click="videos_Action(item.value, props.rowData)"
-                          >{{ item.name }}</b-dropdown-item
+                          >{{ $t(item.name) }}</b-dropdown-item
                         >
                       </b-dropdown>
                     </template>
@@ -229,7 +231,7 @@
                           v-for="(item, index) in youtube_Options"
                           :key="index"
                           @click="youtube_Action(item.value, props.rowData)"
-                          >{{ item.name }}</b-dropdown-item
+                          >{{ $t(item.name) }}</b-dropdown-item
                         >
                       </b-dropdown>
                     </template>
@@ -256,7 +258,7 @@
                       />
                       <b-form-invalid-feedback
                         v-if="!$v.youtube_form.en_title.required"
-                        >Please enter English title</b-form-invalid-feedback
+                        >{{ $t("forms.en_massege") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
                     <b-form-group
@@ -285,7 +287,7 @@
                       />
                       <b-form-invalid-feedback
                         v-if="!$v.youtube_form.ar_title.required"
-                        >Please enter Arabic title</b-form-invalid-feedback
+                        >{{ $t("forms.ar_massege") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
                     <b-form-group

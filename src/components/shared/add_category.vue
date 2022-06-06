@@ -17,9 +17,9 @@
                   :state="!lang.name.$error"
                   v-model="lang.name.$model"
                 />
-                <b-form-invalid-feedback v-if="!lang.name.required"
-                  >Please enter title</b-form-invalid-feedback
-                >
+                <b-form-invalid-feedback v-if="!lang.name.required">{{
+                  $t("forms.title_filed")
+                }}</b-form-invalid-feedback>
               </b-form-group>
             </b-colxx>
             <b-colxx sm="12">
@@ -32,8 +32,8 @@
                   :state="!lang.description.$error"
                   v-model="lang.description.$model"
                 />
-                <b-form-invalid-feedback v-if="!lang.description.required"
-                  >Please enter description</b-form-invalid-feedback
+                <b-form-invalid-feedback v-if="!lang.description.required">
+                  {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
                 >
               </b-form-group>
             </b-colxx>
@@ -49,9 +49,9 @@
                 :options="typeOptions"
                 plain
               />
-              <b-form-invalid-feedback v-if="!$v.gridForm.select.required"
-                >Please select category type</b-form-invalid-feedback
-              >
+              <b-form-invalid-feedback v-if="!$v.gridForm.select.required">{{
+                $t("forms.category_type_select")
+              }}</b-form-invalid-feedback>
             </b-form-group>
           </b-colxx>
           <b-colxx xxs="12">

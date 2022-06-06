@@ -16,9 +16,9 @@
             v-model="lang.title.$model"
             :state="!lang.title.$error"
           />
-          <b-form-invalid-feedback v-if="!lang.title.required"
-            >Please enter title</b-form-invalid-feedback
-          >
+          <b-form-invalid-feedback v-if="!lang.title.required">{{
+            $t("forms.title_filed")
+          }}</b-form-invalid-feedback>
         </b-form-group>
         <b-form-group
           :label="$t(`pages.${lang.name.$model}_desc`)"
@@ -29,8 +29,8 @@
             v-model="lang.description.$model"
             :state="!lang.description.$error"
           />
-          <b-form-invalid-feedback v-if="!lang.description.required"
-            >Please enter description</b-form-invalid-feedback
+          <b-form-invalid-feedback v-if="!lang.description.required">
+            {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
           >
         </b-form-group>
       </div>

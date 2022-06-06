@@ -113,7 +113,7 @@ export default {
       apiBase: "/cakes/fordatatable",
       sort: {
         column: null,
-        label: "All"
+        label: "all"
       },
       page: 1,
       category: false,
@@ -131,15 +131,15 @@ export default {
       sortOptions: [
         {
           column: null,
-          label: "All"
+          label: "all"
         },
         {
           column: "admin",
-          label: "Admin"
+          label: "admin"
         },
         {
           column: "superadmin",
-          label: "Super Admin"
+          label: "superadmin"
         }
       ],
       fields: [

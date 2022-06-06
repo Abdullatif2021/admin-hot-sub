@@ -3,7 +3,7 @@
     <b-colxx xxs="12" md="10" class="mx-auto my-auto">
       <b-card class="auth-card" no-body>
         <div class="form-side">
-          <h6 class="mb-4">Update profile</h6>
+          <h6 class="mb-4">{{ $t("forms.update_profile") }}</h6>
           <b-form @submit.prevent="onTopLabelsOverLineFormSubmit">
             <label class="form-group has-float-label">
               <b-form-group
@@ -15,9 +15,9 @@
                   v-model="$v.form.first_name.$model"
                   :state="!$v.form.first_name.$error"
                 />
-                <b-form-invalid-feedback v-if="!$v.form.first_name.required"
-                  >Please enter your first name</b-form-invalid-feedback
-                >
+                <b-form-invalid-feedback v-if="!$v.form.first_name.required">{{
+                  $t("forms.Yfirst_name_filed")
+                }}</b-form-invalid-feedback>
               </b-form-group>
             </label>
             <label class="form-group has-float-label">
@@ -30,9 +30,9 @@
                   v-model="$v.form.last_name.$model"
                   :state="!$v.form.last_name.$error"
                 />
-                <b-form-invalid-feedback v-if="!$v.form.last_name.required"
-                  >Please enter your last name</b-form-invalid-feedback
-                >
+                <b-form-invalid-feedback v-if="!$v.form.last_name.required">{{
+                  $t("forms.Ylast_name_filed")
+                }}</b-form-invalid-feedback>
               </b-form-group>
             </label>
             <div class="form-group has-float-label">
@@ -45,8 +45,9 @@
                   v-model="$v.form.phone_number.$model"
                   :state="!$v.form.phone_number.$error"
                 />
-                <b-form-invalid-feedback v-if="!$v.form.phone_number.required"
-                  >Please enter your phone number</b-form-invalid-feedback
+                <b-form-invalid-feedback
+                  v-if="!$v.form.phone_number.required"
+                  >{{ $t("forms.Ynum_filed") }}</b-form-invalid-feedback
                 >
               </b-form-group>
             </div>
@@ -57,7 +58,7 @@
                 v-model="dob"
                 @selected="selected_Date()"
               ></datepicker>
-              <span>Date of Birth</span>
+              <span>{{ $t("forms.dob") }}</span>
             </div>
           </b-form>
         </div>
@@ -75,8 +76,8 @@
                   v-model="$v.form.email.$model"
                   :state="!$v.form.email.$error"
                 />
-                <b-form-invalid-feedback v-if="!$v.form.email.required"
-                  >Please enter your email
+                <b-form-invalid-feedback v-if="!$v.form.email.required">
+                  {{ $t("forms.Yemail_filed") }}
                 </b-form-invalid-feedback>
               </b-form-group>
             </label>
@@ -86,7 +87,7 @@
                 :options="genderOptions"
                 plain
               />
-              <span>Gender</span>
+              <span>{{ $t("forms.gender") }}</span>
             </label>
             <label class="form-group has-float-label">
               <b-colxx xxs="12" style="padding: 0px;">
@@ -100,7 +101,7 @@
                   @vdropzone-removed-file="fileRemoved"
                 ></vue-dropzone>
               </b-colxx>
-              <span>Image</span>
+              <span>{{ $t("forms.image") }}</span>
             </label>
 
             <b-button

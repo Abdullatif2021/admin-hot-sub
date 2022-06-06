@@ -20,7 +20,9 @@
                     />
                     <b-form-invalid-feedback
                       v-if="!$v.gridForm.first_name.required"
-                      >Please enter first name</b-form-invalid-feedback
+                      >{{
+                        $t("forms.first_name_filed")
+                      }}</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
@@ -33,7 +35,9 @@
                     />
                     <b-form-invalid-feedback
                       v-if="!$v.gridForm.last_name.required"
-                      >Please enter last name</b-form-invalid-feedback
+                      >{{
+                        $t("forms.last_name_filed")
+                      }}</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
@@ -44,8 +48,9 @@
                       :state="!$v.gridForm.email.$error"
                       v-model="$v.gridForm.email.$model"
                     />
-                    <b-form-invalid-feedback v-if="!$v.gridForm.email.required"
-                      >Please enter email</b-form-invalid-feedback
+                    <b-form-invalid-feedback
+                      v-if="!$v.gridForm.email.required"
+                      >{{ $t("forms.email_filed") }}</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
@@ -58,15 +63,15 @@
                     />
                     <b-form-invalid-feedback
                       v-if="!$v.gridForm.password.required"
-                      >Password is required!</b-form-invalid-feedback
+                      >{{ $t("forms.pass_filed") }}</b-form-invalid-feedback
                     >
                     <b-form-invalid-feedback
                       v-else-if="!$v.gridForm.password.minLength"
-                      >Minimum 6</b-form-invalid-feedback
+                      >{{ $t("forms.pass_min") }}</b-form-invalid-feedback
                     >
                     <b-form-invalid-feedback
                       v-else-if="!$v.gridForm.password.maxLength"
-                      >Maximum 16</b-form-invalid-feedback
+                      >{{ $t("forms.pass_max") }}</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
@@ -80,7 +85,9 @@
                     />
                     <b-form-invalid-feedback
                       v-if="!$v.gridForm.phone_number.required"
-                      >Please enter phone number</b-form-invalid-feedback
+                      >{{
+                        $t("forms.phonenumber_filed")
+                      }}</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
@@ -92,8 +99,9 @@
                       :options="roleOptions"
                       plain
                     />
-                    <b-form-invalid-feedback v-if="!$v.gridForm.role.required"
-                      >Please select user role</b-form-invalid-feedback
+                    <b-form-invalid-feedback
+                      v-if="!$v.gridForm.role.required"
+                      >{{ $t("forms.role_filed") }}</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
@@ -111,7 +119,7 @@
                           $v.gridForm.dob.$error && !$v.gridForm.dob.required
                       }"
                     >
-                      Date of birth required
+                      {{ $t("forms.date_filed") }}
                     </div>
                   </b-form-group>
                 </b-colxx>
@@ -183,7 +191,10 @@ export default {
         // { text: "Admin", value: 2 },
         // { text: "Accountant", value: 7 }
       ],
-      activeOptions: ["", { text: "YES", value: 1 }, { text: "NO", value: 0 }],
+      activeOptions: [
+        { text: "YES", value: 1 },
+        { text: "NO", value: 0 }
+      ],
       gridForm: {
         first_name: "",
         last_name: "",
@@ -265,7 +276,6 @@ export default {
         this.$v.gridForm.$touch();
         if (!this.$v.gridForm.$invalid) {
           this.enable = true;
-
           this.createUser({
             user: {
               first_name: this.gridForm.first_name,

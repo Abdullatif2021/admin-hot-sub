@@ -12,7 +12,7 @@
           <b-card class="mb-4" no-body>
             <b-tabs card no-fade>
               <b-tab
-                title="Basis details"
+                :title="$t(`forms.basic_details`)"
                 active
                 title-item-class="w-30 text-center"
               >
@@ -29,48 +29,36 @@
                       height="120"
                     />
                   </label>
-                  <!-- <div v-for="(lang, index) in langs" :key="index"> -->
-                  <label class="form-group has-float-label">
-                    <input
-                      type="text"
-                      v-model="pageData.locales.en.name"
-                      class="form-control"
-                    />
-                    <span>{{ $t("forms.en_name") }}</span>
-                  </label>
-                  <label class="form-group has-float-label">
-                    <quill-editor
-                      ref="myTextEditor"
-                      v-model="pageData.locales.en.description"
-                      :options="editorOption"
-                      @blur="onEditorBlur($event)"
-                      @focus="onEditorFocus($event)"
-                      @ready="onEditorReady($event)"
-                    >
-                    </quill-editor>
-                    <span>{{ $t("forms.en_desc") }}</span>
-                  </label>
-                  <!-- </div> -->
-                  <label class="form-group has-float-label">
-                    <input
-                      type="text"
-                      v-model="pageData.locales.ar.name"
-                      class="form-control"
-                    />
-                    <span>{{ $t("forms.ar_name") }}</span>
-                  </label>
-                  <label class="form-group has-float-label">
-                    <quill-editor
-                      ref="myTextEditor"
-                      v-model="pageData.locales.ar.description"
-                      :options="editorOption"
-                      @blur="onEditorBlur($event)"
-                      @focus="onEditorFocus($event)"
-                      @ready="onEditorReady($event)"
-                    >
-                    </quill-editor>
-                    <span>{{ $t("forms.ar_desc") }}</span>
-                  </label>
+                  <div
+                    v-for="(lang, index) in $v.details_form.$each.$iter"
+                    :key="index"
+                  >
+                    <label class="form-group has-float-label">
+                      <b-input
+                        type="text"
+                        v-model="lang.name.$model"
+                        :state="!lang.name.$error"
+                        class="form-control"
+                      />
+                      <span>{{ $t(`forms.${lang._name.$model}_name`) }}</span>
+
+                      <b-form-invalid-feedback v-if="!lang.name.required">{{
+                        $t("forms.title_filed")
+                      }}</b-form-invalid-feedback>
+                    </label>
+                    <label class="form-group has-float-label">
+                      <quill-editor
+                        ref="myTextEditor"
+                        v-model="lang.description.$model"
+                        :options="editorOption"
+                        @blur="onEditorBlur($event)"
+                        @focus="onEditorFocus($event)"
+                        @ready="onEditorReady($event)"
+                      >
+                      </quill-editor>
+                      <span>{{ $t(`forms.${lang._name.$model}_desc`) }}</span>
+                    </label>
+                  </div>
                   <label class="form-group has-float-label">
                     <input
                       type="text"
@@ -107,7 +95,7 @@
                         @vdropzone-removed-file="fileRemoved"
                       ></vue-dropzone>
                     </b-colxx>
-                    <span>Image</span>
+                    <span>{{ $t("forms.image") }}</span>
                   </label>
                   <b-colxx
                     xxs="12"
@@ -131,14 +119,14 @@
               </b-tab>
               <b-tab
                 @click="attach()"
-                title="Attachment"
+                :title="$t('forms.attach')"
                 title-item-class="w-30 text-center"
               >
                 <page_attachment :pageId="pageId" />
               </b-tab>
               <b-tab
                 @click="meta()"
-                title="Meta Data"
+                :title="$t('forms.meta_data')"
                 title-item-class="w-30 text-center"
               >
                 <b-row>
@@ -175,7 +163,7 @@
                                     props.rowData
                                   )
                                 "
-                                >{{ item.name }}</b-dropdown-item
+                                >{{ $t(item.name) }}</b-dropdown-item
                               >
                             </b-dropdown>
                           </template>
@@ -196,7 +184,7 @@
                           @submit.prevent="onValitadeFormSubmit()"
                           class="av-tooltip tooltip-label-right"
                         >
-                          <b-form-group label="Option">
+                          <b-form-group :label="$t('forms.type')">
                             <b-form-select
                               v-model="$v.select_form.select.$model"
                               :state="!$v.select_form.select.$error"
@@ -205,7 +193,9 @@
                             />
                             <b-form-invalid-feedback
                               v-if="!$v.select_form.select.required"
-                              >Please select an option!</b-form-invalid-feedback
+                              >{{
+                                $t("forms.select_massege")
+                              }}</b-form-invalid-feedback
                             >
                           </b-form-group>
                           <div
@@ -213,7 +203,7 @@
                             :key="index"
                           >
                             <b-form-group
-                              :label="$t(`forms.${lang.name.$model}_content`)"
+                              :label="$t(`forms.${lang._name.$model}_content`)"
                               class="has-float-label mb-4"
                             >
                               <b-form-input
@@ -223,7 +213,9 @@
                               />
                               <b-form-invalid-feedback
                                 v-if="!lang.content.required"
-                                >Please enter content</b-form-invalid-feedback
+                                >{{
+                                  $t("forms.content_massege")
+                                }}</b-form-invalid-feedback
                               >
                             </b-form-group>
                           </div>
@@ -292,6 +284,7 @@ export default {
       selectOptions: [],
       langs: null,
       meta_form: [],
+      details_form: [],
       select_form: {
         select: ""
       },
@@ -414,11 +407,20 @@ export default {
         content: {
           required
         },
-        name: {}
+        _name: {}
       }
     },
     select_form: {
       select: { required }
+    },
+    details_form: {
+      $each: {
+        name: {
+          required
+        },
+        description: {},
+        _name: {}
+      }
     }
   },
 
@@ -428,6 +430,7 @@ export default {
     this.langs = localStorage.getItem("Languages");
     console.log("Languages", this.langs);
     this.make_collaction(this.langs, this.meta_form);
+    this.make_collaction2(this.langs, this.details_form);
     console.log("hi from here", this.pageId);
   },
   methods: {
@@ -448,27 +451,36 @@ export default {
       JSON.parse(langs).forEach(el => {
         form.push({
           content: "",
-          name: el.name
+          _name: el.name
         });
       });
-      console.log("meta_form", this.meta_form);
+    },
+    make_collaction2(langs, form) {
+      JSON.parse(langs).forEach(el => {
+        form.push({
+          name: "",
+          description: "",
+          _name: el.name
+        });
+      });
     },
     save() {
       console.log(this.pageData);
-      this.enable = true;
-      this.updatePageData({
-        id: this.pageData.id,
-        data: {
-          link1: this.pageData.link1,
-          link2: this.pageData.link2,
-          type: this.pageData.type,
-          "ar[name]": this.pageData.locales.ar.name,
-          "ar[description]": this.pageData.locales.ar.description,
-          "en[name]": this.pageData.locales.en.name,
-          "en[description]": this.pageData.locales.en.description
-        },
-        file: this.file ? this.file[0] : null
-      });
+      this.$v.$touch();
+      this.$v.details_form.$touch();
+      if (!this.$v.details_form.$invalid) {
+        this.enable = true;
+        this.updatePageData({
+          id: this.pageData.id,
+          data: {
+            link1: this.pageData.link1,
+            link2: this.pageData.link2,
+            type: this.pageData.type
+          },
+          info: this.$v.details_form.$model,
+          file: this.file ? this.file[0] : null
+        });
+      }
     },
     attach() {
       this.getPageImageList({ id: this.pageId });
@@ -601,6 +613,21 @@ export default {
   },
   watch: {
     _page(newpage, oldone) {
+      this.details_form.forEach(el => {
+        switch (el._name) {
+          case "en":
+            el.name = newpage.locales.en.name;
+            el.description = newpage.locales.en.description;
+
+            break;
+          case "ar":
+            el.name = newpage.locales.ar.name;
+            el.description = newpage.locales.ar.description;
+            break;
+          default:
+            break;
+        }
+      });
       this.pageData = newpage;
       this.enable = false;
     },

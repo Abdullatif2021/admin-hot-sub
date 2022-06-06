@@ -65,7 +65,9 @@
 
                         <b-form-invalid-feedback
                           v-if="!$v.select_form.select.required"
-                          >Please select category type</b-form-invalid-feedback
+                          >{{
+                            $t("forms.category_type_select")
+                          }}</b-form-invalid-feedback
                         >
                       </b-form-group>
                       <div

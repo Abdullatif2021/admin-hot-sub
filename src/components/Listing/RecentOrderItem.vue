@@ -17,7 +17,7 @@
       <div class="text-primary text-small font-weight-medium d-none d-sm-block">
         {{ order.created_at }}
       </div>
-      <div class="pr-4" style="float: right;margin-top: -29px;">
+      <div class="pr-4" :style="BtnStyle">
         <i
           @click="delete_img(order.id)"
           class="simple-icon-trash"
@@ -29,8 +29,22 @@
 </template>
 
 <script>
+import { getDirection } from "../../utils";
 export default {
   props: ["order"],
+  data() {
+    return {
+      BtnStyle: null
+    };
+  },
+  created() {
+    const direction = getDirection();
+    if (direction.isRtl) {
+      this.BtnStyle = `float: left;margin-top: -29px;`;
+    } else {
+      this.BtnStyle = `float: right;margin-top: -29px;`;
+    }
+  },
   methods: {
     delete_img(id) {
       this.$emit("delete_img", id);

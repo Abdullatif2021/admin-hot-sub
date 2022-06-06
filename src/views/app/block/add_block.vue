@@ -9,12 +9,8 @@
       <b-row>
         <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
           <b-card class="mb-4" no-body>
-            <b-tabs card no-fade>
-              <b-tab
-                title="Basis details"
-                active
-                title-item-class="w-100 text-center"
-              >
+            <b-tabs card>
+              <b-tab title-item-class="w-100 text-center">
                 <div
                   v-for="(lang, index) in $v.block_form.$each.$iter"
                   :key="index"
@@ -28,9 +24,9 @@
                       v-model="lang.name.$model"
                       :state="!lang.name.$error"
                     />
-                    <b-form-invalid-feedback v-if="!lang.name.required"
-                      >Please enter name</b-form-invalid-feedback
-                    >
+                    <b-form-invalid-feedback v-if="!lang.name.required">{{
+                      $t("forms.name_filed")
+                    }}</b-form-invalid-feedback>
                   </b-form-group>
                   <label class="form-group has-float-label">
                     <quill-editor

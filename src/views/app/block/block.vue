@@ -12,7 +12,7 @@
             <b-card class="mb-4" no-body>
               <b-tabs card no-fade>
                 <b-tab
-                  title="Basis details"
+                  :title="$t(`forms.basic_details`)"
                   active
                   title-item-class="w-30 text-center"
                 >
@@ -28,8 +28,37 @@
                       height="120"
                     />
                   </label>
+                  <div
+                    v-for="(lang, index) in $v.details_form.$each.$iter"
+                    :key="index"
+                  >
+                    <label class="form-group has-float-label">
+                      <b-input
+                        type="text"
+                        v-model="lang.name.$model"
+                        :state="!lang.name.$error"
+                        class="form-control"
+                      />
+                      <span>{{ $t(`forms.${lang._name.$model}_name`) }}</span>
 
-                  <label class="form-group has-float-label">
+                      <b-form-invalid-feedback v-if="!lang.name.required">{{
+                        $t("forms.title_filed")
+                      }}</b-form-invalid-feedback>
+                    </label>
+                    <label class="form-group has-float-label">
+                      <quill-editor
+                        ref="myTextEditor"
+                        v-model="lang.description.$model"
+                        :options="editorOption"
+                        @blur="onEditorBlur($event)"
+                        @focus="onEditorFocus($event)"
+                        @ready="onEditorReady($event)"
+                      >
+                      </quill-editor>
+                      <span>{{ $t(`forms.${lang._name.$model}_desc`) }}</span>
+                    </label>
+                  </div>
+                  <!-- <label class="form-group has-float-label">
                     <input
                       type="text"
                       v-model="blockData.locales.en.name"
@@ -76,7 +105,7 @@
                       plain
                     />
                     <span>{{ $t("block.visible") }}</span>
-                  </label>
+                  </label> -->
                   <div class="form-group has-float-label">
                     <datepicker
                       :bootstrap-styling="true"
@@ -151,14 +180,14 @@
                 </b-tab>
                 <b-tab
                   @click="attach()"
-                  title="Attachment"
+                  :title="$t('forms.attach')"
                   title-item-class="w-30 text-center"
                 >
                   <block_attachment :blockId="blockId" />
                 </b-tab>
                 <b-tab
                   @click="meta()"
-                  title="Meta Data"
+                  :title="$t('forms.meta_data')"
                   title-item-class="w-30 text-center"
                 >
                   <b-row>
@@ -195,7 +224,7 @@
                                       props.rowData
                                     )
                                   "
-                                  >{{ item.name }}</b-dropdown-item
+                                  >{{ $t(item.name) }}</b-dropdown-item
                                 >
                               </b-dropdown>
                             </template>
@@ -216,7 +245,7 @@
                             @submit.prevent="onValitadeFormSubmit()"
                             class="av-tooltip tooltip-label-right"
                           >
-                            <b-form-group label="Option">
+                            <b-form-group :label="$t('forms.type')">
                               <b-form-select
                                 :state="!$v.select_form.select.$error"
                                 v-model="$v.select_form.select.$model"
@@ -225,8 +254,9 @@
                               />
                               <b-form-invalid-feedback
                                 v-if="!$v.select_form.select.required"
-                                >Please select an
-                                option!</b-form-invalid-feedback
+                                >{{
+                                  $t("forms.select_massege")
+                                }}</b-form-invalid-feedback
                               >
                             </b-form-group>
                             <div
@@ -244,7 +274,9 @@
                                 />
                                 <b-form-invalid-feedback
                                   v-if="!lang.content.required"
-                                  >Please enter content</b-form-invalid-feedback
+                                  >{{
+                                    $t("forms.content_massege")
+                                  }}</b-form-invalid-feedback
                                 >
                               </b-form-group>
                             </div>
@@ -321,6 +353,7 @@ export default {
       file: null,
       itemForEdit: null,
       selectOptions: [],
+      details_form: [],
       meta_form: [],
       activeOptions: [
         "",
@@ -457,6 +490,15 @@ export default {
     },
     select_form: {
       select: { required }
+    },
+    details_form: {
+      $each: {
+        name: {
+          required
+        },
+        description: {},
+        _name: {}
+      }
     }
   },
 
@@ -466,6 +508,7 @@ export default {
     this.langs = localStorage.getItem("Languages");
     console.log("Languages", this.langs);
     this.make_collaction(this.langs, this.meta_form);
+    this.make_collaction2(this.langs, this.details_form);
     console.log("hi from here", this.blockId);
     this.getBlockCategories({
       dir: null,
@@ -498,19 +541,36 @@ export default {
       });
       console.log("meta_form", this.meta_form);
     },
+    make_collaction2(langs, form) {
+      JSON.parse(langs).forEach(el => {
+        form.push({
+          name: "",
+          description: "",
+          _name: el.name
+        });
+      });
+    },
     save() {
       console.log(this.blockData);
-      this.enable_basic = true;
-      this.updateBlockData({
-        id: this.blockData.id,
-        data: this.blockData,
-        post_date: this.dateSelected
-          ? this.blockData.post_date.toISOString()
-          : this.blockData.post_date,
-        image: this.image ? this.image[0] : null,
-
-        file: this.file ? this.file[0] : null
-      });
+      this.$v.$touch();
+      this.$v.details_form.$touch();
+      if (!this.$v.details_form.$invalid) {
+        this.enable_basic = true;
+        this.updateBlockData({
+          id: this.blockData.id,
+          data: {
+            visible: this.blockData.visible,
+            block_category_id: this.blockData.block_category_id.id,
+            url: this.blockData.url,
+            post_date: this.dateSelected
+              ? this.blockData.post_date.toISOString()
+              : this.blockData.post_date
+          },
+          info: this.$v.details_form.$model,
+          image: this.image ? this.image[0] : null,
+          file: this.file ? this.file[0] : null
+        });
+      }
     },
     attach() {
       // this.getImageList({ id: this.blockId });
@@ -659,6 +719,20 @@ export default {
     },
     _block(newOne, oldone) {
       this.isLoadBlock = true;
+      this.details_form.forEach(el => {
+        switch (el._name) {
+          case "en":
+            el.name = newOne.locales.en.name;
+            el.description = newOne.locales.en.description;
+            break;
+          case "ar":
+            el.name = newOne.locales.ar.name;
+            el.description = newOne.locales.ar.description;
+            break;
+          default:
+            break;
+        }
+      });
       this.blockData = newOne;
       this.dateSelected = false;
     },

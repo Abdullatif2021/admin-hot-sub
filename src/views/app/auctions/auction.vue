@@ -4,7 +4,7 @@
       <datatable-heading
         :details="true"
         :reload="true"
-        :title="auctionId ? $t('forms.editCate') : $t('forms.createCate')"
+        :title="auctionId ? $t('forms.editAuction') : $t('forms.createAuction')"
       ></datatable-heading>
       <template v-if="isLoadAuction">
         <b-card class="mb-4">
@@ -17,8 +17,9 @@
                     :state="!$v.gridForm.en_title.$error"
                     v-model="$v.gridForm.en_title.$model"
                   />
-                  <b-form-invalid-feedback v-if="!$v.gridForm.en_title.required"
-                    >Please enter English title</b-form-invalid-feedback
+                  <b-form-invalid-feedback
+                    v-if="!$v.gridForm.en_title.required"
+                    >{{ $t("forms.en_massege") }}</b-form-invalid-feedback
                   >
                 </b-form-group>
               </b-colxx>
@@ -29,8 +30,9 @@
                     :state="!$v.gridForm.ar_title.$error"
                     v-model="$v.gridForm.ar_title.$model"
                   />
-                  <b-form-invalid-feedback v-if="!$v.gridForm.ar_title.required"
-                    >Please enter Arabic title</b-form-invalid-feedback
+                  <b-form-invalid-feedback
+                    v-if="!$v.gridForm.ar_title.required"
+                    >{{ $t("forms.ar_massege") }}</b-form-invalid-feedback
                   >
                 </b-form-group>
               </b-colxx>
@@ -53,7 +55,7 @@
                   />
                   <b-form-invalid-feedback
                     v-if="!$v.gridForm.minimum_price.required"
-                    >Please enter minimum price</b-form-invalid-feedback
+                    >{{ $t("forms.min_price") }}</b-form-invalid-feedback
                   >
                 </b-form-group>
               </b-colxx>
@@ -66,7 +68,7 @@
                   />
                   <b-form-invalid-feedback
                     v-if="!$v.gridForm.opening_price.required"
-                    >Please enter opening price</b-form-invalid-feedback
+                    >{{ $t("forms.open_price") }}</b-form-invalid-feedback
                   >
                 </b-form-group>
               </b-colxx>
@@ -80,7 +82,9 @@
                   />
                   <b-form-invalid-feedback
                     v-if="!$v.gridForm.categoryId.required"
-                    >Please select category type</b-form-invalid-feedback
+                    >{{
+                      $t("forms.category_type_select")
+                    }}</b-form-invalid-feedback
                   >
                   <span>{{ $t("forms.category") }}</span>
                 </label>
@@ -101,7 +105,7 @@
                         !$v.gridForm.start_date.required
                     }"
                   >
-                    Start Date required
+                    {{ $t("forms.start_date_req") }}
                   </div>
                 </div>
               </b-colxx>
@@ -123,7 +127,7 @@
                         !$v.gridForm.end_date.required
                     }"
                   >
-                    End Date required
+                    {{ $t("forms.end_date_req") }}
                   </div>
                 </div>
               </b-colxx>

@@ -279,19 +279,14 @@ const actions = {
     const id = payload.id;
 
     const formData = new FormData();
-    formData.append("block_category_id", payload.data.block_category_id.id);
-    formData.append("url", payload.data.url);
-    formData.append("post_date", payload.post_date);
-    formData.append("visible", payload.data.visible);
-
-    if (payload.data.locales.ar) {
-      formData.append("ar[name]", payload.data.locales.ar.name);
-      formData.append("ar[description]", payload.data.locales.ar.description);
-    }
-    if (payload.data.locales.en) {
-      formData.append("en[name]", payload.data.locales.en.name);
-      formData.append("en[description]", payload.data.locales.en.description);
-    }
+    Object.entries(payload.data).forEach(entry => {
+      const [key, value] = entry;
+      formData.append(key, value);
+    });
+    payload.info.forEach(el => {
+      formData.append(`${el._name}[name]`, el.name);
+      formData.append(`${el._name}[description]`, el.description);
+    });
     if (payload.file !== null) {
       formData.append("file", payload.file);
     }
