@@ -5,7 +5,7 @@ const data = [
   {
     id: "piaf",
     icon: "iconsminds-shop",
-    label: "menu.piaf",
+    label: "Piaf",
     to: `${adminRoot}/piaf`,
     subs: [
       {
@@ -20,49 +20,49 @@ const data = [
   {
     id: "blockCategories",
     icon: "iconsminds-picasa",
-    label: "menu.blocks-category",
+    label: "Blocks Category",
     to: `${adminRoot}/blockCategories`,
     roles: ["superadmin"]
   },
   {
     id: "categories",
     icon: "simple-icon-grid",
-    label: "menu.categories",
+    label: "Categories",
     to: `${adminRoot}/categories`,
     roles: ["superadmin"]
   },
   {
     id: "auctions",
     icon: "simple-icon-folder",
-    label: "menu.auctions",
+    label: "Auctions",
     to: `${adminRoot}/auctions`,
     roles: ["superadmin", "admin", "accountant"]
   },
   {
     id: "Pages",
     icon: "iconsminds-digital-drawing",
-    label: "menu.pages",
+    label: "Pages",
     to: `${adminRoot}/pages`,
     roles: ["superadmin", "admin", "editor"]
   },
   {
     id: "admins",
     icon: "simple-icon-user",
-    label: "menu.admins",
+    label: "Admins",
     to: `${adminRoot}/admins`,
     roles: ["superadmin", "admin"]
   },
   {
     id: "accountant",
     icon: "simple-icon-people",
-    label: "menu.accountant",
+    label: "Accountant",
     to: `${adminRoot}/accountant`,
     roles: ["superadmin", "admin"]
   },
   {
     id: "Settings",
     icon: "simple-icon-settings",
-    label: "menu.settings",
+    label: "Settings",
     to: `${adminRoot}/settings`,
     roles: ["superadmin", "admin"]
   }

@@ -23,7 +23,7 @@
               target="_blank"
             >
               <i :class="item.icon" />
-              {{ $t(item.label) }}
+              {{ item.label }}
             </a>
             <a
               v-else-if="item.subs && item.subs.length > 0"
@@ -31,7 +31,7 @@
               :href="`#${item.to}`"
             >
               <i :class="item.icon" />
-              {{ $t(item.label) }}
+              {{ item.label }}
             </a>
             <router-link
               v-else
@@ -39,7 +39,7 @@
               :to="item.to"
             >
               <i :class="item.icon" />
-              {{ $t(item.label) }}
+              {{ item.label }}
             </router-link>
           </li>
         </ul>

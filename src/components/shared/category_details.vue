@@ -5,79 +5,69 @@
         <b-tab title="Basis details" active title-item-class="w-50 text-center">
           <template v-if="!is_Load">
             <b-form @submit.prevent="onGridFormSubmit">
-              <b-row>
+              <b-colxx sm="12">
+                <label
+                  style="display: flex;justify-content: center;"
+                  class="form-group has-float-label"
+                >
+                  <img
+                    :src="image"
+                    style="border-radius: 20%;"
+                    alt="Image"
+                    width="120"
+                    height="120"
+                  />
+                </label>
+              </b-colxx>
+              <div
+                v-for="(lang, index) in $v.category_form.$each.$iter"
+                :key="index"
+              >
                 <b-colxx sm="12">
-                  <label
-                    style="display: flex;justify-content: center;"
-                    class="form-group has-float-label"
+                  <b-form-group
+                    class="has-float-label mb-4"
+                    :label="$t(`forms.${lang._name.$model}_name`)"
                   >
-                    <img
-                      :src="image"
-                      style="border-radius: 20%;"
-                      alt="Image"
-                      width="120"
-                      height="120"
-                    />
-                  </label>
-                </b-colxx>
-
-                <b-colxx sm="6">
-                  <b-form-group :label="$t('forms.en_title')">
                     <b-form-input
                       type="text"
-                      :state="!$v.gridForm.en_name.$error"
-                      v-model="$v.gridForm.en_name.$model"
+                      :state="!lang.name.$error"
+                      v-model="lang.name.$model"
                     />
-                    <b-form-invalid-feedback
-                      v-if="!$v.gridForm.en_name.required"
-                      >Please enter English title</b-form-invalid-feedback
+                    <b-form-invalid-feedback v-if="!lang.name.required"
+                      >Please enter title</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx sm="6">
-                  <b-form-group :label="$t('forms.ar_title')">
+                <b-colxx sm="12">
+                  <b-form-group
+                    class="has-float-label mb-4"
+                    :label="$t(`forms.${lang._name.$model}_desc`)"
+                  >
                     <b-form-input
                       type="text"
-                      :state="!$v.gridForm.ar_name.$error"
-                      v-model="$v.gridForm.ar_name.$model"
+                      :state="!lang.description.$error"
+                      v-model="lang.description.$model"
                     />
-                    <b-form-invalid-feedback
-                      v-if="!$v.gridForm.ar_name.required"
-                      >Please enter Arabic title</b-form-invalid-feedback
+                    <b-form-invalid-feedback v-if="!lang.description.required"
+                      >Please enter description</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx sm="6">
-                  <b-form-group :label="$t('forms.en_desc')">
-                    <b-form-input
-                      type="text"
-                      v-model="$v.gridForm.en_description.$model"
-                    />
-                  </b-form-group>
-                </b-colxx>
-                <b-colxx sm="6">
-                  <b-form-group :label="$t('forms.ar_desc')">
-                    <b-form-input
-                      type="text"
-                      :state="!$v.gridForm.ar_description.$error"
-                      v-model="$v.gridForm.ar_description.$model"
-                    />
-                  </b-form-group>
-                </b-colxx>
-                <b-colxx v-if="is_block_category" sm="12">
-                  <b-form-group :label="$t('forms.type')">
-                    <b-form-select
-                      :state="!$v.gridForm.select.$error"
-                      v-model="$v.gridForm.select.$model"
-                      :options="typeOptions"
-                      plain
-                    />
-                    <b-form-invalid-feedback v-if="!$v.gridForm.select.required"
-                      >Please select category type</b-form-invalid-feedback
-                    >
-                  </b-form-group>
-                </b-colxx>
-                <!-- <b-colxx v-if="category" sm="6">
+              </div>
+              <b-colxx v-if="is_block_category" sm="12">
+                <b-form-group :label="$t('forms.type')">
+                  <b-form-select
+                    :state="!$v.gridForm.select.$error"
+                    v-model="$v.gridForm.select.$model"
+                    :options="typeOptions"
+                    plain
+                  />
+                  <b-form-invalid-feedback v-if="!$v.gridForm.select.required"
+                    >Please select category type</b-form-invalid-feedback
+                  >
+                </b-form-group>
+              </b-colxx>
+              <!-- <b-colxx v-if="category" sm="6">
               <b-form-group :label="$t('forms.ar_desc')">
                 <b-form-input type="text" v-model="gridForm.add_to_menu" />
               </b-form-group>
@@ -88,19 +78,18 @@
               </b-form-group>
             </b-colxx> -->
 
-                <b-colxx xxs="12">
-                  <b-form-group :label="$t('forms.image')">
-                    <vue-dropzone
-                      ref="myVueDropzone"
-                      id="dropzone"
-                      :options="dropzoneOptions"
-                      @vdropzone-files-added="fileAdded"
-                      @vdropzone-sending-multiple="sendMessage"
-                      @vdropzone-removed-file="fileRemoved"
-                    ></vue-dropzone>
-                  </b-form-group>
-                </b-colxx>
-              </b-row>
+              <b-colxx xxs="12">
+                <b-form-group :label="$t('forms.image')">
+                  <vue-dropzone
+                    ref="myVueDropzone"
+                    id="dropzone"
+                    :options="dropzoneOptions"
+                    @vdropzone-files-added="fileAdded"
+                    @vdropzone-sending-multiple="sendMessage"
+                    @vdropzone-removed-file="fileRemoved"
+                  ></vue-dropzone>
+                </b-form-group>
+              </b-colxx>
 
               <b-button
                 :disabled="enable"
@@ -153,6 +142,7 @@ export default {
       select: null,
       create_role: null,
       file: null,
+      category_form: [],
       typeOptions: [],
       gridForm: {
         ar_name: "",
@@ -178,16 +168,17 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
+    category_form: {
+      $each: {
+        name: {
+          required
+        },
+        description: {},
+        _name: {}
+      }
+    },
     gridForm: {
-      en_name: {
-        required
-      },
-      ar_name: {
-        required
-      },
-      en_description: {},
-      ar_description: {},
-      select: {}
+      select: { required }
     }
   },
   created() {
@@ -197,6 +188,8 @@ export default {
         this.getBlockCategoryTypes())
       : this.getCategory({ id: this._id }),
       (this.gridForm.select = "just for form submit");
+    this.langs = localStorage.getItem("Languages");
+    this.make_collaction(this.langs, this.category_form);
   },
   methods: {
     ...mapActions([
@@ -207,31 +200,31 @@ export default {
 
       "getCategory"
     ]),
+    make_collaction(langs, form) {
+      console.log("make collaction", langs, form);
+      JSON.parse(langs).forEach(el => {
+        form.push({
+          name: "",
+          description: "",
+          _name: el.name
+        });
+      });
+    },
     onGridFormSubmit() {
       this.$v.$touch();
       this.$v.gridForm.$touch();
-      if (!this.$v.gridForm.$invalid) {
+      if (!this.$v.gridForm.$invalid && !this.$v.category_form.$invalid) {
         this.enable = true;
         if (this._type == "block") {
           this.updateBlockCategory({
-            info: {
-              "ar[name]": this.gridForm.ar_name,
-              "ar[description]": this.gridForm.ar_description,
-              "en[name]": this.gridForm.en_name,
-              "en[description]": this.gridForm.en_description,
-              type: this.gridForm.select
-            },
+            type: this.gridForm.select,
+            info: this.$v.category_form.$model,
             image: this.file ? this.file[0] : null,
             id: this._id
           });
         } else {
           this.updateCategory({
-            info: {
-              "ar[name]": this.gridForm.ar_name,
-              "ar[description]": this.gridForm.ar_description,
-              "en[name]": this.gridForm.en_name,
-              "en[description]": this.gridForm.en_description
-            },
+            info: this.$v.category_form.$model,
             image: this.file ? this.file[0] : null,
             id: this._id
           });
@@ -270,34 +263,6 @@ export default {
                 </div>
         `;
     },
-    // metaaaa
-    onMetaSubmit(value) {
-      if (this._type == "block") {
-        this.updateBlockCategory({
-          info: {
-            "ar[name]": this.gridForm.ar_name,
-            "ar[description]": this.gridForm.ar_description,
-            "en[name]": this.gridForm.en_name,
-            "en[description]": this.gridForm.en_description,
-            type: this.gridForm.select,
-            image: this.file ? this.file[0] : null
-          },
-          id: this._id
-        });
-      } else {
-        this.updateCategory({
-          info: {
-            "ar[name]": this.gridForm.ar_name,
-            "ar[description]": this.gridForm.ar_description,
-            "en[name]": this.gridForm.en_name,
-            "en[description]": this.gridForm.en_description,
-            image: this.file ? this.file[0] : null
-          },
-
-          id: this._id
-        });
-      }
-    },
     deleteMeta(id) {
       console.log(id);
     }
@@ -315,18 +280,21 @@ export default {
   },
   watch: {
     _category(newInfo, oldOne) {
-      this.gridForm.ar_name = newInfo.locales.ar.name
-        ? newInfo.locales.ar.name
-        : null;
-      this.gridForm.en_name = newInfo.locales.en.name
-        ? newInfo.locales.en.name
-        : null;
-      this.gridForm.ar_description = newInfo.locales.ar.description
-        ? newInfo.locales.ar.description
-        : null;
-      this.gridForm.en_description = newInfo.locales.en.description
-        ? newInfo.locales.en.description
-        : null;
+      this.category_form.forEach(el => {
+        switch (el._name) {
+          case "en":
+            el.name = newInfo.locales.en.name;
+            el.description = newInfo.locales.en.description;
+
+            break;
+          case "ar":
+            el.name = newInfo.locales.ar.name;
+            el.description = newInfo.locales.ar.description;
+            break;
+          default:
+            break;
+        }
+      });
       this.image = newInfo.image;
       this.is_Load = false;
     },
@@ -342,18 +310,21 @@ export default {
     },
     _blockCategory(newInfo, oldOne) {
       this.is_block_category = true;
-      this.gridForm.ar_name = newInfo.locales.ar.name
-        ? newInfo.locales.ar.name
-        : null;
-      this.gridForm.en_name = newInfo.locales.en.name
-        ? newInfo.locales.en.name
-        : null;
-      this.gridForm.ar_description = newInfo.locales.ar.description
-        ? newInfo.locales.ar.description
-        : null;
-      this.gridForm.en_description = newInfo.locales.en.description
-        ? newInfo.locales.en.description
-        : null;
+      this.category_form.forEach(el => {
+        switch (el._name) {
+          case "en":
+            el.name = newInfo.locales.en.name;
+            el.description = newInfo.locales.en.description;
+
+            break;
+          case "ar":
+            el.name = newInfo.locales.ar.name;
+            el.description = newInfo.locales.ar.description;
+            break;
+          default:
+            break;
+        }
+      });
       this.image = newInfo.image;
       this.gridForm.select = newInfo.type;
       this.is_Load = false;
