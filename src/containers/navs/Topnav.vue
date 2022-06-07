@@ -402,7 +402,7 @@ export default {
         setDirection(this._direction);
       }
       this.setLang({ locale: this._locale });
-      router.push("/user/login");
+      // router.push("/user/login");
 
       setTimeout(() => {
         window.location.reload();
