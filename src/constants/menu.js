@@ -53,6 +53,13 @@ const data = [
     roles: ["superadmin", "admin"]
   },
   {
+    id: "users",
+    icon: "simple-icon-people",
+    label: "Users",
+    to: `${adminRoot}/users`,
+    roles: ["superadmin", "admin"]
+  },
+  {
     id: "accountant",
     icon: "simple-icon-people",
     label: "Accountant",

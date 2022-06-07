@@ -223,6 +223,30 @@ const routes = [
         ]
       },
       {
+        path: "users",
+        component: () =>
+          import(/* webpackChunkName: "second-menu" */ "./views/app/users"),
+        redirect: `${adminRoot}/users/usersList`,
+        meta: { loginRequired: true, roles: ["superadmin", "admin"] },
+
+        children: [
+          {
+            path: "usersList",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/users/usersList"
+              )
+          },
+          {
+            path: "user",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/users/userForm"
+              )
+          }
+        ]
+      },
+      {
         path: "accountant",
         component: () =>
           import(/* webpackChunkName: "second-menu" */ "./views/app/users"),

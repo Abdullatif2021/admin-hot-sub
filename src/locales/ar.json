@@ -36,8 +36,9 @@
     "admins": "الادمنز",
     "category": "Category",
     "page": "تفاصيل الصفحة",
-    "accountant_table": "جدول المستخدمين",
+    "accountant_table": "جدول المحاسبين",
     "admins_table": "جدول المسؤولين",
+    "users_table": "جدول المستخدمين",
     "app": "Home",
     "userInfo": "User Info",
     "user": "بيانات المستخدم",
@@ -314,6 +315,7 @@
     "add-new-title": "Add New Todo",
     "title": "Title",
     "detail": "Detail",
+    "note": "ملاحظة",
     "category": "Category",
     "label": "Label",
     "status": "Status",
@@ -480,6 +482,9 @@
     "quill-bubble": "Quill Bubble"
   },
   "forms": {
+    "send": "ارسال",
+    "secondName": "الاسم الثاني",
+    "middleName": "الاسم الاوسط",
     "Yemail_filed": "الرجاء ادخال الايميل الخاص بك",
     "languageQuestion": "هل تريد تغيير لغتك المفضلة بشكل دائم؟",
     "basic_details": "معلومات اساسية",
@@ -782,8 +787,10 @@
   "DISPLAY": "عرض",
   "UPDATE": "تحديث",
   "OPEN": "فتح",
+  "VERIFY": "تاكيد",
   "EDIT": "تعديل",
   "admin": "ادمن",
+  "SEND_NOTE": "ارسال ملاحظة",
   "superadmin": "مشرف",
   "all": "الكل"
 }

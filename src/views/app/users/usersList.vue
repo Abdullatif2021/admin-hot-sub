@@ -1,11 +1,7 @@
 <template>
   <div>
     <datatable-heading
-      :title="
-        type === 'admins'
-          ? $t('menu.admins_table')
-          : $t('menu.accountant_table')
-      "
+      :title="$t(`menu.${_type}_table`)"
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
       :changePageSize="changePageSize"
@@ -43,18 +39,22 @@
           >
             <template slot="actions" slot-scope="props">
               <b-button
+                :variant="
+                  props.rowData.active === 1
+                    ? 'outline-theme-7'
+                    : 'outline-theme-6'
+                "
+                class="icon-button"
+                @click="active_user(props.rowData.id, props.rowData.active)"
+              >
+                <i class="iconsminds-radioactive"></i>
+              </b-button>
+              <b-button
                 variant="outline-theme-3"
                 class="icon-button"
                 @click="modify(props.rowData.id)"
               >
                 <i class="simple-icon-settings"></i>
-              </b-button>
-              <b-button
-                variant="outline-theme-6"
-                class="icon-button"
-                @click="delete_user(props.rowData.id)"
-              >
-                <i class="simple-icon-trash"></i>
               </b-button>
             </template>
           </vuetable>
@@ -117,7 +117,7 @@ export default {
       },
       page: 1,
       category: false,
-
+      _type: null,
       limit: null,
       perPage: 8,
       from: 0,
@@ -209,20 +209,54 @@ export default {
   },
 
   created() {
-    this.type = this.$route.fullPath.split("/")[2];
-    console.log(this.type);
-    this.getUsersList({
-      type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
-      role: null,
-      dir: null,
-      search: null,
-      order_by: null,
-      limit: null,
-      page: null
-    });
+    this._type = this.$route.fullPath.split("/")[2];
+    this.get_list(this.$route.fullPath.split("/")[2]);
   },
   methods: {
-    ...mapActions(["getUsersList", "deleteUser"]),
+    ...mapActions(["getUsersList", "activateUser"]),
+    get_list(type) {
+      switch (type) {
+        case "admins":
+          this.type = ["superadmin", "admin"];
+          this.getUsersList({
+            type: ["superadmin", "admin"],
+            role: null,
+            dir: null,
+            search: null,
+            order_by: null,
+            limit: null,
+            page: null
+          });
+          break;
+        case "accountant":
+          this.type = ["accountant"];
+          this.getUsersList({
+            type: ["accountant"],
+            role: null,
+            dir: null,
+            search: null,
+            order_by: null,
+            limit: null,
+            page: null
+          });
+          break;
+        case "users":
+          this.type = ["user"];
+          this.getUsersList({
+            type: ["user"],
+            role: null,
+            dir: null,
+            search: null,
+            order_by: null,
+            limit: null,
+            page: null
+          });
+          console.log(this.type);
+          break;
+        default:
+          break;
+      }
+    },
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -232,7 +266,7 @@ export default {
     },
     cancle() {
       this.this.getUsersList({
-        type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+        type: this.type,
 
         role: null,
         dir: null,
@@ -244,13 +278,13 @@ export default {
     },
     modify(id) {
       this.$router.push({
-        path: `${adminRoot}/${this.type}/user`,
+        path: `${adminRoot}/${this._type}/user`,
         query: { id: id }
       });
     },
     add_New() {
       this.$router.push({
-        path: `${adminRoot}/${this.type}/user`
+        path: `${adminRoot}/${this._type}/user`
       });
     },
     rowClicked(dataItem, event) {
@@ -291,8 +325,7 @@ export default {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
           this.getUsersList({
-            type:
-              this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+            type: this.type,
             sorting: true,
 
             role: this.sort.column,
@@ -309,8 +342,7 @@ export default {
           this.getUsersList({
             sorting: true,
 
-            type:
-              this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+            type: this.type,
 
             role: this.sort.column,
             dir: this.dir,
@@ -330,8 +362,7 @@ export default {
       } else {
         this.page = page;
         this.getUsersList({
-          type:
-            this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+          type: this.type,
 
           role: this.sort.column,
           dir: this.dir,
@@ -342,14 +373,15 @@ export default {
         });
       }
     },
-    delete_user(id) {
-      this.deleteUser({ userId: id });
+    active_user(id, active) {
+      this.activateUser({ id: id, active: active === 1 ? 0 : 1 });
     },
+
     changePageSize(perPage) {
       console.log(perPage);
       this.limit = perPage;
       this.getUsersList({
-        type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+        type: this.type,
 
         role: this.sort.column,
         dir: this.dir,
@@ -364,7 +396,7 @@ export default {
       this.sort = sort;
 
       this.getUsersList({
-        type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+        type: this.type,
 
         role: sort.column,
         dir: this.dir,
@@ -375,10 +407,10 @@ export default {
       });
     },
     searchChange(val) {
-      console.log(val);
+      console.log(val, this.type);
       this.search = val;
       this.getUsersList({
-        type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
+        type: this.type,
 
         role: this.sort.column,
         dir: this.dir,
@@ -426,7 +458,7 @@ export default {
     ...mapGetters([
       "usersList",
       "ListActions",
-      "_successDeleteUser",
+      "_successActivateUser",
       "processing"
     ]),
     isSelectedAll() {
@@ -442,17 +474,8 @@ export default {
   watch: {
     $route(to, from) {
       this.reload = false;
-      this.type = this.$route.fullPath.split("/")[2];
-      console.log("from watcher", this.type);
-      this.getUsersList({
-        type: this.type === "admins" ? ["superadmin", "admin"] : ["accountant"],
-        role: null,
-        dir: null,
-        search: null,
-        order_by: null,
-        limit: null,
-        page: null
-      });
+      this.get_list(this.$route.fullPath.split("/")[2]);
+      this._type = this.$route.fullPath.split("/")[2];
     },
     searchChange(newQuestion, oldQuestion) {
       if (newQuestion) {
@@ -460,10 +483,11 @@ export default {
         console.log("new", newQuestion);
       }
     },
-    _successDeleteUser(newVal, old) {
+    _successActivateUser(newVal, old) {
       this.getUsersList({
         role: this.sort.column,
         dir: this.dir,
+        type: this.type,
         search: this.search,
         order_by: this.order_by,
         limit: this.limit,

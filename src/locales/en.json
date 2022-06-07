@@ -38,6 +38,7 @@
     "page": "Page Details",
     "accountant_table": "Accountant Table",
     "admins_table": "Admins Table",
+    "users_table": "Users Table",
     "app": "Home",
 
     "userInfo": "User Info",
@@ -314,6 +315,7 @@
     "add-new": "ADD NEW",
     "add-new-title": "Add New Todo",
     "title": "Title",
+    "note": "Note",
     "detail": "Detail",
     "category": "Category",
     "label": "Label",
@@ -482,6 +484,9 @@
   },
   "forms": {
     "Yemail_filed": "Please enter your email",
+    "send": "Send",
+    "secondName": "Second Name",
+    "middleName": "Middle Name",
     "languageQuestion": "Do you want to change your prefer language permanently ?",
     "ar_content": "Arabic Content",
     "en_content": "English Content",
@@ -494,8 +499,16 @@
     "videos": "Videos",
     "account": "Account",
     "sign_out": "Sign out",
+
+    "identity_number": "Identity Number",
+    "identity_number_filed": "Please enter the Identity Number",
+    "license_number": "License Number",
+    "license_number_filed": "Please enter the License Number",
+
     "youtube_filed": "Please enter Youtube Link",
     "first_name_filed": "Please enter first name",
+    "second_name_filed": "Please enter second name",
+    "middle_name_filed": "Please enter middle name",
     "last_name_filed": "Please enter last name",
     "email_filed": "Please enter email",
     "pass_filed": "Password is required",
@@ -779,5 +792,14 @@
   "edit_category": "Edit Category",
   "create_category": "Create Category",
   "DOWNLOAD": "Download",
-  "DELETE": "Delete"
+  "DELETE": "Delete",
+  "DISPLAY": "Display",
+  "UPDATE": "Update",
+  "OPEN": "Open",
+  "VERIFY": "Verify",
+  "EDIT": "Edit",
+  "SEND_NOTE": "Send Note",
+  "admin": "Admin",
+  "superadmin": "Super Admin",
+  "all": "All"
 }

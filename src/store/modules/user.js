@@ -22,24 +22,30 @@ export default {
     usersList: null,
     ListActions: null,
     UserInfo: null,
+    UserAttach: null,
     resetPasswordSuccess: null,
     preferLocale: null,
-    successDeleteUser: null,
+    successActivateUser: null,
     updatedProfile: null,
+    verfiedAtachmet: null,
     updateUser_Info: null,
-    emailErr: null
+    emailErr: null,
+    sendNoteSuccess: null
   },
   getters: {
     currentUser: state => state.currentUser,
     ListActions: state => state.ListActions,
     UserInfo: state => state.UserInfo,
+    _UserAttach: state => state.UserAttach,
+    _sendNoteSuccess: state => state.sendNoteSuccess,
     usersList: state => state.usersList,
+    _verfiedAtachmet: state => state.verfiedAtachmet,
     processing: state => state.processing,
     loginError: state => state.loginError,
     forgotMailSuccess: state => state.forgotMailSuccess,
     resetPasswordSuccess: state => state.resetPasswordSuccess,
     _preferLocale: state => state.preferLocale,
-    _successDeleteUser: state => state.successDeleteUser,
+    _successActivateUser: state => state.successActivateUser,
     _updatedProfileSuccessfuly: state => state.updatedProfile,
     _updateUserInfo: state => state.updateUser_Info,
     _emailErr: state => state.emailErr
@@ -55,6 +61,9 @@ export default {
     },
     setUserInfo(state, payload) {
       state.UserInfo = payload;
+    },
+    setUserAttach(state, payload) {
+      state.UserAttach = payload;
     },
     setUsersList(state, payload) {
       state.usersList = payload.data;
@@ -86,8 +95,8 @@ export default {
       state.processing = false;
       state.resetPasswordSuccess = true;
     },
-    successDeleteUser(state, payload) {
-      state.successDeleteUser = payload;
+    successActivateUser(state, payload) {
+      state.successActivateUser = payload;
     },
     clearError(state) {
       state.loginError = null;
@@ -100,6 +109,12 @@ export default {
     },
     emailErr(state, payload) {
       state.emailErr = payload;
+    },
+    sendNoteSuccess(state, payload) {
+      state.sendNoteSuccess = payload;
+    },
+    verfiedAtachmet(state, payload) {
+      state.verfiedAtachmet = payload;
     }
   },
   actions: {
@@ -109,7 +124,7 @@ export default {
 
       axios
         .post(`${apiUrl}/auth`, {
-          email: payload.email,
+          username: payload.email,
           password: payload.password
         })
         .then(res => {
@@ -195,13 +210,22 @@ export default {
           }
         });
     },
-    deleteUser({ commit }, payload) {
-      const id = payload.userId;
-      axios.delete(`${apiUrl}/users/${id}`).then(res => {
-        if (res.status === 200) {
-          commit("successDeleteUser", res);
-        }
-      });
+
+    activateUser({ commit }, payload) {
+      const id = payload.id;
+      axios
+        .put(
+          `${apiUrl}/users/${id}`,
+          {
+            active: payload.active
+          },
+          {}
+        )
+        .then(res => {
+          if (res.status === 200) {
+            commit("successActivateUser", res);
+          }
+        });
     },
     resetPassword({ commit }, payload) {
       commit("clearError");
@@ -238,6 +262,42 @@ export default {
         })
         .then(res => {
           commit("setUserInfo", res.data.data[0]);
+        });
+    },
+    getUserAttach({ commit }, payload) {
+      commit("setProcessing", false);
+      const userId = payload.id;
+      axios
+        .get(`${apiUrl}/user/attachments/all?user_id=${userId}`)
+        .then(res => {
+          commit("setProcessing", true);
+          return res;
+        })
+        .then(res => {
+          commit("setUserAttach", res.data.data);
+        });
+    },
+    verfiyAttach({ commit }, payload) {
+      const id = payload.id;
+      axios
+        .post(`${apiUrl}/user/attachments/verfiy/${id}`)
+        .then(res => {
+          return res;
+        })
+        .then(res => {
+          commit("verfiedAtachmet", res.data.data);
+        });
+    },
+    sendAttachmentNote({ commit, dispatch }, payload) {
+      const formData = new FormData();
+      Object.entries(payload).forEach(entry => {
+        const [key, value] = entry;
+        formData.append(key, value);
+      });
+      axios
+        .post(`${apiUrl}/user/attachments/report`, formData, {})
+        .then(res => {
+          commit("sendNoteSuccess", res.data.data);
         });
     },
     updateUserProfile({ commit }, payload) {
