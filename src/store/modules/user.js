@@ -30,12 +30,14 @@ export default {
     verfiedAtachmet: null,
     updateUser_Info: null,
     emailErr: null,
+    get_Countries: null,
     sendNoteSuccess: null
   },
   getters: {
     currentUser: state => state.currentUser,
     ListActions: state => state.ListActions,
     UserInfo: state => state.UserInfo,
+    _getCountries: state => state.get_Countries,
     _UserAttach: state => state.UserAttach,
     _sendNoteSuccess: state => state.sendNoteSuccess,
     usersList: state => state.usersList,
@@ -94,6 +96,9 @@ export default {
       state.currentUser = null;
       state.processing = false;
       state.resetPasswordSuccess = true;
+    },
+    getCountries(state, payload) {
+      state.get_Countries = payload;
     },
     successActivateUser(state, payload) {
       state.successActivateUser = payload;
@@ -386,6 +391,15 @@ export default {
             localStorage.clear();
           }
         );
+    },
+    getCountries({ commit }) {
+      axios.get(`${apiUrl}/countries`).then(res => {
+        console.log("wsefwsefsefsefsefsefsef", res);
+        commit("getCountries", res.data.data);
+      });
+    },
+    getNationalities() {
+      // https://alqias-api.lilacdev.com/public/api/countries/getcountry
     }
   }
 };

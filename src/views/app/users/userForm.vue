@@ -1,11 +1,13 @@
 <template>
   <div>
     <datatable-heading
-      :details="true"
+      :details="false"
+      :show="false"
       :reload="true"
+      @add_new="add_New_attach"
       :title="userId ? $t('forms.grid') : $t('forms.createUser')"
     ></datatable-heading>
-    <b-row v-if="!usersEdit">
+    <b-row v-if="!isUserForm">
       <b-colxx xxs="12">
         <template v-if="processing">
           <b-card class="mb-4">
@@ -26,7 +28,7 @@
                     >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx v-if="usersForm" sm="6">
+                <b-colxx sm="6">
                   <b-form-group :label="$t('forms.secondName')">
                     <b-form-input
                       type="text"
@@ -41,7 +43,7 @@
                     >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx v-if="usersForm" sm="6">
+                <b-colxx sm="6">
                   <b-form-group :label="$t('forms.middleName')">
                     <b-form-input
                       type="text"
@@ -121,7 +123,7 @@
                     >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx v-if="usersForm" sm="6">
+                <b-colxx sm="6">
                   <b-form-group :label="$t('forms.identity_number')">
                     <b-form-input
                       type="text"
@@ -136,7 +138,7 @@
                     >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx v-if="usersForm" sm="6">
+                <b-colxx sm="6">
                   <b-form-group :label="$t('forms.license_number')">
                     <b-form-input
                       type="text"
@@ -151,48 +153,33 @@
                     >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx v-if="usersForm" sm="6">
-                  <b-form-group :label="$t('forms.secondName')">
-                    <b-form-input
-                      type="text"
-                      :state="!$v.gridForm.second_name.$error"
-                      v-model="$v.gridForm.second_name.$model"
+                <b-colxx sm="6">
+                  <b-form-group :label="$t('forms.nationality')">
+                    <b-form-select
+                      :state="!$v.gridForm.nationality.$error"
+                      v-model="$v.gridForm.nationality.$model"
+                      :options="nationalityOptions"
+                      plain
                     />
                     <b-form-invalid-feedback
-                      v-if="!$v.gridForm.second_name.required"
+                      v-if="!$v.gridForm.nationality.required"
                       >{{
-                        $t("forms.second_name_filed")
+                        $t("forms.nationality_filed")
                       }}</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx v-if="usersForm" sm="6">
-                  <b-form-group :label="$t('forms.secondName')">
-                    <b-form-input
-                      type="text"
-                      :state="!$v.gridForm.second_name.$error"
-                      v-model="$v.gridForm.second_name.$model"
+                <b-colxx sm="6">
+                  <b-form-group :label="$t('forms.country')">
+                    <b-form-select
+                      :state="!$v.gridForm.country.$error"
+                      v-model="$v.gridForm.country.$model"
+                      :options="countryOptions"
+                      plain
                     />
                     <b-form-invalid-feedback
-                      v-if="!$v.gridForm.second_name.required"
-                      >{{
-                        $t("forms.second_name_filed")
-                      }}</b-form-invalid-feedback
-                    >
-                  </b-form-group>
-                </b-colxx>
-                <b-colxx v-if="usersForm" sm="6">
-                  <b-form-group :label="$t('forms.secondName')">
-                    <b-form-input
-                      type="text"
-                      :state="!$v.gridForm.second_name.$error"
-                      v-model="$v.gridForm.second_name.$model"
-                    />
-                    <b-form-invalid-feedback
-                      v-if="!$v.gridForm.second_name.required"
-                      >{{
-                        $t("forms.second_name_filed")
-                      }}</b-form-invalid-feedback
+                      v-if="!$v.gridForm.country.required"
+                      >{{ $t("forms.country_filed") }}</b-form-invalid-feedback
                     >
                   </b-form-group>
                 </b-colxx>
@@ -210,7 +197,7 @@
                     >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx sm="12">
+                <b-colxx sm="6">
                   <b-form-group :label="$t('forms.dob')">
                     <datepicker
                       :bootstrap-styling="true"
@@ -264,7 +251,7 @@
         </template>
       </b-colxx>
     </b-row>
-    <b-row v-if="usersEdit">
+    <b-row v-if="isUserForm">
       <b-colxx xxs="12">
         <template v-if="processing">
           <b-card class="mb-4">
@@ -287,6 +274,36 @@
                           v-if="!$v.gridForm.first_name.required"
                           >{{
                             $t("forms.first_name_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.secondName')">
+                        <b-form-input
+                          type="text"
+                          :state="!$v.gridForm.second_name.$error"
+                          v-model="$v.gridForm.second_name.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.second_name.required"
+                          >{{
+                            $t("forms.second_name_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.middleName')">
+                        <b-form-input
+                          type="text"
+                          :state="!$v.gridForm.middle_name.$error"
+                          v-model="$v.gridForm.middle_name.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.middle_name.required"
+                          >{{
+                            $t("forms.middle_name_filed")
                           }}</b-form-invalid-feedback
                         >
                       </b-form-group>
@@ -358,7 +375,100 @@
                         >
                       </b-form-group>
                     </b-colxx>
-                    <b-colxx v-if="!userId" sm="12">
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.identity_number')">
+                        <b-form-input
+                          type="text"
+                          :state="!$v.gridForm.identity_number.$error"
+                          v-model="$v.gridForm.identity_number.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.identity_number.required"
+                          >{{
+                            $t("forms.identity_number_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.license_number')">
+                        <b-form-input
+                          type="number"
+                          :state="!$v.gridForm.license_number.$error"
+                          v-model="$v.gridForm.license_number.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.license_number.required"
+                          >{{
+                            $t("forms.license_number_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <!-- <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.nationality')">
+                        <b-form-input
+                          type="text"
+                          :state="!$v.gridForm.nationality.$error"
+                          v-model="$v.gridForm.nationality.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.nationality.required"
+                          >{{
+                            $t("forms.nationality_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.country')">
+                        <b-form-input
+                          type="text"
+                          :state="!$v.gridForm.country.$error"
+                          v-model="$v.gridForm.country.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.country.required"
+                          >{{
+                            $t("forms.country_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx> -->
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.nationality')">
+                        <b-form-select
+                          :state="!$v.gridForm.nationality.$error"
+                          v-model="$v.gridForm.nationality.$model"
+                          :options="nationalityOptions"
+                          plain
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.nationality.required"
+                          >{{
+                            $t("forms.nationality_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.country')">
+                        <b-form-select
+                          :state="!$v.gridForm.country.$error"
+                          v-model="$v.gridForm.country.$model"
+                          :options="countryOptions"
+                          plain
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.country.required"
+                          >{{
+                            $t("forms.country_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+
+                    <b-colxx v-if="!userId" sm="6">
                       <b-form-group :label="$t('forms.role')">
                         <b-form-select
                           :state="!$v.gridForm.role.$error"
@@ -372,7 +482,7 @@
                         >
                       </b-form-group>
                     </b-colxx>
-                    <b-colxx sm="12">
+                    <b-colxx sm="6">
                       <b-form-group :label="$t('forms.dob')">
                         <datepicker
                           :bootstrap-styling="true"
@@ -521,16 +631,13 @@ export default {
       DateSelected: false,
       attachmentId: null,
       type: null,
-      usersEdit: false,
-      usersForm: false,
+      isUserForm: false,
       note: null,
       enable: false,
       create_role: null,
-      roleOptions: [
-        // { text: "Super Admin", value: 1 },
-        // { text: "Admin", value: 2 },
-        // { text: "Accountant", value: 7 }
-      ],
+      roleOptions: [],
+      countryOptions: [],
+      nationalityOptions: [],
       attach_Options: [
         { name: "OPEN", value: 0 },
         { name: "VERIFY", value: 1 },
@@ -543,6 +650,12 @@ export default {
       gridForm: {
         first_name: "",
         last_name: "",
+        second_name: "",
+        middle_name: "",
+        identity_number: "",
+        country: "",
+        nationality: "",
+        license_number: "",
         email: "",
         password: "",
         phone_number: "",
@@ -603,33 +716,33 @@ export default {
         required
       },
       second_name: {
-        required: requiredIf(gridForm => {
-          return this.usersForm;
+        required: requiredIf(function() {
+          return this.isOptional;
         })
       },
       middle_name: {
-        required: requiredIf(gridForm => {
-          return this.usersForm;
+        required: requiredIf(function() {
+          return this.isOptional;
         })
       },
       identity_number: {
-        required: requiredIf(gridForm => {
-          return this.usersForm;
+        required: requiredIf(function() {
+          return this.isOptional;
         })
       },
       country: {
-        required: requiredIf(gridForm => {
-          return this.usersForm;
+        required: requiredIf(function() {
+          return this.isOptional;
         })
       },
       license_number: {
-        required: requiredIf(gridForm => {
-          return this.usersForm;
+        required: requiredIf(function() {
+          return this.isOptional;
         })
       },
       nationality: {
-        required: requiredIf(gridForm => {
-          return this.usersForm;
+        required: requiredIf(function() {
+          return this.isOptional;
         })
       },
       dob: {
@@ -656,16 +769,19 @@ export default {
   created() {
     this.type = this.$route.fullPath.split("/")[2];
     this.userId = this.$route.query.id;
-
-    if ((this.type = "users")) {
-      this.usersForm = true;
-    }
-    if ((this.type = "users" && this.userId)) {
-      this.usersEdit = true;
-    }
-    if (this.userId) {
+    this.getCountries();
+    this.getNationalities();
+    console.log(this.type);
+    if (this.type === "users" && !this.userId) {
+      this.isUserForm = false;
+      this.creation(this.type);
+    } else if (this.type === "users" && this.userId) {
+      this.isUserForm = true;
       this.getUserInfo({ id: this.userId });
       this.getUserAttach({ id: this.userId });
+      this.creation(this.type);
+    } else if (this.userId) {
+      this.getUserInfo({ id: this.userId });
     } else {
       this.creation(this.type);
     }
@@ -674,6 +790,8 @@ export default {
     ...mapActions([
       "getUserInfo",
       "getUserAttach",
+      "getCountries",
+      "getNationalities",
       "verfiyAttach",
       "updateUserInfo",
       "createUser",
@@ -688,10 +806,13 @@ export default {
       if (this.userId) {
         // because of the form validation i set password
         this.getRole();
-        this.gridForm.password = "fr234f23f324";
         this.$v.$touch();
         this.$v.gridForm.$touch();
+        this.gridForm.password = "wwerwe234234";
         if (!this.$v.gridForm.$invalid) {
+          console.log("!this.$v.gridForm.$invalid");
+          console.log(this.gridForm);
+
           this.enable = true;
           this.updateUserInfo({
             user: {
@@ -699,8 +820,15 @@ export default {
               last_name: this.gridForm.last_name,
               phone_number: this.gridForm.phone_number,
               email: this.gridForm.email,
+              identity_number: this.gridForm.identity_number,
+              license_number: this.gridForm.license_number,
+              second_name: this.gridForm.second_name,
+              country: this.gridForm.country,
+              nationality: this.gridForm.nationality,
+              middle_name: this.gridForm.middle_name,
               role: this.getRole(),
               dob: this.gridForm.dob,
+              password: this.gridForm.password,
               active: this.gridForm.active
             },
             type: this.type,
@@ -709,23 +837,34 @@ export default {
         }
       } else {
         this.$v.$touch();
+        console.log("ewedaedaedaedsedsedsawdaaaaaaaaaaaaaaaaaaaa");
         this.$v.gridForm.$touch();
         if (!this.$v.gridForm.$invalid) {
           this.enable = true;
           this.createUser({
-            user: {
-              first_name: this.gridForm.first_name,
-              last_name: this.gridForm.last_name,
-              phone_number: this.gridForm.phone_number,
-              email: this.gridForm.email,
-              role: this.gridForm.role,
-              dob: this.gridForm.dob,
-              password: this.gridForm.password
-            },
+            // user: {
+            //   first_name: this.gridForm.first_name,
+            //   last_name: this.gridForm.last_name,
+            //   phone_number: this.gridForm.phone_number,
+            //   email: this.gridForm.email,
+            //   identity_number: this.gridForm.identity_number,
+            //   second_name: this.gridForm.second_name,
+            //   country: this.gridForm.country ? this.gridForm.country : null,
+            //   nationality: this.gridForm.nationality ? this.gridForm.nationality : null,
+            //   license_number: this.gridForm.license_number,
+            //   middle_name: this.gridForm.middle_name,
+            //   role: this.gridForm.role,
+            //   dob: this.gridForm.dob,
+            //   password: this.gridForm.password
+            // },
+            user: this.gridForm,
             type: this.type
           });
         }
       }
+    },
+    add_New_attach() {
+      console.log("wefwerwerwerwerwerwerwer");
     },
     attach_Action(value, item) {
       console.log(item);
@@ -744,6 +883,7 @@ export default {
           break;
       }
     },
+
     hideModal(refname) {
       this.$refs[refname].hide();
     },
@@ -766,17 +906,22 @@ export default {
     selectedDate() {
       this.DateSelected = true;
     },
+
     creation(type) {
       console.log(type);
+      this.isUserForm = false;
       switch (type) {
         case "admins":
+          this.isUserForm = false;
           return (this.roleOptions = [
             { text: "Super Admin", value: 1 },
             { text: "Admin", value: 2 }
           ]);
         case "accountant":
+          this.isUserForm = false;
           return (this.roleOptions = [{ text: "Accountant", value: 7 }]);
         case "users":
+          this.isUserForm = true;
           return (this.roleOptions = [{ text: "User", value: 3 }]);
       }
     }
@@ -789,10 +934,14 @@ export default {
       "_updateUserInfo",
       "_UserAttach",
       "_verfiedAtachmet",
-      "_sendNoteSuccess"
+      "_sendNoteSuccess",
+      "_getCountries"
     ]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
+    },
+    isOptional() {
+      return this.isUserForm; // some conditional logic here...
     },
     role: {
       get() {
@@ -814,6 +963,12 @@ export default {
       this.gridForm.email = newInfo.email;
       this.gridForm.dob = newInfo.dob;
       this.gridForm.phone_number = newInfo.phone_number;
+      // this.gridForm.password = newInfo.password;
+      this.gridForm.second_name = newInfo.second_name;
+      this.gridForm.middle_name = newInfo.middle_name;
+      this.gridForm.identity_number = newInfo.identity_number;
+      this.gridForm.country = newInfo.country;
+      this.gridForm.nationality = newInfo.nationality;
       this.gridForm.role = newInfo.role[0];
       this.gridForm.active = newInfo.active;
     },
@@ -848,6 +1003,22 @@ export default {
           { duration: 3000, permanent: false }
         );
       }
+    },
+    _getCountries(newCon, oldOne) {
+      newCon.forEach(option => {
+        this.countryOptions.push(
+          new Object({
+            value: option.locales.en.name,
+            text: option.locales.en.name
+          })
+        );
+        this.nationalityOptions.push(
+          new Object({
+            value: option.locales.en.name,
+            text: option.locales.en.name
+          })
+        );
+      });
     },
 
     _emailErr(newd, odt) {

@@ -14,7 +14,7 @@
         >
       </div>
       <piaf-breadcrumb v-if="reload" />
-      <div v-if="!details" class="mb-2 mt-2">
+      <div v-if="!details || !show" class="mb-2 mt-2">
         <b-collapse id="displayOptions" class="d-md-block">
           <div v-if="reload" class="d-block d-md-inline-block pt-1">
             <b-dropdown
@@ -89,6 +89,7 @@ export default {
     "total",
     "perPage",
     "Filtered",
+    "show",
     "sortOptions",
     "category",
     "details",
