@@ -5626,6 +5626,11 @@ input:-webkit-autofill {
   position: fixed;
   z-index: 1;
 }
+.phone_checkbox {
+  margin: 10px;
+  width: 23px;
+  height: 18px;
+}
 
 @keyframes spin {
   to {

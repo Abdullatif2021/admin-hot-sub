@@ -313,8 +313,9 @@
   },
   "todo": {
     "add-new": "ADD NEW",
-    "add-new-title": "Add New Todo",
+    "add-new-attach": "Add Attachment",
     "title": "Title",
+
     "note": "Note",
     "detail": "Detail",
     "category": "Category",
@@ -485,6 +486,11 @@
   "forms": {
     "Yemail_filed": "Please enter your email",
     "send": "Send",
+    "wallet": "Wallet",
+    "transactions": "Transactions",
+    "deposits": "Deposits",
+    "balance": "Balance",
+    "total_balance": "Totlal Balance",
     "secondName": "Second Name",
     "middleName": "Middle Name",
     "languageQuestion": "Do you want to change your prefer language permanently ?",
@@ -802,6 +808,8 @@
   "VERIFY": "Verify",
   "EDIT": "Edit",
   "SEND_NOTE": "Send Note",
+  "SEND_Attach": "Add Attachment",
+
   "admin": "Admin",
   "superadmin": "Super Admin",
   "all": "All"

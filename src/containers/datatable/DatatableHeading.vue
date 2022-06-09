@@ -4,13 +4,15 @@
       <h1>{{ title }}</h1>
       <div class="top-right-button-container">
         <b-button
-          v-if="!details && !add_new"
+          v-if="!details && !add_new && attach"
           v-b-modal.modalright
           variant="primary"
           size="lg"
           class="top-right-button"
           @click="add_New()"
-          >{{ $t("todo.add-new") }}</b-button
+          >{{
+            attach ? $t("todo.add-new-attach") : $t("todo.add-new")
+          }}</b-button
         >
       </div>
       <piaf-breadcrumb v-if="reload" />
@@ -45,7 +47,7 @@
             </div>
             <!-- <i @click="cancle()" class="simple-icon-close" /> -->
           </div>
-          <div class="float-md-right pt-1">
+          <div v-if="pageSize" class="float-md-right pt-1">
             <span class="text-muted text-small mr-1 mb-2"
               >{{ from }}-{{ to }} {{ $t("forms.of") }} {{ total }}</span
             >
@@ -93,11 +95,15 @@ export default {
     "sortOptions",
     "category",
     "details",
+    "attach",
     "add_new",
+    "pageSize",
     "reload"
   ],
   data() {
     return {
+      pageSize: true,
+      attach: false,
       categories: [
         {
           label: "Cakes",

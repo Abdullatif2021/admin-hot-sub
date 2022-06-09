@@ -313,7 +313,11 @@
   "todo": {
     "add-new": "اضافة جديد",
     "add-new-title": "Add New Todo",
+    "add-new-attach": "إضافة مرفق",
     "title": "Title",
+    "wallet": "المحفظة",
+    "transactions": "المعاملات",
+    "deposits": "مبالغ التامين",
     "detail": "Detail",
     "note": "ملاحظة",
     "category": "Category",
@@ -484,6 +488,7 @@
   "forms": {
     "send": "ارسال",
     "secondName": "الاسم الثاني",
+
     "middleName": "الاسم الاوسط",
     "Yemail_filed": "الرجاء ادخال الايميل الخاص بك",
     "languageQuestion": "هل تريد تغيير لغتك المفضلة بشكل دائم؟",
@@ -494,6 +499,8 @@
     "account": "الحساب الشخصي",
     "gender": "الجنس",
     "country": "البلد",
+    "balance": "الباقي",
+    "total_balance": "المجموع الكلي",
     "country_filed": "الرجاء اختيار البلد",
     "sign_out": "تسجيل الخروج",
     "name_filed": "الرجاء ادخال العنوان",

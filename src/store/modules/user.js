@@ -28,10 +28,12 @@ export default {
     successActivateUser: null,
     updatedProfile: null,
     verfiedAtachmet: null,
+    AttachCategory: null,
     updateUser_Info: null,
     emailErr: null,
     get_Countries: null,
-    sendNoteSuccess: null
+    sendNoteSuccess: null,
+    addAttachSuccess: null
   },
   getters: {
     currentUser: state => state.currentUser,
@@ -39,6 +41,8 @@ export default {
     UserInfo: state => state.UserInfo,
     _getCountries: state => state.get_Countries,
     _UserAttach: state => state.UserAttach,
+    _addAttachSuccess: state => state.addAttachSuccess,
+    _AttachCategory: state => state.AttachCategory,
     _sendNoteSuccess: state => state.sendNoteSuccess,
     usersList: state => state.usersList,
     _verfiedAtachmet: state => state.verfiedAtachmet,
@@ -97,6 +101,9 @@ export default {
       state.processing = false;
       state.resetPasswordSuccess = true;
     },
+    addAttachSuccess(state, payload) {
+      state.addAttachSuccess = payload;
+    },
     getCountries(state, payload) {
       state.get_Countries = payload;
     },
@@ -111,6 +118,9 @@ export default {
     },
     update_UserInfo(state, payload) {
       state.updateUser_Info = payload;
+    },
+    getAttachCategory(state, payload) {
+      state.AttachCategory = payload;
     },
     emailErr(state, payload) {
       state.emailErr = payload;
@@ -400,6 +410,24 @@ export default {
     },
     getNationalities() {
       // https://alqias-api.lilacdev.com/public/api/countries/getcountry
+    },
+    addAttachment({ commit }, payload) {
+      const userId = payload.userId;
+      const formData = new FormData();
+      Object.entries(payload).forEach(entry => {
+        const [key, value] = entry;
+        formData.append(key, value);
+      });
+      axios
+        .post(`${apiUrl}/user/attachments/${userId}`, formData, {})
+        .then(res => {
+          commit("addAttachSuccess", res);
+        });
+    },
+    getAttachCategory({ commit }, payload) {
+      axios.get(`${apiUrl}/user/attachments/categories`).then(res => {
+        commit("getAttachCategory", res.data.data);
+      });
     }
   }
 };

@@ -3,6 +3,8 @@
     <datatable-heading
       :details="false"
       :show="false"
+      :pageSize="false"
+      :attach="add_attach"
       :reload="true"
       @add_new="add_New_attach"
       :title="userId ? $t('forms.grid') : $t('forms.createUser')"
@@ -257,9 +259,10 @@
           <b-card class="mb-4">
             <b-tabs card no-fade>
               <b-tab
+                @click="add_attach = false"
                 :title="$t(`forms.basic_details`)"
                 active
-                title-item-class="w-50 text-center"
+                title-item-class="w-30 text-center"
               >
                 <b-form @submit.prevent="onGridFormSubmit">
                   <b-row>
@@ -361,12 +364,20 @@
                     </b-colxx>
 
                     <b-colxx sm="12">
-                      <b-form-group :label="$t('forms.phonenumber')">
+                      <b-form-group
+                        class="mb-3"
+                        style="
+    display: flex;
+"
+                        :label="$t('forms.phonenumber')"
+                      >
+                        <input type="checkbox" class="phone_checkbox" />
                         <b-form-input
                           type="number"
                           :state="!$v.gridForm.phone_number.$error"
                           v-model="$v.gridForm.phone_number.$model"
                         />
+
                         <b-form-invalid-feedback
                           v-if="!$v.gridForm.phone_number.required"
                           >{{
@@ -533,9 +544,17 @@
               </b-tab>
 
               <b-tab
-                title-item-class="w-50 text-center"
-                :title="$t(`forms.attach`)"
+                title-item-class="w-30 text-center"
+                @click="add_attach = true"
               >
+                <template #title>
+                  <b-spinner
+                    v-if="getAttachments"
+                    type="border"
+                    small
+                  ></b-spinner>
+                  {{ $t(`forms.attach`) }}
+                </template>
                 <b-colxx xxs="12">
                   <template v-if="processing">
                     <vuetable
@@ -573,6 +592,20 @@
                   </template>
                 </b-colxx>
               </b-tab>
+              <b-tab
+                title-item-class="w-30 text-center"
+                @click="add_attach = false"
+              >
+                <template #title>
+                  <b-spinner
+                    v-if="getTransactions"
+                    type="border"
+                    small
+                  ></b-spinner>
+                  {{ $t(`forms.wallet`) }}
+                </template>
+                <user_wallet />
+              </b-tab>
             </b-tabs>
           </b-card>
         </template>
@@ -602,6 +635,45 @@
         }}</b-button>
       </template>
     </b-modal>
+    <b-modal
+      id="attach"
+      ref="attach"
+      :title="$t('todo.add-new-attach')"
+      :no-close-on-backdrop="true"
+    >
+      <b-form-group :label="$t('forms.category')">
+        <b-form-select
+          :state="!$v.attach_form.category.$error"
+          v-model="$v.attach_form.category.$model"
+          :options="attach_category_options"
+          plain
+        />
+        <b-form-invalid-feedback v-if="!$v.attach_form.category.required">{{
+          $t("forms.category_filed")
+        }}</b-form-invalid-feedback>
+      </b-form-group>
+      <b-form-group :label="$t('block.file')">
+        <vue-dropzone
+          ref="myVueDropzone"
+          id="dropzone"
+          :options="dropzoneOptions"
+          @vdropzone-files-added="fileAdded"
+          @vdropzone-removed-file="fileRemoved"
+        ></vue-dropzone>
+      </b-form-group>
+      <template slot="modal-footer">
+        <b-button
+          variant="primary"
+          @click="addAttach('attach')"
+          class="mr-1"
+          :disabled="file_added"
+          >{{ $t("forms.send") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('attach')">{{
+          $t("survey.cancel")
+        }}</b-button>
+      </template>
+    </b-modal>
   </div>
 </template>
 <script>
@@ -610,6 +682,8 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { validationMixin } from "vuelidate";
 import Datepicker from "vuejs-datepicker";
+import user_wallet from "./user_wallet.vue";
+import VueDropzone from "vue2-dropzone";
 const {
   required,
   email,
@@ -622,7 +696,9 @@ export default {
   components: {
     "datatable-heading": DatatableHeading,
     datepicker: Datepicker,
-    vuetable: Vuetable
+    vuetable: Vuetable,
+    user_wallet,
+    "vue-dropzone": VueDropzone
   },
   data() {
     return {
@@ -631,13 +707,34 @@ export default {
       DateSelected: false,
       attachmentId: null,
       type: null,
+      getTransactions: true,
+      add_attach: false,
+      getAttachments: true,
       isUserForm: false,
       note: null,
+      file_added: true,
       enable: false,
+      file: null,
       create_role: null,
       roleOptions: [],
+      attach_form: {
+        category: ""
+      },
       countryOptions: [],
       nationalityOptions: [],
+      attach_category_options: [],
+      dropzoneOptions: {
+        url: "https://lilacmarketingevents.com",
+        thumbnailHeight: 160,
+        thumbnailWidth: 150,
+        acceptedFiles: "pdf,jpeg,png",
+        parallelUploads: 3,
+        maxFiles: 1,
+        uploadMultiple: false,
+        autoProcessQueue: false,
+        previewTemplate: this.dropzoneTemplate(),
+        headers: {}
+      },
       attach_Options: [
         { name: "OPEN", value: 0 },
         { name: "VERIFY", value: 1 },
@@ -764,6 +861,11 @@ export default {
         required
       },
       active: {}
+    },
+    attach_form: {
+      category: {
+        required
+      }
     }
   },
   created() {
@@ -779,6 +881,7 @@ export default {
       this.isUserForm = true;
       this.getUserInfo({ id: this.userId });
       this.getUserAttach({ id: this.userId });
+      this.getAttachCategory();
       this.creation(this.type);
     } else if (this.userId) {
       this.getUserInfo({ id: this.userId });
@@ -795,6 +898,8 @@ export default {
       "verfiyAttach",
       "updateUserInfo",
       "createUser",
+      "addAttachment",
+      "getAttachCategory",
       "sendAttachmentNote"
     ]),
     rowClicked(dataItem, event) {
@@ -823,8 +928,8 @@ export default {
               identity_number: this.gridForm.identity_number,
               license_number: this.gridForm.license_number,
               second_name: this.gridForm.second_name,
-              country: this.gridForm.country,
-              nationality: this.gridForm.nationality,
+              country_id: this.gridForm.country,
+              nationality_id: this.gridForm.nationality,
               middle_name: this.gridForm.middle_name,
               role: this.getRole(),
               dob: this.gridForm.dob,
@@ -849,8 +954,8 @@ export default {
             //   email: this.gridForm.email,
             //   identity_number: this.gridForm.identity_number,
             //   second_name: this.gridForm.second_name,
-            //   country: this.gridForm.country ? this.gridForm.country : null,
-            //   nationality: this.gridForm.nationality ? this.gridForm.nationality : null,
+            //     country_id: this.gridForm.country,
+            //   nationality_id: this.gridForm.nationality,
             //   license_number: this.gridForm.license_number,
             //   middle_name: this.gridForm.middle_name,
             //   role: this.gridForm.role,
@@ -865,7 +970,9 @@ export default {
     },
     add_New_attach() {
       console.log("wefwerwerwerwerwerwerwer");
+      this.$refs["attach"].show();
     },
+
     attach_Action(value, item) {
       console.log(item);
       switch (value) {
@@ -892,6 +999,17 @@ export default {
         attachment_id: this.attachmentId,
         notes: this.note
       });
+    },
+    addAttach() {
+      this.$v.$touch();
+      this.$v.attach_form.$touch();
+      console.log(this.attach_form);
+      if (!this.$v.attach_form.$invalid) {
+        this.addAttachment({
+          path: this.file[0],
+          category: this.attach_form.category
+        });
+      }
     },
     getRole() {
       switch (this.gridForm.role) {
@@ -924,6 +1042,36 @@ export default {
           this.isUserForm = true;
           return (this.roleOptions = [{ text: "User", value: 3 }]);
       }
+    },
+    fileAdded(file) {
+      console.log(file);
+      this.file_added = false;
+      this.file = file;
+    },
+    fileRemoved(file) {
+      this.file = null;
+      this.file_added = true;
+    },
+
+    dropzoneTemplate() {
+      return `<div class="dz-preview dz-file-preview mb-3">
+                  <div class="d-flex flex-row "> <div class="p-0 w-30 position-relative">
+                      <div class="dz-error-mark"><span><i></i>  </span></div>
+                      <div class="dz-success-mark"><span><i></i></span></div>
+                      <div class="preview-container">
+                        <img data-dz-thumbnail class="img-thumbnail border-0" />
+                        <i class="simple-icon-doc preview-icon"></i>
+                      </div>
+                  </div>
+                  <div class="pl-3 pt-2 pr-2 pb-1 w-70 dz-details position-relative">
+                    <div> <span data-dz-name /> </div>
+                    <div class="text-primary text-extra-small" data-dz-size /> </div>
+                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                    <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                  </div>
+                  <a href="#" class="remove" data-dz-remove> <i class="glyph-icon simple-icon-trash"></i> </a>
+                </div>
+        `;
     }
   },
   computed: {
@@ -935,7 +1083,9 @@ export default {
       "_UserAttach",
       "_verfiedAtachmet",
       "_sendNoteSuccess",
-      "_getCountries"
+      "_getCountries",
+      "_AttachCategory",
+      "_addAttachSuccess"
     ]),
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
@@ -972,8 +1122,18 @@ export default {
       this.gridForm.role = newInfo.role[0];
       this.gridForm.active = newInfo.active;
     },
-
+    _addAttachSuccess(newInfo, oldest) {
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "User Attachment has been added successfully",
+        { duration: 3000, permanent: false }
+      );
+      this.$refs["attach"].hide();
+      this.getUserAttach({ id: this.userId });
+    },
     _UserAttach(newInfo, oldOne) {
+      this.getAttachments = false;
       this.$refs.vuetable.setData(newInfo);
     },
     _sendNoteSuccess(newVal, old) {
@@ -1004,17 +1164,28 @@ export default {
         );
       }
     },
+
+    _AttachCategory(newCon, oldOne) {
+      newCon.forEach(option => {
+        this.attach_category_options.push(
+          new Object({
+            value: option,
+            text: option
+          })
+        );
+      });
+    },
     _getCountries(newCon, oldOne) {
       newCon.forEach(option => {
         this.countryOptions.push(
           new Object({
-            value: option.locales.en.name,
+            value: option.id,
             text: option.locales.en.name
           })
         );
         this.nationalityOptions.push(
           new Object({
-            value: option.locales.en.name,
+            value: option.id,
             text: option.locales.en.name
           })
         );
