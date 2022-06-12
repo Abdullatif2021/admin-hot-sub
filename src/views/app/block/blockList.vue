@@ -8,6 +8,7 @@
       :searchChange="searchChange"
       :sortOptions="sortOptions"
       :reload="true"
+      :add_new_button="true"
       :category="category"
       @add_new="add_New"
       :cancle="cancle"

@@ -1,24 +1,23 @@
 <template>
-  <b-row>
+  <b-row v-if="reload">
     <b-colxx xxs="12">
       <h1>{{ title }}</h1>
-      <div class="top-right-button-container">
+      <div v-if="add_new_button" class="top-right-button-container">
         <b-button
-          v-if="!details && !add_new && attach"
           v-b-modal.modalright
           variant="primary"
           size="lg"
           class="top-right-button"
           @click="add_New()"
           >{{
-            attach ? $t("todo.add-new-attach") : $t("todo.add-new")
+            attachment ? $t("todo.add-new-attach") : $t("todo.add-new")
           }}</b-button
         >
       </div>
-      <piaf-breadcrumb v-if="reload" />
-      <div v-if="!details || !show" class="mb-2 mt-2">
+      <piaf-breadcrumb />
+      <div v-if="!details" class="mb-2 mt-2">
         <b-collapse id="displayOptions" class="d-md-block">
-          <div v-if="reload" class="d-block d-md-inline-block pt-1">
+          <div class="d-block d-md-inline-block pt-1">
             <b-dropdown
               v-if="Filtered"
               id="ddown1"
@@ -47,7 +46,7 @@
             </div>
             <!-- <i @click="cancle()" class="simple-icon-close" /> -->
           </div>
-          <div v-if="pageSize" class="float-md-right pt-1">
+          <div class="float-md-right pt-1">
             <span class="text-muted text-small mr-1 mb-2"
               >{{ from }}-{{ to }} {{ $t("forms.of") }} {{ total }}</span
             >
@@ -86,6 +85,7 @@ export default {
     "cancle",
     "changeOrderBy",
     "from",
+    "add_new_button",
     "to",
     "sort",
     "total",
@@ -95,40 +95,13 @@ export default {
     "sortOptions",
     "category",
     "details",
-    "attach",
+    "attachment",
     "add_new",
     "pageSize",
-    "reload"
+    "reload" // this is for userList to reload the breadcrumb wherever user change the route between users lists
   ],
   data() {
     return {
-      pageSize: true,
-      attach: false,
-      categories: [
-        {
-          label: "Cakes",
-          value: "Cakes"
-        },
-        {
-          label: "Cupcakes",
-          value: "Cupcakes"
-        },
-        {
-          label: "Desserts",
-          value: "Desserts"
-        }
-      ],
-      statuses: [
-        {
-          text: "ON HOLD",
-          value: "ON HOLD"
-        },
-        {
-          text: "PROCESSED",
-          value: "PROCESSED"
-        }
-      ],
-
       pageSizes: [4, 8, 12]
     };
   },

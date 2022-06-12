@@ -4,6 +4,7 @@
       <datatable-heading
         :details="true"
         :reload="true"
+        :add_new_button="false"
         :title="$t('cards.page-details')"
       ></datatable-heading>
       <b-row>

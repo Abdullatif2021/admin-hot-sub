@@ -4,6 +4,7 @@
       <datatable-heading
         :details="true"
         :reload="true"
+        :add_new_button="false"
         :title="id ? $t('edit_category') : $t('create_category')"
       ></datatable-heading>
       <category_details v-if="id" :_id="id" :_type="category" />

@@ -3,6 +3,7 @@
     <b-colxx xxs="12">
       <datatable-heading
         :details="true"
+        :add_new_button="false"
         :reload="true"
         :title="auctionId ? $t('forms.editAuction') : $t('forms.createAuction')"
       ></datatable-heading>

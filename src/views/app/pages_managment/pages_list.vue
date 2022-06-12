@@ -8,6 +8,7 @@
       :searchChange="searchChange"
       :cancle="cancle"
       :from="from"
+      :add_new_button="true"
       :sort="sort"
       :add_new="true"
       :to="to"

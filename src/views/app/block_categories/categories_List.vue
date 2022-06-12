@@ -7,6 +7,7 @@
       :changePageSize="changePageSize"
       :searchChange="searchChange"
       :from="from"
+      :add_new_button="true"
       @add_new="add_New"
       :reload="true"
       :sort="sort"

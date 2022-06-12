@@ -10,6 +10,7 @@
       @add_new="add_New"
       :reload="true"
       :sort="sort"
+      :add_new_button="true"
       :to="to"
       :Filtered="false"
       :total="total"

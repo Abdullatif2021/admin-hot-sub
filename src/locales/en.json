@@ -315,7 +315,7 @@
     "add-new": "ADD NEW",
     "add-new-attach": "Add Attachment",
     "title": "Title",
-
+    "update-attach": "Update Attachment",
     "note": "Note",
     "detail": "Detail",
     "category": "Category",
@@ -809,7 +809,6 @@
   "EDIT": "Edit",
   "SEND_NOTE": "Send Note",
   "SEND_Attach": "Add Attachment",
-
   "admin": "Admin",
   "superadmin": "Super Admin",
   "all": "All"

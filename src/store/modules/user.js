@@ -23,6 +23,7 @@ export default {
     ListActions: null,
     UserInfo: null,
     UserAttach: null,
+    AttachProcessing: false,
     resetPasswordSuccess: null,
     preferLocale: null,
     successActivateUser: null,
@@ -31,21 +32,30 @@ export default {
     AttachCategory: null,
     updateUser_Info: null,
     emailErr: null,
+    phoneVerification: null,
+    createAttachError: null,
+    updateAttachSuccess: null,
     get_Countries: null,
     sendNoteSuccess: null,
-    addAttachSuccess: null
+    addAttachSuccess: null,
+    identityVerification: null
   },
   getters: {
     currentUser: state => state.currentUser,
     ListActions: state => state.ListActions,
     UserInfo: state => state.UserInfo,
     _getCountries: state => state.get_Countries,
+    _AttachProcessing: state => state.AttachProcessing,
+    _phoneVerification: state => state.phoneVerification,
+    _identityVerification: state => state.identityVerification,
     _UserAttach: state => state.UserAttach,
+    _createAttachError: state => state.createAttachError,
     _addAttachSuccess: state => state.addAttachSuccess,
     _AttachCategory: state => state.AttachCategory,
     _sendNoteSuccess: state => state.sendNoteSuccess,
     usersList: state => state.usersList,
     _verfiedAtachmet: state => state.verfiedAtachmet,
+    _updateAttachSuccess: state => state.updateAttachSuccess,
     processing: state => state.processing,
     loginError: state => state.loginError,
     forgotMailSuccess: state => state.forgotMailSuccess,
@@ -82,6 +92,10 @@ export default {
     },
     setProcessing(state, payload) {
       state.processing = payload;
+      state.loginError = null;
+    },
+    setAttachProcessing(state, payload) {
+      state.AttachProcessing = payload;
       state.loginError = null;
     },
     setError(state, payload) {
@@ -130,6 +144,18 @@ export default {
     },
     verfiedAtachmet(state, payload) {
       state.verfiedAtachmet = payload;
+    },
+    updateAttachSuccess(state, payload) {
+      state.updateAttachSuccess = payload;
+    },
+    createAttachError(state, payload) {
+      state.createAttachError = payload;
+    },
+    phoneVerification(state, payload) {
+      state.phoneVerification = payload;
+    },
+    identityVerification(state, payload) {
+      state.identityVerification = payload;
     }
   },
   actions: {
@@ -279,13 +305,31 @@ export default {
           commit("setUserInfo", res.data.data[0]);
         });
     },
+    phoneConfirm({ commit }, payload) {
+      const userId = payload.userId;
+      axios
+        .post(`${apiUrl}/verifyMobileByAdmin/${userId}`, {})
+
+        .then(res => {
+          commit("phoneVerification", res.data.data[0]);
+        });
+    },
+    identityConfirm({ commit }, payload) {
+      const userId = payload.userId;
+      axios
+        .post(`${apiUrl}/accountVerification/${userId}`, {})
+
+        .then(res => {
+          commit("identityVerification", res.data.data[0]);
+        });
+    },
     getUserAttach({ commit }, payload) {
-      commit("setProcessing", false);
+      commit("setAttachProcessing", false);
       const userId = payload.id;
       axios
         .get(`${apiUrl}/user/attachments/all?user_id=${userId}`)
         .then(res => {
-          commit("setProcessing", true);
+          commit("setAttachProcessing", true);
           return res;
         })
         .then(res => {
@@ -411,6 +455,29 @@ export default {
     getNationalities() {
       // https://alqias-api.lilacdev.com/public/api/countries/getcountry
     },
+    updateAttachment({ commit }, payload) {
+      const attachment_id = payload.attachment_id;
+      const userId = payload.userId;
+      const formData = new FormData();
+      Object.entries(payload).forEach(entry => {
+        const [key, value] = entry;
+        formData.append(key, value);
+      });
+      axios
+        .post(
+          `${apiUrl}/user/attachments/${attachment_id}/${userId}`,
+          formData,
+          {}
+        )
+        .then(res => {
+          if (res.status === 200) {
+            commit("updateAttachSuccess", res);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     addAttachment({ commit }, payload) {
       const userId = payload.userId;
       const formData = new FormData();
@@ -421,7 +488,15 @@ export default {
       axios
         .post(`${apiUrl}/user/attachments/${userId}`, formData, {})
         .then(res => {
-          commit("addAttachSuccess", res);
+          if (res.status === 201) {
+            commit("addAttachSuccess", res);
+          } else {
+            console.log(res);
+            commit("createAttachError", res);
+          }
+        })
+        .catch(function(error) {
+          commit("createAttachError", error);
         });
     },
     getAttachCategory({ commit }, payload) {

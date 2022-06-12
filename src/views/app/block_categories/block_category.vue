@@ -2,6 +2,7 @@
   <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
     <datatable-heading
       :details="true"
+      :add_new_button="false"
       :reload="true"
       :title="id ? $t('edit_block') : $t('create_block')"
     ></datatable-heading>
