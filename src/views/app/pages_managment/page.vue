@@ -3,6 +3,7 @@
     <b-colxx xxs="12">
       <datatable-heading
         :details="true"
+        :transaction_filter="false"
         :reload="true"
         :add_new_button="false"
         :title="$t('cards.page-details')"

@@ -4,6 +4,7 @@
       :title="$t('menu.auctions-table')"
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
+      :transaction_filter="false"
       :add_new_button="true"
       :changePageSize="changePageSize"
       :searchChange="searchChange"

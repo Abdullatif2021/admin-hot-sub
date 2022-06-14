@@ -35,8 +35,11 @@ export default {
     phoneVerification: null,
     createAttachError: null,
     updateAttachSuccess: null,
+    userTransactions: null,
+    userDeposit: null,
     get_Countries: null,
     sendNoteSuccess: null,
+    userWallet: null,
     addAttachSuccess: null,
     identityVerification: null
   },
@@ -49,6 +52,9 @@ export default {
     _phoneVerification: state => state.phoneVerification,
     _identityVerification: state => state.identityVerification,
     _UserAttach: state => state.UserAttach,
+    _userDeposit: state => state.userDeposit,
+    _userTransactions: state => state.userTransactions,
+    _userWallet: state => state.userWallet,
     _createAttachError: state => state.createAttachError,
     _addAttachSuccess: state => state.addAttachSuccess,
     _AttachCategory: state => state.AttachCategory,
@@ -156,6 +162,16 @@ export default {
     },
     identityVerification(state, payload) {
       state.identityVerification = payload;
+    },
+    //  &&&&&&&&&&&&&&&&& wallet &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    userWallet(state, payload) {
+      state.userWallet = payload;
+    },
+    userTransactions(state, payload) {
+      state.userTransactions = payload;
+    },
+    userDeposit(state, payload) {
+      state.userDeposit = payload;
     }
   },
   actions: {
@@ -503,6 +519,48 @@ export default {
       axios.get(`${apiUrl}/user/attachments/categories`).then(res => {
         commit("getAttachCategory", res.data.data);
       });
+    },
+    // ************** WALLET ****************
+    getUserWallet({ commit }, payload) {
+      const userId = payload.userId;
+      axios
+        .get(`${apiUrl}/wallet`, {
+          params: {
+            owner_id: userId
+          }
+        })
+        .then(res => {
+          commit("userWallet", res.data.data[0]);
+        });
+    },
+    getUserTransactions({ commit }, payload) {
+      const userId = payload.userId;
+      axios
+        .get(`${apiUrl}/wallet/transactions`, {
+          params: {
+            user_id: userId,
+            payment_status: payload.payment_status,
+            payment_method: payload.payment_method,
+            type: payload.type
+          }
+        })
+
+        .then(res => {
+          commit("userTransactions", res.data.data);
+        });
+    },
+    getUserDeposits({ commit }, payload) {
+      const userId = payload.userId;
+      axios
+        .get(`${apiUrl}/deposit`, {
+          params: {
+            user_id: userId
+          }
+        })
+
+        .then(res => {
+          commit("userDeposit", res.data.data);
+        });
     }
   }
 };

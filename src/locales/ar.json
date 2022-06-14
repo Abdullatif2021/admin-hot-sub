@@ -334,6 +334,10 @@
     "orderbycategory": "Order By Category",
     "orderbyrole": " الطلب حسب الدور :",
 
+    "orderbytype": "ترتيب حسب النوع",
+    "orderbystate": "ترتيب حسب الحالة",
+    "orderbymethod": "الترتيب حسب طريقةالدفع",
+
     "all-tasks": "All Tasks",
     "pending-tasks": "Pending Tasks",
     "completed-tasks": "Completed Tasks",

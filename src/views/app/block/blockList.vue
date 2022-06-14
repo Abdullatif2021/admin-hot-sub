@@ -6,6 +6,7 @@
       :keymap="keymap"
       :changePageSize="changePageSize"
       :searchChange="searchChange"
+      :transaction_filter="false"
       :sortOptions="sortOptions"
       :reload="true"
       :add_new_button="true"

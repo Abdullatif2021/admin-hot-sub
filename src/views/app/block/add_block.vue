@@ -4,6 +4,7 @@
       <datatable-heading
         :details="true"
         :reload="true"
+        :transaction_filter="false"
         :add_new_button="false"
         :title="$t('forms.create_block')"
       ></datatable-heading>

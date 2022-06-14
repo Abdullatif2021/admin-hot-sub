@@ -7,6 +7,7 @@
       :changePageSize="changePageSize"
       :searchChange="searchChange"
       :cancle="cancle"
+      :transaction_filter="false"
       :from="from"
       :add_new_button="true"
       :sort="sort"

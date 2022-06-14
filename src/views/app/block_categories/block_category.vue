@@ -3,6 +3,7 @@
     <datatable-heading
       :details="true"
       :add_new_button="false"
+      :transaction_filter="false"
       :reload="true"
       :title="id ? $t('edit_block') : $t('create_block')"
     ></datatable-heading>

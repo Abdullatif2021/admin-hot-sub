@@ -8,6 +8,7 @@
       :searchChange="searchChange"
       :category="category"
       :cancle="cancle"
+      :transaction_filter="false"
       :add_new_button="true"
       :changeOrderBy="changeOrderBy"
       :from="from"

@@ -5,6 +5,7 @@
         :details="true"
         :add_new_button="false"
         :reload="true"
+        :transaction_filter="false"
         :title="auctionId ? $t('forms.editAuction') : $t('forms.createAuction')"
       ></datatable-heading>
       <template v-if="isLoadAuction">

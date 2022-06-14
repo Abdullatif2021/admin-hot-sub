@@ -328,6 +328,11 @@
     "display-options": "Display Options",
     "orderby": "Order By : ",
     "orderbycategory": "Order By Category",
+
+    "orderbytype": "Order By Type :",
+    "orderbystate": "Order By State :",
+    "orderbymethod": "Order By Method :",
+
     "orderbyrole": "Order By Role : ",
 
     "all-tasks": "All Tasks",

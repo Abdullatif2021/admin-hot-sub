@@ -8,6 +8,7 @@
       :searchChange="searchChange"
       :from="from"
       @add_new="add_New"
+      :transaction_filter="false"
       :reload="true"
       :sort="sort"
       :add_new_button="true"

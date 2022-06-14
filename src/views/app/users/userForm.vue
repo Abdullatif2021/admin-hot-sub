@@ -6,8 +6,16 @@
       :add_new="false"
       :add_new_button="add_Attachment"
       :pageSize="false"
+      :changeOrderBy="changeOrderBy"
       :attachment="add_Attachment"
+      :transactions_type="typeOptions"
+      :transactions_method="methodOptions"
+      :transactions_state="stateOptions"
       :reload="true"
+      :method_sort="method_sort"
+      :state_sort="state_sort"
+      :type_sort="type_sort"
+      :transaction_filter="showFilter"
       @add_new="add_New_attach"
       :title="userId ? $t('forms.grid') : $t('forms.createUser')"
     ></datatable-heading>
@@ -379,9 +387,7 @@
                           <input
                             type="checkbox"
                             @click="phone_comfirm()"
-                            :checked="
-                              gridForm.phone_number_confirmed 
-                            "
+                            :checked="gridForm.phone_number_confirmed"
                           />
                         </b-input-group-prepend>
                         <b-form-input
@@ -408,9 +414,7 @@
                           <input
                             type="checkbox"
                             @click="identity_comfirm()"
-                            :checked="
-                              gridForm.identity_verfied
-                    "
+                            :checked="gridForm.identity_verfied"
                           />
                         </b-input-group-prepend>
                         <b-form-input
@@ -623,7 +627,12 @@
                   ></b-spinner>
                   {{ $t(`forms.wallet`) }}
                 </template>
-                <user_wallet />
+                <user_wallet
+                  @show_filter="show_filter"
+                  @hide_filter="hide_filter"
+                  :filter="filter"
+                  :userId="userId"
+                />
               </b-tab>
             </b-tabs>
           </b-card>
@@ -728,6 +737,8 @@ export default {
       _role: null,
       DateSelected: false,
       attachmentId: null,
+      showFilter: false,
+      filter: null,
       is_num_verfiy: true,
       type: null,
       add_Attachment: false,
@@ -736,6 +747,9 @@ export default {
       submit_note: false,
       update_attachment: true,
       add_attach: false,
+      methodOptions: null,
+      stateOptions: null,
+      typeOptions: null,
       getAttachments: true,
       isUserForm: false,
       model_button: false,
@@ -746,6 +760,18 @@ export default {
       selectedTab: "basicDetails",
       create_role: null,
       roleOptions: [],
+      method_sort: {
+        column: null,
+        label: "All"
+      },
+      state_sort: {
+        column: null,
+        label: "All"
+      },
+      type_sort: {
+        column: null,
+        label: "All"
+      },
       attach_form: {
         category: ""
       },
@@ -1006,7 +1032,21 @@ export default {
       console.log("wefwerwerwerwerwerwerwer");
       this.$refs["attach"].show();
     },
-
+    show_filter(methodOptions, stateOptions, typeOptions) {
+      console.log(
+        "filterrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+        methodOptions,
+        stateOptions,
+        typeOptions
+      );
+      this.methodOptions = methodOptions;
+      this.stateOptions = stateOptions;
+      this.typeOptions = typeOptions;
+      this.showFilter = true;
+    },
+    hide_filter() {
+      this.showFilter = false;
+    },
     attach_Action(value, item) {
       this.selectedTab === "attachment";
       this.update_attachment = true;
@@ -1065,6 +1105,16 @@ export default {
             category: this.attach_form.category
           });
         }
+      }
+    },
+    changeOrderBy(val, type) {
+      this.filter = { val, type };
+      if (type == "type") {
+        this.type_sort = val;
+      } else if (type == "method") {
+        this.method_sort = val;
+      } else {
+        this.state_sort = val;
       }
     },
     phone_comfirm() {

@@ -68,6 +68,63 @@
           </div>
         </b-collapse>
       </div>
+      <div v-if="transaction_filter" class="mb-2 mt-2">
+        <b-collapse id="displayOptions" class="d-md-block">
+          <div class="d-block d-md-inline-block pt-1">
+            <b-dropdown
+              id="ddown1"
+              :text="`${$t('todo.orderbymethod')} ${$t(method_sort.label)}`"
+              variant="outline-dark"
+              class="mr-1 float-md-left btn-group"
+              size="xs"
+            >
+              <b-dropdown-item
+                v-for="(method, index) in transactions_method"
+                :key="`order${index}`"
+                @click="changeOrderBy(method, 'method')"
+                >{{ method.label }}</b-dropdown-item
+              >
+            </b-dropdown>
+            <b-dropdown
+              id="ddown1"
+              :text="`${$t('todo.orderbystate')} ${$t(state_sort.label)}`"
+              variant="outline-dark"
+              class="mr-1 float-md-left btn-group"
+              size="xs"
+            >
+              <b-dropdown-item
+                v-for="(state, index) in transactions_state"
+                :key="`order${index}`"
+                @click="changeOrderBy(state, 'state')"
+                >{{ state.label }}</b-dropdown-item
+              >
+            </b-dropdown>
+            <b-dropdown
+              id="ddown1"
+              :text="`${$t('todo.orderbytype')} ${$t(type_sort.label)}`"
+              variant="outline-dark"
+              class="mr-1 float-md-left btn-group"
+              size="xs"
+            >
+              <b-dropdown-item
+                v-for="(type, index) in transactions_type"
+                :key="`order${index}`"
+                @click="changeOrderBy(type, 'type')"
+                >{{ type.label }}</b-dropdown-item
+              >
+            </b-dropdown>
+
+            <div class="search-sm d-inline-block float-md-left mr-1 align-top">
+              <b-input
+                :placeholder="$t('menu.search')"
+                @input="val => searchChange(val)"
+              />
+            </div>
+            <!-- <i @click="cancle()" class="simple-icon-close" /> -->
+          </div>
+        </b-collapse>
+      </div>
+
       <div class="separator mb-5" />
     </b-colxx>
   </b-row>
@@ -88,11 +145,18 @@ export default {
     "add_new_button",
     "to",
     "sort",
+    "state_sort",
+    "method_sort",
+    "type_sort",
     "total",
     "perPage",
     "Filtered",
     "show",
     "sortOptions",
+    "transactions_method",
+    "transactions_state",
+    "transactions_type",
+    "transaction_filter",
     "category",
     "details",
     "attachment",

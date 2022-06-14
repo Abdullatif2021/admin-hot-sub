@@ -5,6 +5,7 @@
         :details="true"
         :reload="true"
         :add_new_button="false"
+        :transaction_filter="false"
         :title="$t('forms.edit_block')"
       ></datatable-heading>
       <b-row>
