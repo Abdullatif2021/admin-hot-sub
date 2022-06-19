@@ -30,6 +30,7 @@ export default {
     updatedProfile: null,
     verfiedAtachmet: null,
     AttachCategory: null,
+    verfiy_transaction: null,
     updateUser_Info: null,
     emailErr: null,
     phoneVerification: null,
@@ -52,6 +53,7 @@ export default {
     _phoneVerification: state => state.phoneVerification,
     _identityVerification: state => state.identityVerification,
     _UserAttach: state => state.UserAttach,
+    _verfiyTransaction: state => state.verfiy_transaction,
     _userDeposit: state => state.userDeposit,
     _userTransactions: state => state.userTransactions,
     _userWallet: state => state.userWallet,
@@ -172,6 +174,9 @@ export default {
     },
     userDeposit(state, payload) {
       state.userDeposit = payload;
+    },
+    verfiytransaction(state, payload) {
+      state.verfiy_transaction = payload;
     }
   },
   actions: {
@@ -409,6 +414,21 @@ export default {
         })
         .then(res => {
           router.push(`${adminRoot}/${type}`);
+        });
+    },
+    verfiyTransaction({ commit }, payload) {
+      const id = payload.id;
+
+      axios
+        .post(
+          `${apiUrl}/wallet/transactions/verfiy/${id}`,
+          {
+            payment_status: payload.type
+          },
+          {}
+        )
+        .then(res => {
+          commit("verfiytransaction", res.data.data);
         });
     },
     forgotPassword({ commit }, payload) {

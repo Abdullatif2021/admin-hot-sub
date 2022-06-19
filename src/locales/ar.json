@@ -493,8 +493,13 @@
   },
   "forms": {
     "send": "ارسال",
+    "accepted": "مقبول",
+    "accept": "قبول",
+    "rejected": "مرفوض",
+    "pending": "في انتظار المراجعة",
+    "bank_notice": "اشعار البنك",
     "secondName": "الاسم الثاني",
-
+    "notice_number": "رقم الاشعار",
     "middleName": "الاسم الاوسط",
     "Yemail_filed": "الرجاء ادخال الايميل الخاص بك",
     "languageQuestion": "هل تريد تغيير لغتك المفضلة بشكل دائم؟",

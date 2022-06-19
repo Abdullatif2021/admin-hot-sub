@@ -139,7 +139,7 @@
                 <b-colxx sm="6">
                   <b-form-group :label="$t('forms.identity_number')">
                     <b-form-input
-                      type="text"
+                      type="number"
                       :state="!$v.gridForm.identity_number.$error"
                       v-model="$v.gridForm.identity_number.$model"
                     />
@@ -151,7 +151,7 @@
                     >
                   </b-form-group>
                 </b-colxx>
-                <b-colxx sm="6">
+                <!-- <b-colxx sm="6">
                   <b-form-group :label="$t('forms.license_number')">
                     <b-form-input
                       type="text"
@@ -165,7 +165,7 @@
                       }}</b-form-invalid-feedback
                     >
                   </b-form-group>
-                </b-colxx>
+                </b-colxx> -->
                 <b-colxx sm="6">
                   <b-form-group :label="$t('forms.nationality')">
                     <b-form-select
@@ -272,6 +272,7 @@
               <b-tab
                 @click="
                   (add_attach = false),
+                    (showFilter = false),
                     (add_Attachment = false),
                     selectedTab === 'basicDetails'
                 "
@@ -430,27 +431,14 @@
                           }}</b-form-invalid-feedback
                         >
                       </b-input-group>
-                      <!-- <b-form-group :label="$t('forms.identity_number')">
-                        <b-form-input
-                          type="text"
-                          :state="!$v.gridForm.identity_number.$error"
-                          v-model="$v.gridForm.identity_number.$model"
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.identity_number.required"
-                          >{{
-                            $t("forms.identity_number_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group> -->
                     </b-colxx>
-                    <b-colxx sm="6">
+                    <!-- <b-colxx sm="6">
                       <b-form-group :label="$t('forms.license_number')">
                         <b-form-input
                           type="number"
                           :state="!$v.gridForm.license_number.$error"
                           v-model="$v.gridForm.license_number.$model"
-                        />
+                        />  
                         <b-form-invalid-feedback
                           v-if="!$v.gridForm.license_number.required"
                           >{{
@@ -458,7 +446,7 @@
                           }}</b-form-invalid-feedback
                         >
                       </b-form-group>
-                    </b-colxx>
+                    </b-colxx> -->
                     <b-colxx sm="6">
                       <b-form-group :label="$t('forms.nationality')">
                         <b-form-select
@@ -560,6 +548,7 @@
                 title-item-class="w-30 text-center"
                 @click="
                   (add_attach = true),
+                    (showFilter = false),
                     (add_Attachment = true),
                     selectedTab === 'attachment'
                 "
@@ -752,6 +741,7 @@ export default {
       typeOptions: null,
       getAttachments: true,
       isUserForm: false,
+      isUser_Form: false,
       model_button: false,
       note: null,
       file_added: true,
@@ -890,11 +880,11 @@ export default {
           return this.isOptional;
         })
       },
-      license_number: {
-        required: requiredIf(function() {
-          return this.isOptional;
-        })
-      },
+      // license_number: {
+      //   required: requiredIf(function() {
+      //     return this.isOptional;
+      //   })
+      // },
       nationality: {
         required: requiredIf(function() {
           return this.isOptional;
@@ -933,10 +923,12 @@ export default {
     this.getNationalities();
     console.log(this.type);
     if (this.type === "users" && !this.userId) {
-      this.isUserForm = false;
+      console.log("i am hereee");
       this.creation(this.type);
+      this.isUser_Form = true;
     } else if (this.type === "users" && this.userId) {
       this.isUserForm = true;
+      this.isUser_Form = true;
       this.getUserInfo({ id: this.userId });
       this.getUserAttach({ id: this.userId });
       this.getAttachCategory();
@@ -986,7 +978,7 @@ export default {
               phone_number: this.gridForm.phone_number,
               email: this.gridForm.email,
               identity_number: this.gridForm.identity_number,
-              license_number: this.gridForm.license_number,
+              // license_number: this.gridForm.license_number,
               second_name: this.gridForm.second_name,
               country_id: this.gridForm.country,
               nationality_id: this.gridForm.nationality,
@@ -1016,7 +1008,7 @@ export default {
               second_name: this.gridForm.second_name,
               country_id: this.gridForm.country,
               nationality_id: this.gridForm.nationality,
-              license_number: this.gridForm.license_number,
+              // license_number: this.gridForm.license_number,
               middle_name: this.gridForm.middle_name,
               role: this.gridForm.role,
               dob: this.gridForm.dob,
@@ -1139,19 +1131,15 @@ export default {
 
     creation(type) {
       console.log(type);
-      this.isUserForm = false;
       switch (type) {
         case "admins":
-          this.isUserForm = false;
           return (this.roleOptions = [
             { text: "Super Admin", value: 1 },
             { text: "Admin", value: 2 }
           ]);
         case "accountant":
-          this.isUserForm = false;
           return (this.roleOptions = [{ text: "Accountant", value: 7 }]);
         case "users":
-          this.isUserForm = true;
           return (this.roleOptions = [{ text: "User", value: 3 }]);
       }
     },
@@ -1208,7 +1196,7 @@ export default {
       return this.selectedItems.length >= this.items.length;
     },
     isOptional() {
-      return this.isUserForm; // some conditional logic here...
+      return this.isUser_Form; // some conditional logic here...
     },
     role: {
       get() {
@@ -1230,16 +1218,15 @@ export default {
       this.gridForm.email = newInfo.email;
       this.gridForm.dob = newInfo.dob;
       this.gridForm.phone_number = newInfo.phone_number;
-      // this.gridForm.password = newInfo.password;
       this.gridForm.second_name = newInfo.second_name;
       this.gridForm.middle_name = newInfo.middle_name;
       this.gridForm.identity_number = newInfo.identity_number;
-      this.gridForm.country = newInfo.country;
-      this.gridForm.nationality = newInfo.nationality;
       this.gridForm.role = newInfo.role[0];
       this.gridForm.identity_verfied = newInfo.identity_verfied;
       this.gridForm.phone_number_confirmed = newInfo.phone_number_confirmed;
       this.gridForm.active = newInfo.active;
+      this.gridForm.country = newInfo.country.id;
+      this.gridForm.nationality = newInfo.nationality.id;
     },
     _addAttachSuccess(newInfo, oldest) {
       console.log(this.selectedTab, "taabbbbbbbbbbbbbbbbbbbbbbbb");
