@@ -28,6 +28,7 @@ import VueLineClamp from "vue-line-clamp";
 import VueScrollTo from "vue-scrollto";
 import "firebase/auth";
 import { getCurrentLanguage } from "./utils";
+// date picker
 
 Vue.use(BootstrapVue);
 Vue.use(VueI18n);

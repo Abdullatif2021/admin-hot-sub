@@ -112,7 +112,6 @@ export default {
       to: 0,
       total: 0,
       dataCount: 0,
-
       lastPage: 0,
       items: [],
       selectedItems: [],

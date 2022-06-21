@@ -12,7 +12,10 @@ const state = {
   Error: "",
   auction: null,
   successDeleteAuction: null,
-  processing: false
+  processing: false,
+  cities: null,
+  auctionSide: null,
+  areas: null
 };
 
 const getters = {
@@ -20,6 +23,9 @@ const getters = {
   auctionError: state => state.Error,
   auction_paginations: state => state.paginations,
   auctions: state => state.auctions,
+  _cities: state => state.cities,
+  _areas: state => state.areas,
+  _auctionSide: state => state.auctionSide,
   auction: state => state.auction,
   _isLoadAuctions: state => state.processing,
   _updatedAuctionSuccessfuly: state => state.updated_Successfuly,
@@ -50,6 +56,15 @@ const mutations = {
   },
   deleteAuction(state, payload) {
     state.successDeleteAuction = payload;
+  },
+  getCities(state, payload) {
+    state.cities = payload;
+  },
+  getAreas(state, payload) {
+    state.areas = payload;
+  },
+  getAuctionSide(state, payload) {
+    state.auctionSide = payload;
   }
 };
 
@@ -96,25 +111,16 @@ const actions = {
   },
   createAuction({ commit, dispatch }, payload) {
     const formData = new FormData();
-    // Object.entries(payload.info).forEach(entry => {
-    //   const [key, value] = entry;
-    //   formData.append(key, value);
-    // });
-    formData.append("ar[title]", payload.info.ar_title);
-    formData.append("ar[terms_conditions]", payload.info.ar_description);
-    formData.append("en[title]", payload.info.en_title);
-    formData.append("en[terms_conditions]", payload.info.en_description);
-
-    formData.append("minimum_price", payload.info.minimum_price);
-    formData.append("category_id", payload.info.categoryId);
-
-    formData.append("opening_price", payload.info.opening_price);
-    formData.append("start_date", payload.start_date);
-    formData.append("end_date", payload.end_date);
-
-    formData.append("longitude", "25.19171507935199");
-    formData.append("latitude", "25.19171507935199");
-
+    payload.langs.forEach(el => {
+      formData.append(`${el._name}[title]`, el.title);
+      formData.append(`${el._name}[description]`, el.description);
+    });
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      if (value != null) {
+        formData.append(key, value);
+      }
+    });
     axios.post(`${apiUrl}/auctions`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("createAuctionSuccessfuly", res);
@@ -123,20 +129,15 @@ const actions = {
   },
   updateAuction({ commit, dispatch }, payload) {
     const id = payload.id;
-    // const formData = new FormData();
-    // formData.append("", );
-    // formData.append("", );
-    // formData.append(, );
-    // formData.append(, );
-    // formData.append("category_id", );
-    // formData.append("", ;
-    // formData.append("", );
-    // formData.append("start_date", payload.start_date);
-    // formData.append("end_date", payload.end_date);
-
-    // formData.append("longitude", payload.info.longitude);
-    // formData.append("latitude", payload.info.latitude);
-
+    const formData = new FormData();
+    payload.langs.forEach(el => {
+      formData.append(`${el._name}[title]`, el.title);
+      formData.append(`${el._name}[description]`, el.description);
+    });
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      formData.append(key, value);
+    });
     axios
       .put(
         `${apiUrl}/auctions/${id}`,
@@ -169,6 +170,49 @@ const actions = {
         commit("deleteAuction", res);
       }
     });
+  },
+  getAuctionSide({ commit, dispatch }, payload) {
+    axios.get(`${apiUrl}/auctions/sides`).then(res => {
+      if (res.status === 200) {
+        console.log(res);
+        commit("getAuctionSide", res.data.data);
+      }
+    });
+  },
+  getCities({ commit, dispatch }, payload) {
+    const country_id = payload.country_id;
+    axios
+      .get(`${apiUrl}/cities`, {
+        params: {
+          country_id: country_id
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          commit("getCities", res.data.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
+  getAreas({ commit, dispatch }, payload) {
+    console.log(payload.city_id);
+    const city_id = payload.city_id;
+    axios
+      .get(`${apiUrl}/areas`, {
+        params: {
+          city_id: city_id
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          commit("getAreas", res.data.data);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 
