@@ -36,15 +36,23 @@
       </div>
       <label class="form-group has-float-label">
         <b-colxx xxs="12" style="padding: 0px;">
-          <vue-dropzone
-            ref="myVueDropzone"
-            id="dropzone"
-            :options="dropzoneOptions"
-            @vdropzone-files-added="fileAdded"
-            @vdropzone-complete="afterUploadComplete"
-            @vdropzone-sending-multiple="sendMessage"
-            @vdropzone-removed-file="fileRemoved"
-          ></vue-dropzone>
+          <b-form-group>
+            <b-form-input
+              style="display: none;"
+              :state="!$v.file_form.image.$error"
+              v-model="$v.file_form.image.$model"
+            />
+            <vue-dropzone
+              ref="myVueDropzone"
+              id="dropzone"
+              :options="dropzoneOptions"
+              @vdropzone-files-added="fileAdded"
+              @vdropzone-removed-file="fileRemoved"
+            ></vue-dropzone>
+            <b-form-invalid-feedback v-if="!$v.file_form.image.required">{{
+              $t("forms.choose-image-message")
+            }}</b-form-invalid-feedback>
+          </b-form-group>
         </b-colxx>
         <span>{{ $t("pages.image") }}</span>
       </label>
@@ -72,6 +80,7 @@ import { mapGetters, mapActions } from "vuex";
 import { validationMixin } from "vuelidate";
 const { required, email } = require("vuelidate/lib/validators");
 export default {
+  props: ["_sccussCreateImage"],
   components: {
     "v-select": vSelect,
     "vue-dropzone": VueDropzone
@@ -82,6 +91,10 @@ export default {
       file: null,
       langs: [],
       image_form: [],
+      image: null,
+      file_form: {
+        image: null
+      },
       enable: false,
       dropzoneOptions: {
         url:
@@ -108,6 +121,9 @@ export default {
         description: {},
         name: {}
       }
+    },
+    file_form: {
+      image: { required }
     }
   },
   created() {
@@ -136,8 +152,9 @@ export default {
     formSubmit() {
       console.log("here from submit");
       this.$v.$touch();
+      this.$v.file_form.$touch();
       this.$v.image_form.$touch();
-      if (!this.$v.image_form.$invalid) {
+      if (!this.$v.image_form.$invalid && !this.$v.file_form.$invalid) {
         console.log("here from submit invalid", this.$v.image_form.$model);
         this.enable = true;
         this.$v.image_form.$model.forEach(el => {
@@ -149,24 +166,16 @@ export default {
         });
       }
     },
-    afterUploadComplete(response) {
-      if (response.status == "success") {
-        this.sendSuccess = true;
-      } else {
-      }
-    },
+
     fileAdded(file) {
       console.log(file);
       this.file = file;
+      this.file_form.image = "*just for form validation as a fake input filed";
     },
     fileRemoved(file) {
       this.file = null;
+      this.file_form.image = null;
     },
-    shootMessage: async function() {
-      this.$refs.myVueDropzone.processQueue();
-    },
-    sendMessage: async function(files, xhr, formData) {},
-
     dropzoneTemplate() {
       return `<div class="dz-preview dz-file-preview mb-3">
                   <div class="d-flex flex-row "> <div class="p-0 w-30 position-relative">
@@ -188,20 +197,9 @@ export default {
         `;
     }
   },
-  computed: {
-    ...mapGetters(["_sccussCreateImage", "_successAddBlockImage"])
-  },
   watch: {
     _sccussCreateImage: function(val) {
       this.enable = false;
-      this.hideModal("modalright");
-      this.image_form.forEach(el => {
-        (el.title = null), (el.description = null);
-      });
-    },
-    _successAddBlockImage: function(val) {
-      this.enable = false;
-
       this.hideModal("modalright");
       this.image_form.forEach(el => {
         (el.title = null), (el.description = null);

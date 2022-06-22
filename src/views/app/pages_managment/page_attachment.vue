@@ -20,113 +20,17 @@
           </div>
           <add-new-modal
             :enable="enable"
+            :_sccussCreateImage="_sccussCreatePageImage"
             @AddNewImage="createImage"
           ></add-new-modal>
         </b-tab>
         <b-tab @click="openFile()" :title="$t('forms.files')">
-          <b-row>
-            <template v-if="_isLoadAttach">
-              <b-colxx xs="12" md="6" class="mb-3">
-                <b-card>
-                  <vuetable
-                    ref="vuetable"
-                    :api-mode="false"
-                    :data-total="dataCount"
-                    :per-page="perPage"
-                    :reactive-api-url="true"
-                    :fields="fields"
-                  >
-                    <template slot="actions" slot-scope="props">
-                      <b-dropdown
-                        id="langddm"
-                        class="ml-2"
-                        variant="light"
-                        size="sm"
-                        toggle-class="language-button"
-                      >
-                        <template #button-content>
-                          <i class="simple-icon-settings"></i>
-                        </template>
-                        <b-dropdown-item
-                          v-for="(item, index) in Options"
-                          :key="index"
-                          @click="file_Action(item.value, props.rowData)"
-                          >{{ $t(item.name) }}</b-dropdown-item
-                        >
-                      </b-dropdown>
-                    </template>
-                  </vuetable>
-                </b-card>
-              </b-colxx>
-              <b-colxx xs="12" md="6" class="mb-3">
-                <b-card class="mb-4" :title="$t('forms.create')">
-                  <b-form
-                    @submit.prevent="onValitadeFormSubmit()"
-                    class="av-tooltip tooltip-label-right"
-                  >
-                    <div
-                      v-for="(lang, index) in $v.file_form.$each.$iter"
-                      :key="index"
-                    >
-                      <b-form-group
-                        :label="$t(`pages.${lang.name.$model}_title`)"
-                        class="has-float-label mb-4"
-                      >
-                        <b-form-input
-                          type="text"
-                          v-model="lang.title.$model"
-                          :state="!lang.title.$error"
-                        />
-                        <b-form-invalid-feedback v-if="!lang.title.required">{{
-                          $t("forms.title_filed")
-                        }}</b-form-invalid-feedback>
-                      </b-form-group>
-                      <b-form-group
-                        :label="$t(`pages.${lang.name.$model}_desc`)"
-                        class="has-float-label mb-4"
-                      >
-                        <b-form-input
-                          type="text"
-                          v-model="lang.description.$model"
-                          :state="!lang.description.$error"
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!lang.description.required"
-                        >
-                          {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </div>
-                    <label class="form-group has-float-label">
-                      <b-colxx xxs="12" style="padding: 0px;">
-                        <vue-dropzone
-                          ref="myVueDropzone"
-                          id="dropzone"
-                          :options="dropzoneOptions"
-                          @vdropzone-files-added="fileAdded"
-                          @vdropzone-complete="afterUploadComplete"
-                          @vdropzone-sending-multiple="sendMessage"
-                          @vdropzone-removed-file="fileRemoved"
-                        ></vue-dropzone>
-                      </b-colxx>
-                      <span>{{ $t("block.file") }}</span>
-                    </label>
-
-                    <b-button
-                      :disabled="enable"
-                      type="submit"
-                      variant="primary"
-                      class="mt-4"
-                      >{{ $t("forms.submit") }}</b-button
-                    >
-                  </b-form>
-                </b-card>
-              </b-colxx>
-            </template>
-            <template v-else>
-              <div class="loading"></div>
-            </template>
-          </b-row>
+          <file
+            :list="_pageFileList"
+            :isLoad="_isLoadAttach"
+            @delete-file="delete_File"
+            @create-file="create_File"
+          />
         </b-tab>
         <b-tab @click="openVideo()" :title="$t('forms.videos')">
           <b-row>
@@ -305,10 +209,12 @@ import VuetablePaginationBootstrap from "../../../components/Common/VuetablePagi
 import AddNewModal from "../../../containers/appliaction/AddNewModal.vue";
 import AddNewVideoModel from "../../../containers/appliaction/AddNewVideoModel.vue";
 import { validationMixin } from "vuelidate";
+import file from "../../../components/shared/file.vue";
 const { required } = require("vuelidate/lib/validators");
 
 export default {
   components: {
+    file: file,
     "add-new-modal": AddNewModal,
     "video-player": VideoPlayer,
     vuetable: Vuetable,
@@ -323,8 +229,6 @@ export default {
     return {
       pageData: null,
       _data: null,
-      image_form: [],
-      file_form: [],
       youtube_form: [],
       enable: false,
       itemId: null,
@@ -462,45 +366,11 @@ export default {
         { name: "DELETE", value: 0 }
       ],
       //   videos
-      // vue table-2
-      //   files
-      file: null,
-
-      // vue dropezone
-      dropzoneOptions: {
-        url: "https://lilacmarketingevents.com",
-        thumbnailHeight: 160,
-        thumbnailWidth: 150,
-        parallelUploads: 3,
-        maxFiles: 1,
-        acceptedFiles:
-          "application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf",
-        uploadMultiple: false,
-        addRemoveLinks: true,
-        removedfile: function(file) {
-          var _ref;
-          return (_ref = file.previewElement) != null
-            ? _ref.parentNode.removeChild(file.previewElement)
-            : void 0;
-        },
-        autoProcessQueue: false,
-        previewTemplate: this.dropzoneTemplate(),
-        headers: {}
-      }
-      // vue dropezone
+    
     };
   },
   mixins: [validationMixin],
   validations: {
-    file_form: {
-      $each: {
-        title: {
-          required
-        },
-        description: {},
-        name: {}
-      }
-    },
     youtube_form: {
       $each: {
         title: {
@@ -519,7 +389,6 @@ export default {
     console.log(this.pageId);
     this.getPageImageList({ id: this.pageId });
     this.langs = localStorage.getItem("Languages");
-    this.make_collaction(this.langs, this.file_form);
     this.make_collaction(this.langs, this.youtube_form);
   },
   methods: {
@@ -574,20 +443,14 @@ export default {
     // -------------------------------files---------------------------
     openFile() {
       this.getPageFileList({ id: this.pageId });
-
       this.isLoadAttach = false;
     },
-    file_Action(value, item) {
-      console.log(item);
-      if (value == 1) {
-        window.open(item.path);
-      } else {
-        this.deletePageFile({
-          type: "files",
-          pageId: this.pageId,
-          file_id: item.id
-        });
-      }
+    create_File(info, path) {
+      console.log("hi from createee", info, path);
+      this.createPageFile({ info: info, file: path, id: this.pageId });
+    },
+    delete_File(id) {
+      this.deletePageFile({ pageId: this.pageId, file_id: id });
     },
     videos_Action(value, item) {
       console.log(item);
@@ -600,60 +463,8 @@ export default {
         });
       }
     },
-
-    onValitadeFormSubmit() {
-      this.$v.$touch();
-      this.$v.file_form.$touch();
-      if (!this.$v.file_form.$invalid) {
-        console.log(this.$v.file_form.$model);
-        this.enable = true;
-        this.createPageFile({
-          info: this.$v.file_form.$model,
-          file: this.file ? this.file[0] : null,
-          id: this.pageId
-        });
-      }
-    },
-    // vue dropezone
-    afterUploadComplete(response) {
-      if (response.status == "success") {
-        this.sendSuccess = true;
-      } else {
-      }
-    },
-    fileAdded(file) {
-      this.file = file;
-    },
-    fileRemoved(file) {
-      this.file = null;
-    },
-    shootMessage: async function() {
-      this.$refs.myVueDropzone.processQueue();
-    },
-    sendMessage: async function(files, xhr, formData) {},
-
-    dropzoneTemplate() {
-      return `<div class="dz-preview dz-file-preview mb-3">
-                  <div class="d-flex flex-row "> <div class="p-0 w-30 position-relative">
-                      <div class="dz-error-mark"><span><i></i>  </span></div>
-                      <div class="dz-success-mark"><span><i></i></span></div>
-                      <div class="preview-container">
-                        <img data-dz-thumbnail class="img-thumbnail border-0" />
-                        <i class="simple-icon-doc preview-icon"></i>
-                      </div>
-                  </div>
-                  <div class="pl-3 pt-2 pr-2 pb-1 w-70 dz-details position-relative">
-                    <div> <span data-dz-name /> </div>
-                    <div class="text-primary text-extra-small" data-dz-size /> </div>
-                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-                    <div class="dz-error-message"><span data-dz-errormessage></span></div>
-                  </div>
-                  <a href="#" class="remove" data-dz-remove> <i class="glyph-icon simple-icon-trash"></i> </a>
-                </div>
-        `;
-    },
-    // vue dropezone
-    // file
+   
+   
     // --------------------------------videos--------------------------
     openVideo() {
       this.getPageVideosList({ id: this.pageId });
@@ -671,9 +482,7 @@ export default {
       this.$v.youtube_form.$touch();
       this.$v.path_form.$touch();
       if (!this.$v.youtube_form.$invalid && !this.$v.path_form.$invalid) {
-        console.log("this.$v.image_form.$invalid");
         this.enable = true;
-
         if (!this.edit) {
           this.createPageYoutubeVideo({
             info: this.$v.youtube_form.$model,
@@ -737,6 +546,7 @@ export default {
       "_pageImageList",
       "_pageFileList",
       "_sccussCreateFile",
+      "_sccussCreatePageImage",
       "_pageVideosList",
       "_isLoadAttach",
       "_pageYoutubeVideosList",
@@ -751,7 +561,6 @@ export default {
     _pageFileList(newData, old) {
       this.isLoadAttach = true;
       this.enable = false;
-      this.$refs.vuetable.setData(newData);
     },
     _pageVideosList(newData, old) {
       this.isLoadAttach = true;
@@ -770,13 +579,6 @@ export default {
         "This Youtube Url isn't valid",
         { duration: 4000, permanent: false }
       );
-    },
-    _sccussCreateFile(newData, old) {
-      this.enable = false;
-      this.file_form.forEach(el => {
-        (el.title = null), (el.description = null);
-      });
-      this.file = null;
     },
     _pageYoutubeVideosList(newData, old) {
       this.isLoadAttach = true;

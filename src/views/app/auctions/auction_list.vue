@@ -240,7 +240,7 @@ export default {
         if (sortOrder[0].direction == "asc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
-          this.getAuction({
+          this.getAuctions({
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -251,7 +251,7 @@ export default {
         if (sortOrder[0].direction == "desc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "DESC";
-          this.getAuction({
+          this.getAuctions({
             dir: this.dir,
             search: this.search,
             order_by: this.order_by,
@@ -269,7 +269,7 @@ export default {
         console.log(page);
       } else {
         this.page = page;
-        this.getAuction({
+        this.getAuctions({
           dir: this.dir,
           search: this.search,
           order_by: this.order_by,
@@ -282,7 +282,7 @@ export default {
     changePageSize(perPage) {
       console.log(perPage);
       this.limit = perPage;
-      this.getAuction({
+      this.getAuctions({
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
@@ -294,7 +294,7 @@ export default {
     searchChange(val) {
       console.log(val);
       this.search = val;
-      this.getAuction({
+      this.getAuctions({
         dir: this.dir,
         search: val,
         order_by: this.order_by,

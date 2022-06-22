@@ -491,6 +491,7 @@
   "forms": {
     "Yemail_filed": "Please enter your email",
     "send": "Send",
+    "choose-file-message": "Please choose a file",
     "wallet": "Wallet",
     "auction_side": "Auction Side",
     "auction_side_message": "Please select auction side",

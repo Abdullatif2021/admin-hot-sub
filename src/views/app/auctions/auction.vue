@@ -179,19 +179,19 @@
               </b-colxx>
               <b-colxx sm="6">
                 <b-form-group :label="$t('forms.location')">
-                  <b-button class="mb-2" block variant="light default">{{
+                  <b-button  v-b-modal.maps class="mb-2" block variant="light default">{{
                     $t("button.choose-location")
                   }}</b-button>
-                  <!-- <b-form-input
+                  <b-form-input
                     style="display: none;"
-                    :state="!$v.gridForm.location.$error"
-                    v-model="$v.gridForm.location.$model"
+                    :state="!$v.gridForm.latitude.$error"
+                    v-model="$v.gridForm.latitude.$model"
                   />
 
                   <b-form-invalid-feedback
-                    v-if="!$v.gridForm.location.required"
+                    v-if="!$v.gridForm.latitude.required"
                     >{{ $t("forms.location_req") }}</b-form-invalid-feedback
-                  > -->
+                  >
                 </b-form-group>
               </b-colxx>
               <b-colxx sm="6">
@@ -444,19 +444,23 @@
                   </b-colxx>
                   <b-colxx sm="6">
                     <b-form-group :label="$t('forms.location')">
-                      <b-button class="mb-2" block variant="light default">{{
-                        $t("button.choose-location")
-                      }}</b-button>
-                      <!-- <b-form-input
-                    style="display: none;"
-                    :state="!$v.gridForm.location.$error"
-                    v-model="$v.gridForm.location.$model"
-                  />
+                      <b-button
+                        v-b-modal.maps
+                        class="mb-2"
+                        block
+                        variant="light default"
+                        >{{ $t("button.choose-location") }}</b-button
+                      >
+                      <b-form-input
+                        style="display: none;"
+                        :state="!$v.gridForm.latitude.$error"
+                        v-model="$v.gridForm.latitude.$model"
+                      />
 
-                  <b-form-invalid-feedback
-                    v-if="!$v.gridForm.location.required"
-                    >{{ $t("forms.location_req") }}</b-form-invalid-feedback
-                  > -->
+                      <b-form-invalid-feedback
+                        v-if="!$v.gridForm.latitude.required"
+                        >{{ $t("forms.location_req") }}</b-form-invalid-feedback
+                      >
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
@@ -530,142 +534,50 @@
                 >
               </b-form>
             </b-tab>
-            <b-tab title-item-class="w-50 text-center" title="Attachments">
+            <b-tab
+              @click="getAuctionImages({ id: auctionId })"
+              title-item-class="w-50 text-center"
+              title="Attachments"
+            >
               <b-card class="mb-4" no-body>
                 <b-tabs card no-fade>
                   <b-tab :title="$t('forms.images')" active>
-                    <div style="display: grid;">
-                      <b-button
-                        v-b-modal.modalright
-                        variant="primary"
-                        style="margin: auto;margin-bottom: 17px;"
-                        size="lg"
-                        >{{ $t("survey.add-new") }}</b-button
-                      >
-                      <b-colxx lg="12" xl="12" class="mb-4">
-                        <recent-orders
-                          @deleteImage="deleteImage"
-                          :_ImageList="_auctionImageList"
-                        />
-                      </b-colxx>
-                    </div>
-                    <add-new-modal
-                      :enable="enable"
-                      @AddNewImage="createImage"
-                    ></add-new-modal>
+                    <template v-if="isLoadAuctionImages">
+                      <div style="display: grid;">
+                        <b-button
+                          v-b-modal.modalright
+                          variant="primary"
+                          style="margin: auto;margin-bottom: 17px;"
+                          size="lg"
+                          >{{ $t("survey.add-new") }}</b-button
+                        >
+                        <b-colxx lg="12" xl="12" class="mb-4">
+                          <recent-orders
+                            @deleteImage="deleteImage"
+                            :_ImageList="_Image_List"
+                          />
+                        </b-colxx>
+                      </div>
+                      <add-new-modal
+                        :enable="enable"
+                        :_sccussCreateImage="_createAuctionImage"
+                        @AddNewImage="createImage"
+                      ></add-new-modal>
+                    </template>
+                    <template v-else>
+                      <div class="loading"></div>
+                    </template>
                   </b-tab>
-                  <b-tab @click="openFile()" :title="$t('forms.files')">
-                    <b-row>
-                      <template v-if="_isLoadAttach">
-                        <b-colxx xs="12" md="6" class="mb-3">
-                          <b-card>
-                            <vuetable
-                              ref="vuetable"
-                              :api-mode="false"
-                              :data-total="dataCount"
-                              :per-page="perPage"
-                              :reactive-api-url="true"
-                              :fields="fields"
-                            >
-                              <template slot="actions" slot-scope="props">
-                                <b-dropdown
-                                  id="langddm"
-                                  class="ml-2"
-                                  variant="light"
-                                  size="sm"
-                                  toggle-class="language-button"
-                                >
-                                  <template #button-content>
-                                    <i class="simple-icon-settings"></i>
-                                  </template>
-                                  <b-dropdown-item
-                                    v-for="(item, index) in Options"
-                                    :key="index"
-                                    @click="
-                                      file_Action(item.value, props.rowData)
-                                    "
-                                    >{{ $t(item.name) }}</b-dropdown-item
-                                  >
-                                </b-dropdown>
-                              </template>
-                            </vuetable>
-                          </b-card>
-                        </b-colxx>
-                        <b-colxx xs="12" md="6" class="mb-3">
-                          <b-card class="mb-4" :title="$t('forms.create')">
-                            <b-form
-                              @submit.prevent="onValitadeFormSubmit()"
-                              class="av-tooltip tooltip-label-right"
-                            >
-                              <div
-                                v-for="(lang, index) in $v.file_form.$each
-                                  .$iter"
-                                :key="index"
-                              >
-                                <b-form-group
-                                  :label="$t(`pages.${lang.name.$model}_title`)"
-                                  class="has-float-label mb-4"
-                                >
-                                  <b-form-input
-                                    type="text"
-                                    v-model="lang.title.$model"
-                                    :state="!lang.title.$error"
-                                  />
-                                  <b-form-invalid-feedback
-                                    v-if="!lang.title.required"
-                                    >{{
-                                      $t("forms.title_filed")
-                                    }}</b-form-invalid-feedback
-                                  >
-                                </b-form-group>
-                                <b-form-group
-                                  :label="$t(`pages.${lang.name.$model}_desc`)"
-                                  class="has-float-label mb-4"
-                                >
-                                  <b-form-input
-                                    type="text"
-                                    v-model="lang.description.$model"
-                                    :state="!lang.description.$error"
-                                  />
-                                  <b-form-invalid-feedback
-                                    v-if="!lang.description.required"
-                                  >
-                                    {{
-                                      $t("forms.desc_filed")
-                                    }}</b-form-invalid-feedback
-                                  >
-                                </b-form-group>
-                              </div>
-                              <label class="form-group has-float-label">
-                                <b-colxx xxs="12" style="padding: 0px;">
-                                  <vue-dropzone
-                                    ref="myVueDropzone"
-                                    id="dropzone"
-                                    :options="dropzoneOptions"
-                                    @vdropzone-files-added="fileAdded"
-                                    @vdropzone-complete="afterUploadComplete"
-                                    @vdropzone-sending-multiple="sendMessage"
-                                    @vdropzone-removed-file="fileRemoved"
-                                  ></vue-dropzone>
-                                </b-colxx>
-                                <span>{{ $t("block.file") }}</span>
-                              </label>
-
-                              <b-button
-                                :disabled="enable"
-                                type="submit"
-                                variant="primary"
-                                class="mt-4"
-                                >{{ $t("forms.submit") }}</b-button
-                              >
-                            </b-form>
-                          </b-card>
-                        </b-colxx>
-                      </template>
-                      <template v-else>
-                        <div class="loading"></div>
-                      </template>
-                    </b-row>
+                  <b-tab
+                    @click="this.getAuctionFiles({ id: auctionId })"
+                    :title="$t('forms.files')"
+                  >
+                    <file
+                      :list="auctionFileList"
+                      :isLoad="_isLoadAuctions"
+                      @delete-file="delete_File"
+                      @create-file="create_File"
+                    />
                   </b-tab>
                 </b-tabs>
               </b-card>
@@ -677,6 +589,9 @@
         <div class="loading"></div>
       </template>
     </b-colxx>
+    <b-modal id="maps" size="lg" title="Select Location" hide-footer>
+      <yandexMap @select_location="set_location" />
+    </b-modal>
   </b-row>
 </template>
 <script>
@@ -690,28 +605,38 @@ import VueDropzone from "vue2-dropzone";
 const { required, requiredIf } = require("vuelidate/lib/validators");
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { adminRoot } from "../../../constants/config";
+import file from "../../../components/shared/file.vue";
+import AddNewModal from "../../../containers/appliaction/AddNewModal.vue";
+import RecentOrders from "../../../containers/appliaction/RecentOrders.vue";
+import yandexMap from "../../../components/shared/yandexMap.vue";
 
 export default {
   components: {
+    yandexMap: yandexMap,
     "vue-dropzone": VueDropzone,
     "datatable-heading": DatatableHeading,
-
-    datepicker: DatePicker
+    file: file,
+    "add-new-modal": AddNewModal,
+    datepicker: DatePicker,
+    "recent-orders": RecentOrders
   },
   data() {
     return {
       auctionId: null,
       _categoryId: null,
       password: null,
+      isLoadAuctionImages: false,
       disabled: true,
       endDateSelected: false,
       startDateSelected: false,
       isLoadAuction: false,
+      enable: false,
       langs: null,
       country_id: 248,
       categoryIdOptions: [],
       auctionSideOptions: [],
       areaOptions: [],
+      auctionFileList: null,
       cityOptions: [],
       is_city_selected: false,
       create_categoryId: null,
@@ -729,8 +654,8 @@ export default {
         terms_conditions: null,
         end_date: null,
         opening_price: null,
-        latitude: "1313232132",
-        longitude: "1231231231231"
+        latitude: null,
+        longitude: null
       }
     };
   },
@@ -752,6 +677,7 @@ export default {
       deposit: {
         required
       },
+
       brochure: {},
       auction_side: {
         required
@@ -769,7 +695,9 @@ export default {
       minimum_paid: {
         required
       },
-
+      latitude: {
+        required
+      },
       start_date: {
         required
       },
@@ -807,6 +735,10 @@ export default {
       "updateAuction",
       "getCategories",
       "createAuctionImage",
+      "deleteAuctionFile",
+      "createAuctionFile",
+      "getAuctionFiles",
+      "getAuctionImages",
       "createAuction",
       "getCities",
       "getAreas",
@@ -855,45 +787,46 @@ export default {
         }
       }
     },
+    create_File(info, path) {
+      console.log("hi from createee", info, path);
+      this.createAuctionFile({ info: info, path: path, id: this.auctionId });
+    },
+    delete_File(id) {
+      this.deleteAuctionFile({ id: this.auctionId, fileId: id });
+    },
+    set_location(data) {
+      this.gridForm.latitude = data[0];
+      this.gridForm.longitude = data[1];
+    },
     getArea() {
       console.log(this.gridForm.city);
       this.is_city_selected = true;
       this.getAreas({ city_id: this.gridForm.city });
     },
     selectedDate(data) {
-      console.log("srfsrpfsrfsrfsefsef", data);
-      console.log("startttttttttttt1111111111111111111");
       switch (data) {
         case "start":
-          console.log("startttttttttttt");
           this.startDateSelected = true;
           break;
         case "end":
-          console.log("enddddddddddddddd");
           this.endDateSelected = true;
           break;
-
         default:
           break;
       }
-      // if (data === "start") {
-      //   console.log("startttttttttttt");
-      //   this.startDateSelected = true;
-      // } else {
-      //   this.endDateSelected = true;
-      // }
     },
     createImage(value) {
       console.log(value);
       this.enable = true;
       this.createAuctionImage({
         info: value.info,
-        image: value.image ? value.image : null,
-        id: this.pageId
+        path: value.image ? value.image : null,
+        id: this.auctionId
       });
     },
     deleteImage(id) {
-      this.deleteAuctionImage({ id: this.auctionId, attachment_id: id });
+      this.isLoadAuctionImages = false;
+      this.deleteAuctionImage({ id: this.auctionId, imgId: id });
     },
     fileAdded(file) {
       console.log(file);
@@ -932,8 +865,13 @@ export default {
     ...mapGetters([
       "auction",
       "categories",
-      "_auctionImageList",
+      "_Image_List",
+      "_createAuctionImage",
       "_cities",
+      "_File_List",
+      "_createAuctionFile",
+      "_isLoadAuctions",
+      "_deleteAuctionFile",
       "_areas",
       "_auctionSide",
       "_updatedAuctionSuccessfuly",
@@ -944,6 +882,10 @@ export default {
     }
   },
   watch: {
+    _File_List(newInfo, oldOne) {
+      console.log("_auctionFileList", newInfo, oldOne);
+      this.auctionFileList = newInfo;
+    },
     auction(newInfo, oldOne) {
       console.log("wrfwrfwefwerfwef", newInfo);
       this.isLoadAuction = true;
@@ -957,9 +899,12 @@ export default {
       this.gridForm.start_date = newInfo.start_date;
       this.gridForm.end_date = newInfo.end_date;
     },
-    _auctionImageList: function(val) {
+    _Image_List: function(val) {
+      console.log("_Image_List_Image_List_Image_List_Image_List_Image_List");
       this.enable = false;
+      this.isLoadAuctionImages = true;
     },
+
     _cities: function(val) {
       console.log("cititesssssssssssssssssssssss", val);
       // this.gridForm.area = null;

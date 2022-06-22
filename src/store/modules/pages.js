@@ -44,7 +44,7 @@ const getters = {
   _pageMetaTypeList: state => state.metaTypeList,
   // images
   _pageImageList: state => state.pageImageList,
-  _sccussCreateImage: state => state.successAddPageImage,
+  _sccussCreatePageImage: state => state.successAddPageImage,
   // file
   _pageFileList: state => state.pageFileList,
   _sccussCreateFile: state => state.successAddPageFile,

@@ -21,6 +21,7 @@
           <add-new-modal
             :enable="enable"
             @AddNewImage="createImage"
+             :_sccussCreateImage="_successAddBlockImage"
           ></add-new-modal>
         </b-tab>
         <b-tab @click="openFile()" :title="$t('forms.files')">
@@ -755,6 +756,7 @@ export default {
     ...mapGetters([
       "_blockImageList",
       "_blockFileList",
+      "_successAddBlockImage",
       "_sccussCreateBlockFile",
       "_blockVideosList",
       "_blockYoutubeVideosList",
