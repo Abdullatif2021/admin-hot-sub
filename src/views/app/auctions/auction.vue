@@ -110,15 +110,16 @@
               <b-colxx sm="6">
                 <b-form-group :label="$t('forms.city')">
                   <b-form-select
-                    :state="!$v.gridForm.city.$error"
-                    v-model="$v.gridForm.city.$model"
+                    :state="!$v.gridForm.city_id.$error"
+                    v-model="$v.gridForm.city_id.$model"
                     :options="cityOptions"
                     @change="getArea()"
                     plain
                   />
-                  <b-form-invalid-feedback v-if="!$v.gridForm.city.required">{{
-                    $t("forms.city-message")
-                  }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback
+                    v-if="!$v.gridForm.city_id.required"
+                    >{{ $t("forms.city-message") }}</b-form-invalid-feedback
+                  >
                 </b-form-group>
               </b-colxx>
 
@@ -127,6 +128,7 @@
                   <datepicker
                     style="width: 100%;"
                     type="datetime"
+                    value-type="YYYY-MM-DD HH:mm:ss"
                     v-model="$v.gridForm.start_date.$model"
                     @change="selectedDate('start')"
                   ></datepicker>
@@ -146,14 +148,15 @@
               <b-colxx sm="6">
                 <b-form-group :label="$t('forms.area')">
                   <b-form-select
-                    :state="!$v.gridForm.area.$error"
-                    v-model="$v.gridForm.area.$model"
+                    :state="!$v.gridForm.area_id.$error"
+                    v-model="$v.gridForm.area_id.$model"
                     :options="areaOptions"
                     plain
                   />
-                  <b-form-invalid-feedback v-if="!$v.gridForm.area.required">{{
-                    $t("forms.area-message")
-                  }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback
+                    v-if="!$v.gridForm.area_id.required"
+                    >{{ $t("forms.area-message") }}</b-form-invalid-feedback
+                  >
                 </b-form-group>
               </b-colxx>
               <b-colxx sm="6">
@@ -161,6 +164,7 @@
                   <datepicker
                     style="width: 100%;"
                     type="datetime"
+                    value-type="YYYY-MM-DD HH:mm:ss"
                     v-model="$v.gridForm.end_date.$model"
                     @change="selectedDate('end')"
                   >
@@ -179,9 +183,13 @@
               </b-colxx>
               <b-colxx sm="6">
                 <b-form-group :label="$t('forms.location')">
-                  <b-button  v-b-modal.maps class="mb-2" block variant="light default">{{
-                    $t("button.choose-location")
-                  }}</b-button>
+                  <b-button
+                    v-b-modal.maps
+                    class="mb-2"
+                    block
+                    variant="light default"
+                    >{{ $t("button.choose-location") }}</b-button
+                  >
                   <b-form-input
                     style="display: none;"
                     :state="!$v.gridForm.latitude.$error"
@@ -198,32 +206,36 @@
                 <b-form-group :label="$t('forms.image')">
                   <b-form-input
                     style="display: none;"
-                    :state="!$v.gridForm.image.$error"
-                    v-model="$v.gridForm.image.$model"
+                    :state="!$v.files_form.image.$error"
+                    v-model="$v.files_form.image.$model"
                   />
                   <b-form-file
                     accept="image/*"
                     :placeholder="$t('forms.choose-image')"
-                    v-model="$v.gridForm.image.$model"
+                    v-model="image"
+                    @change="image_selected()"
                   ></b-form-file>
-                  <b-form-invalid-feedback v-if="!$v.gridForm.image.required">{{
-                    $t("forms.choose-image-message")
-                  }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback
+                    v-if="!$v.files_form.image.required"
+                    >{{
+                      $t("forms.choose-image-message")
+                    }}</b-form-invalid-feedback
+                  >
                 </b-form-group>
               </b-colxx>
               <b-colxx sm="6">
                 <b-form-group :label="$t('forms.brochure')">
                   <b-form-input
                     style="display: none;"
-                    :state="!$v.gridForm.brochure.$error"
-                    v-model="$v.gridForm.brochure.$model"
+                    :state="!$v.files_form.brochure.$error"
+                    v-model="$v.files_form.brochure.$model"
                   />
                   <b-form-file
                     :placeholder="$t('input-groups.choose-brochure')"
-                    v-model="$v.gridForm.brochure.$model"
+                    v-model="brochure"
                   ></b-form-file>
                   <b-form-invalid-feedback
-                    v-if="!$v.gridForm.brochure.required"
+                    v-if="!$v.files_form.brochure.required"
                     >{{
                       $t("forms.choose-brochure-message")
                     }}</b-form-invalid-feedback
@@ -234,15 +246,15 @@
                 <b-form-group :label="$t('forms.terms_conditions')">
                   <b-form-input
                     style="display: none;"
-                    :state="!$v.gridForm.terms_conditions.$error"
-                    v-model="$v.gridForm.terms_conditions.$model"
+                    :state="!$v.files_form.terms_conditions.$error"
+                    v-model="$v.files_form.terms_conditions.$model"
                   />
                   <b-form-file
                     :placeholder="$t('input-groups.choose-terms_conditions')"
-                    v-model="$v.gridForm.terms_conditions.$model"
+                    v-model="terms_conditions"
                   ></b-form-file>
                   <b-form-invalid-feedback
-                    v-if="!$v.gridForm.terms_conditions.required"
+                    v-if="!$v.files_form.terms_conditions.required"
                     >{{
                       $t("forms.choose-terms_conditions-message")
                     }}</b-form-invalid-feedback
@@ -373,14 +385,14 @@
                   <b-colxx sm="6">
                     <b-form-group :label="$t('forms.city')">
                       <b-form-select
-                        :state="!$v.gridForm.city.$error"
-                        v-model="$v.gridForm.city.$model"
+                        :state="!$v.gridForm.city_id.$error"
+                        v-model="$v.gridForm.city_id.$model"
                         :options="cityOptions"
                         @change="getArea()"
                         plain
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.city.required"
+                        v-if="!$v.gridForm.city_id.required"
                         >{{ $t("forms.city-message") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
@@ -391,9 +403,11 @@
                       <datepicker
                         style="width: 100%;"
                         type="datetime"
+                        value-type="YYYY-MM-DD HH:mm:ss"
                         v-model="$v.gridForm.start_date.$model"
                         @change="selectedDate('start')"
-                      ></datepicker>
+                      >
+                      </datepicker>
 
                       <div
                         :class="{
@@ -410,13 +424,13 @@
                   <b-colxx sm="6">
                     <b-form-group :label="$t('forms.area')">
                       <b-form-select
-                        :state="!$v.gridForm.area.$error"
-                        v-model="$v.gridForm.area.$model"
+                        :state="!$v.gridForm.area_id.$error"
+                        v-model="$v.gridForm.area_id.$model"
                         :options="areaOptions"
                         plain
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.area.required"
+                        v-if="!$v.gridForm.area_id.required"
                         >{{ $t("forms.area-message") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
@@ -426,6 +440,7 @@
                       <datepicker
                         style="width: 100%;"
                         type="datetime"
+                        value-type="YYYY-MM-DD HH:mm:ss"
                         v-model="$v.gridForm.end_date.$model"
                         @change="selectedDate('end')"
                       >
@@ -449,7 +464,7 @@
                         class="mb-2"
                         block
                         variant="light default"
-                        >{{ $t("button.choose-location") }}</b-button
+                        >{{ $t("button.change-location") }}</b-button
                       >
                       <b-form-input
                         style="display: none;"
@@ -467,16 +482,25 @@
                     <b-form-group :label="$t('forms.image')">
                       <b-form-input
                         style="display: none;"
-                        :state="!$v.gridForm.image.$error"
-                        v-model="$v.gridForm.image.$model"
+                        :state="!$v.files_form.image.$error"
+                        v-model="$v.files_form.image.$model"
                       />
-                      <b-form-file
-                        accept="image/*"
-                        :placeholder="$t('forms.choose-image')"
-                        v-model="$v.gridForm.image.$model"
-                      ></b-form-file>
+                      <b-input-group class="mb-3">
+                        <b-form-file
+                          accept="image/*"
+                          :placeholder="image_basename"
+                          v-model="image"
+                        ></b-form-file>
+                        <b-input-group-append>
+                          <b-button
+                            @click="open($v.files_form.image.$model)"
+                            variant="light default"
+                            >{{ $t("input-groups.show") }}</b-button
+                          >
+                        </b-input-group-append>
+                      </b-input-group>
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.image.required"
+                        v-if="!$v.files_form.image.required"
                         >{{
                           $t("forms.choose-image-message")
                         }}</b-form-invalid-feedback
@@ -487,15 +511,26 @@
                     <b-form-group :label="$t('forms.brochure')">
                       <b-form-input
                         style="display: none;"
-                        :state="!$v.gridForm.brochure.$error"
-                        v-model="$v.gridForm.brochure.$model"
+                        :state="!$v.files_form.brochure.$error"
+                        v-model="$v.files_form.brochure.$model"
                       />
-                      <b-form-file
-                        :placeholder="$t('input-groups.choose-brochure')"
-                        v-model="$v.gridForm.brochure.$model"
-                      ></b-form-file>
+                      <b-input-group class="mb-3">
+                        <b-form-file
+                          :placeholder="$t('input-groups.change-brochure')"
+                          v-model="brochure"
+                        ></b-form-file>
+                        <b-input-group-append>
+                          <b-button
+                            @click="open($v.files_form.brochure.$model)"
+                            variant="light default"
+                            :disabled="files_form.brochure == null"
+                            >{{ $t("OPEN") }}</b-button
+                          >
+                        </b-input-group-append>
+                      </b-input-group>
+
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.brochure.required"
+                        v-if="!$v.files_form.brochure.required"
                         >{{
                           $t("forms.choose-brochure-message")
                         }}</b-form-invalid-feedback
@@ -504,19 +539,29 @@
                   </b-colxx>
                   <b-colxx sm="6">
                     <b-form-group :label="$t('forms.terms_conditions')">
-                      <b-form-input
+                      <input
                         style="display: none;"
-                        :state="!$v.gridForm.terms_conditions.$error"
-                        v-model="$v.gridForm.terms_conditions.$model"
+                        :state="!$v.files_form.terms_conditions.$error"
+                        v-model="$v.files_form.terms_conditions.$model"
                       />
-                      <b-form-file
-                        :placeholder="
-                          $t('input-groups.choose-terms_conditions')
-                        "
-                        v-model="$v.gridForm.terms_conditions.$model"
-                      ></b-form-file>
+                      <b-input-group class="mb-3">
+                        <b-form-file
+                          :placeholder="
+                            $t('input-groups.change-terms_conditions')
+                          "
+                          v-model="terms_conditions"
+                        ></b-form-file>
+                        <b-input-group-append>
+                          <b-button
+                            @click="open($v.files_form.terms_conditions.$model)"
+                            variant="light default"
+                            :disabled="files_form.terms_conditions == null"
+                            >{{ $t("OPEN") }}</b-button
+                          >
+                        </b-input-group-append>
+                      </b-input-group>
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.terms_conditions.required"
+                        v-if="!$v.files_form.terms_conditions.required"
                         >{{
                           $t("forms.choose-terms_conditions-message")
                         }}</b-form-invalid-feedback
@@ -569,7 +614,7 @@
                     </template>
                   </b-tab>
                   <b-tab
-                    @click="this.getAuctionFiles({ id: auctionId })"
+                    @click="getAuctionFiles({ id: auctionId })"
                     :title="$t('forms.files')"
                   >
                     <file
@@ -590,7 +635,7 @@
       </template>
     </b-colxx>
     <b-modal id="maps" size="lg" title="Select Location" hide-footer>
-      <yandexMap @select_location="set_location" />
+      <yandexMap :coords="coords" @select_location="set_location" />
     </b-modal>
   </b-row>
 </template>
@@ -625,6 +670,9 @@ export default {
       auctionId: null,
       _categoryId: null,
       password: null,
+      image: null,
+      terms_conditions: null,
+      brochure: null,
       isLoadAuctionImages: false,
       disabled: true,
       endDateSelected: false,
@@ -632,26 +680,30 @@ export default {
       isLoadAuction: false,
       enable: false,
       langs: null,
+      coords: [],
       country_id: 248,
       categoryIdOptions: [],
       auctionSideOptions: [],
       areaOptions: [],
       auctionFileList: null,
+      image_basename: null,
       cityOptions: [],
+      files_form: {
+        image: null,
+        terms_conditions: null,
+        brochure: null
+      },
       is_city_selected: false,
       create_categoryId: null,
       lang_form: [],
       gridForm: {
-        image: null,
         auction_side: null,
-        city: null,
-        area: null,
+        city_id: null,
+        area_id: null,
         deposit: null,
         category_id: null,
         minimum_paid: null,
         start_date: null,
-        brochure: null,
-        terms_conditions: null,
         end_date: null,
         opening_price: null,
         latitude: null,
@@ -671,23 +723,19 @@ export default {
       }
     },
     gridForm: {
-      image: {
-        required
-      },
       deposit: {
         required
       },
 
-      brochure: {},
       auction_side: {
         required
       },
-      terms_conditions: {},
+
       category_id: {
         required
       },
-      city: {},
-      area: {
+      city_id: {},
+      area_id: {
         required: requiredIf(function() {
           return this.area_req;
         })
@@ -707,15 +755,24 @@ export default {
       end_date: {
         required
       }
+    },
+    files_form: {
+      image: {
+        required
+      },
+      terms_conditions: {},
+      brochure: {}
     }
   },
   created() {
     this.auctionId = this.$route.query.id;
     if (this.auctionId) {
       this.getAuction({ id: this.auctionId });
+      this.coords = [];
     } else {
       console.log("i am here ", this.auctionId);
       this.isLoadAuction = true;
+      this.coords = [30.434447148758963, 37.061051995669274];
     }
     this.getCategories({
       dir: null,
@@ -758,30 +815,47 @@ export default {
     onGridFormSubmit() {
       this.$v.$touch();
       this.$v.gridForm.$touch();
-      console.log("this.gridForm this.gridForm", this.gridForm, this.lang_form);
-      if (!this.$v.gridForm.$invalid && !this.$v.lang_form.$invalid) {
+      this.$v.lang_form.$touch();
+      this.$v.files_form.$touch();
+      console.log(
+        "this.gridForm this.gridForm",
+        this.gridForm,
+        this.lang_form,
+        this.files_form
+      );
+      if (
+        !this.$v.gridForm.$invalid &&
+        !this.$v.lang_form.$invalid &&
+        !this.$v.files_form.$invalid
+      ) {
         this.disabled = false;
-        this.startDateSelected
-          ? (this.gridForm.start_date = this.gridForm.start_date
-              .toLocaleString()
-              .replace(",", ""))
-          : this.gridForm.start_date;
-        this.endDateSelected
-          ? (this.gridForm.end_date = this.gridForm.end_date
-              .toLocaleString()
-              .replace(",", ""))
-          : this.gridForm.end_date;
-        console.log(this.endDateSelected, this.gridForm.end_date);
+        // this.startDateSelected
+        //   ? (this.gridForm.start_date = this.gridForm.start_date
+        //       .toLocaleString()
+        //       .replace(",", ""))
+        //   : this.gridForm.start_date;
+        // this.endDateSelected
+        //   ? (this.gridForm.end_date = this.gridForm.end_date
+        //       .toLocaleString()
+        //       .replace(",", ""))
+        //   : this.gridForm.end_date;
+        // console.log(this.endDateSelected, this.gridForm.end_date);
 
         if (this.auctionId) {
           this.updateAuction({
             info: this.gridForm,
+            image: this.image,
+            terms_conditions: this.terms_conditions,
+            brochure: this.brochure,
             langs: this.lang_form,
             id: this.auctionId
           });
         } else {
           this.createAuction({
             info: this.gridForm,
+            image: this.image,
+            terms_conditions: this.terms_conditions,
+            brochure: this.brochure,
             langs: this.lang_form
           });
         }
@@ -801,7 +875,7 @@ export default {
     getArea() {
       console.log(this.gridForm.city);
       this.is_city_selected = true;
-      this.getAreas({ city_id: this.gridForm.city });
+      this.getAreas({ city_id: this.gridForm.city_id });
     },
     selectedDate(data) {
       switch (data) {
@@ -831,6 +905,12 @@ export default {
     fileAdded(file) {
       console.log(file);
       this.file = file;
+    },
+    open(item) {
+      window.open(item);
+    },
+    image_selected() {
+      this.files_form.image = "image";
     },
     fileRemoved(file) {
       this.file = null;
@@ -889,15 +969,47 @@ export default {
     auction(newInfo, oldOne) {
       console.log("wrfwrfwefwerfwef", newInfo);
       this.isLoadAuction = true;
-      this.gridForm.ar_title = newInfo.locales.ar.title;
-      this.gridForm.en_title = newInfo.locales.en.title;
-      this.gridForm.ar_description = newInfo.locales.ar.terms_conditions;
-      this.gridForm.en_description = newInfo.locales.en.terms_conditions;
+      this.lang_form.forEach(el => {
+        switch (el._name) {
+          case "en":
+            el.title = newInfo.locales.en.title;
+            el.description = newInfo.locales.en.description;
+            break;
+          case "ar":
+            el.title = newInfo.locales.ar.title;
+            el.description = newInfo.locales.ar.description;
+            break;
+          default:
+            break;
+        }
+      });
+      this.image_basename = newInfo.image_basename;
       this.gridForm.category_id = newInfo.category_id;
       this.gridForm.opening_price = newInfo.opening_price;
       this.gridForm.minimum_paid = newInfo.minimum_paid;
+      this.gridForm.deposit = newInfo.deposit;
+      this.gridForm.auction_side = newInfo.auction_side;
+      this.files_form.image = newInfo.image;
+      this.gridForm.latitude = newInfo.latitude;
+      this.gridForm.longitude = newInfo.longitude;
+      newInfo.terms_conditions == ""
+        ? (this.files_form.terms_conditions = null)
+        : (this.files_form.terms_conditions = newInfo.terms_conditions);
+      newInfo.brochure == ""
+        ? (this.files_form.brochure = null)
+        : (this.files_form.brochure = newInfo.brochure);
       this.gridForm.start_date = newInfo.start_date;
       this.gridForm.end_date = newInfo.end_date;
+      this.gridForm.city_id = newInfo.city.id;
+      this.gridForm.area_id = newInfo.area.id;
+      this.image_basename = newInfo.image_basename;
+
+      this.coords.push(newInfo.latitude, newInfo.longitude);
+      console.log(
+        "fwefwefwefwefwefwefwefwefwefwefwef5555555555555555555555555555",
+        this.coords
+      );
+      this.getArea();
     },
     _Image_List: function(val) {
       console.log("_Image_List_Image_List_Image_List_Image_List_Image_List");
@@ -973,6 +1085,15 @@ export default {
         );
       });
     }
+    // image: function(val) {
+    //   this.files_form.image = "image";
+    // },
+    // terms_conditions: function(val) {
+    //   this.files_form.terms_conditions = "terms_conditions";
+    // },
+    // brochure: function(val) {
+    //   this.files_form.brochure = "brochure";
+    // }
   }
 };
 </script>

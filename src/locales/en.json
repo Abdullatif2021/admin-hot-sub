@@ -385,6 +385,7 @@
     "changes": "Changes",
     "change": "Change",
     "choose-location": "Choose Location",
+    "change-location": "Change Location",
     "no": "No",
     "default": "Bootstrap Default",
     "colors": "Colors",
@@ -693,7 +694,9 @@
     "sizing": "Sizing",
     "small": "Small",
     "default": "Default",
+    "show": "Show",
     "choose-terms_conditions": "Choose Terms Conditions file",
+    "change-terms_conditions": "Change Terms Conditions file",
     "large": "Large",
     "checkboxes-and-radios": "Checkboxes and radios",
     "multiple-inputs": "Multiple Inputs",
@@ -713,7 +716,8 @@
     "custom-file-input": "Custom File Input",
     "upload": "Upload",
     "choose-file": "Choose a file..",
-    "choose-brochure": "Choose Brochure file..."
+    "choose-brochure": "Choose Brochure file...",
+    "change-brochure": "Change Brochure file"
   },
   "jumbotron": {
     "hello-world": "Hello, world!",

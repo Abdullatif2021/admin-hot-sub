@@ -152,6 +152,16 @@ const actions = {
         formData.append(key, value);
       }
     });
+
+    if (payload.brochure != null) {
+      formData.append("brochure", payload.brochure);
+    }
+    if (payload.image != null) {
+      formData.append("image", payload.image);
+    }
+    if (payload.terms_conditions != null) {
+      formData.append("terms_conditions", payload.terms_conditions);
+    }
     axios.post(`${apiUrl}/auctions`, formData, {}).then(res => {
       if (res.status === 201) {
         commit("createAuctionSuccessfuly", res);
@@ -167,10 +177,22 @@ const actions = {
     });
     Object.entries(payload.info).forEach(entry => {
       const [key, value] = entry;
-      formData.append(key, value);
+      if (value != null) {
+        formData.append(key, value);
+      }
     });
+    if (payload.brochure != null) {
+      formData.append("brochure", payload.brochure);
+    }
+    if (payload.image != null) {
+      formData.append("image", payload.image);
+    }
+    if (payload.terms_conditions != null) {
+      formData.append("terms_conditions", payload.terms_conditions);
+    }
+
     formData.append("_method", "PUT");
-    axios.put(`${apiUrl}/auctions/${id}`, formData, {}).then(res => {
+    axios.post(`${apiUrl}/auctions/${id}`, formData, {}).then(res => {
       if (res.status === 200) {
         commit("updatedAuctionSuccessfuly", res);
       }

@@ -33,16 +33,20 @@ const yandexOptions = {
 vue.use(ymapPlugin, yandexOptions);
 
 export default {
+  props: ["coords"],
   data() {
     return {
-      coords: [25.19171507935199, 44.15821996441933],
+      // coords: [30.434447148758963, 37.061051995669274],
       center: { lat: -34.397, lng: 150.644 },
       markers: [
         {
-          position: { lat: 24.940338689385445, lng: 37.818119888141986 }
+          position: { lat: 29.407588309367938, lng: 36.93800431600657 }
         }
       ]
     };
+  },
+  created() {
+    console.log(this.coords);
   },
   computed: {
     balloonTemplate() {
