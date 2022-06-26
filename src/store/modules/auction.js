@@ -101,7 +101,7 @@ const mutations = {
 
 const actions = {
   getAuctions: async ({ commit }, payload) => {
-    commit("setProcessing", false);
+    commit("setProcessing", payload.sorting ? payload.sorting : false);
 
     await axios
       .get(`${apiUrl}/auctions`, {

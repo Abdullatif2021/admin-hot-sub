@@ -37,15 +37,23 @@
       </div>
       <label class="form-group has-float-label">
         <b-colxx xxs="12" style="padding: 0px;">
-          <vue-dropzone
-            ref="myVueDropzone"
-            id="dropzone"
-            :options="dropzoneOptions"
-            @vdropzone-files-added="fileAdded"
-            @vdropzone-complete="afterUploadComplete"
-            @vdropzone-sending-multiple="sendMessage"
-            @vdropzone-removed-file="fileRemoved"
-          ></vue-dropzone>
+          <b-form-group>
+            <b-form-input
+              style="display: none;"
+              :state="!$v.file_form.file.$error"
+              v-model="$v.file_form.file.$model"
+            />
+            <vue-dropzone
+              ref="myVueDropzone"
+              id="dropzone"
+              :options="dropzoneOptions"
+              @vdropzone-files-added="fileAdded"
+              @vdropzone-removed-file="fileRemoved"
+            ></vue-dropzone>
+            <b-form-invalid-feedback v-if="!$v.file_form.file.required">{{
+              $t("forms.choose-video-message")
+            }}</b-form-invalid-feedback>
+          </b-form-group>
         </b-colxx>
         <span>{{ $t("forms.video") }}</span>
       </label>
@@ -83,7 +91,9 @@ export default {
       file: null,
       enable: false,
       video_form: [],
-
+      file_form: {
+        file: null
+      },
       form: {
         ar_title: "",
         ar_description: "",
@@ -116,6 +126,9 @@ export default {
         description: {},
         name: {}
       }
+    },
+    file_form: {
+      file: { required }
     }
   },
   created() {
@@ -146,32 +159,24 @@ export default {
       // window.top.close();
       this.$v.$touch();
       this.$v.video_form.$touch();
-      if (!this.$v.video_form.$invalid) {
+      this.$v.file_form.$touch();
+      if (!this.$v.video_form.$invalid && !this.$v.file_form.$invalid) {
         this.enable = true;
         this.$emit("AddNewVideo", {
           info: this.$v.video_form.$model,
-          video: this.file ? this.file[0] : null
+          video: this.file[0]
         });
       }
     },
-    afterUploadComplete(response) {
-      if (response.status == "success") {
-        this.sendSuccess = true;
-      } else {
-      }
-    },
+
     fileAdded(file) {
-      console.log(file);
+      this.file_form.file = "file";
       this.file = file;
     },
     fileRemoved(file) {
+      this.file_form.file = null;
       this.file = null;
     },
-    shootMessage: async function() {
-      this.$refs.myVueDropzone.processQueue();
-    },
-    sendMessage: async function(files, xhr, formData) {},
-
     dropzoneTemplate() {
       return `<div class="dz-preview dz-file-preview mb-3">
                   <div class="d-flex flex-row "> <div class="p-0 w-30 position-relative">
@@ -237,6 +242,8 @@ export default {
       this.form.en_title = null;
       this.form.ar_title = null;
       this.enable = false;
+      this.file_form.file = null;
+
       this.form.en_description = null;
       this.form.ar_description = null;
     }

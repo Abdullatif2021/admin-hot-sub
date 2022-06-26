@@ -380,7 +380,7 @@ const actions = {
     });
   },
   deleteBlockFile({ commit, dispatch }, payload) {
-    const id = payload.blockId;
+    const id = payload.id;
     const attachment_id = payload.file_id;
     axios.delete(`${apiUrl}/blocks/files/${id}/${attachment_id}`).then(res => {
       if (res.status === 200) {

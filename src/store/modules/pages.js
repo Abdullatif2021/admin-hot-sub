@@ -332,7 +332,7 @@ const actions = {
     const id = payload.pageId;
     const formData = new FormData();
     payload.info.forEach(el => {
-      formData.append(`${el._name}[meta_content]`, el.content);
+      formData.append(`${el.name}[meta_content]`, el.content);
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
     axios
@@ -361,7 +361,7 @@ const actions = {
     formData.append("_method", "PUT");
 
     axios
-      .put(`${apiUrl}/pages/metadata/${id}/${metadata_id}`, formData, {})
+      .post(`${apiUrl}/pages/metadata/${id}/${metadata_id}`, formData, {})
       .then(res => {
         commit("getmetaEnded");
         return res;

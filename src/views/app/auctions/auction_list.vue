@@ -242,6 +242,7 @@ export default {
           this.dir = "ASC";
           this.getAuctions({
             dir: this.dir,
+            sorting: true,
             search: this.search,
             order_by: this.order_by,
             limit: this.limit,
@@ -253,6 +254,7 @@ export default {
           this.dir = "DESC";
           this.getAuctions({
             dir: this.dir,
+            sorting: true,
             search: this.search,
             order_by: this.order_by,
             limit: this.limit,

@@ -52,62 +52,12 @@
                         ref="myTextEditor"
                         v-model="lang.description.$model"
                         :options="editorOption"
-                        @blur="onEditorBlur($event)"
-                        @focus="onEditorFocus($event)"
-                        @ready="onEditorReady($event)"
                       >
                       </quill-editor>
                       <span>{{ $t(`forms.${lang._name.$model}_desc`) }}</span>
                     </label>
                   </div>
-                  <!-- <label class="form-group has-float-label">
-                    <input
-                      type="text"
-                      v-model="blockData.locales.en.name"
-                      class="form-control"
-                    />
-                    <span>{{ $t("forms.en_name") }}</span>
-                  </label>
-                  <label class="form-group has-float-label">
-                    <quill-editor
-                      ref="myTextEditor"
-                      v-model="blockData.locales.en.description"
-                      :options="editorOption"
-                      @blur="onEditorBlur($event)"
-                      @focus="onEditorFocus($event)"
-                      @ready="onEditorReady($event)"
-                    >
-                    </quill-editor>
-                    <span>{{ $t("forms.en_desc") }}</span>
-                  </label>
-                  <label class="form-group has-float-label">
-                    <input
-                      type="text"
-                      v-model="blockData.locales.ar.name"
-                      class="form-control"
-                    />
-                    <span>{{ $t("forms.ar_name") }}</span>
-                  </label>
-                  <label class="form-group has-float-label">
-                    <quill-editor
-                      ref="myTextEditor"
-                      v-model="blockData.locales.ar.description"
-                      :options="editorOption"
-                      @blur="onEditorBlur($event)"
-                      @focus="onEditorFocus($event)"
-                      @ready="onEditorReady($event)"
-                    >
-                    </quill-editor>
-                    <span>{{ $t("forms.ar_desc") }}</span>
-                  </label>
-                  <label class="form-group has-float-label">
-                    <b-form-select
-                      v-model="blockData.visible"
-                      :options="activeOptions"
-                      plain
-                    />
-                    <span>{{ $t("block.visible") }}</span>
-                  </label> -->
+
                   <div class="form-group has-float-label">
                     <datepicker
                       :bootstrap-styling="true"
@@ -143,8 +93,6 @@
                         id="dropzone"
                         :options="dropzoneImageOptions"
                         @vdropzone-files-added="imageAdded"
-                        @vdropzone-complete="afterUploadComplete"
-                        @vdropzone-sending-multiple="sendMessage"
                         @vdropzone-removed-file="imageRemoved"
                       ></vue-dropzone>
                     </b-colxx>
@@ -157,8 +105,6 @@
                         id="dropzone"
                         :options="dropzoneFileOptions"
                         @vdropzone-files-added="fileAdded"
-                        @vdropzone-complete="afterUploadComplete"
-                        @vdropzone-sending-multiple="sendMessage"
                         @vdropzone-removed-file="fileRemoved"
                       ></vue-dropzone>
                     </b-colxx>
@@ -181,7 +127,6 @@
                   </b-colxx>
                 </b-tab>
                 <b-tab
-                  @click="attach()"
                   :title="$t('forms.attach')"
                   title-item-class="w-30 text-center"
                 >
@@ -192,114 +137,14 @@
                   :title="$t('forms.meta_data')"
                   title-item-class="w-30 text-center"
                 >
-                  <b-row>
-                    <template v-if="_isLoadBlockMeta">
-                      <b-colxx xs="12" md="6" class="mb-3">
-                        <b-card>
-                          <vuetable
-                            ref="vuetable"
-                            :api-mode="false"
-                            :data-total="dataCount"
-                            :per-page="perPage"
-                            :reactive-api-url="true"
-                            :fields="fields"
-                            pagination-path
-                          >
-                            <template slot="actions" slot-scope="props">
-                              <b-dropdown
-                                id="langddm"
-                                class="ml-2"
-                                variant="light"
-                                size="sm"
-                                toggle-class="language-button"
-                              >
-                                <template #button-content>
-                                  <i class="simple-icon-settings"></i>
-                                </template>
-                                <b-dropdown-item
-                                  v-for="(item, index) in Options"
-                                  :key="index"
-                                  @click="
-                                    editAction(
-                                      item.name,
-                                      item.value,
-                                      props.rowData
-                                    )
-                                  "
-                                  >{{ $t(item.name) }}</b-dropdown-item
-                                >
-                              </b-dropdown>
-                            </template>
-                          </vuetable>
-                        </b-card>
-                        <!-- <vuetable-pagination-bootstrap
-                      class="mt-4"
-                      ref="pagination"
-                      @vuetable-pagination:change-page="onChangePage"
-                    /> -->
-                      </b-colxx>
-                      <b-colxx xs="12" md="6" class="mb-3">
-                        <b-card
-                          class="mb-4"
-                          :title="edit ? $t('forms.edit') : $t('forms.create')"
-                        >
-                          <b-form
-                            @submit.prevent="onValitadeFormSubmit()"
-                            class="av-tooltip tooltip-label-right"
-                          >
-                            <b-form-group :label="$t('forms.type')">
-                              <b-form-select
-                                :state="!$v.select_form.select.$error"
-                                v-model="$v.select_form.select.$model"
-                                :options="selectOptions"
-                                plain
-                              />
-                              <b-form-invalid-feedback
-                                v-if="!$v.select_form.select.required"
-                                >{{
-                                  $t("forms.select_massege")
-                                }}</b-form-invalid-feedback
-                              >
-                            </b-form-group>
-                            <div
-                              v-for="(lang, index) in $v.meta_form.$each.$iter"
-                              :key="index"
-                            >
-                              <b-form-group
-                                :label="$t(`forms.${lang.name.$model}_content`)"
-                                class="has-float-label mb-4"
-                              >
-                                <b-form-input
-                                  type="text"
-                                  v-model="lang.content.$model"
-                                  :state="!lang.content.$error"
-                                />
-                                <b-form-invalid-feedback
-                                  v-if="!lang.content.required"
-                                  >{{
-                                    $t("forms.content_massege")
-                                  }}</b-form-invalid-feedback
-                                >
-                              </b-form-group>
-                            </div>
-
-                            <b-button
-                              type="submit"
-                              :disabled="enable"
-                              variant="primary"
-                              class="mt-4"
-                              >{{
-                                edit ? $t("forms.save") : $t("forms.submit")
-                              }}</b-button
-                            >
-                          </b-form>
-                        </b-card>
-                      </b-colxx>
-                    </template>
-                    <template v-else>
-                      <div class="loading"></div>
-                    </template>
-                  </b-row>
+                  <metaData
+                    :list="_blockMetaList"
+                    :meta_type_list="_blockMetaTypeList"
+                    :isLoad="_isLoadBlockMeta"
+                    @create-meta="createMeta"
+                    @update-meta="updateMeta"
+                    @delete-meta="deleteMeta"
+                  />
                 </b-tab>
               </b-tabs>
             </b-card>
@@ -327,13 +172,14 @@ import { validationMixin } from "vuelidate";
 import Datepicker from "vuejs-datepicker";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 const { required } = require("vuelidate/lib/validators");
+import metaData from "../../../components/shared/metaData.vue";
 
 export default {
   components: {
     "add-new-modal": AddNewModal,
     "quill-editor": quillEditor,
     "datatable-heading": DatatableHeading,
-
+    metaData: metaData,
     vuetable: Vuetable,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "vue-dropzone": VueDropzone,
@@ -344,75 +190,13 @@ export default {
     return {
       blockId: null,
       blockData: null,
-      _data: null,
       isLoadBlock: false,
       enable_basic: false,
-      itemId: null,
-      meta_type_id: null,
-      textarea: null,
-      enable: false,
       image: null,
       file: null,
-      itemForEdit: null,
-      selectOptions: [],
       details_form: [],
-      meta_form: [],
-      activeOptions: [
-        "",
-        { text: "Active", value: 1 },
-        { text: "Inactive", value: 0 }
-      ],
-
-      // vue table-2
-      Options: [
-        { name: "EDIT", value: 1 },
-        { name: "DELETE", value: 0 }
-      ],
-      sort: "",
-      dataCount: 0,
       dateSelected: false,
-      // page: 1,
-      perPage: 12,
-      search: "",
-      from: 0,
-      select_form: {
-        select: ""
-      },
-      to: 0,
-      total: 0,
-      lastPage: 0,
-      items: [],
       categoryIdOptions: [],
-      selectedItems: [],
-      edit: false,
-      fields: [
-        {
-          name: "id",
-          title: "ID",
-          titleClass: "",
-          dataClass: "list-item-heading",
-          width: "40%"
-        },
-        {
-          name: "locales",
-          callback: value => {
-            return value.en.meta_content;
-          },
-          title: "Content",
-          titleClass: "",
-          dataClass: "text-muted",
-          width: "40%"
-        },
-
-        {
-          name: "__slot:actions",
-          title: "",
-          titleClass: "center aligned text-right",
-          dataClass: "center aligned text-right",
-          width: "20%"
-        }
-      ],
-      // vue table-2
       // vue dropezone
       dropzoneImageOptions: {
         url: "https://lilacmarketingevents.com",
@@ -443,7 +227,6 @@ export default {
       },
       // vue dropezone
       // quillEditor
-      content: "",
       editorOption: {
         placeholder: "",
         modules: {
@@ -482,17 +265,6 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    meta_form: {
-      $each: {
-        content: {
-          required
-        },
-        name: {}
-      }
-    },
-    select_form: {
-      select: { required }
-    },
     details_form: {
       $each: {
         name: {
@@ -508,10 +280,7 @@ export default {
     this.blockId = this.$route.query.id;
     this.getBlock({ id: this.blockId });
     this.langs = localStorage.getItem("Languages");
-    console.log("Languages", this.langs);
-    this.make_collaction(this.langs, this.meta_form);
-    this.make_collaction2(this.langs, this.details_form);
-    console.log("hi from here", this.blockId);
+    this.make_collaction(this.langs, this.details_form);
     this.getBlockCategories({
       dir: null,
       search: null,
@@ -534,16 +303,6 @@ export default {
       "getBlockImageList"
     ]),
     make_collaction(langs, form) {
-      console.log(langs, form);
-      JSON.parse(langs).forEach(el => {
-        form.push({
-          content: "",
-          name: el.name
-        });
-      });
-      console.log("meta_form", this.meta_form);
-    },
-    make_collaction2(langs, form) {
       JSON.parse(langs).forEach(el => {
         form.push({
           name: "",
@@ -574,45 +333,32 @@ export default {
         });
       }
     },
-    attach() {
-      // this.getImageList({ id: this.blockId });
-    },
     selectedDate() {
       this.dateSelected = true;
     },
-    onValitadeFormSubmit() {
-      this.$v.$touch();
-      this.$v.meta_form.$touch();
-      this.$v.select_form.$touch();
+    //  ....................... meta data ................
 
-      if (!this.$v.meta_form.$invalid && !this.$v.select_form.$invalid) {
-        this.enable = true;
-        if (!this.edit) {
-          this.createBlockMeta({
-            meta_type_id: this.select_form.select,
-            blockId: this.blockId,
-            metadata_id: this.itemId,
-            info: this.$v.meta_form.$model
-          });
-        } else {
-          this.updateBlockMeta({
-            meta_type_id: this.select_form.select,
-            metadata_id: this.itemId,
+    meta() {
+      this.getBlockMetaList({ id: this.blockId });
+    },
+    createMeta(select, content) {
+      this.createBlockMeta({
+        meta_type_id: select,
+        blockId: this.blockId,
+        info: content
+      });
+    },
+    updateMeta(select, content, id) {
+      this.updateBlockMeta({
+        meta_type_id: select,
+        metadata_id: id,
 
-            blockId: this.blockId,
-            info: this.$v.meta_form.$model
-          });
-        }
-      }
+        blockId: this.blockId,
+        info: content
+      });
     },
-    onEditorBlur(editor) {
-      console.log("editor blur!", editor);
-    },
-    afterUploadComplete(response) {
-      if (response.status == "success") {
-        this.sendSuccess = true;
-      } else {
-      }
+    deleteMeta(id) {
+      this.deleteBlockMeta({ blockId: this.blockId, metadata_id: id });
     },
     imageAdded(image) {
       this.image = image;
@@ -626,11 +372,6 @@ export default {
     fileRemoved(file) {
       this.file = null;
     },
-    shootMessage: async function() {
-      this.$refs.myVueDropzone.processQueue();
-    },
-    sendMessage: async function(files, xhr, formData) {},
-
     dropzoneTemplate() {
       return `<div class="dz-preview dz-file-preview mb-3">
                   <div class="d-flex flex-row "> <div class="p-0 w-30 position-relative">
@@ -650,50 +391,7 @@ export default {
                   <a href="#" class="remove" data-dz-remove> <i class="glyph-icon simple-icon-trash"></i> </a>
                 </div>
         `;
-    },
-    onEditorFocus(editor) {
-      console.log("editor focus!", editor);
-    },
-    onEditorReady(editor) {
-      console.log("editor ready!", editor);
-    },
-    onEditorChange({ editor, html, text }) {
-      this.contentBubble = html;
-    },
-
-    // meta data
-    meta() {
-      this.getBlockMetaList({ id: this.blockId });
-    },
-    editAction(f, value, item) {
-      if (value == 1) {
-        this.edit = true;
-        this.itemId = item.id;
-        this.select_form.select = item.meta_type_id;
-        this.meta_form.forEach(el => {
-          switch (el.name) {
-            case "en":
-              el.content = item.locales.en.meta_content;
-              break;
-            case "ar":
-              el.content = item.locales.ar.meta_content;
-              break;
-            default:
-              break;
-          }
-        });
-      } else {
-        this.edit = false;
-        this.select_form.select = null;
-        this.meta_form.forEach(el => {
-          el.content = null;
-        });
-
-        this.deleteBlockMeta({ blockId: this.blockId, metadata_id: item.id });
-      }
     }
-
-    // meta data
   },
   computed: {
     ...mapGetters([
@@ -704,10 +402,7 @@ export default {
       "_blockCategories",
       "_updateBlockBasicData",
       "_isLoadBlockMeta"
-    ]),
-    editor() {
-      return this.$refs.myTextEditor.quill;
-    }
+    ])
   },
   watch: {
     _updateBlockBasicData(newInfo, oldOne) {
@@ -738,41 +433,13 @@ export default {
       this.blockData = newOne;
       this.dateSelected = false;
     },
-    _blockMetaList(newList, old) {
-      this.isLoadBlock = true;
-      this.enable = false;
-      this.meta_form.forEach(el => {
-        el.content = null;
-      });
-      this.select_form.select = null;
-      this.$refs.vuetable.setData(newList);
-    },
 
-    _updateMetaBlock(newActions, old) {
-      this.edit = false;
-      this.enable = false;
-
-      this.meta_form.forEach(el => {
-        el.content = null;
-      });
-      this.select_form.select = null;
-    },
     _blockCategories(newval, old) {
       newval.forEach(option => {
         this.categoryIdOptions.push(
           new Object({
             value: option.id,
             text: option.slug
-          })
-        );
-      });
-    },
-    _blockMetaTypeList(newContent, old) {
-      newContent.forEach(option => {
-        this.selectOptions.push(
-          new Object({
-            value: option.id,
-            text: option.type
           })
         );
       });

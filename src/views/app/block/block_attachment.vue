@@ -21,272 +21,35 @@
           <add-new-modal
             :enable="enable"
             @AddNewImage="createImage"
-             :_sccussCreateImage="_successAddBlockImage"
+            :_sccussCreateImage="_successAddBlockImage"
           ></add-new-modal>
         </b-tab>
         <b-tab @click="openFile()" :title="$t('forms.files')">
-          <b-row>
-            <template v-if="_isBLoadAttach">
-              <b-colxx xs="12" md="6" class="mb-3">
-                <b-card>
-                  <vuetable
-                    ref="vuetable"
-                    :api-mode="false"
-                    :data-total="dataCount"
-                    :per-page="perPage"
-                    :reactive-api-url="true"
-                    :fields="fields"
-                  >
-                    <template slot="actions" slot-scope="props">
-                      <b-dropdown
-                        id="langddm"
-                        class="ml-2"
-                        variant="light"
-                        size="sm"
-                        toggle-class="language-button"
-                      >
-                        <template #button-content>
-                          <i class="simple-icon-settings"></i>
-                        </template>
-                        <b-dropdown-item
-                          v-for="(item, index) in Options"
-                          :key="index"
-                          @click="file_Action(item.value, props.rowData)"
-                          >{{ $t(item.name) }}</b-dropdown-item
-                        >
-                      </b-dropdown>
-                    </template>
-                  </vuetable>
-                </b-card>
-              </b-colxx>
-              <b-colxx xs="12" md="6" class="mb-3">
-                <b-card class="mb-4" :title="$t('forms.create')">
-                  <b-form
-                    @submit.prevent="onValitadeFormSubmit()"
-                    class="av-tooltip tooltip-label-right"
-                  >
-                    <div
-                      v-for="(lang, index) in $v.file_form.$each.$iter"
-                      :key="index"
-                    >
-                      <b-form-group
-                        :label="$t(`pages.${lang.name.$model}_title`)"
-                        class="has-float-label mb-4"
-                      >
-                        <b-form-input
-                          type="text"
-                          v-model="lang.title.$model"
-                          :state="!lang.title.$error"
-                        />
-                        <b-form-invalid-feedback v-if="!lang.title.required">{{
-                          $t("forms.title_filed")
-                        }}</b-form-invalid-feedback>
-                      </b-form-group>
-                      <b-form-group
-                        :label="$t(`pages.${lang.name.$model}_desc`)"
-                        class="has-float-label mb-4"
-                      >
-                        <b-form-input
-                          type="text"
-                          v-model="lang.description.$model"
-                          :state="!lang.description.$error"
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!lang.description.required"
-                        >
-                          {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </div>
-                    <label class="form-group has-float-label">
-                      <b-colxx xxs="12" style="padding: 0px;">
-                        <vue-dropzone
-                          ref="myVueDropzone"
-                          id="dropzone"
-                          :options="dropzoneOptions"
-                          @vdropzone-files-added="fileAdded"
-                          @vdropzone-complete="afterUploadComplete"
-                          @vdropzone-sending-multiple="sendMessage"
-                          @vdropzone-removed-file="fileRemoved"
-                        ></vue-dropzone>
-                      </b-colxx>
-                      <span>{{ $t("block.file") }}</span>
-                    </label>
-
-                    <b-button
-                      :disabled="enable"
-                      type="submit"
-                      variant="primary"
-                      class="mt-4"
-                      >{{ $t("forms.submit") }}</b-button
-                    >
-                  </b-form>
-                </b-card>
-              </b-colxx>
-            </template>
-            <template v-else>
-              <div class="loading"></div>
-            </template>
-          </b-row>
+          <file
+            :list="_blockFileList"
+            :isLoad="_isBLoadAttach"
+            @delete-file="delete_File"
+            @create-file="create_File"
+          />
         </b-tab>
         <b-tab @click="openVideo()" :title="$t('forms.videos')">
-          <b-row>
-            <template v-if="_isBLoadAttach">
-              <b-colxx style="display: grid;" xs="12" md="12" class="mb-3">
-                <div class="top-right-button-container">
-                  <b-button-group style="float: right;padding: 12px;">
-                    <b-button v-b-modal.modalbackdrop variant="primary">{{
-                      $t("modal.create-new-video")
-                    }}</b-button>
-                  </b-button-group>
-                </div>
-                <b-card>
-                  <vuetable
-                    ref="video_vuetable"
-                    :api-mode="false"
-                    :reactive-api-url="true"
-                    :fields="videos_fields"
-                  >
-                    <template slot="actions" slot-scope="props">
-                      <b-dropdown
-                        id="langddm"
-                        class="ml-2"
-                        variant="light"
-                        size="sm"
-                        toggle-class="language-button"
-                      >
-                        <template #button-content>
-                          <i class="simple-icon-settings"></i>
-                        </template>
-                        <b-dropdown-item
-                          v-for="(item, index) in videos_Options"
-                          :key="index"
-                          @click="videos_Action(item.value, props.rowData)"
-                          >{{ $t(item.name) }}</b-dropdown-item
-                        >
-                      </b-dropdown>
-                    </template>
-                  </vuetable>
-                </b-card>
-              </b-colxx>
-              <add-new-video-model @AddNewVideo="createVideo" />
-            </template>
-            <template v-else>
-              <div class="loading"></div>
-            </template>
-          </b-row>
+          <videoAttachment
+            :video_list="_blockVideosList"
+            :isLoad="_isBLoadAttach"
+            @delete-video="delete_Video"
+            @create-video="create_Video"
+          />
         </b-tab>
         <b-tab @click="openYoutubeVideo()" :title="$t('forms.youtube_videos')">
-          <b-row>
-            <template v-if="_isBLoadAttach">
-              <b-colxx xs="12" md="6" class="mb-3">
-                <b-card>
-                  <vuetable
-                    ref="youtubeVideo_vuetable"
-                    :api-mode="false"
-                    :data-total="dataCount"
-                    :per-page="perPage"
-                    :reactive-api-url="true"
-                    :fields="youtube_fields"
-                  >
-                    <template slot="actions" slot-scope="props">
-                      <b-dropdown
-                        id="langddm"
-                        class="ml-2"
-                        variant="light"
-                        size="sm"
-                        toggle-class="language-button"
-                      >
-                        <template #button-content>
-                          <i class="simple-icon-settings"></i>
-                        </template>
-                        <b-dropdown-item
-                          v-for="(item, index) in youtube_Options"
-                          :key="index"
-                          @click="youtube_Action(item.value, props.rowData)"
-                          >{{ $t(item.name) }}</b-dropdown-item
-                        >
-                      </b-dropdown>
-                    </template>
-                  </vuetable>
-                </b-card>
-              </b-colxx>
-              <b-colxx xs="12" md="6" class="mb-3">
-                <b-card
-                  class="mb-4"
-                  :title="edit ? $t('forms.edit') : $t('forms.create')"
-                >
-                  <b-form
-                    @submit.prevent="onValitadeYoutubeFormSubmit()"
-                    class="av-tooltip tooltip-label-right"
-                  >
-                    <div
-                      v-for="(lang, index) in $v.youtube_form.$each.$iter"
-                      :key="index"
-                    >
-                      <b-form-group
-                        :label="$t(`pages.${lang.name.$model}_title`)"
-                        class="has-float-label mb-4"
-                      >
-                        <b-form-input
-                          type="text"
-                          v-model="lang.title.$model"
-                          :state="!lang.title.$error"
-                        />
-                        <b-form-invalid-feedback v-if="!lang.title.required">{{
-                          $t("forms.title_filed")
-                        }}</b-form-invalid-feedback>
-                      </b-form-group>
-                      <b-form-group
-                        :label="$t(`pages.${lang.name.$model}_desc`)"
-                        class="has-float-label mb-4"
-                      >
-                        <b-form-input
-                          type="text"
-                          v-model="lang.description.$model"
-                          :state="!lang.description.$error"
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!lang.description.required"
-                        >
-                          {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </div>
-                    <b-form-group
-                      :label="$t('block.path')"
-                      class="has-float-label mb-4"
-                    >
-                      <b-form-input
-                        type="text"
-                        v-model="$v.path_form.path.$model"
-                        :state="!$v.path_form.path.$error"
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.path_form.path.required"
-                        >{{
-                          $t("forms.youtube_filed")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-
-                    <b-button
-                      :disabled="enable_tube"
-                      type="submit"
-                      variant="primary"
-                      class="mt-4"
-                      >{{
-                        edit ? $t("forms.save") : $t("forms.submit")
-                      }}</b-button
-                    >
-                  </b-form>
-                </b-card>
-              </b-colxx>
-            </template>
-            <template v-else>
-              <div class="loading"></div>
-            </template>
-          </b-row>
+          <youtube_video
+            :list="_blockYoutubeVideosList"
+            :isLoad="_isBLoadAttach"
+            :successAddYoutubeVideo="_successAddBlockYoutubeVideo"
+            :wrongYoutubeurl="_BwrongYoutubeurl"
+            @delete-youtube="delete_Youtube"
+            @create-youtube="create_Youtube"
+            @update-youtube="update_Youtube"
+          />
         </b-tab>
       </b-tabs>
     </b-card>
@@ -294,244 +57,30 @@
 </template>
 
 <script>
-import { LightGallery } from "vue-light-gallery";
 import { mapGetters, mapActions } from "vuex";
-import VueDropzone from "vue2-dropzone";
-import VideoPlayer from "../../../components/Common/VideoPlayer.vue";
-import Vuetable from "vuetable-2/src/components/Vuetable";
 import RecentOrders from "../../../containers/appliaction/RecentOrders.vue";
-import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
 import AddNewModal from "../../../containers/appliaction/AddNewModal.vue";
-import AddNewVideoModel from "../../../containers/appliaction/AddNewVideoModel.vue";
-import { validationMixin } from "vuelidate";
-const { required } = require("vuelidate/lib/validators");
+import video from "../../../components/shared/video.vue";
+import file from "../../../components/shared/file.vue";
+import youtube_video from "../../../components/shared/youtube_video.vue";
 
 export default {
   components: {
     "add-new-modal": AddNewModal,
-    "video-player": VideoPlayer,
-    vuetable: Vuetable,
-    "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
-    "vue-dropzone": VueDropzone,
-    LightGallery,
-    "add-new-video-model": AddNewVideoModel,
+    file: file,
+    youtube_video: youtube_video,
+    videoAttachment: video,
     "recent-orders": RecentOrders
   },
   props: ["blockId"],
   data() {
     return {
-      blockData: null,
-      _data: null,
-      itemId: null,
-      meta_type_id: null,
-      textarea: null,
-      thumbs: null,
-      youtube_form: [],
-      path_form: {
-        path: ""
-      },
-      images: null,
-      enable_tube: false,
-      file: null,
-      enable: false,
-      file_form: [],
-      itemForEdit: null,
-      selectOptions: [],
-      // vue table-2
-      Options: [
-        { name: "DOWNLOAD", value: 1 },
-        { name: "DELETE", value: 0 }
-      ],
-
-      sort: "",
-      dataCount: 0,
-      perPage: 12,
-      search: "",
-      attachment_id: null,
-      from: 0,
-      to: 0,
-
-      total: 0,
-      edit: false,
-      lastPage: 0,
-      items: [],
-      selectedItems: [],
-
-      fields: [
-        {
-          name: "id",
-          title: "ID",
-          titleClass: "",
-          dataClass: "list-item-heading",
-          width: "40%"
-        },
-        {
-          name: "original_filename",
-          callback: value => {
-            return value.substring(0, value.indexOf("."));
-          },
-          title: "File Name",
-          titleClass: "",
-          dataClass: "text-muted",
-          width: "40%"
-        },
-        {
-          name: "extension",
-          title: "Extention",
-          titleClass: "",
-          dataClass: "text-muted",
-          width: "40%"
-        },
-
-        {
-          name: "__slot:actions",
-          title: "",
-          titleClass: "center aligned text-right",
-          dataClass: "center aligned text-right",
-          width: "20%"
-        }
-      ],
-      //   videos
-      videos_fields: [
-        {
-          name: "id",
-          title: "ID",
-          titleClass: "",
-          dataClass: "list-item-heading",
-          width: "40%"
-        },
-        {
-          name: "original_filename",
-          callback: value => {
-            return value.substring(0, value.indexOf("."));
-          },
-          title: "File Name",
-          titleClass: "",
-          dataClass: "text-muted",
-          width: "40%"
-        },
-        {
-          name: "extension",
-          title: "Extention",
-          titleClass: "",
-          dataClass: "text-muted",
-          width: "40%"
-        },
-
-        {
-          name: "__slot:actions",
-          title: "",
-          titleClass: "center aligned text-right",
-          dataClass: "center aligned text-right",
-          width: "20%"
-        }
-      ],
-      videos_Options: [
-        { name: "DISPLAY", value: 1 },
-        { name: "DELETE", value: 0 }
-      ],
-      // youtube
-      youtube_fields: [
-        {
-          name: "id",
-          title: "ID",
-          titleClass: "",
-          dataClass: "list-item-heading",
-          width: "40%"
-        },
-        {
-          name: "locales",
-          callback: value => {
-            return value.en.title;
-          },
-          title: "Title",
-          titleClass: "",
-          dataClass: "text-muted",
-          width: "40%"
-        },
-
-        {
-          name: "__slot:actions",
-          title: "",
-          titleClass: "center aligned text-right",
-          dataClass: "center aligned text-right",
-          width: "20%"
-        }
-      ],
-
-      youtube_Options: [
-        { name: "OPEN", value: 1 },
-        { name: "UPDATE", value: 2 },
-        { name: "DELETE", value: 3 }
-      ],
-
-      // vue table-2
-      //   files
-      file: null,
-      form: {
-        ar_title: "",
-        ar_description: "",
-        en_title: "",
-        en_description: ""
-      },
-      // vue dropezone
-      dropzoneOptions: {
-        url: "https://lilacmarketingevents.com",
-        thumbnailHeight: 160,
-        thumbnailWidth: 150,
-        parallelUploads: 3,
-        maxFiles: 1,
-        acceptedFiles:
-          "application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf",
-        uploadMultiple: false,
-        addRemoveLinks: true,
-        removedfile: function(file) {
-          var _ref;
-          return (_ref = file.previewElement) != null
-            ? _ref.parentNode.removeChild(file.previewElement)
-            : void 0;
-        },
-        autoProcessQueue: false,
-        previewTemplate: this.dropzoneTemplate(),
-        headers: {}
-      }
-      // vue dropezone
+      enable: false
     };
   },
-  mixins: [validationMixin],
-  validations: {
-    path_form: {
-      path: {
-        required
-      }
-    },
-    file_form: {
-      $each: {
-        title: {
-          required
-        },
-        description: {},
-        name: {}
-      }
-    },
-    youtube_form: {
-      $each: {
-        title: {
-          required
-        },
-        description: {},
-        name: {}
-      }
-    }
-    //   files
-  },
+
   created() {
-    console.log(this.blockId);
     this.getBlockImageList({ id: this.blockId });
-    this.langs = localStorage.getItem("Languages");
-    // this.make_collaction(this.langs);
-    this.make_collaction(this.langs, this.youtube_form);
-    this.make_collaction(this.langs, this.file_form);
   },
   methods: {
     ...mapActions([
@@ -550,18 +99,7 @@ export default {
       "updateBlockYoutubeVideo",
       "deleteBlockYoutubeVideo"
     ]),
-    make_collaction(langs, form) {
-      JSON.parse(langs).forEach(el => {
-        form.push({
-          title: "",
-          description: "",
-          name: el.name
-        });
-        console.log(this.form);
-      });
-    },
-    // .....................upload new image ......................
-
+    // ..................... image ......................
     createImage(value) {
       console.log(value);
       this.enable = true;
@@ -571,185 +109,62 @@ export default {
         id: this.blockId
       });
     },
-    // .....................upload new video ......................
-    createVideo(value) {
-      console.log(value);
+    deleteImage(id) {
+      this.deleteBlockImage({ id: this.blockId, attachment_id: id });
+    },
+    // .....................video ......................
+    openVideo() {
+      this.getBlockVideosList({ id: this.blockId });
+    },
+    create_Video(value) {
       this.createBlockVideo({
         info: value.info,
         video: value.video ? value.video : null,
         id: this.blockId
       });
     },
-    // -----------------------------gallery----------------------------
+    delete_Video(value) {
+      this.deleteBlockVideo({
+        blockId: this.blockId,
+        file_id: value
+      });
+    },
 
-    // gallery
     // -------------------------------files---------------------------
     openFile() {
       this.getBlockFileList({ id: this.blockId });
     },
-    file_Action(value, item) {
-      console.log(item);
-      if (value == 1) {
-        window.open(item.path);
-      } else {
-        this.deleteBlockFile({
-          type: "files",
-          blockId: this.blockId,
-          file_id: item.id
-        });
-      }
+    create_File(info, path) {
+      console.log("hi from createee", info, path);
+      this.createBlockFile({ info: info, file: path, id: this.blockId });
     },
-    videos_Action(value, item) {
-      console.log(item);
-      if (value == 1) {
-        window.open(item.path);
-      } else {
-        this.deleteBlockVideo({
-          blockId: this.blockId,
-          file_id: item.id
-        });
-      }
+    delete_File(id) {
+      this.deleteBlockFile({ id: this.blockId, file_id: id });
     },
+    //  ....................... youtube .......................
     openYoutubeVideo() {
       this.getBlockYoutubeVideoList({ id: this.blockId });
     },
-    youtube_Action(value, item) {
-      switch (value) {
-        case 1:
-          {
-            window.open(item.path);
-          }
-          break;
-        case 2:
-          {
-            this.attachment_id = item.id;
-            this.edit = true;
-            this.youtube_form.forEach(el => {
-              switch (el.name) {
-                case "en":
-                  el.title = item.locales.en.title;
-                  el.description = item.locales.en.description;
-
-                  break;
-                case "ar":
-                  el.title = item.locales.ar.title;
-                  el.description = item.locales.ar.description;
-                  break;
-                default:
-                  break;
-              }
-            });
-
-            this.path_form.path = item.path;
-          }
-          break;
-        case 3:
-          {
-            console.log("delete");
-            this.deleteBlockYoutubeVideo({
-              blockId: this.blockId,
-              youtube_id: item.id
-            });
-          }
-          break;
-      }
-      // if (value == 1) {
-      //   window.open(item.path);
-      // } else {
-      //   this.deleteBlockYoutubeVideo({
-      //     blockId: this.blockId,
-      //     youtube_id: item.id
-      //   });
-      // }
+    create_Youtube(info, path) {
+      this.createBlockYoutubeVideo({
+        info: info,
+        path: path,
+        id: this.blockId
+      });
     },
-    hideModal(refname) {
-      this.$refs[refname].hide();
+    update_Youtube(info, path, attach_id) {
+      this.updateBlockYoutubeVideo({
+        info: info,
+        path: path,
+        attachment_id: attach_id,
+        id: this.blockId
+      });
     },
-    onValitadeFormSubmit() {
-      // window.top.close();
-      this.$v.$touch();
-      this.$v.file_form.$touch();
-      if (!this.$v.file_form.$invalid) {
-        this.enable = true;
-        this.createBlockFile({
-          info: this.$v.file_form.$model,
-          file: this.file ? this.file[0] : null,
-          id: this.blockId
-        });
-      }
-    },
-
-    onValitadeYoutubeFormSubmit() {
-      this.$v.$touch();
-      this.$v.youtube_form.$touch();
-      this.$v.path_form.$touch();
-      if (!this.$v.youtube_form.$invalid && !this.$v.path_form.$invalid) {
-        this.enable_tube = true;
-        if (!this.edit) {
-          this.createBlockYoutubeVideo({
-            info: this.$v.youtube_form.$model,
-            path: this.path_form.path,
-            id: this.blockId
-          });
-        } else {
-          console.log("erfwefwe");
-          this.updateBlockYoutubeVideo({
-            info: this.$v.youtube_form.$model,
-            path: this.path_form.path,
-            attachment_id: this.attachment_id,
-            id: this.blockId
-          });
-        }
-      }
-    },
-    // vue dropezone
-    afterUploadComplete(response) {
-      if (response.status == "success") {
-        this.sendSuccess = true;
-      } else {
-      }
-    },
-    fileAdded(file) {
-      this.file = file;
-    },
-    fileRemoved(file) {
-      this.file = null;
-    },
-    shootMessage: async function() {
-      this.$refs.myVueDropzone.processQueue();
-    },
-    sendMessage: async function(files, xhr, formData) {},
-
-    dropzoneTemplate() {
-      return `<div class="dz-preview dz-file-preview mb-3">
-                  <div class="d-flex flex-row "> <div class="p-0 w-30 position-relative">
-                      <div class="dz-error-mark"><span><i></i>  </span></div>
-                      <div class="dz-success-mark"><span><i></i></span></div>
-                      <div class="preview-container">
-                        <img data-dz-thumbnail class="img-thumbnail border-0" />
-                        <i class="simple-icon-doc preview-icon"></i>
-                      </div>
-                  </div>
-                  <div class="pl-3 pt-2 pr-2 pb-1 w-70 dz-details position-relative">
-                    <div> <span data-dz-name /> </div>
-                    <div class="text-primary text-extra-small" data-dz-size /> </div>
-                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-                    <div class="dz-error-message"><span data-dz-errormessage></span></div>
-                  </div>
-                  <a href="#" class="remove" data-dz-remove> <i class="glyph-icon simple-icon-trash"></i> </a>
-                </div>
-        `;
-    },
-    // vue dropezone
-    // file
-    // --------------------------------videos--------------------------
-    openVideo() {
-      this.getBlockVideosList({ id: this.blockId });
-    },
-    // videos
-
-    deleteImage(id) {
-      this.deleteBlockImage({ id: this.blockId, attachment_id: id });
+    delete_Youtube(val) {
+      this.deleteBlockYoutubeVideo({
+        blockId: this.blockId,
+        youtube_id: val
+      });
     }
   },
   computed: {
@@ -767,53 +182,6 @@ export default {
   },
   watch: {
     _blockImageList: function(val) {
-      this.enable = false;
-    },
-    _blockFileList(newData, old) {
-      this.enable = false;
-      this.$refs.vuetable.setData(newData);
-    },
-
-    _blockVideosList(newData, old) {
-      console.log("i am here");
-      this.$refs.video_vuetable.setData(newData);
-    },
-    _blockYoutubeVideosList(newData, old) {
-      this.$refs.youtubeVideo_vuetable.setData(newData);
-      this.youtube_form.forEach(el => {
-        console.log(el, "aedfsedfsefsefsef");
-        el.title = null;
-        el.description = null;
-      });
-      this.path_form.path = null;
-      this.edit = false;
-    },
-    _successAddBlockYoutubeVideo: function(val) {
-      this.enable_tube = false;
-      this.youtube_form.forEach(el => {
-        console.log(el, "aedfsedfsefsefsef");
-        el.title = null;
-        el.description = null;
-      });
-      this.path_form.path = null;
-      this.path_form.path = null;
-    },
-    _BwrongYoutubeurl: function(val) {
-      this.enable_tube = false;
-      this.path_form.path = null;
-
-      this.$notify(
-        "error",
-        "Error via Create",
-        "This Youtube Url isn't valid",
-        { duration: 4000, permanent: false }
-      );
-    },
-    _sccussCreateBlockFile: function(val) {
-      this.file_form.forEach(el => {
-        (el.title = null), (el.description = null);
-      });
-      this.file = null;
       this.enable = false;
     }
   }
