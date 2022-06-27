@@ -85,6 +85,7 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { mapGetters, mapActions } from "vuex";
+import { getCurrentLanguage } from "../../../utils";
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
 export default {
@@ -106,6 +107,7 @@ export default {
         label: "All"
       },
       page: 1,
+      language: null,
       limit: null,
       perPage: 8,
       from: 0,
@@ -120,28 +122,16 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.en.title;
+            return value.[this.language].title;
           },
-          sortField: "title",
           title: "Title",
           titleClass: "",
           dataClass: "list-item-heading",
           width: "15%"
         },
-        {
-          name: "locales",
-          callback: value => {
-            return value.en.terms_conditions;
-          },
-          sortField: "description",
-          title: "Description",
-          titleClass: "",
-          dataClass: "list-item-heading",
-          width: "15%"
-        },
+
         {
           name: "start_date",
-
           sortField: "start_date",
           title: "Start Date",
           titleClass: "",
@@ -150,7 +140,6 @@ export default {
         },
         {
           name: "end_date",
-
           sortField: "end_date",
           title: "End Date",
           titleClass: "",
@@ -159,8 +148,6 @@ export default {
         },
         {
           name: "opening_price",
-
-          sortField: "opening_price",
           title: "Opening Price",
           titleClass: "",
           dataClass: "list-item-heading",
@@ -177,6 +164,8 @@ export default {
     };
   },
   created() {
+    this.language = getCurrentLanguage();
+
     this.getAuctions({
       dir: null,
       search: null,
@@ -369,6 +358,12 @@ export default {
     },
     _successDeleteAuction(newVal, old) {
       console.log("delete auction", old);
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "the auction have been deleted successfully",
+        { duration: 4000, permanent: false }
+      );
       this.getAuctions({
         dir: this.dir,
         search: this.search,

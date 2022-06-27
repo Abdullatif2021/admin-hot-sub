@@ -356,6 +356,7 @@ import AddNewModal from "../../../containers/appliaction/AddNewModal.vue";
 import AddNewVideoModel from "../../../containers/appliaction/AddNewVideoModel.vue";
 import { validationMixin } from "vuelidate";
 const { required } = require("vuelidate/lib/validators");
+import { getCurrentLanguage } from "../../utils";
 
 export default {
   components: {
@@ -394,6 +395,7 @@ export default {
       from: 0,
       to: 0,
       total: 0,
+      language: null,
       lastPage: 0,
       items: [],
       selectedItems: [],
@@ -409,7 +411,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.en.title;
+            return value.[this.language].title;
           },
           title: "Title",
           titleClass: "",
@@ -584,6 +586,7 @@ export default {
   created() {
     console.log(this.pageId);
     this.getPageImageList({ id: this.pageId });
+    this.language = getCurrentLanguage();
   },
   methods: {
     ...mapActions([

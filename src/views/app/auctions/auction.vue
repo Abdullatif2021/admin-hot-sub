@@ -231,6 +231,7 @@
                     v-model="$v.files_form.brochure.$model"
                   />
                   <b-form-file
+                    accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
                     :placeholder="$t('input-groups.choose-brochure')"
                     v-model="brochure"
                   ></b-form-file>
@@ -250,6 +251,7 @@
                     v-model="$v.files_form.terms_conditions.$model"
                   />
                   <b-form-file
+                    accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
                     :placeholder="$t('input-groups.choose-terms_conditions')"
                     v-model="terms_conditions"
                   ></b-form-file>
@@ -463,6 +465,7 @@
                         v-b-modal.maps
                         class="mb-2"
                         block
+                        @click="openMap()"
                         variant="light default"
                         >{{ $t("button.change-location") }}</b-button
                       >
@@ -516,6 +519,7 @@
                       />
                       <b-input-group class="mb-3">
                         <b-form-file
+                          accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
                           :placeholder="$t('input-groups.change-brochure')"
                           v-model="brochure"
                         ></b-form-file>
@@ -546,6 +550,7 @@
                       />
                       <b-input-group class="mb-3">
                         <b-form-file
+                          accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
                           :placeholder="
                             $t('input-groups.change-terms_conditions')
                           "
@@ -635,7 +640,11 @@
       </template>
     </b-colxx>
     <b-modal id="maps" size="lg" title="Select Location" hide-footer>
-      <yandexMap :coords="coords" @select_location="set_location" />
+      <yandexMap
+        :isEdit="isEdit"
+        :location="location"
+        @select_location="set_location"
+      />
     </b-modal>
   </b-row>
 </template>
@@ -670,6 +679,7 @@ export default {
       auctionId: null,
       _categoryId: null,
       password: null,
+      isEdit: false,
       image: null,
       terms_conditions: null,
       brochure: null,
@@ -681,6 +691,7 @@ export default {
       enable: false,
       langs: null,
       coords: [],
+      location: [],
       country_id: 248,
       categoryIdOptions: [],
       auctionSideOptions: [],
@@ -768,11 +779,12 @@ export default {
     this.auctionId = this.$route.query.id;
     if (this.auctionId) {
       this.getAuction({ id: this.auctionId });
-      this.coords = [];
+      this.isEdit = true;
     } else {
       console.log("i am here ", this.auctionId);
       this.isLoadAuction = true;
-      this.coords = [30.434447148758963, 37.061051995669274];
+      this.isEdit = false;
+      this.location= null;
     }
     this.getCategories({
       dir: null,
@@ -829,18 +841,6 @@ export default {
         !this.$v.files_form.$invalid
       ) {
         this.disabled = false;
-        // this.startDateSelected
-        //   ? (this.gridForm.start_date = this.gridForm.start_date
-        //       .toLocaleString()
-        //       .replace(",", ""))
-        //   : this.gridForm.start_date;
-        // this.endDateSelected
-        //   ? (this.gridForm.end_date = this.gridForm.end_date
-        //       .toLocaleString()
-        //       .replace(",", ""))
-        //   : this.gridForm.end_date;
-        // console.log(this.endDateSelected, this.gridForm.end_date);
-
         if (this.auctionId) {
           this.updateAuction({
             info: this.gridForm,
@@ -898,6 +898,10 @@ export default {
         id: this.auctionId
       });
     },
+    openMap(){
+      this.coords = [30.434447148758963, 37.061051995669274];
+
+    },
     deleteImage(id) {
       this.isLoadAuctionImages = false;
       this.deleteAuctionImage({ id: this.auctionId, imgId: id });
@@ -954,6 +958,7 @@ export default {
       "_deleteAuctionFile",
       "_areas",
       "_auctionSide",
+      "_dateError",
       "_updatedAuctionSuccessfuly",
       "_createAuctionSuccessfuly"
     ]),
@@ -970,18 +975,8 @@ export default {
       console.log("wrfwrfwefwerfwef", newInfo);
       this.isLoadAuction = true;
       this.lang_form.forEach(el => {
-        switch (el._name) {
-          case "en":
-            el.title = newInfo.locales.en.title;
-            el.description = newInfo.locales.en.description;
-            break;
-          case "ar":
-            el.title = newInfo.locales.ar.title;
-            el.description = newInfo.locales.ar.description;
-            break;
-          default:
-            break;
-        }
+        el.title = newInfo.locales.[el._name].title;
+        el.description = newInfo.locales.[el._name].description;
       });
       this.image_basename = newInfo.image_basename;
       this.gridForm.category_id = newInfo.category_id;
@@ -1004,23 +999,26 @@ export default {
       this.gridForm.area_id = newInfo.area.id;
       this.image_basename = newInfo.image_basename;
 
-      this.coords.push(newInfo.latitude, newInfo.longitude);
-      console.log(
-        "fwefwefwefwefwefwefwefwefwefwefwef5555555555555555555555555555",
-        this.coords
-      );
+      this.location.push(newInfo.latitude, newInfo.longitude);
       this.getArea();
     },
     _Image_List: function(val) {
-      console.log("_Image_List_Image_List_Image_List_Image_List_Image_List");
       this.enable = false;
       this.isLoadAuctionImages = true;
     },
+    _dateError: function(val) {
+      this.$notify(
+        "error",
+        "Something went wrong",
+        "the end date must be a date after start date.",
+        { duration: 4000, permanent: false }
+      );
+      this.gridForm.start_date = null;
+      this.gridForm.end_date = null;
+      this.disabled = true;
+    },
 
     _cities: function(val) {
-      console.log("cititesssssssssssssssssssssss", val);
-      // this.gridForm.area = null;
-      // this.areaOptions = null;
       val.forEach(option => {
         this.cityOptions.push(
           new Object({

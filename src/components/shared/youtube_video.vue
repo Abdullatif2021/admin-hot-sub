@@ -105,6 +105,7 @@
 <script>
 import { validationMixin } from "vuelidate";
 import VueDropzone from "vue2-dropzone";
+import { getCurrentLanguage } from "../../utils";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 const { required, requiredIf } = require("vuelidate/lib/validators");
 
@@ -123,6 +124,7 @@ export default {
         path: ""
       },
       langs: null,
+            language: null,
       enable_tube: false,
 
       youtube_fields: [
@@ -136,7 +138,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.en.title;
+            return value.[this.language].title;
           },
           title: "Title",
           titleClass: "",
@@ -182,6 +184,8 @@ export default {
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.youtube_form);
     console.log(this.langs);
+    this.language = getCurrentLanguage();
+
   },
   methods: {
     make_collaction(langs, form) {
@@ -206,19 +210,8 @@ export default {
             this.attachment_id = item.id;
             this.edit = true;
             this.youtube_form.forEach(el => {
-              switch (el.name) {
-                case "en":
-                  el.title = item.locales.en.title;
-                  el.description = item.locales.en.description;
-
-                  break;
-                case "ar":
-                  el.title = item.locales.ar.title;
-                  el.description = item.locales.ar.description;
-                  break;
-                default:
-                  break;
-              }
+              el.title = item.locales.[el.name].title;
+                  el.description = item.locales.[el.name].description;
             });
 
             this.path_form.path = item.path;
@@ -266,11 +259,11 @@ export default {
       this.enable = false;
       this.path_form.path = null;
       this.$refs.vuetable.setData(val);
+      this.$v.$reset();
     },
     wrongYoutubeurl: function(val) {
       this.enable_tube = false;
       this.path_form.path = null;
-
       this.$notify(
         "error",
         "Error via Create",
@@ -285,6 +278,7 @@ export default {
         el.description = null;
       });
       this.path_form.path = null;
+      this.$v.$reset();
     }
   }
 };

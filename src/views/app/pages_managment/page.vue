@@ -351,19 +351,9 @@ export default {
   watch: {
     _page(newpage, oldone) {
       this.details_form.forEach(el => {
-        switch (el._name) {
-          case "en":
-            el.name = newpage.locales.en.name;
-            el.description = newpage.locales.en.description;
 
-            break;
-          case "ar":
-            el.name = newpage.locales.ar.name;
-            el.description = newpage.locales.ar.description;
-            break;
-          default:
-            break;
-        }
+        el.title = newpage.locales.[el._name].title;
+        el.description = newpage.locales.[el._name].description;
       });
       this.pageData = newpage;
       this.enable = false;

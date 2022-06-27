@@ -387,13 +387,6 @@ export default {
           title: "Status",
           dataClass: "text-muted",
           width: "20%"
-        },
-        {
-          name: "__slot:actions",
-          title: "",
-          titleClass: "center aligned text-right",
-          dataClass: "center aligned text-right",
-          width: "20%"
         }
       ]
     };

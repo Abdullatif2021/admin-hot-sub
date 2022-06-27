@@ -204,6 +204,7 @@ export default {
       this.image_form.forEach(el => {
         (el.title = null), (el.description = null);
       });
+      this.$v.$reset();
     }
   }
 };

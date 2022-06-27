@@ -93,6 +93,7 @@
 import { validationMixin } from "vuelidate";
 import Vuetable from "vuetable-2/src/components/Vuetable";
 const { required } = require("vuelidate/lib/validators");
+import { getCurrentLanguage } from "../../utils";
 
 export default {
   props: ["isLoad", "list", "meta_type_list"],
@@ -124,7 +125,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.en.meta_content;
+            return value.[this.language].meta_content;
           },
           title: "Content",
           titleClass: "",
@@ -157,6 +158,7 @@ export default {
     }
   },
   created() {
+    this.language = getCurrentLanguage();
     this.langs = localStorage.getItem("Languages");
     console.log("Languages", this.langs);
     this.make_collaction(this.langs, this.meta_form);
@@ -199,16 +201,8 @@ export default {
         this.itemId = item.id;
         this.select_form.select = item.meta_type_id;
         this.meta_form.forEach(el => {
-          switch (el.name) {
-            case "en":
-              el.content = item.locales.en.meta_content;
-              break;
-            case "ar":
-              el.content = item.locales.ar.meta_content;
-              break;
-            default:
-              break;
-          }
+          console.log(item);
+          el.content = item.locales.[el.name].meta_content;
         });
       } else {
         this.edit = false;
@@ -223,11 +217,13 @@ export default {
   watch: {
     list: function(val) {
       this.enable = false;
+      this.select_form.select = null;
       this.meta_form.forEach(el => {
         el.content = null;
       });
-      this.select_form.select = null;
+      // this.$v.select_form.$reset()
       this.$refs.vuetable.setData(val);
+      this.$v.$reset()
     },
     meta_type_list: function(val) {
       val.forEach(option => {

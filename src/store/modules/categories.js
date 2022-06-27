@@ -141,7 +141,9 @@ const actions = {
     const formData = new FormData();
     Object.entries(payload.info).forEach(entry => {
       const [key, value] = entry;
-      formData.append(key, value);
+      if (value != null) {
+        formData.append(key, value);
+      }
     });
     formData.append("_method", "PUT");
     if (payload.image !== null) {

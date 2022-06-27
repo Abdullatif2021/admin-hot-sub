@@ -104,6 +104,7 @@ import VuetablePaginationBootstrap from "../../../components/Common/VuetablePagi
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { mapGetters, mapActions } from "vuex";
 import router from "../../../router";
+import { getCurrentLanguage } from "../../../utils";
 import { adminRoot } from "../../../constants/config";
 export default {
   components: {
@@ -128,6 +129,7 @@ export default {
       perPage: 8,
       from: 0,
       to: 0,
+      language: null,
       total: 0,
       dataCount: 0,
 
@@ -144,12 +146,12 @@ export default {
           title: "Image",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "30%"
+          width: "20%"
         },
         {
           name: "locales",
           callback: value => {
-            return value.en.name;
+            return value.[this.language].name;
           },
           sortField: "slug",
           title: "Title",
@@ -160,13 +162,30 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.en.description;
+            return value.[this.language].description;
           },
           sortField: "description",
           title: "Description",
           titleClass: "",
           dataClass: "list-item-heading",
           width: "20%"
+        },
+        {
+          name: "active",
+          callback: value => {
+            return value === 1
+              ? `<span class="badge badge-pill badge-success handle mr-1">
+                Active
+              </span>`
+              : `<span class="badge badge-pill badge-danger handle mr-1">
+                Inactive
+              </span>`;
+          },
+          sortField: "active",
+          title: "Status",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "10%"
         },
         {
           name: "__slot:actions",
@@ -179,6 +198,7 @@ export default {
     };
   },
   created() {
+       this.language = getCurrentLanguage();
     this.getCategories({
       dir: null,
       search: null,

@@ -417,18 +417,9 @@ export default {
     _block(newOne, oldone) {
       this.isLoadBlock = true;
       this.details_form.forEach(el => {
-        switch (el._name) {
-          case "en":
-            el.name = newOne.locales.en.name;
-            el.description = newOne.locales.en.description;
-            break;
-          case "ar":
-            el.name = newOne.locales.ar.name;
-            el.description = newOne.locales.ar.description;
-            break;
-          default:
-            break;
-        }
+        el.title = newOne.locales.[el._name].title;
+        el.description = newOne.locales.[el._name].description;
+
       });
       this.blockData = newOne;
       this.dateSelected = false;

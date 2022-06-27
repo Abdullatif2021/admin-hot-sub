@@ -495,6 +495,7 @@
     "choose-file-message": "Please choose a file",
     "choose-video-message": "Please choose a video",
     "wallet": "Wallet",
+    "category_filed": "Please select category",
     "auction_side": "Auction Side",
     "auction_side_message": "Please select auction side",
     "file": "File",

@@ -21,7 +21,8 @@ const state = {
   delete_File: null,
   Image_List: null,
   create_Image: null,
-  delete_Image: null
+  delete_Image: null,
+  date_error: false
 };
 
 const getters = {
@@ -42,7 +43,8 @@ const getters = {
   _isLoadAuctions: state => state.processing,
   _updatedAuctionSuccessfuly: state => state.updated_Successfuly,
   _createAuctionSuccessfuly: state => state.created_Successfuly,
-  _successDeleteAuction: state => state.successDeleteAuction
+  _successDeleteAuction: state => state.successDeleteAuction,
+  _dateError: state => state.date_error
 };
 
 const mutations = {
@@ -96,6 +98,9 @@ const mutations = {
   },
   deleteAuctionImage(state, payload) {
     state.delete_Image = payload;
+  },
+  dateError(state, payload) {
+    state.date_error = !state.date_error;
   }
 };
 
@@ -162,11 +167,19 @@ const actions = {
     if (payload.terms_conditions != null) {
       formData.append("terms_conditions", payload.terms_conditions);
     }
-    axios.post(`${apiUrl}/auctions`, formData, {}).then(res => {
-      if (res.status === 201) {
-        commit("createAuctionSuccessfuly", res);
-      }
-    });
+    axios
+      .post(`${apiUrl}/auctions`, formData, {})
+      .then(res => {
+        if (res.status === 201) {
+          commit("createAuctionSuccessfuly", res);
+        } else {
+          console.log("i am here from 422");
+        }
+      })
+      .catch(error => {
+        console.log("errrrrrrrrrrrrrrrrr");
+        commit("dateError");
+      });
   },
   updateAuction({ commit, dispatch }, payload) {
     const id = payload.id;

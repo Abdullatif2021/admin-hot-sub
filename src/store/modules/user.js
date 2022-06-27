@@ -332,7 +332,7 @@ export default {
         .post(`${apiUrl}/verifyMobileByAdmin/${userId}`, {})
 
         .then(res => {
-          commit("phoneVerification", res.data.data[0]);
+          commit("phoneVerification", res.data);
         });
     },
     identityConfirm({ commit }, payload) {
@@ -341,7 +341,7 @@ export default {
         .post(`${apiUrl}/accountVerification/${userId}`, {})
 
         .then(res => {
-          commit("identityVerification", res.data.data[0]);
+          commit("identityVerification", res.data);
         });
     },
     getUserAttach({ commit }, payload) {
@@ -372,19 +372,25 @@ export default {
       const formData = new FormData();
       Object.entries(payload).forEach(entry => {
         const [key, value] = entry;
-        formData.append(key, value);
+        if (value != null) {
+          formData.append(key, value);
+        }
       });
       axios
         .post(`${apiUrl}/user/attachments/report`, formData, {})
         .then(res => {
-          commit("sendNoteSuccess", res.data.data);
+          if (res.status === 200) {
+            commit("sendNoteSuccess", res.data.data);
+          }
         });
     },
     updateUserProfile({ commit }, payload) {
       const formData = new FormData();
       Object.entries(payload).forEach(entry => {
         const [key, value] = entry;
-        formData.append(key, value);
+        if (value != null) {
+          formData.append(key, value);
+        }
       });
       axios
         .post(`${apiUrl}/auth`, formData, {})
@@ -497,7 +503,9 @@ export default {
       const formData = new FormData();
       Object.entries(payload).forEach(entry => {
         const [key, value] = entry;
-        formData.append(key, value);
+        if (value != null) {
+          formData.append(key, value);
+        }
       });
       axios
         .post(
@@ -519,7 +527,9 @@ export default {
       const formData = new FormData();
       Object.entries(payload).forEach(entry => {
         const [key, value] = entry;
-        formData.append(key, value);
+        if (value != null) {
+          formData.append(key, value);
+        }
       });
       axios
         .post(`${apiUrl}/user/attachments/${userId}`, formData, {})

@@ -197,7 +197,9 @@ const actions = {
     const formData = new FormData();
     Object.entries(payload.data).forEach(entry => {
       const [key, value] = entry;
-      formData.append(key, value);
+      if (value != null) {
+        formData.append(key, value);
+      }
     });
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);

@@ -257,7 +257,9 @@ const actions = {
     });
     Object.entries(payload.data).forEach(entry => {
       const [key, value] = entry;
-      formData.append(key, value);
+      if (value != null) {
+        formData.append(key, value);
+      }
     });
     // formData.append("url", payload.url);
     // formData.append("post_date", payload.post_date);
@@ -281,7 +283,9 @@ const actions = {
     const formData = new FormData();
     Object.entries(payload.data).forEach(entry => {
       const [key, value] = entry;
-      formData.append(key, value);
+      if (value != null) {
+        formData.append(key, value);
+      }
     });
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);
@@ -642,7 +646,9 @@ const actions = {
     const formData = new FormData();
     Object.entries(payload.info).forEach(entry => {
       const [key, value] = entry;
-      formData.append(key, value);
+      if (value != null) {
+        formData.append(key, value);
+      }
     });
     formData.append("_method", "PUT");
     if (payload.image !== null) {

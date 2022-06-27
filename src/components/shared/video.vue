@@ -115,6 +115,7 @@ export default {
   watch: {
     video_list: function(val) {
       this.$refs.vuetable.setData(val);
+      this.$v.$reset();
     }
   }
 };

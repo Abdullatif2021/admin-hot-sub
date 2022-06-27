@@ -274,6 +274,8 @@ export default {
       this.file_form.file = null;
       this.file = null;
       this.enable = false;
+      this.$v.$reset();
+
       this.$refs.vuetable.setData(val);
     }
   }

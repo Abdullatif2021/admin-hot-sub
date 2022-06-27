@@ -9,7 +9,7 @@
       :cancle="cancle"
       :transaction_filter="false"
       :from="from"
-      :add_new_button="true"
+      :add_new_button="false"
       :sort="sort"
       :add_new="true"
       :to="to"
@@ -81,6 +81,7 @@ import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue
 import { mapGetters, mapActions } from "vuex";
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
+import { getCurrentLanguage } from "../../../utils";
 export default {
   props: ["title"],
   components: {
@@ -94,6 +95,7 @@ export default {
       type: null,
       order_by: null,
       search: null,
+      language: null,
       actions: null,
       isLoad: true,
       apiBase: "/cakes/fordatatable",
@@ -127,7 +129,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.en.name;
+            return value.[this.language].name;
           },
           sortField: "name",
           title: "Name",
@@ -162,6 +164,7 @@ export default {
       limit: null,
       page: null
     });
+    this.language = getCurrentLanguage();
   },
 
   methods: {

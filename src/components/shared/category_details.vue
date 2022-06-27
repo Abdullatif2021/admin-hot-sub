@@ -59,7 +59,10 @@
                 </b-colxx>
               </div>
               <b-colxx v-if="is_block_category" sm="12">
-                <b-form-group :label="$t('forms.type')">
+                <b-form-group
+                  class="has-float-label mb-4"
+                  :label="$t('forms.type')"
+                >
                   <b-form-select
                     :state="!$v.gridForm.select.$error"
                     v-model="$v.gridForm.select.$model"
@@ -74,25 +77,16 @@
                   >
                 </b-form-group>
               </b-colxx>
-              <!-- <b-colxx v-if="category" sm="6">
-              <b-form-group :label="$t('forms.ar_desc')">
-                <b-form-input type="text" v-model="gridForm.add_to_menu" />
-              </b-form-group>
-            </b-colxx>
-            <b-colxx sm="6">
-              <b-form-group v-if="category"  :label="$t('forms.add_to_menu')">
-                <b-form-input type="text" v-model="gridForm.perant_id" />
-              </b-form-group>
-            </b-colxx> -->
-
               <b-colxx xxs="12">
-                <b-form-group :label="$t('forms.image')">
+                <b-form-group
+                  class="has-float-label mb-4"
+                  :label="$t('forms.image')"
+                >
                   <vue-dropzone
                     ref="myVueDropzone"
                     id="dropzone"
                     :options="dropzoneOptions"
                     @vdropzone-files-added="fileAdded"
-                    @vdropzone-sending-multiple="sendMessage"
                     @vdropzone-removed-file="fileRemoved"
                   ></vue-dropzone>
                 </b-form-group>
@@ -248,11 +242,6 @@ export default {
     fileRemoved(file) {
       this.file = null;
     },
-    shootMessage: async function() {
-      this.$refs.myVueDropzone.processQueue();
-    },
-    sendMessage: async function(files, xhr, formData) {},
-
     dropzoneTemplate() {
       return `<div class="dz-preview dz-file-preview mb-3">
                   <div class="d-flex flex-row "> <div class="p-0 w-30 position-relative">
@@ -291,19 +280,9 @@ export default {
   watch: {
     _category(newInfo, oldOne) {
       this.category_form.forEach(el => {
-        switch (el._name) {
-          case "en":
-            el.name = newInfo.locales.en.name;
-            el.description = newInfo.locales.en.description;
+         el.name = newInfo.locales.[el._name].name;
+          el.description = newInfo.locales.[el._name].description;
 
-            break;
-          case "ar":
-            el.name = newInfo.locales.ar.name;
-            el.description = newInfo.locales.ar.description;
-            break;
-          default:
-            break;
-        }
       });
       this.image = newInfo.image;
       this.is_Load = false;
@@ -321,19 +300,9 @@ export default {
     _blockCategory(newInfo, oldOne) {
       this.is_block_category = true;
       this.category_form.forEach(el => {
-        switch (el._name) {
-          case "en":
-            el.name = newInfo.locales.en.name;
-            el.description = newInfo.locales.en.description;
+           el.name = newInfo.locales.[el._name].name;
+          el.description = newInfo.locales.[el._name].description;
 
-            break;
-          case "ar":
-            el.name = newInfo.locales.ar.name;
-            el.description = newInfo.locales.ar.description;
-            break;
-          default:
-            break;
-        }
       });
       this.image = newInfo.image;
       this.gridForm.select = newInfo.type;

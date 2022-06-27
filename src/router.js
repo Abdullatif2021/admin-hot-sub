@@ -275,7 +275,7 @@ const routes = [
         path: "settings",
         component: () =>
           import(/* webpackChunkName: "single" */ "./views/app/settings"),
-        meta: { loginRequired: true, roles: ["superadmin", "admin"] }
+        meta: { loginRequired: true, roles: ["superadmin"] }
       },
       {
         path: "profile",

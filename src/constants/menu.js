@@ -71,7 +71,7 @@ const data = [
     icon: "simple-icon-settings",
     label: "Settings",
     to: `${adminRoot}/settings`,
-    roles: ["superadmin", "admin"]
+    roles: ["superadmin"]
   }
 ];
 export default data;

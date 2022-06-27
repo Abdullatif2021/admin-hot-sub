@@ -386,6 +386,7 @@
                       <b-input-group class="mb-3">
                         <b-input-group-prepend is-text>
                           <input
+                            :disabled="gridForm.phone_number_confirmed === 1"
                             type="checkbox"
                             @click="phone_comfirm()"
                             :checked="gridForm.phone_number_confirmed"
@@ -413,6 +414,10 @@
                       <b-input-group class="mb-3">
                         <b-input-group-prepend is-text>
                           <input
+                            :disabled="
+                              gridForm.identity_verfied === 1 ||
+                                gridForm.identity_number == null
+                            "
                             type="checkbox"
                             @click="identity_comfirm()"
                             :checked="gridForm.identity_verfied"
@@ -432,21 +437,7 @@
                         >
                       </b-input-group>
                     </b-colxx>
-                    <!-- <b-colxx sm="6">
-                      <b-form-group :label="$t('forms.license_number')">
-                        <b-form-input
-                          type="number"
-                          :state="!$v.gridForm.license_number.$error"
-                          v-model="$v.gridForm.license_number.$model"
-                        />  
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.license_number.required"
-                          >{{
-                            $t("forms.license_number_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx> -->
+
                     <b-colxx sm="6">
                       <b-form-group :label="$t('forms.nationality')">
                         <b-form-select
@@ -547,7 +538,8 @@
               <b-tab
                 title-item-class="w-30 text-center"
                 @click="
-                  (add_attach = true),
+                  open_attach_tab(),
+                    (add_attach = true),
                     (showFilter = false),
                     (add_Attachment = true),
                     selectedTab === 'attachment'
@@ -555,11 +547,6 @@
                 :active="selectedTab === 'attachment'"
               >
                 <template #title>
-                  <b-spinner
-                    v-if="!_AttachProcessing"
-                    type="border"
-                    small
-                  ></b-spinner>
                   {{ $t(`forms.attach`) }}
                 </template>
                 <b-colxx xxs="12">
@@ -585,10 +572,22 @@
                             <i class="simple-icon-settings"></i>
                           </template>
                           <b-dropdown-item
-                            v-for="(item, index) in attach_Options"
-                            :key="index"
-                            @click="attach_Action(item.value, props.rowData)"
-                            >{{ $t(item.name) }}</b-dropdown-item
+                            @click="open_attach(props.rowData)"
+                            >{{ $t("OPEN") }}</b-dropdown-item
+                          >
+                          <b-dropdown-item
+                            @click="verfiy_attach(props.rowData)"
+                            :disabled="props.rowData.verfied === 1"
+                            >{{ $t("VERIFY") }}</b-dropdown-item
+                          >
+                          <b-dropdown-item
+                            @click="update_attach(props.rowData)"
+                            >{{ $t("UPDATE") }}</b-dropdown-item
+                          >
+                          <b-dropdown-item
+                            @click="note_attach(props.rowData)"
+                            :disabled="props.rowData.notes !== null"
+                            >{{ $t("SEND_NOTE") }}</b-dropdown-item
                           >
                         </b-dropdown>
                       </template>
@@ -780,12 +779,7 @@ export default {
         previewTemplate: this.dropzoneTemplate(),
         headers: {}
       },
-      attach_Options: [
-        { name: "OPEN", value: 0 },
-        { name: "VERIFY", value: 1 },
-        { name: "UPDATE", value: 2 },
-        { name: "SEND_NOTE", value: 3 }
-      ],
+
       activeOptions: [
         { text: "YES", value: 1 },
         { text: "NO", value: 0 }
@@ -880,11 +874,7 @@ export default {
           return this.isOptional;
         })
       },
-      // license_number: {
-      //   required: requiredIf(function() {
-      //     return this.isOptional;
-      //   })
-      // },
+
       nationality: {
         required: requiredIf(function() {
           return this.isOptional;
@@ -930,7 +920,6 @@ export default {
       this.isUserForm = true;
       this.isUser_Form = true;
       this.getUserInfo({ id: this.userId });
-      this.getUserAttach({ id: this.userId });
       this.getAttachCategory();
       this.creation(this.type);
     } else if (this.userId) {
@@ -958,6 +947,9 @@ export default {
     rowClicked(dataItem, event) {
       const path = dataItem.path;
       console.log(dataItem.path);
+    },
+    open_attach_tab() {
+      this.getUserAttach({ id: this.userId });
     },
     onGridFormSubmit() {
       if (this.userId) {
@@ -1039,31 +1031,22 @@ export default {
     hide_filter() {
       this.showFilter = false;
     },
-    attach_Action(value, item) {
-      this.selectedTab === "attachment";
+    open_attach(item) {
       this.update_attachment = true;
-      console.log(item, value);
-      switch (value) {
-        case 0:
-          window.open(item.path);
-          break;
-        case 1:
-          this.verfiyAttach({ id: item.id });
-          break;
-        case 2:
-          this.update_attachment = false;
-          this.attachmentId = item.id;
-          this.$refs["attach"].show();
-          break;
-        case 3:
-          this.$refs["note"].show();
-          this.attachmentId = item.id;
-          break;
-        default:
-          break;
-      }
+      window.open(item.path);
     },
-
+    verfiy_attach(item) {
+      this.verfiyAttach({ id: item.id });
+    },
+    update_attach(item) {
+      this.update_attachment = false;
+      this.attachmentId = item.id;
+      this.$refs["attach"].show();
+    },
+    note_attach(item) {
+      this.$refs["note"].show();
+      this.attachmentId = item.id;
+    },
     hideModal(refname) {
       this.$refs[refname].hide();
     },
@@ -1075,8 +1058,6 @@ export default {
       });
     },
     addAttach() {
-      this.model_button = true;
-
       if (!this.update_attachment) {
         this.model_button = true;
         this.updateAttachment({
@@ -1212,6 +1193,10 @@ export default {
     }
   },
   watch: {
+    _UserAttach: function(val) {
+      this.getAttachments = false;
+      this.$refs.vuetable.setData(val);
+    },
     UserInfo(newInfo, oldOne) {
       this.gridForm.first_name = newInfo.first_name;
       this.gridForm.last_name = newInfo.last_name;
@@ -1238,7 +1223,7 @@ export default {
       );
       this.$refs["attach"].hide();
       this.model_button = false;
-
+      this.attach_form.category = null;
       this.getUserAttach({ id: this.userId });
     },
     _updateAttachSuccess: function(val) {
@@ -1255,10 +1240,7 @@ export default {
       this.$refs["attach"].hide();
       this.getUserAttach({ id: this.userId });
     },
-    _UserAttach(newInfo, oldOne) {
-      this.getAttachments = false;
-      this.$refs.vuetable.setData(newInfo);
-    },
+
     _sendNoteSuccess(newVal, old) {
       this.$notify(
         "success",
@@ -1269,9 +1251,10 @@ export default {
           permanent: false
         }
       );
+      this.note = null;
       this.submit_note = false;
-      this.attach_form.category = null;
       this.$refs["note"].hide();
+      this.getUserAttach({ id: this.userId });
     },
     _verfiedAtachmet(newVal, odt) {
       this.getUserAttach({ id: this.userId });
@@ -1320,6 +1303,8 @@ export default {
         { duration: 5000, permanent: false }
       );
       this.$refs["attach"].hide();
+      this.model_button = false;
+      this.attach_form.category = null;
     },
     _AttachCategory(newCon, oldOne) {
       newCon.forEach(option => {

@@ -123,6 +123,7 @@ import AddNewModal from "../../containers/appliaction/AddNewModal.vue";
 import { validationMixin } from "vuelidate";
 const { required } = require("vuelidate/lib/validators");
 import DatatableHeading from "../../containers/datatable/DatatableHeading.vue";
+import { getCurrentLanguage } from "../../utils";
 
 export default {
   props: ["id", "type"],
@@ -141,6 +142,7 @@ export default {
       itemId: null,
       enable: false,
       meta_type_id: null,
+      language: null,
       textarea: null,
       file: null,
       itemForEdit: null,
@@ -162,7 +164,7 @@ export default {
       items: [],
       meta_form: [],
       select_form: {
-        select: ""
+        select: null
       },
 
       selectedItems: [],
@@ -175,22 +177,13 @@ export default {
           dataClass: "list-item-heading",
           width: "40%"
         },
+
         {
           name: "locales",
           callback: value => {
-            return value.ar.meta_content;
+            return value.[this.language].meta_content;
           },
-          title: "Arabic Content",
-          titleClass: "",
-          dataClass: "text-muted",
-          width: "40%"
-        },
-        {
-          name: "locales",
-          callback: value => {
-            return value.en.meta_content;
-          },
-          title: "English Content",
+          title: "Content",
           titleClass: "",
           dataClass: "text-muted",
           width: "40%"
@@ -224,6 +217,7 @@ export default {
   },
 
   created() {
+    this.language = getCurrentLanguage();
     console.log("hi from created", this.type);
     this.langs = localStorage.getItem("Languages");
     this.getCategoryMetaTypeList();
@@ -306,16 +300,7 @@ export default {
 
         this.select_form.select = item.meta_type_id;
         this.meta_form.forEach(el => {
-          switch (el.name) {
-            case "en":
-              el.content = item.locales.en.meta_content;
-              break;
-            case "ar":
-              el.content = item.locales.ar.meta_content;
-              break;
-            default:
-              break;
-          }
+          el.content = item.locales.[el.name].meta_content;
         });
       } else {
         this.edit = false;
@@ -323,6 +308,7 @@ export default {
         this.meta_form.forEach(el => {
           el.content = null;
         });
+        this.$v.$reset()
         this.type == "block"
           ? this.deleteBlockCategoryMetadata({
               id: this.id,
@@ -358,9 +344,20 @@ export default {
         el.content = null;
       });
       this.select_form.select = null;
+      this.$v.$reset()
+    },
+    _create_category_meta_success: function(val){
+      this.enable = false;
+      this.edit = false;
+      this.meta_form.forEach(el => {
+        el.content = null;
+      });
+      this.select_form.select = null;
+      this.$v.$reset()
     },
     _blockCategoryMeta(newList, old) {
       console.log("_blockCategoryMeta");
+      this.$refs.vuetable.setData(newList);
       this.enable = false;
 
       this.edit = false;
@@ -368,7 +365,8 @@ export default {
         el.content = null;
       });
       this.select_form.select = null;
-      this.$refs.vuetable.setData(newList);
+      this.$v.$reset()
+
     },
     _CategoryMeta(newList, old) {
       console.log("_CategoryMeta");
@@ -379,6 +377,7 @@ export default {
         el.content = null;
       });
       this.select_form.select = null;
+      this.$v.$reset()
       this.$refs.vuetable.setData(newList);
     },
     _updateblockCategoryMetaSuccess(newActions, old) {
@@ -390,6 +389,7 @@ export default {
         el.content = null;
       });
       this.select_form.select = null;
+      this.$v.$reset()
     },
     _updateCategoryMetaSuccess(newActions, old) {
       console.log("_updateMetaPage");
@@ -400,6 +400,7 @@ export default {
         el.content = null;
       });
       this.select_form.select = null;
+      this.$v.$reset()
     },
     _categoryMetaTypeList(newContent, old) {
       console.log("_blockMetaList");

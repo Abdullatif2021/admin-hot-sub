@@ -27,7 +27,7 @@ const mutations = {
     state.settings = settings;
   },
   updatedSuccessfuly(state) {
-    state.updatedSuccessfuly = true;
+    state.updatedSuccessfuly = !state.updatedSuccessfuly;
   },
   getsettingsError(state, error) {
     state.isLoadSettings = false;
@@ -57,7 +57,6 @@ const actions = {
       .put(
         `${apiUrl}/setting/${id}`,
         {
-          key: payload.key,
           value: payload.value
         },
         {}
