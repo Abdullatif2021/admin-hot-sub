@@ -43,7 +43,9 @@
               <b-button
                 variant="outline-theme-3"
                 class="icon-button"
-                @click="modify(props.rowData.id)"
+                @click="
+                  modify(props.rowData.id, props.rowData.block_category_id.slug)
+                "
               >
                 <i class="simple-icon-settings"></i>
               </b-button>
@@ -182,6 +184,7 @@ export default {
   created() {
     const type = this.$route.fullPath.split("/")[4];
     this.type = type;
+    this.setCategoryId({ id: this.type });
     this.getBlocksList({
       block_category_id: this.type,
       dir: null,
@@ -199,7 +202,12 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["getBlocksList", "getBlockCategories", "deleteBlock"]),
+    ...mapActions([
+      "getBlocksList",
+      "setCategoryId",
+      "getBlockCategories",
+      "deleteBlock"
+    ]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -221,17 +229,18 @@ export default {
         page: this.page
       });
     },
-    modify(id) {
+    modify(id, slug) {
       this.$router.push({
         path: `${adminRoot}/blocks/block`,
         query: { id: id }
       });
+      this.setCategoryId({ id: this.type });
     },
     add_New() {
       this.$router.push({
-        path: `${adminRoot}/blocks/add-block`,
-        query: { id: this.type }
+        path: `${adminRoot}/blocks/add-block`
       });
+      this.setCategoryId({ id: this.type });
     },
 
     rowClicked(dataItem, event) {
@@ -442,6 +451,7 @@ export default {
     },
     _blocks(newList, old) {
       this.$refs.vuetable.setData(newList);
+      this.setCategoryId({ id: this.type });
     },
     _blockPaginations(newActions, old) {
       this.perPage = newActions.per_page;

@@ -33,7 +33,8 @@ const state = {
   successUpdateBlockCategoryMeta: null,
   create_block_category_meta_success: null,
   errorAddBlockVideo: null,
-  wrongYoutubeurl: null
+  wrongYoutubeurl: null,
+  blockCategoryId: null
 };
 
 const getters = {
@@ -64,6 +65,7 @@ const getters = {
   _blockMetaTypeList: state => state.blockMetaTypeList,
   // file
   _blockFileList: state => state.blockFileList,
+  _blockCategoryId: state => state.blockCategoryId,
   _sccussCreateBlockFile: state => state.successAddBlockFile,
   // videos
   _blockVideosList: state => state.blockVideosList,
@@ -199,6 +201,9 @@ const mutations = {
   },
   get_Block_Categories(state, data) {
     state.Block_Categories = data.data;
+  },
+  blockCategoryId(state, payload) {
+    state.blockCategoryId = payload;
   }
 };
 
@@ -743,6 +748,14 @@ const actions = {
       .then(res => {
         dispatch("getBlockCategoryMetadata", { id });
       });
+  },
+  // blockCategoryId: async ({ commit, dispatch }, payload) => {
+  //   console.log("payload is here", payload);
+  //   commit("blockCategoryId", payload);
+  // },
+  setCategoryId({ commit, dispatch }, payload) {
+    console.log("payload is here", payload);
+    commit("blockCategoryId", payload);
   }
 };
 

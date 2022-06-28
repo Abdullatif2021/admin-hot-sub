@@ -1,6 +1,9 @@
 import { isAuthGuardActive } from "../constants/config";
-import { setCurrentUser, getCurrentUser } from ".";
+import { setCurrentUser, getCurrentUser, addCategoryTitle } from ".";
 export default (to, from, next) => {
+  console.log("frommmmmmmm", from, from.params.id);
+  addCategoryTitle(from.params.id);
+  // this.$store.dispatch("blockCategoryId", from.params.id);
   if (to.matched.some(record => record.meta.loginRequired)) {
     if (isAuthGuardActive) {
       const user = getCurrentUser();

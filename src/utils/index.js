@@ -177,3 +177,12 @@ export const setTokens = (accessToken, refreshToken) => {
     localStorage.setItem("refreshToken", refreshToken);
   } catch (error) {}
 };
+
+export const addCategoryTitle = data => {
+  try {
+    console.log("addCategoryTitle", data);
+    store.dispatch("fetchCurrentUser");
+    const id = data;
+    return id;
+  } catch (error) {}
+};

@@ -1,5 +1,5 @@
 <template>
-  <b-row v-if="reload">
+  <b-row>
     <b-colxx xxs="12">
       <h1>{{ title }}</h1>
       <div v-if="add_new_button" class="top-right-button-container">
