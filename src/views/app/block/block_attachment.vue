@@ -101,7 +101,6 @@ export default {
     ]),
     // ..................... image ......................
     createImage(value) {
-      console.log(value);
       this.enable = true;
       this.createBlockImage({
         info: value.info,
@@ -135,7 +134,6 @@ export default {
       this.getBlockFileList({ id: this.blockId });
     },
     create_File(info, path) {
-      console.log("hi from createee", info, path);
       this.createBlockFile({ info: info, file: path, id: this.blockId });
     },
     delete_File(id) {

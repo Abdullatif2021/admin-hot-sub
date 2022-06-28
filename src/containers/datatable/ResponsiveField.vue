@@ -19,7 +19,6 @@ export default {
       x => x.sortField == this.field
     );
     if (titleField && titleField[0]) {
-      console.log("mounted -> titleField", titleField[0])
       this.$el.parentNode.dataset["title"] = titleField[0].title;
     }
   }

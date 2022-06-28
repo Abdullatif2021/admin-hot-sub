@@ -182,7 +182,6 @@ export default {
   created() {
     const type = this.$route.fullPath.split("/")[4];
     this.type = type;
-    console.log(type);
     this.getBlocksList({
       block_category_id: this.type,
       dir: null,
@@ -223,7 +222,6 @@ export default {
       });
     },
     modify(id) {
-      console.log(id);
       this.$router.push({
         path: `${adminRoot}/blocks/block`,
         query: { id: id }
@@ -238,7 +236,6 @@ export default {
 
     rowClicked(dataItem, event) {
       const itemId = dataItem.id;
-      console.log(dataItem.id);
       if (event.shiftKey && this.selectedItems.length > 0) {
         this.selectedItems.push(
           dataItem.map(item => {
@@ -269,7 +266,6 @@ export default {
     },
     dataManager(sortOrder, pagination) {
       if (sortOrder.length > 0) {
-        console.log("orderBy:", sortOrder[0].sortField, sortOrder[0].direction);
         if (sortOrder[0].direction == "asc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
@@ -334,7 +330,6 @@ export default {
     },
 
     changePageSize(perPage) {
-      console.log(perPage);
       this.limit = perPage;
       this.getBlocksList({
         block_category_id: this.type,
@@ -397,12 +392,7 @@ export default {
       return -1;
     },
 
-    onContextMenuAction(action) {
-      console.log(
-        "context menu item clicked - " + action + ": ",
-        this.selectedItems
-      );
-    }
+    onContextMenuAction(action) {}
   },
   computed: {
     ...mapGetters([
@@ -424,7 +414,6 @@ export default {
   },
   watch: {
     $route(to, from) {
-      console.log("routeeeeeee", to, from);
       const type = this.$route.fullPath.split("/")[4];
       this.type = type;
       this.getBlocksList({
@@ -438,8 +427,6 @@ export default {
     },
     searchChange(newQuestion, oldQuestion) {
       if (newQuestion) {
-        console.log("old", oldQuestion);
-        console.log("new", newQuestion);
       }
     },
     _successDeleteBlock(newVal, old) {
@@ -464,7 +451,6 @@ export default {
       this.$refs.pagination.setPaginationData(newActions);
     },
     _blockCategories(newval, old) {
-      console.log("watch", newval);
       newval.forEach(option => {
         this.sortOptions.push(
           new Object({

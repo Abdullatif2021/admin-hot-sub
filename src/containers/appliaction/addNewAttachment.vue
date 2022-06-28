@@ -123,7 +123,6 @@ export default {
           description: "",
           name: el.name
         });
-        console.log(this.image_form);
       });
     },
     hideModal(refname) {
@@ -134,15 +133,11 @@ export default {
       // this.form.ar_description = null;
     },
     formSubmit() {
-      console.log("here from submit");
       this.$v.$touch();
       this.$v.image_form.$touch();
       if (!this.$v.image_form.$invalid) {
-        console.log("here from submit invalid", this.$v.image_form.$model);
         this.enable = true;
-        this.$v.image_form.$model.forEach(el => {
-          console.log(el);
-        });
+        this.$v.image_form.$model.forEach(el => {});
         this.$emit("AddNewImage", {
           info: this.$v.image_form.$model,
           image: this.file ? this.file[0] : null
@@ -156,7 +151,6 @@ export default {
       }
     },
     fileAdded(file) {
-      console.log(file);
       this.file = file;
     },
     fileRemoved(file) {

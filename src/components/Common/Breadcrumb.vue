@@ -15,18 +15,16 @@ export default {
   props: ["heading"],
   data() {
     return {
-      items: []
+      items: [],
+      id: null
     };
   },
   methods: {
     getUrl(path, sub, index) {
-      if (this.$route.path === "/app/blocks") {
-        console.log(
-          "sfwefwefwefsefsefsefsefsef",
-          this.$route.path,
-          this.$route.query.id,
-          sub
-        );
+      console.log(path, sub, index);
+      if (sub === "blockList") {
+        return;
+      } else if (this.$route.path === "/app/blocks/block") {
         return;
       } else {
         return "/" + path.split(sub)[0] + sub;

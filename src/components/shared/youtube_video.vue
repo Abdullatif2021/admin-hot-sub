@@ -183,7 +183,6 @@ export default {
   created() {
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.youtube_form);
-    console.log(this.langs);
     this.language = getCurrentLanguage();
 
   },
@@ -195,7 +194,6 @@ export default {
           description: "",
           name: el.name
         });
-        console.log(this.form);
       });
     },
     youtube_Action(value, item) {
@@ -219,7 +217,6 @@ export default {
           break;
         case 3:
           {
-            console.log("delete");
             this.$emit("delete-youtube", item.id);
           }
           break;
@@ -238,7 +235,6 @@ export default {
             this.path_form.path
           );
         } else {
-          console.log("erfwefwe");
           this.$emit(
             "update-youtube",
             this.$v.youtube_form.$model,
@@ -251,7 +247,6 @@ export default {
   },
   watch: {
     list: function(val) {
-      console.log("hi from listtttttttttt");
       this.youtube_form.forEach(el => {
         el.title = null;
         el.description = null;

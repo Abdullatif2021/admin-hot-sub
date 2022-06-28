@@ -911,9 +911,7 @@ export default {
     this.userId = this.$route.query.id;
     this.getCountries();
     this.getNationalities();
-    console.log(this.type);
     if (this.type === "users" && !this.userId) {
-      console.log("i am hereee");
       this.creation(this.type);
       this.isUser_Form = true;
     } else if (this.type === "users" && this.userId) {
@@ -946,7 +944,6 @@ export default {
     ]),
     rowClicked(dataItem, event) {
       const path = dataItem.path;
-      console.log(dataItem.path);
     },
     open_attach_tab() {
       this.getUserAttach({ id: this.userId });
@@ -959,9 +956,6 @@ export default {
         this.$v.gridForm.$touch();
         this.gridForm.password = "wwerwe234234";
         if (!this.$v.gridForm.$invalid) {
-          console.log("!this.$v.gridForm.$invalid");
-          console.log(this.gridForm);
-
           this.enable = true;
           this.updateUserInfo({
             user: {
@@ -986,7 +980,7 @@ export default {
         }
       } else {
         this.$v.$touch();
-        console.log("ewedaedaedaedsedsedsawdaaaaaaaaaaaaaaaaaaaa");
+
         this.$v.gridForm.$touch();
         if (!this.$v.gridForm.$invalid) {
           this.enable = true;
@@ -1013,16 +1007,9 @@ export default {
       }
     },
     add_New_attach() {
-      console.log("wefwerwerwerwerwerwerwer");
       this.$refs["attach"].show();
     },
     show_filter(methodOptions, stateOptions, typeOptions) {
-      console.log(
-        "filterrrrrrrrrrrrrrrrrrrrrrrrrrrr",
-        methodOptions,
-        stateOptions,
-        typeOptions
-      );
       this.methodOptions = methodOptions;
       this.stateOptions = stateOptions;
       this.typeOptions = typeOptions;
@@ -1069,7 +1056,7 @@ export default {
       } else {
         this.$v.$touch();
         this.$v.attach_form.$touch();
-        console.log(this.attach_form);
+
         if (!this.$v.attach_form.$invalid) {
           this.model_button = true;
           this.addAttachment({
@@ -1111,7 +1098,6 @@ export default {
     },
 
     creation(type) {
-      console.log(type);
       switch (type) {
         case "admins":
           return (this.roleOptions = [
@@ -1125,7 +1111,6 @@ export default {
       }
     },
     fileAdded(file) {
-      console.log(file);
       this.file_added = false;
       this.file = file;
     },
@@ -1214,7 +1199,6 @@ export default {
       this.gridForm.nationality = newInfo.nationality.id;
     },
     _addAttachSuccess(newInfo, oldest) {
-      console.log(this.selectedTab, "taabbbbbbbbbbbbbbbbbbbbbbbb");
       this.$notify(
         "success",
         "Operation completed successfully",
@@ -1229,7 +1213,6 @@ export default {
     _updateAttachSuccess: function(val) {
       this.update_attachment = true;
       this.model_button = false;
-      console.log(this.selectedTab, "taabbbbbbbbbbbbbbbbbbbbbbbb");
 
       this.$notify(
         "success",
@@ -1278,7 +1261,6 @@ export default {
       this.getUserInfo({ id: this.userId });
     },
     _updateUserInfo(newVal, odt) {
-      console.log("hereeee", newVal);
       if (newVal.status === 200) {
         this.$notify(
           "success",

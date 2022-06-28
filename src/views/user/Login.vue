@@ -159,16 +159,13 @@ export default {
     }
   },
   watch: {
-    processing: function(value) {
-      console.log("processing", value);
-    },
+    processing: function(value) {},
     currentUser(val) {
       if (val != null) {
         this.$router.push(adminRoot);
       }
     },
     loginError(val) {
-      console.log(val);
       if (val != null) {
         this.$notify(
           "error",

@@ -205,7 +205,6 @@ export default {
       "getCategory"
     ]),
     make_collaction(langs, form) {
-      console.log("make collaction", langs, form);
       JSON.parse(langs).forEach(el => {
         form.push({
           name: "",
@@ -236,7 +235,6 @@ export default {
       }
     },
     fileAdded(file) {
-      console.log(file);
       this.file = file;
     },
     fileRemoved(file) {
@@ -263,7 +261,6 @@ export default {
         `;
     },
     deleteMeta(id) {
-      console.log(id);
     }
   },
   computed: {
@@ -288,7 +285,6 @@ export default {
       this.is_Load = false;
     },
     _successUpdateCategory(newInfo, oldOne) {
-      console.log("hiiiiii");
       this.$notify(
         "success",
         "Operation completed successfully",
@@ -318,7 +314,6 @@ export default {
       router.push(`${adminRoot}/blockCategories`);
     },
     _blockCategoryTypes(newInfo, oldOne) {
-      console.log(newInfo);
       newInfo.forEach(el => {
         this.typeOptions.push(el);
       });

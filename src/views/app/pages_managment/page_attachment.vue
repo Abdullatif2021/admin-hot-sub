@@ -103,7 +103,6 @@ export default {
       this.deletePageImage({ id: this.pageId, attachment_id: id });
     },
     createImage(value) {
-      console.log(value);
       this.enable = true;
       this.createPageImage({
         info: value.info,
@@ -135,7 +134,6 @@ export default {
       this.isLoadAttach = false;
     },
     create_File(info, path) {
-      console.log("hi from createee", info, path);
       this.createPageFile({ info: info, file: path, id: this.pageId });
     },
     delete_File(id) {

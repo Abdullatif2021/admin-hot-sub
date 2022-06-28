@@ -781,7 +781,6 @@ export default {
       this.getAuction({ id: this.auctionId });
       this.isEdit = true;
     } else {
-      console.log("i am here ", this.auctionId);
       this.isLoadAuction = true;
       this.isEdit = false;
       this.location= null;
@@ -815,7 +814,6 @@ export default {
       "getAuctionSide"
     ]),
     make_collaction(langs, form) {
-      console.log(langs, form);
       JSON.parse(langs).forEach(el => {
         form.push({
           title: "",
@@ -829,12 +827,7 @@ export default {
       this.$v.gridForm.$touch();
       this.$v.lang_form.$touch();
       this.$v.files_form.$touch();
-      console.log(
-        "this.gridForm this.gridForm",
-        this.gridForm,
-        this.lang_form,
-        this.files_form
-      );
+
       if (
         !this.$v.gridForm.$invalid &&
         !this.$v.lang_form.$invalid &&
@@ -862,7 +855,6 @@ export default {
       }
     },
     create_File(info, path) {
-      console.log("hi from createee", info, path);
       this.createAuctionFile({ info: info, path: path, id: this.auctionId });
     },
     delete_File(id) {
@@ -873,7 +865,6 @@ export default {
       this.gridForm.longitude = data[1];
     },
     getArea() {
-      console.log(this.gridForm.city);
       this.is_city_selected = true;
       this.getAreas({ city_id: this.gridForm.city_id });
     },
@@ -890,7 +881,6 @@ export default {
       }
     },
     createImage(value) {
-      console.log(value);
       this.enable = true;
       this.createAuctionImage({
         info: value.info,
@@ -907,7 +897,6 @@ export default {
       this.deleteAuctionImage({ id: this.auctionId, imgId: id });
     },
     fileAdded(file) {
-      console.log(file);
       this.file = file;
     },
     open(item) {
@@ -968,11 +957,9 @@ export default {
   },
   watch: {
     _File_List(newInfo, oldOne) {
-      console.log("_auctionFileList", newInfo, oldOne);
       this.auctionFileList = newInfo;
     },
     auction(newInfo, oldOne) {
-      console.log("wrfwrfwefwerfwef", newInfo);
       this.isLoadAuction = true;
       this.lang_form.forEach(el => {
         el.title = newInfo.locales.[el._name].title;
@@ -1029,7 +1016,6 @@ export default {
       });
     },
     _areas: function(val) {
-      console.log("_areassssssssssssssssssssssss", val);
       this.gridForm.area = null;
       this.areaOptions = [];
       val.forEach(option => {
@@ -1042,7 +1028,6 @@ export default {
       });
     },
     _updatedAuctionSuccessfuly(newInfo, oldOne) {
-      console.log("hiiiiii");
       this.$notify(
         "success",
         "Operation completed successfully",
@@ -1053,7 +1038,6 @@ export default {
       this.$destroy();
     },
     _createAuctionSuccessfuly(newInfo, oldOne) {
-      console.log("hiiiiii");
       this.$notify(
         "success",
         "Operation completed successfully",

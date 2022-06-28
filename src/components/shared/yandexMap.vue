@@ -60,7 +60,6 @@ export default {
   methods: {
     onClick(e) {
       this.coords = e.get("coords");
-      console.log(this.coords);
       this.$emit("select_location", this.coords);
     }
   }

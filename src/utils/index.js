@@ -80,7 +80,6 @@ export const getThemeColor = () => {
         localStorage.getItem(themeSelectedColorStorageKey) || defaultColor;
     }
   } catch (error) {
-    console.log(">>>> src/utils/index.js : getThemeColor -> error", error);
     color = defaultColor;
   }
   return color;
@@ -89,9 +88,7 @@ export const getThemeColor = () => {
 export const setThemeColor = color => {
   try {
     localStorage.setItem(themeSelectedColorStorageKey, color);
-  } catch (error) {
-    console.log(">>>> src/utils/index.js : setThemeColor -> error", error);
-  }
+  } catch (error) {}
 };
 
 export const getThemeRadius = () => {
@@ -101,7 +98,6 @@ export const getThemeRadius = () => {
       radius = localStorage.getItem(themeRadiusStorageKey) || "rounded";
     }
   } catch (error) {
-    console.log(">>>> src/utils/index.js : getThemeRadius -> error", error);
     radius = "rounded";
   }
   return radius;
@@ -110,9 +106,7 @@ export const getThemeRadius = () => {
 export const setThemeRadius = radius => {
   try {
     localStorage.setItem(themeRadiusStorageKey, radius);
-  } catch (error) {
-    console.log(">>>> src/utils/index.js : setThemeRadius -> error", error);
-  }
+  } catch (error) {}
 };
 
 export const getCurrentLanguage = () => {
@@ -127,7 +121,6 @@ export const getCurrentLanguage = () => {
       locale = localStorage.getItem("currentLanguage");
     }
   } catch (error) {
-    console.log(">>>> src/utils/index.js : getCurrentLanguage -> error", error);
     locale = defaultLocale;
   }
   return locale;
@@ -137,18 +130,15 @@ export const getAccessToken = () => {
     const accessToken = localStorage.getItem("accessToken");
     return accessToken;
   } catch (error) {
-    console.log(">>>> src/utils/index.js : setCurrentLanguage -> error", error);
     return error;
   }
 };
 export const getLanguages = () => {
   try {
     axios.get(`${apiUrl}/languages`).then(res => {
-      console.log(res);
       localStorage.setItem("Languages", JSON.stringify(res.data.data));
     });
   } catch (error) {
-    console.log(">>>> src/utils/index.js : setCurrentLanguage -> error", error);
     return error;
   }
 };
@@ -156,9 +146,7 @@ export const getLanguages = () => {
 export const setCurrentLanguage = lang => {
   try {
     localStorage.setItem("currentLanguage", lang);
-  } catch (error) {
-    console.log(">>>> src/utils/index.js : setCurrentLanguage -> error", error);
-  }
+  } catch (error) {}
 };
 
 export const getCurrentUser = () => {
@@ -169,7 +157,6 @@ export const getCurrentUser = () => {
         ? JSON.parse(localStorage.getItem("currentUser"))
         : null;
   } catch (error) {
-    console.log(">>>> src/utils/index.js : getCurrentUser -> error", error);
     currentUser = null;
   }
   return currentUser;
@@ -182,15 +169,11 @@ export const setCurrentUser = user => {
     } else {
       localStorage.removeItem("currentUser");
     }
-  } catch (error) {
-    console.log(">>>> src/utils/index.js : setCurrentUser -> error", error);
-  }
+  } catch (error) {}
 };
 export const setTokens = (accessToken, refreshToken) => {
   try {
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
-  } catch (error) {
-    console.log(">>>> src/utils/index.js : setCurrentUser -> error", error);
-  }
+  } catch (error) {}
 };

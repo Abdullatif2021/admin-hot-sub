@@ -213,7 +213,6 @@ export default {
           }
         })
         .catch(error => {
-          console.log("hi from catch", error);
           setCurrentUser(null);
           commit("setProcessing", false);
 
@@ -249,7 +248,6 @@ export default {
         .post(`${apiUrl}/users`, payload.user)
         .then(res => {
           if (res.status === 201) {
-            console.log("create");
             commit("update_UserInfo", res);
           }
           return res;
@@ -412,7 +410,6 @@ export default {
       axios
         .put(`${apiUrl}/users/${id}`, payload.user, {})
         .then(res => {
-          console.log("updateUserInfo", res);
           if (res.status === 200) {
             commit("update_UserInfo", res);
           }
@@ -482,7 +479,6 @@ export default {
             setTokens(accessToken, refreshToken);
           },
           _error => {
-            console.log(_error);
             router.push("/");
             localStorage.clear();
           }
@@ -490,7 +486,6 @@ export default {
     },
     getCountries({ commit }) {
       axios.get(`${apiUrl}/countries`).then(res => {
-        console.log("wsefwsefsefsefsefsefsef", res);
         commit("getCountries", res.data.data);
       });
     },
@@ -518,9 +513,7 @@ export default {
             commit("updateAttachSuccess", res);
           }
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(err => {});
     },
     addAttachment({ commit }, payload) {
       const userId = payload.userId;
@@ -537,7 +530,6 @@ export default {
           if (res.status === 201) {
             commit("addAttachSuccess", res);
           } else {
-            console.log(res);
             commit("createAttachError", res);
           }
         })

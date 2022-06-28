@@ -208,7 +208,6 @@ export default {
   },
   methods: {
     make_collaction(langs, form) {
-      console.log(langs, form);
       JSON.parse(langs).forEach(el => {
         form.push({
           title: "",
@@ -256,7 +255,6 @@ export default {
     },
 
     file_Action(value, item) {
-      console.log(item);
       if (value == 1) {
         window.open(item.path);
       } else {
@@ -266,7 +264,6 @@ export default {
   },
   watch: {
     list: function(val) {
-      console.log("hi from listtttttttttt");
       this.info_form.forEach(el => {
         el.title = null;
         el.description = null;

@@ -584,7 +584,6 @@ export default {
     //   files
   },
   created() {
-    console.log(this.pageId);
     this.getPageImageList({ id: this.pageId });
     this.language = getCurrentLanguage();
   },
@@ -607,7 +606,6 @@ export default {
     // .....................upload new image ......................
 
     createImage(value) {
-      console.log(value);
       this.createPageImage({
         info: value.info,
         image: value.image ? value.image : null,
@@ -636,7 +634,6 @@ export default {
       this.isLoadAttach = false;
     },
     file_Action(value, item) {
-      console.log(item);
       if (value == 1) {
         window.open(item.path);
       } else {
@@ -648,7 +645,6 @@ export default {
       }
     },
     videos_Action(value, item) {
-      console.log(item);
       if (value == 1) {
         window.open(item.path);
       } else {
@@ -770,7 +766,6 @@ export default {
           {
             this.attachment_id = item.id;
             this.edit = true;
-            console.log("update");
             this.youtube_form.ar_title = item.locales.ar.title;
             this.youtube_form.ar_description = item.locales.ar.description;
             this.youtube_form.en_title = item.locales.en.title;
@@ -780,7 +775,6 @@ export default {
           break;
         case 3:
           {
-            console.log("delete");
             this.deletePageYoutubeVideo({
               blockId: this.blockId,
               youtube_id: item.id
@@ -801,7 +795,6 @@ export default {
   },
   watch: {
     _pageImageList: function(val) {
-      console.log("_pageImageList", val);
       this.enable = true;
     },
     _pageFileList(newData, old) {
@@ -814,7 +807,6 @@ export default {
       this.isLoadAttach = true;
       this.enable = true;
 
-      console.log("i am here");
       this.$refs.video_vuetable.setData(newData);
     },
     _sccussCreateFile(newData, old) {

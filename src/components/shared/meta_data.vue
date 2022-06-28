@@ -55,7 +55,10 @@
                       @submit.prevent="onValitadeFormSubmit()"
                       class="av-tooltip tooltip-label-right"
                     >
-                      <b-form-group label="Option">
+                      <b-form-group
+                        class="has-float-label mb-4"
+                        :label="$t('forms.type')"
+                      >
                         <b-form-select
                           :state="!$v.select_form.select.$error"
                           v-model="$v.select_form.select.$model"
@@ -83,8 +86,11 @@
                             v-model="lang.content.$model"
                             :state="!lang.content.$error"
                           />
-                          <b-form-invalid-feedback v-if="!lang.content.required"
-                            >Please enter content</b-form-invalid-feedback
+                          <b-form-invalid-feedback
+                            v-if="!lang.content.required"
+                            >{{
+                              $t("forms.content_message")
+                            }}</b-form-invalid-feedback
                           >
                         </b-form-group>
                       </div>
@@ -218,7 +224,6 @@ export default {
 
   created() {
     this.language = getCurrentLanguage();
-    console.log("hi from created", this.type);
     this.langs = localStorage.getItem("Languages");
     this.getCategoryMetaTypeList();
     this.type == "block"
@@ -242,14 +247,12 @@ export default {
       "deleteCategoryMetadata"
     ]),
     make_collaction(langs, form) {
-      console.log(langs, form);
       JSON.parse(langs).forEach(el => {
         form.push({
           content: "",
           name: el.name
         });
       });
-      console.log("meta_form", this.meta_form);
     },
     onValitadeFormSubmit() {
       this.$v.$touch();
@@ -293,10 +296,8 @@ export default {
     },
     editAction(f, value, item) {
       if (value == 1) {
-        console.log(item);
         this.edit = true;
         this.meta_form.id = item.id;
-        console.log(this.meta_form.id);
 
         this.select_form.select = item.meta_type_id;
         this.meta_form.forEach(el => {
@@ -336,7 +337,6 @@ export default {
   },
   watch: {
     _create_block_category_meta_success(newData, oldest) {
-      console.log("_create_block_category_meta_success");
       this.enable = false;
 
       this.edit = false;
@@ -356,7 +356,6 @@ export default {
       this.$v.$reset()
     },
     _blockCategoryMeta(newList, old) {
-      console.log("_blockCategoryMeta");
       this.$refs.vuetable.setData(newList);
       this.enable = false;
 
@@ -369,7 +368,6 @@ export default {
 
     },
     _CategoryMeta(newList, old) {
-      console.log("_CategoryMeta");
       this.enable = false;
 
       this.edit = false;
@@ -381,7 +379,6 @@ export default {
       this.$refs.vuetable.setData(newList);
     },
     _updateblockCategoryMetaSuccess(newActions, old) {
-      console.log("_updateMetaPage");
       this.enable = false;
       this.meta_form.id = null;
       this.edit = false;
@@ -392,7 +389,6 @@ export default {
       this.$v.$reset()
     },
     _updateCategoryMetaSuccess(newActions, old) {
-      console.log("_updateMetaPage");
       this.enable = false;
       this.meta_form.id = null;
       this.edit = false;
@@ -403,7 +399,6 @@ export default {
       this.$v.$reset()
     },
     _categoryMetaTypeList(newContent, old) {
-      console.log("_blockMetaList");
       newContent.forEach(option => {
         this.selectOptions.push(
           new Object({

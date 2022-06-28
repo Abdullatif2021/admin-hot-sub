@@ -21,7 +21,7 @@
       >
         <mobile-menu-icon />
       </a>
-      <div
+      <!-- <div
         :class="{ search: true, 'mobile-view': isMobileSearch }"
         ref="searchContainer"
         @mouseenter="isSearchOver = true"
@@ -35,7 +35,7 @@
         <span class="search-icon" @click="searchClick">
           <i class="simple-icon-magnifier"></i>
         </span>
-      </div>
+      </div> -->
       <div class="d-inline-block">
         <b-dropdown
           id="langddm"
@@ -78,7 +78,7 @@
         ></b-tooltip>
       </div>
       <div class="header-icons d-inline-block align-middle">
-        <div class="position-relative d-none d-sm-inline-block">
+        <!-- <div class="position-relative d-none d-sm-inline-block">
           <b-dropdown
             variant="empty"
             size="sm"
@@ -117,9 +117,9 @@
               </router-link>
             </div>
           </b-dropdown>
-        </div>
+        </div> -->
 
-        <div class="position-relative d-inline-block">
+        <!-- <div class="position-relative d-inline-block">
           <b-dropdown
             variant="empty"
             size="sm"
@@ -156,8 +156,8 @@
               </div>
             </vue-perfect-scrollbar>
           </b-dropdown>
-        </div>
-        <div class="position-relative d-none d-sm-inline-block">
+        </div> -->
+        <!-- <div class="position-relative d-none d-sm-inline-block">
           <div class="btn-group">
             <b-button
               variant="empty"
@@ -174,40 +174,41 @@
             </b-button>
           </div>
         </div>
-      </div>
-      <div class="user d-inline-block">
-        <b-dropdown
-          class="dropdown-menu-right"
-          right
-          variant="empty"
-          toggle-class="p-0"
-          menu-class="mt-3"
-          no-caret
-        >
-          <template slot="button-content">
-            <span class="name mr-1"
-              >{{ currentUser.first_name }} {{ currentUser.last_name }}</span
-            >
-            <span>
-              <img
-                class="user_img"
-                :alt="currentUser.first_name"
-                :src="
-                  currentUser.image
-                    ? currentUser.image
-                    : '/assets/img/profiles/user.png'
-                "
-              />
-            </span>
-          </template>
-          <b-dropdown-item @click="profile">{{
-            $t("forms.account")
-          }}</b-dropdown-item>
-          <b-dropdown-divider />
-          <b-dropdown-item @click="logout">{{
-            $t("forms.sign_out")
-          }}</b-dropdown-item>
-        </b-dropdown>
+      </div> -->
+        <div class="user d-inline-block">
+          <b-dropdown
+            class="dropdown-menu-right"
+            right
+            variant="empty"
+            toggle-class="p-0"
+            menu-class="mt-3"
+            no-caret
+          >
+            <template slot="button-content">
+              <span class="name mr-1"
+                >{{ currentUser.first_name }} {{ currentUser.last_name }}</span
+              >
+              <span>
+                <img
+                  class="user_img"
+                  :alt="currentUser.first_name"
+                  :src="
+                    currentUser.image
+                      ? currentUser.image
+                      : '/assets/img/profiles/user.png'
+                  "
+                />
+              </span>
+            </template>
+            <b-dropdown-item @click="profile">{{
+              $t("forms.account")
+            }}</b-dropdown-item>
+            <b-dropdown-divider />
+            <b-dropdown-item @click="logout">{{
+              $t("forms.sign_out")
+            }}</b-dropdown-item>
+          </b-dropdown>
+        </div>
       </div>
     </div>
     <b-modal
@@ -306,7 +307,6 @@ export default {
     changeLocale(locale, direction) {
       this._locale = locale;
       this._direction = direction;
-      console.log(locale, direction);
     },
     profile() {
       router.push("/user/profile");
@@ -391,9 +391,7 @@ export default {
         this.$router.go(this.$route.path);
       }
     },
-    currentUser(val) {
-      console.log("hi from watcher", val);
-    },
+    currentUser(val) {},
     _preferLocale(val) {
       this.$refs["modalbasic"].hide();
 

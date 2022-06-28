@@ -404,7 +404,6 @@ export default {
       "verfiyTransaction"
     ]),
     bank_details(item) {
-      console.log(item);
       this.transaction_id = item.id;
       this.bank_notice.notice_photo = item.notice_photo;
       this.bank_notice.notice_number = item.notice_number;
@@ -415,7 +414,6 @@ export default {
     },
     rightClicked(dataItem, field, event) {
       event.preventDefault();
-      console.log(dataItem, field, event);
       this.transaction_id = dataItem.id;
       if (field.name === "payment_status") {
         this.$refs.contextmenu.show({ top: event.pageY, left: event.pageX });
@@ -443,7 +441,6 @@ export default {
       this.$refs.transaction_vuetable.setData(val);
     },
     _userDeposit: function(val) {
-      console.log("depositttttttttttttttt", val);
       this.$refs.deposit_vuetable.setData(val);
     },
     _verfiyTransaction: function(val) {

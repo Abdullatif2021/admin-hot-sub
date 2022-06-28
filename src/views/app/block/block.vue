@@ -141,6 +141,7 @@
                     :list="_blockMetaList"
                     :meta_type_list="_blockMetaTypeList"
                     :isLoad="_isLoadBlockMeta"
+                    :meta_success_create="_updateMetaBlock"
                     @create-meta="createMeta"
                     @update-meta="updateMeta"
                     @delete-meta="deleteMeta"
@@ -312,7 +313,6 @@ export default {
       });
     },
     save() {
-      console.log(this.blockData);
       this.$v.$touch();
       this.$v.details_form.$touch();
       if (!this.$v.details_form.$invalid) {

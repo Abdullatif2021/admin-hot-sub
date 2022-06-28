@@ -211,7 +211,6 @@ export default {
   methods: {
     ...mapActions(["createBlock"]),
     make_collaction(langs, form) {
-      console.log(langs, form);
       JSON.parse(langs).forEach(el => {
         form.push({
           name: "",

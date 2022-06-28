@@ -102,7 +102,6 @@ const actions = {
         }
       })
       .then(res => {
-        console.log("here");
         commit("setProcessing", true);
         return res;
       })
@@ -120,11 +119,12 @@ const actions = {
     });
   },
   createCategory({ commit, dispatch }, payload) {
-    console.log(payload);
     const formData = new FormData();
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);
-      formData.append(`${el._name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
+      }
     });
     if (payload.image !== null) {
       formData.append("image", payload.image);
@@ -137,7 +137,6 @@ const actions = {
   },
   updateCategory({ commit, dispatch }, payload) {
     const id = payload.id;
-    console.log(payload);
     const formData = new FormData();
     Object.entries(payload.info).forEach(entry => {
       const [key, value] = entry;

@@ -213,20 +213,17 @@ export default {
       this.form.phone_number = user.phone_number;
       this.form.gender = user.gender;
       this.dob = user.dob;
-      console.log(this.form.last_name);
     },
     submit() {
       this.$v.$touch();
       this.$v.form.$touch();
       if (this.$v.form.$invalid) {
-        console.log(this.form, this.gender, this.dob);
       }
     },
     onTopLabelsOverLineFormSubmit() {
       this.$v.$touch();
       this.$v.form.$touch();
       if (!this.$v.form.$invalid) {
-        console.log(this.form, this.gender, this.dob);
         this.enable = true;
         this.updateUserProfile({
           first_name: this.form.first_name,
@@ -248,7 +245,6 @@ export default {
     },
 
     fileAdded(file) {
-      console.log(file);
       this.file = file;
     },
     fileRemoved(file) {
@@ -284,9 +280,7 @@ export default {
     ...mapGetters(["_updatedProfileSuccessfuly"])
   },
   watch: {
-    user(newInfo, oldOne) {
-      console.log("user", newInfo);
-    },
+    user(newInfo, oldOne) {},
     _updatedProfileSuccessfuly(newInfo, oldOne) {
       this.selectedDate = false;
       this.$notify(

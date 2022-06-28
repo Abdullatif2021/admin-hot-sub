@@ -187,7 +187,6 @@ export default {
       });
     },
     modify(id) {
-      console.log(id);
       this.$router.push({
         path: `${adminRoot}/pages/page`,
         query: { id: id }
@@ -196,7 +195,6 @@ export default {
 
     rowClicked(dataItem, event) {
       const itemId = dataItem.id;
-      console.log(dataItem.id);
       if (event.shiftKey && this.selectedItems.length > 0) {
         this.selectedItems.push(
           dataItem.map(item => {
@@ -227,7 +225,6 @@ export default {
     },
     dataManager(sortOrder, pagination) {
       if (sortOrder.length > 0) {
-        console.log("orderBy:", sortOrder[0].sortField, sortOrder[0].direction);
         if (sortOrder[0].direction == "asc") {
           this.order_by = sortOrder[0].sortField;
           this.dir = "ASC";
@@ -261,7 +258,6 @@ export default {
 
     onChangePage(page) {
       if (page == "next" || page == "prev") {
-        console.log(page);
       } else {
         this.page = page;
         this.getPagesList({
@@ -276,7 +272,6 @@ export default {
     },
 
     changePageSize(perPage) {
-      console.log(perPage);
       this.limit = perPage;
       this.getPagesList({
         type: this.sort.column,
@@ -289,7 +284,6 @@ export default {
     },
 
     searchChange(val) {
-      console.log(val);
       this.search = val;
       this.getPagesList({
         type: this.sort.column,
@@ -328,10 +322,7 @@ export default {
     },
 
     onContextMenuAction(action) {
-      console.log(
-        "context menu item clicked - " + action + ": ",
-        this.selectedItems
-      );
+
     }
   },
   computed: {
@@ -349,13 +340,11 @@ export default {
   watch: {
     searchChange(newQuestion, oldQuestion) {
       if (newQuestion) {
-        console.log("old", oldQuestion);
-        console.log("new", newQuestion);
+
       }
     },
 
     _Pages(newList, old) {
-      console.log(newList);
       this.$refs.vuetable.setData(newList);
     },
     _pagesPaginations(newActions, old) {

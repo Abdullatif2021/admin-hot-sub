@@ -45,15 +45,19 @@
             @submit.prevent="onValitadeFormSubmit()"
             class="av-tooltip tooltip-label-right"
           >
-            <b-form-group :label="$t('forms.type')">
+            <b-form-group
+              class="has-float-label mb-4"
+              :label="$t('forms.type')"
+            >
               <b-form-select
                 :state="!$v.select_form.select.$error"
                 v-model="$v.select_form.select.$model"
                 :options="selectOptions"
                 plain
               />
+
               <b-form-invalid-feedback v-if="!$v.select_form.select.required">{{
-                $t("forms.select_massege")
+                $t("forms.category_type_select")
               }}</b-form-invalid-feedback>
             </b-form-group>
             <div v-for="(lang, index) in $v.meta_form.$each.$iter" :key="index">
@@ -96,7 +100,7 @@ const { required } = require("vuelidate/lib/validators");
 import { getCurrentLanguage } from "../../utils";
 
 export default {
-  props: ["isLoad", "list", "meta_type_list"],
+  props: ["isLoad", "list", "meta_type_list", "meta_success_create"],
   components: {
     vuetable: Vuetable
   },
@@ -160,12 +164,11 @@ export default {
   created() {
     this.language = getCurrentLanguage();
     this.langs = localStorage.getItem("Languages");
-    console.log("Languages", this.langs);
     this.make_collaction(this.langs, this.meta_form);
+    this.$v.$reset()
   },
   methods: {
     make_collaction(langs, form) {
-      console.log(langs, form);
       JSON.parse(langs).forEach(el => {
         form.push({
           content: "",
@@ -201,29 +204,36 @@ export default {
         this.itemId = item.id;
         this.select_form.select = item.meta_type_id;
         this.meta_form.forEach(el => {
-          console.log(item);
           el.content = item.locales.[el.name].meta_content;
         });
+
       } else {
         this.edit = false;
-        this.select_form.select = null;
+
         this.meta_form.forEach(el => {
           el.content = null;
         });
+         this.select_form.select = null;
+         this.$v.$reset()
         this.$emit("delete-meta", item.id);
       }
     }
   },
   watch: {
     list: function(val) {
+       this.$v.$reset()
       this.enable = false;
-      this.select_form.select = null;
       this.meta_form.forEach(el => {
         el.content = null;
       });
       // this.$v.select_form.$reset()
       this.$refs.vuetable.setData(val);
+
       this.$v.$reset()
+    },
+    meta_success_create: function(val) {
+       this.select_form.select = null;
+        this.$v.$reset()
     },
     meta_type_list: function(val) {
       val.forEach(option => {

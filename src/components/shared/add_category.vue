@@ -183,7 +183,6 @@ export default {
       }
     },
     fileAdded(file) {
-      console.log(file);
       this.file = file;
     },
     fileRemoved(file) {
@@ -244,7 +243,6 @@ export default {
     },
 
     _blockCategoryTypes(newInfo, oldOne) {
-      console.log(newInfo);
       newInfo.forEach(el => {
         this.typeOptions.push(el);
       });

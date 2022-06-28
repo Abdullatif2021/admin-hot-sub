@@ -228,7 +228,6 @@ const actions = {
         }
       })
       .catch(error => {
-        console.log("hi from catch", error);
         commit("getBlockError", error);
       });
   },
@@ -244,16 +243,16 @@ const actions = {
         }
       })
       .catch(error => {
-        console.log("hi from catch", error);
         commit("getBlockError", error);
       });
   },
   createBlock({ commit, dispatch }, payload) {
-    console.log(payload);
     const formData = new FormData();
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);
-      formData.append(`${el._name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
+      }
     });
     Object.entries(payload.data).forEach(entry => {
       const [key, value] = entry;
@@ -277,7 +276,6 @@ const actions = {
     });
   },
   updateBlockData({ commit, dispatch }, payload) {
-    console.log(payload.data.post_date);
     const id = payload.id;
 
     const formData = new FormData();
@@ -289,7 +287,9 @@ const actions = {
     });
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);
-      formData.append(`${el._name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
+      }
     });
     if (payload.file !== null) {
       formData.append("file", payload.file);
@@ -331,7 +331,9 @@ const actions = {
     }
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     axios.post(`${apiUrl}/blocks/images/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
@@ -374,7 +376,9 @@ const actions = {
     }
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     axios.post(`${apiUrl}/blocks/files/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
@@ -480,7 +484,9 @@ const actions = {
     }
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     axios
       .post(`${apiUrl}/blocks/videos/${id}`, formData, {})
@@ -499,7 +505,6 @@ const actions = {
     const attachment_id = payload.file_id;
     axios.delete(`${apiUrl}/blocks/videos/${id}/${attachment_id}`).then(res => {
       if (res.status === 200) {
-        console.log();
         dispatch("getBlockVideosList", { id });
       }
     });
@@ -527,7 +532,9 @@ const actions = {
     formData.append("path", payload.path);
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     axios
       .post(`${apiUrl}/blocks/youtube-videos/${id}`, formData, {})
@@ -538,18 +545,18 @@ const actions = {
         }
       })
       .catch(err => {
-        console.log("this is catch");
         commit("wrongYoutubeurl", err);
       });
   },
   updateBlockYoutubeVideo({ commit, dispatch }, payload) {
     const id = payload.id;
     const attachment_id = payload.attachment_id;
-    console.log("edsessef payloadddddddddddd", payload.info);
     const formData = new FormData();
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     formData.append("_method", "PUT");
     formData.append("path", payload.path);
@@ -573,7 +580,6 @@ const actions = {
       .delete(`${apiUrl}/blocks/youtube-videos/${id}/${attachment_id}`)
       .then(res => {
         if (res.status === 200) {
-          console.log();
           dispatch("getBlockYoutubeVideoList", { id });
         }
       });
@@ -596,7 +602,6 @@ const actions = {
         return res;
       })
       .then(res => {
-        console.log("hi from categories", res);
         commit("get_BlockCategories", res.data);
       });
   },
@@ -609,7 +614,6 @@ const actions = {
         return res;
       })
       .then(res => {
-        console.log("hi from categories", res);
         commit("get_Block_Categories", res.data);
       });
   },
@@ -631,7 +635,9 @@ const actions = {
     const formData = new FormData();
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);
-      formData.append(`${el._name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
+      }
     });
     formData.append(`type`, payload.type);
     if (payload.image !== null) {

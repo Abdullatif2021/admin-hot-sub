@@ -62,18 +62,14 @@ export default {
   methods: {
     ...mapActions(["getSettings", "updateSettings"]),
     process(id, key, value) {
-      console.log("sdfsdfsdfsdfsdf");
-      console.log(id, key, value);
       this.items.push({
         id: id,
         key: key,
         value: value
       });
-      console.log(this.items);
     },
     save() {
       this.items.forEach(item => {
-        console.log(item);
         this.updateSettings(item);
       });
     }
@@ -86,7 +82,6 @@ export default {
   },
   watch: {
     updatedSuccessfuly() {
-      console.log("updatedSuccessfuly");
       this.$notify(
         "success",
         "Operation completed successfully",
@@ -95,8 +90,6 @@ export default {
       );
     }
   },
-  destroyed() {
-    console.log("destroyed");
-  }
+  destroyed() {}
 };
 </script>

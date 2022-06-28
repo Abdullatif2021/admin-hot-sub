@@ -129,6 +129,7 @@
                   :list="_metaList"
                   :meta_type_list="_pageMetaTypeList"
                   :isLoad="is_LoadMeta"
+                  :meta_success_create="_updateMetaPage"
                   @create-meta="createMeta"
                   @update-meta="updateMeta"
                   @delete-meta="deleteMeta"
@@ -270,7 +271,6 @@ export default {
       });
     },
     save() {
-      console.log(this.pageData);
       this.$v.$touch();
       this.$v.details_form.$touch();
       if (!this.$v.details_form.$invalid) {

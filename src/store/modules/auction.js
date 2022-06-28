@@ -124,7 +124,6 @@ const actions = {
       })
       .then(res => {
         if (res.status === 200) {
-          console.log(res);
           commit("getAuctionsSuccess", res.data);
         } else {
           commit("getAuctionsError", "error:getAuctions");
@@ -149,7 +148,9 @@ const actions = {
     const formData = new FormData();
     payload.langs.forEach(el => {
       formData.append(`${el._name}[title]`, el.title);
-      formData.append(`${el._name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
+      }
     });
     Object.entries(payload.info).forEach(entry => {
       const [key, value] = entry;
@@ -173,11 +174,9 @@ const actions = {
         if (res.status === 201) {
           commit("createAuctionSuccessfuly", res);
         } else {
-          console.log("i am here from 422");
         }
       })
       .catch(error => {
-        console.log("errrrrrrrrrrrrrrrrr");
         commit("dateError");
       });
   },
@@ -186,7 +185,9 @@ const actions = {
     const formData = new FormData();
     payload.langs.forEach(el => {
       formData.append(`${el._name}[title]`, el.title);
-      formData.append(`${el._name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
+      }
     });
     Object.entries(payload.info).forEach(entry => {
       const [key, value] = entry;
@@ -222,7 +223,6 @@ const actions = {
   getAuctionSide({ commit, dispatch }, payload) {
     axios.get(`${apiUrl}/auctions/sides`).then(res => {
       if (res.status === 200) {
-        console.log(res);
         commit("getAuctionSide", res.data.data);
       }
     });
@@ -240,12 +240,9 @@ const actions = {
           commit("getCities", res.data.data);
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   },
   getAreas({ commit, dispatch }, payload) {
-    console.log(payload.city_id);
     const city_id = payload.city_id;
     axios
       .get(`${apiUrl}/areas`, {
@@ -258,9 +255,7 @@ const actions = {
           commit("getAreas", res.data.data);
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   },
   getAuctionFiles({ commit, dispatch }, payload) {
     commit("setProcessing", false);
@@ -274,11 +269,8 @@ const actions = {
       })
       .then(res => {
         commit("getAuctionFileList", res.data.data);
-        console.log(res.data.data);
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   },
   createAuctionFile({ commit, dispatch }, payload) {
     const id = payload.id;
@@ -286,7 +278,9 @@ const actions = {
     formData.append("path", payload.path);
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     axios
       .post(`${apiUrl}/auctions/files/${id}`, formData, {})
@@ -296,9 +290,7 @@ const actions = {
           dispatch("getAuctionFiles", { id });
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   },
   deleteAuctionFile({ commit, dispatch }, payload) {
     const id = payload.id;
@@ -311,9 +303,7 @@ const actions = {
           dispatch("getAuctionFiles", { id });
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   },
   // &&&&&&&&&&&&&&&&&& IMAGES &&&&&&&&&&&&&
   getAuctionImages({ commit, dispatch }, payload) {
@@ -327,11 +317,8 @@ const actions = {
       })
       .then(res => {
         commit("getAuctionImageList", res.data.data);
-        console.log(res.data.data);
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   },
   createAuctionImage({ commit, dispatch }, payload) {
     const id = payload.id;
@@ -339,7 +326,9 @@ const actions = {
     formData.append("path", payload.path);
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     axios
       .post(`${apiUrl}/auctions/images/${id}`, formData, {})
@@ -349,9 +338,7 @@ const actions = {
           dispatch("getAuctionImages", { id });
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   },
   deleteAuctionImage({ commit, dispatch }, payload) {
     const id = payload.id;
@@ -364,9 +351,7 @@ const actions = {
           dispatch("getAuctionImages", { id });
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   }
 };
 

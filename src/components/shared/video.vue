@@ -104,7 +104,6 @@ export default {
       this.$emit("create-video", val);
     },
     videos_Action(value, item) {
-      console.log(item);
       if (value == 1) {
         window.open(item.path);
       } else {
@@ -115,7 +114,6 @@ export default {
   watch: {
     video_list: function(val) {
       this.$refs.vuetable.setData(val);
-      this.$v.$reset();
     }
   }
 };

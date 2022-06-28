@@ -101,7 +101,7 @@ const mutations = {
     state.isLoadMeta = false;
   },
   updateMetaPageSuccess(state, payload) {
-    state.updateMetaPage = true;
+    state.updateMetaPage = !state.updateMetaPage;
   },
   getMetaTypeList(state, payload) {
     state.metaTypeList = payload.data;
@@ -203,7 +203,9 @@ const actions = {
     });
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);
-      formData.append(`${el._name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
+      }
     });
     if (payload.file !== null) {
       formData.append("image", payload.file);
@@ -246,10 +248,11 @@ const actions = {
     if (payload.image) {
       formData.append("path", payload.image);
     }
-    console.log(" payload.info", payload.info);
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
 
     axios.post(`${apiUrl}/pages/images/${id}`, formData, {}).then(res => {
@@ -293,7 +296,9 @@ const actions = {
     }
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     axios.post(`${apiUrl}/pages/files/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
@@ -330,7 +335,6 @@ const actions = {
 
   createMetaPage({ commit, dispatch }, payload) {
     commit("getmetaStarted");
-    console.log("getmetaStarted", payload.info);
     const id = payload.pageId;
     const formData = new FormData();
     payload.info.forEach(el => {
@@ -371,7 +375,7 @@ const actions = {
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           dispatch("getMetaList", { id });
-          commit("updateMetaPageSuccess");
+          commit("updateMetaPageSuccess", res);
         }
       });
   },
@@ -420,7 +424,9 @@ const actions = {
     }
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     axios.post(`${apiUrl}/pages/videos/${id}`, formData, {}).then(res => {
       if (res.status === 201) {
@@ -434,7 +440,6 @@ const actions = {
     const attachment_id = payload.file_id;
     axios.delete(`${apiUrl}/pages/videos/${id}/${attachment_id}`).then(res => {
       if (res.status === 200) {
-        console.log();
         dispatch("getPageVideosList", { id });
       }
     });
@@ -463,7 +468,9 @@ const actions = {
     formData.append("path", payload.path);
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     axios
       .post(`${apiUrl}/pages/youtube-videos/${id}`, formData, {})
@@ -474,7 +481,6 @@ const actions = {
         }
       })
       .catch(err => {
-        console.log("this is catch");
         commit("wrongYoutubeurl", err);
       });
   },
@@ -485,7 +491,9 @@ const actions = {
     formData.append("path", payload.path);
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
-      formData.append(`${el.name}[description]`, el.description);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
     });
     formData.append("_method", "PUT");
 
@@ -502,7 +510,6 @@ const actions = {
         }
       })
       .catch(err => {
-        console.log("this is catch");
         commit("wrongYoutubeurl", err);
       });
   },
@@ -513,7 +520,6 @@ const actions = {
       .delete(`${apiUrl}/pages/youtube-videos/${id}/${attachment_id}`)
       .then(res => {
         if (res.status === 200) {
-          console.log();
           dispatch("getPageYoutubeVideoList", { id });
         }
       });

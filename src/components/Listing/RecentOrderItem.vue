@@ -8,10 +8,10 @@
       />
     </div>
     <div class="pl-3 pt-2 pr-2 pb-2" style="width: 100%;">
-      <p class="list-item-heading">{{ order.locales.en.title }}</p>
+      <p class="list-item-heading">{{ title }}</p>
       <div class="pr-4">
         <p class="text-muted mb-1 text-small">
-          {{ order.locales.en.description }}
+          {{ desc }}
         </p>
       </div>
       <div class="text-primary text-small font-weight-medium d-none d-sm-block">
@@ -29,21 +29,29 @@
 </template>
 
 <script>
-import { getDirection } from "../../utils";
+import { getDirection, getCurrentLanguage  } from "../../utils";
+
 export default {
   props: ["order"],
   data() {
     return {
-      BtnStyle: null
+      BtnStyle: null,
+      language: null,
+      title: null,
+      desc:null
     };
   },
   created() {
+    this.language = getCurrentLanguage();
     const direction = getDirection();
     if (direction.isRtl) {
       this.BtnStyle = `float: left;margin-top: -29px;`;
     } else {
       this.BtnStyle = `float: right;margin-top: -29px;`;
     }
+  this.title = this.order.locales.[this.language].title;
+  this.desc = this.order.locales.[this.language].description;
+
   },
   methods: {
     delete_img(id) {

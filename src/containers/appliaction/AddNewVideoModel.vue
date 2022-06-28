@@ -143,7 +143,6 @@ export default {
           description: "",
           name: el.name
         });
-        console.log(this.video_form);
       });
     },
     hideModal(refname) {
@@ -222,7 +221,6 @@ export default {
       this.enable = false;
     },
     _errorAddBlockVideo: function(val) {
-      console.log(val);
       this.$notify(
         "error",
         "Operation uncompleted",

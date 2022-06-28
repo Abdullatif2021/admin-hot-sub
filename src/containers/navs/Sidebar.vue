@@ -152,7 +152,6 @@ export default {
     window.addEventListener("resize", this.handleWindowResize);
     document.addEventListener("click", this.handleDocumentClick);
     this.handleWindowResize();
-    console.info("windowwwwwwwwwwwwww");
     this.getBlock_Categories({
       dir: null,
       search: null,
@@ -164,7 +163,6 @@ export default {
   beforeDestroy() {
     document.removeEventListener("click", this.handleDocumentClick);
     window.removeEventListener("resize", this.handleWindowResize);
-    console.log("beforeDestroy");
   },
 
   methods: {
