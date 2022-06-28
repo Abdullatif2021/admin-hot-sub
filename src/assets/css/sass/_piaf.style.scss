@@ -47,7 +47,8 @@ Table of Contents
 
 /* 00.Variables and Imports */
 @import url('https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700');
-
+@import url('https://fonts.googleapis.com/css?family=Cairo:300,400,400i,600,700');
+@import url('https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300&family=Roboto:wght@100&family=Urbanist:wght@100&display=swap');
 $main-menu-item-height: 110px;
 $main-menu-width: 120px;
 $main-menu-width-lg: 110px;
@@ -131,7 +132,7 @@ html {
 }
 
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Cairo', sans-serif;
   font-size: 0.8rem;
   font-weight: 400;
   color: $primary-color;
@@ -452,7 +453,7 @@ a {
 p {
   font-size: 0.85rem;
   line-height: 1.3rem;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Cairo', sans-serif;
 }
 
 .text-large {
@@ -4069,7 +4070,7 @@ select.form-control[multiple] {
   font-size: 0.8rem;
   width: 100% !important;
   outline: initial;
-  font-family: 'Nunito', sans-serif !important;
+  font-family: 'Cairo', sans-serif !important;
   box-shadow: initial !important;
   border-width: 0 0 0 0 !important;
   border-color: $separator-color !important;
