@@ -34,7 +34,7 @@ const state = {
   create_block_category_meta_success: null,
   errorAddBlockVideo: null,
   wrongYoutubeurl: null,
-  blockCategoryId: false
+  blockCategoryId: null
 };
 
 const getters = {
@@ -203,7 +203,7 @@ const mutations = {
     state.Block_Categories = data.data;
   },
   blockCategoryId(state, payload) {
-    state.blockCategoryId = !state.blockCategoryId;
+    state.blockCategoryId = payload;
   }
 };
 
