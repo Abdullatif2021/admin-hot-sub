@@ -35,9 +35,7 @@
                       ref="myTextEditor"
                       v-model="lang.description.$model"
                       :options="editorOption"
-                      @blur="onEditorBlur($event)"
-                      @focus="onEditorFocus($event)"
-                      @ready="onEditorReady($event)"
+                      @change="onEditorChange($event, lang)"
                     >
                     </quill-editor>
                     <span>{{ $t(`forms.${lang._name.$model}_desc`) }}</span>
@@ -278,8 +276,12 @@ export default {
     },
     onEditorFocus(editor) {},
     onEditorReady(editor) {},
-    onEditorChange({ editor, html, text }) {
-      this.contentBubble = html;
+    onEditorChange({ quill, html, text }, lang) {
+      this.block_form.forEach(el => {
+        if (lang._name.$model === el._name) {
+          el.description = text;
+        }
+      });
     }
   },
   computed: {

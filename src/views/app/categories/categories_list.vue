@@ -59,7 +59,7 @@
                 class="icon-button"
                 @click="modify(props.rowData.id)"
               >
-                <i class="simple-icon-settings"></i>
+                <i class="simple-icon-pencil"></i>
               </b-button>
               <b-button
                 variant="outline-theme-6"

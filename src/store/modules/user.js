@@ -130,7 +130,7 @@ export default {
       state.get_Countries = payload;
     },
     successActivateUser(state, payload) {
-      state.successActivateUser = payload;
+      state.successActivateUser = payload.data.data;
     },
     clearError(state) {
       state.loginError = null;

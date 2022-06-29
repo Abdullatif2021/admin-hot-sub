@@ -75,6 +75,7 @@
                 size="lg"
                 :disabled="processing"
                 :class="{
+                  'show-spinner': processing,
                   'btn-multiple-state btn-shadow': true,
                   'show-success': !processing && loginError === false,
                   'show-fail': !processing && loginError

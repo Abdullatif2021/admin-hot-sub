@@ -47,7 +47,7 @@
                   modify(props.rowData.id, props.rowData.block_category_id.slug)
                 "
               >
-                <i class="simple-icon-settings"></i>
+                <i class="simple-icon-pencil"></i>
               </b-button>
               <b-button
                 variant="outline-theme-6"
@@ -239,7 +239,7 @@ export default {
     add_New() {
       this.$router.push({
         path: `${adminRoot}/blocks/add-block`,
-         query: { id: this.type }
+        query: { id: this.type }
       });
       this.setCategoryId({ id: this.type });
     },

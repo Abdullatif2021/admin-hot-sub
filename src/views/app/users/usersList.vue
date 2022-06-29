@@ -41,22 +41,48 @@
           >
             <template slot="actions" slot-scope="props">
               <b-button
+                id="activate"
                 :variant="
                   props.rowData.active === 1
-                    ? 'outline-theme-7'
-                    : 'outline-theme-6'
+                    ? 'outline-theme-6'
+                    : 'outline-theme-7'
                 "
                 class="icon-button"
-                @click="active_user(props.rowData.id, props.rowData.active)"
+                @click="
+                  open_model(
+                    props.rowData.id,
+                    props.rowData.active,
+                    'activeModal'
+                  )
+                "
               >
-                <i class="iconsminds-radioactive"></i>
+                <i
+                  :class="
+                    props.rowData.active === 1
+                      ? 'iconsminds-close'
+                      : 'iconsminds-yes'
+                  "
+                ></i>
+                <b-tooltip
+                  target="activate"
+                  placement="left"
+                  :title="$t('forms.active_tooltip')"
+                >
+                </b-tooltip>
               </b-button>
+
               <b-button
                 variant="outline-theme-3"
                 class="icon-button"
-                @click="modify(props.rowData.id)"
+                id="details"
+                @click="modify(props.rowData.id, props.rowData.first_name)"
               >
-                <i class="simple-icon-settings"></i>
+                <i class="simple-icon-pencil"></i>
+                <b-tooltip
+                  target="details"
+                  placement="bottom"
+                  :title="$t('forms.show_details')"
+                ></b-tooltip>
               </b-button>
             </template>
           </vuetable>
@@ -86,6 +112,23 @@
         <span>Delete</span>
       </v-contextmenu-item>
     </v-contextmenu>
+    <b-modal
+      id="activeModal"
+      ref="activeModal"
+      :title="$t('modal.modal-active-title')"
+    >
+      {{
+        active === 1 ? $t("forms.activeQuestion") : $t("forms.inactiveQuestion")
+      }}
+      <template slot="modal-footer">
+        <b-button variant="primary" @click="active_user()" class="mr-1">
+          {{ $t("button.yes") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('activeModal')">{{
+          $t("button.no")
+        }}</b-button>
+      </template>
+    </b-modal>
   </div>
 </template>
 <script>
@@ -109,6 +152,8 @@ export default {
       order_by: null,
       type: null,
       reload: true,
+      activate: null,
+      active: null,
       search: null,
       actions: null,
       isLoad: false,
@@ -277,16 +322,20 @@ export default {
         page: null
       });
     },
-    modify(id) {
+    modify(id, firstName) {
       this.$router.push({
         path: `${adminRoot}/${this._type}/user`,
-        query: { id: id }
+        query: { id: id, fN: firstName }
       });
     },
     add_New() {
       this.$router.push({
         path: `${adminRoot}/${this._type}/user`
       });
+    },
+
+    hideModal(refname) {
+      this.$refs[refname].hide();
     },
     rowClicked(dataItem, event) {
       const itemId = dataItem.id;
@@ -370,10 +419,14 @@ export default {
         });
       }
     },
-    active_user(id, active) {
-      this.activateUser({ id: id, active: active === 1 ? 0 : 1 });
+    open_model(id, active, refname) {
+      this.$refs[refname].show();
+      this.userId = id;
+      this.active = active;
     },
-
+    active_user() {
+      this.activateUser({ id: this.userId, active: this.active === 1 ? 0 : 1 });
+    },
     changePageSize(perPage) {
       this.limit = perPage;
       this.getUsersList({
@@ -472,6 +525,14 @@ export default {
       }
     },
     _successActivateUser(newVal, old) {
+      this.$refs["activeModal"].hide();
+      this.activate = newVal.active === 1 ? "activated" : "deactivated";
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        `The account has been successfully ${this.activate}`,
+        { duration: 3000, permanent: false }
+      );
       this.getUsersList({
         role: this.sort.column,
         dir: this.dir,

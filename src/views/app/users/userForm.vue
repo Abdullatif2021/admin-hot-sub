@@ -17,7 +17,7 @@
       :type_sort="type_sort"
       :transaction_filter="showFilter"
       @add_new="add_New_attach"
-      :title="userId ? $t('forms.grid') : $t('forms.createUser')"
+      :title="userId ? $t('forms.grid') + userName : $t('forms.createUser')"
     ></datatable-heading>
 
     <b-row v-if="!isUserForm">
@@ -569,7 +569,7 @@
                           toggle-class="language-button"
                         >
                           <template #button-content>
-                            <i class="simple-icon-settings"></i>
+                            <i class="simple-icon-pencil"></i>
                           </template>
                           <b-dropdown-item
                             @click="open_attach(props.rowData)"
@@ -909,6 +909,7 @@ export default {
   created() {
     this.type = this.$route.fullPath.split("/")[2];
     this.userId = this.$route.query.id;
+    this.userName = this.$route.query.fN;
     this.getCountries();
     this.getNationalities();
     if (this.type === "users" && !this.userId) {
@@ -1018,6 +1019,7 @@ export default {
     hide_filter() {
       this.showFilter = false;
     },
+
     open_attach(item) {
       this.update_attachment = true;
       window.open(item.path);

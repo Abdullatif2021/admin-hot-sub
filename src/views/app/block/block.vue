@@ -52,6 +52,7 @@
                         ref="myTextEditor"
                         v-model="lang.description.$model"
                         :options="editorOption"
+                        @change="onEditorChange($event, lang)"
                       >
                       </quill-editor>
                       <span>{{ $t(`forms.${lang._name.$model}_desc`) }}</span>
@@ -366,6 +367,13 @@ export default {
     imageRemoved(file) {
       this.image = null;
     },
+    onEditorChange({ quill, html, text }, lang) {
+        this.details_form.forEach(el => {
+          if (lang._name.$model === el._name) {
+            el.description = text
+          }
+      });
+      },
     fileAdded(file) {
       this.file = file;
     },
