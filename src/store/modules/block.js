@@ -749,12 +749,8 @@ const actions = {
         dispatch("getBlockCategoryMetadata", { id });
       });
   },
-  // blockCategoryId: async ({ commit, dispatch }, payload) => {
-  //   console.log("payload is here", payload);
-  //   commit("blockCategoryId", payload);
-  // },
+
   setCategoryId({ commit, dispatch }, payload) {
-    console.log("payload is here", payload);
     commit("blockCategoryId", payload);
   }
 };

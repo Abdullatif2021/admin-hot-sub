@@ -11,7 +11,6 @@
 
 <script>
 import { adminRoot } from "../../constants/config";
-import { addCategoryTitle } from "../../utils";
 import { mapGetters } from "vuex";
 
 export default {
@@ -23,9 +22,7 @@ export default {
       id: null
     };
   },
-  created() {
-    // this.id = addCategoryTitle();
-  },
+
   methods: {
     getUrl(path, sub, index) {
       if (sub === "blocks") {
@@ -39,11 +36,7 @@ export default {
           "/" +
           this._blockCategoryId.id
         );
-      }
-      //  else if (this.$route.path === "/app/blocks/block") {
-      //   return "/" + path.split(sub)[0] + this.words;
-      // }
-      else {
+      } else {
         return "/" + path.split(sub)[0] + sub;
       }
     }
@@ -66,26 +59,16 @@ export default {
         to: this.getUrl(path, sub, index)
       });
     });
-    this.items.map(e => {
-      e.text === "blocks"
-        ? (e.text = "blocks")
-        : console.log("here from no map");
-    });
-    console.log(this.items);
   },
-  beforeDestroy() {
-    console.log("beforeDestroy");
-  },
+
   computed: {
     ...mapGetters(["_blockCategoryId"])
   },
   watch: {
     _blockCategoryId(newInfo, oldOne) {
-      console.log("erferferferferferferferf");
       this.id = newInfo.id;
     },
     $route(to, from) {
-      console.log("erferferf", to, from);
       this.$destroy();
     }
   }
