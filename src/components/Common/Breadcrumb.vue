@@ -81,11 +81,12 @@ export default {
   },
   watch: {
     _blockCategoryId(newInfo, oldOne) {
+      console.log("erferferferferferferferf");
       this.id = newInfo.id;
     },
     $route(to, from) {
-      console.log(to, from);
-      this.$destroy()
+      console.log("erferferf", to, from);
+      this.$destroy();
     }
   }
 };

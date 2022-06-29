@@ -238,7 +238,8 @@ export default {
     },
     add_New() {
       this.$router.push({
-        path: `${adminRoot}/blocks/add-block`
+        path: `${adminRoot}/blocks/add-block`,
+         query: { id: this.type }
       });
       this.setCategoryId({ id: this.type });
     },
