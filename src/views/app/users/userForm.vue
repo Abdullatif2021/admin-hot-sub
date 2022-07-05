@@ -5,6 +5,7 @@
       :show="false"
       :add_new="false"
       :add_new_button="add_Attachment"
+      :add_new_title="$t('todo.add-new-attach')"
       :pageSize="false"
       :changeOrderBy="changeOrderBy"
       :attachment="add_Attachment"

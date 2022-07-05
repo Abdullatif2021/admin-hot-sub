@@ -51,11 +51,6 @@
                   >
                     <template slot="actions" slot-scope="props">
                       <b-button
-                        v-if="
-                          props.rowData.payment_method ===
-                            'PAYMENT_BANK_TRANSFER' &&
-                            props.rowData.payment_status !== 'ACCEPTED'
-                        "
                         v-b-modal.bank_notice
                         variant="outline-theme-3"
                         class="icon-button"
@@ -282,6 +277,12 @@ export default {
           name: "id",
           title: "ID",
           dataClass: "list-item-heading",
+          width: "10%"
+        },
+        {
+          name: "reference_id",
+          title: "ٌReference",
+          dataClass: "list-item-heading",
           width: "20%"
         },
         {
@@ -295,7 +296,7 @@ export default {
           title: "Type",
           titleClass: "",
           dataClass: "text-muted",
-          width: "20%"
+          width: "10%"
         },
         {
           name: "payment_status",
@@ -340,7 +341,7 @@ export default {
           title: "",
           titleClass: "center aligned text-right",
           dataClass: "center aligned text-right",
-          width: "20%"
+          width: "10%"
         }
       ],
       deposit_fields: [

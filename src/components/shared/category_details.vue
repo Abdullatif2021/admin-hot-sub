@@ -5,7 +5,10 @@
         <b-tab
           :title="$t(`forms.basic_details`)"
           active
-          title-item-class="w-50 text-center"
+          :title-item-class="
+            showCustomTab ? 'w-30 text-center' : 'w-50 text-center'
+          "
+          @click="$emit('showAddCustomField', false)"
         >
           <template v-if="!is_Load">
             <b-form @submit.prevent="onGridFormSubmit">
@@ -58,7 +61,7 @@
                   </b-form-group>
                 </b-colxx>
               </div>
-              <b-colxx v-if="is_block_category" sm="12">
+              <!-- <b-colxx v-if="is_block_category" sm="12">
                 <b-form-group
                   class="has-float-label mb-4"
                   :label="$t('forms.type')"
@@ -76,7 +79,7 @@
                     }}</b-form-invalid-feedback
                   >
                 </b-form-group>
-              </b-colxx>
+              </b-colxx> -->
               <b-colxx xxs="12">
                 <b-form-group
                   class="has-float-label mb-4"
@@ -106,13 +109,133 @@
           </template>
         </b-tab>
         <b-tab
+          :title="$t(`forms.custom_field`)"
+          title-item-class="w-30 text-center"
+          v-if="showCustomTab"
+          @click="$emit('showAddCustomField', true)"
+        >
+          <template v-if="_isLoadCustomField">
+            <b-colxx xs="12" md="12" class="mb-3">
+              <b-card>
+                <vuetable
+                  ref="vuetable"
+                  :api-mode="false"
+                  :reactive-api-url="true"
+                  :fields="fields"
+                >
+                  <template slot="actions" slot-scope="props">
+                    <b-button
+                      variant="outline-theme-3"
+                      class="icon-button"
+                      @click="modify(props.rowData.id)"
+                    >
+                      <i class="simple-icon-pencil"></i>
+                    </b-button>
+                    <b-button
+                      variant="outline-theme-6"
+                      class="icon-button"
+                      @click="open_model('deleteModal', props.rowData.id)"
+                    >
+                      <i class="simple-icon-trash"></i>
+                    </b-button>
+                  </template>
+                </vuetable>
+              </b-card>
+            </b-colxx>
+            <!-- <b-colxx xs="12" md="6" class="mb-3">
+        <b-card class="mb-4" :title="$t('forms.create')">
+          <b-form
+            @submit.prevent="onValitadeFormSubmit()"
+            class="av-tooltip tooltip-label-right"
+          >
+            <div v-for="(lang, index) in $v.info_form.$each.$iter" :key="index">
+              <b-form-group
+                :label="$t(`pages.${lang.name.$model}_title`)"
+                class="has-float-label mb-4"
+              >
+                <b-form-input
+                  type="text"
+                  v-model="lang.title.$model"
+                  :state="!lang.title.$error"
+                />
+                <b-form-invalid-feedback v-if="!lang.title.required">{{
+                  $t("forms.title_filed")
+                }}</b-form-invalid-feedback>
+              </b-form-group>
+              <b-form-group
+                :label="$t(`pages.${lang.name.$model}_desc`)"
+                class="has-float-label mb-4"
+              >
+                <b-form-input
+                  type="text"
+                  v-model="lang.description.$model"
+                  :state="!lang.description.$error"
+                />
+                <b-form-invalid-feedback v-if="!lang.description.required">
+                  {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
+                >
+              </b-form-group>
+            </div>
+            <label class="form-group has-float-label">
+              <b-colxx xxs="12" style="padding: 0px;">
+                <b-form-group>
+                  <b-form-input
+                    style="display: none;"
+                    :state="!$v.file_form.file.$error"
+                    v-model="$v.file_form.file.$model"
+                  />
+
+                  <vue-dropzone
+                    ref="myVueDropzone"
+                    id="dropzone"
+                    :options="dropzoneOptions"
+                    @vdropzone-files-added="fileAdded"
+                    @vdropzone-removed-file="fileRemoved"
+                  ></vue-dropzone>
+                  <b-form-invalid-feedback v-if="!$v.file_form.file.required">{{
+                    $t("forms.choose-file-message")
+                  }}</b-form-invalid-feedback>
+                </b-form-group>
+              </b-colxx>
+              <span>{{ $t("block.file") }}</span>
+            </label>
+
+            <b-button
+              :disabled="enable"
+              type="submit"
+              variant="primary"
+              class="mt-4"
+              >{{ $t("forms.submit") }}</b-button
+            >
+          </b-form>
+        </b-card>
+      </b-colxx> -->
+          </template>
+          <template v-else>
+            <div class="loading"></div>
+          </template>
+          <add-new-custom-field
+            @create-custom-field="create_custom_field"
+            :showCreateModal="showCreateModal"
+          />
+        </b-tab>
+        <b-tab
           :title="$t(`forms.meta_data`)"
-          title-item-class="w-50 text-center"
+          :title-item-class="
+            showCustomTab ? 'w-30 text-center' : 'w-50 text-center'
+          "
+          @click="$emit('showAddCustomField', false)"
         >
           <meta_data :id="_id" :type="_type" />
         </b-tab>
       </b-tabs>
     </b-card>
+    <deleteModal
+      :hideModel="hideModel"
+      :message="$t('forms.deleteCustomFieldQuestion')"
+      :modalName="modalName"
+      @delete_event="delete_customField()"
+    />
   </b-colxx>
 </template>
 <script>
@@ -124,22 +247,33 @@ import router from "../../router";
 import { adminRoot } from "../../constants/config";
 import meta_data from "./meta_data.vue";
 const { required } = require("vuelidate/lib/validators");
+import Vuetable from "vuetable-2/src/components/Vuetable";
+import addCustomField from "./addCustomField.vue";
+import deleteModal from "./deleteModal.vue"
+
 
 export default {
-  props: ["_id", "_type"],
+  props: ["_id", "_type", "showCreateModal"],
   components: {
     "vue-dropzone": VueDropzone,
+        'deleteModal': deleteModal,
     "datatable-heading": DatatableHeading,
-    meta_data: meta_data
+        "add-new-custom-field": addCustomField,
+    meta_data: meta_data,
+    vuetable: Vuetable
   },
   data() {
     return {
       categoryId: null,
       _role: null,
       is_Load: true,
+      customFieldId: null,
       type: null,
       enable: false,
       edit: true,
+      hideModel: false,
+      modalName: null,
+      showCustomTab: false,
       password: null,
       is_block_category: false,
       image: null,
@@ -167,7 +301,46 @@ export default {
         previewTemplate: this.dropzoneTemplate(),
         headers: {},
         acceptedFiles: "image/jpeg,image/png,image/gif"
-      }
+      },
+       fields: [
+        {
+          name: "icon",
+           callback: value => {
+            return `<img src="${value}" style="border-radius: 34%;" alt="Image" width="50" height="50">`;
+          },
+          title: "Icon",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "25%"
+        },
+        {
+          name: "locales",
+          callback: value => {
+            return value.ar.name;
+          },
+          title: "Arabic Title",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "25%"
+        },
+        {
+          name: "locales",
+          callback: value => {
+            return value.en.name;
+          },
+          title: "English Title",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "25%"
+        },
+        {
+          name: "__slot:actions",
+          title: "",
+          titleClass: "center aligned text-right",
+          dataClass: "center aligned text-right",
+          width: "25%"
+        }
+      ]
     };
   },
   mixins: [validationMixin],
@@ -191,9 +364,11 @@ export default {
         this.getBlockCategory({ id: this._id }),
         this.getBlockCategoryTypes())
       : this.getCategory({ id: this._id }),
+      this.getCustomFieldList({id: this._id}),
       (this.gridForm.select = "just for form submit");
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.category_form);
+
   },
   methods: {
     ...mapActions([
@@ -201,7 +376,9 @@ export default {
       "updateBlockCategory",
       "updateCategory",
       "getBlockCategoryTypes",
-
+      "getCustomFieldList",
+      "deleteCustomField",
+      "createCustomField",
       "getCategory"
     ]),
     make_collaction(langs, form) {
@@ -234,6 +411,16 @@ export default {
         }
       }
     },
+    open_model(refname, id) {
+      this.modalName = refname;
+      this.customFieldId = id;
+    },
+    delete_customField(){
+      this.deleteCustomField({custom_id: this.customFieldId,  categoryId: this._id})
+    },
+     create_custom_field(val,type){
+          this.createCustomField({info: val, type: type, categoryId: this._id })
+        },
     fileAdded(file) {
       this.file = file;
     },
@@ -267,15 +454,25 @@ export default {
     ...mapGetters([
       "_category",
       "_blockCategoryTypes",
-
+      "_customFields",
       "_successUpdateCategory",
+      "_successDeleteCustomField",
       "_blockCategory",
       "_successUpdateBlockCategory",
-      "_isLoadBlock"
+      "_isLoadBlock",
+       "_createCustomField",
+      "_isLoadCustomField"
     ])
   },
   watch: {
+      _createCustomField: function(val){
+        console.log('wferferferferferf');
+      this.showCreateModal = false;
+      this.getCustomFieldList({id: this._id})
+
+    },
     _category(newInfo, oldOne) {
+      this.showCustomTab = true;
       this.category_form.forEach(el => {
          el.name = newInfo.locales.[el._name].name;
           el.description = newInfo.locales.[el._name].description;
@@ -283,6 +480,20 @@ export default {
       });
       this.image = newInfo.image;
       this.is_Load = false;
+    },
+    _customFields(newList, old) {
+      this.$refs.vuetable.setData(newList);
+    },
+       _successDeleteCustomField(newVal, old) {
+            this.hideModel = !this.hideModel
+
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Custom Field have been deleted successfully",
+        { duration: 4000, permanent: false }
+      );
+
     },
     _successUpdateCategory(newInfo, oldOne) {
       this.$notify(
@@ -295,6 +506,7 @@ export default {
     },
     _blockCategory(newInfo, oldOne) {
       this.is_block_category = true;
+      this.showCustomTab = false;
       this.category_form.forEach(el => {
            el.name = newInfo.locales.[el._name].name;
           el.description = newInfo.locales.[el._name].description;
@@ -311,7 +523,7 @@ export default {
         "Block Category have been updated successfully",
         { duration: 3000, permanent: false }
       );
-      router.push(`${adminRoot}/blockCategories`);
+      // router.push(`${adminRoot}/blockCategories`);
     },
     _blockCategoryTypes(newInfo, oldOne) {
       newInfo.forEach(el => {

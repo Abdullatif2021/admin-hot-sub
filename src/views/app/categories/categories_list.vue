@@ -12,6 +12,7 @@
       :reload="true"
       :sort="sort"
       :add_new_button="true"
+      :add_new_title="$t('todo.add-new')"
       :to="to"
       :Filtered="false"
       :total="total"
@@ -43,7 +44,13 @@
                     : 'outline-theme-6'
                 "
                 class="icon-button"
-                @click="active(props.rowData.id, props.rowData.active)"
+                @click="
+                  open_active_model(
+                    'activeCategory',
+                    props.rowData.id,
+                    props.rowData.active
+                  )
+                "
               >
                 <i class="iconsminds-radioactive"></i>
                 <!-- <b-tooltip
@@ -64,7 +71,7 @@
               <b-button
                 variant="outline-theme-6"
                 class="icon-button"
-                @click="delete_category(props.rowData.id)"
+                @click="open_model('deleteModal', props.rowData.id)"
               >
                 <i class="simple-icon-trash"></i>
               </b-button>
@@ -96,6 +103,31 @@
         <span>Delete</span>
       </v-contextmenu-item>
     </v-contextmenu>
+    <b-modal
+      id="activeCategory"
+      ref="activeCategory"
+      :title="$t('modal.modal-active-category-title')"
+    >
+      {{
+        active === 1
+          ? $t("forms.activeCategoryQuestion")
+          : $t("forms.inactiveCategoryQuestion")
+      }}
+      <template slot="modal-footer">
+        <b-button variant="primary" @click="active_category()" class="mr-1">
+          {{ $t("button.yes") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('activeCategory')">{{
+          $t("button.no")
+        }}</b-button>
+      </template>
+    </b-modal>
+    <deleteModal
+      :hideModel="hideModel"
+      :message="$t('forms.deleteCategoryQuestion')"
+      :modalName="modalName"
+      @delete_event="delete_category()"
+    />
   </div>
 </template>
 <script>
@@ -106,9 +138,12 @@ import { mapGetters, mapActions } from "vuex";
 import router from "../../../router";
 import { getCurrentLanguage } from "../../../utils";
 import { adminRoot } from "../../../constants/config";
+import deleteModal from "../../../components/shared/deleteModal.vue"
+
 export default {
   components: {
     vuetable: Vuetable,
+    'deleteModal': deleteModal,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "datatable-heading": DatatableHeading
   },
@@ -117,6 +152,8 @@ export default {
       dir: null,
       order_by: null,
       search: null,
+      modalName: null,
+      hideModel: false,
       actions: null,
       isLoad: false,
       apiBase: "/cakes/fordatatable",
@@ -132,7 +169,8 @@ export default {
       language: null,
       total: 0,
       dataCount: 0,
-
+        id: null,
+        active: null,
       lastPage: 0,
       items: [],
       selectedItems: [],
@@ -216,8 +254,8 @@ export default {
       }
       return "";
     },
-    active(id, active) {
-      this.categoryActivate({ id: id, active: active === 1 ? 0 : 1 });
+    active_category() {
+      this.categoryActivate({ id: this.id, active: this.active === 1 ? 0 : 1 });
     },
     modify(id) {
       this.$router.push({
@@ -285,8 +323,8 @@ export default {
         }
       }
     },
-    delete_category(id) {
-      this.deleteCategory({ id: id });
+    delete_category() {
+      this.deleteCategory({ id: this.id });
     },
     onChangePage(page) {
       if (page == "next" || page == "prev") {
@@ -301,7 +339,23 @@ export default {
         });
       }
     },
+    open_active_model(refname, id, active) {
+      this.$refs[refname].show();
+      this.id = id;
+      this.active = active
+    },
+    open_model(refname, id, active) {
+      if (active) {
+        this.$refs[refname].show();
+        this.id = id;
+        this.active = active;
+      }else{
+        this.modalName = refname;
+        this.id = id;
+      }
 
+
+    },
     changePageSize(perPage) {
       this.limit = perPage;
       this.getCategories({
@@ -312,7 +366,9 @@ export default {
         page: this.page
       });
     },
-
+      hideModal(refname) {
+      this.$refs[refname].hide();
+    },
     searchChange(val) {
       this.search = val;
       this.getCategories({
@@ -385,6 +441,7 @@ export default {
       }
     },
     _successDeleteCategory(newVal, old) {
+      this.hideModel = !this.hideModel
 
       this.$notify(
         "success",
@@ -401,6 +458,8 @@ export default {
       });
     },
     _successActiveCategory(newVal, old) {
+             this.$refs["activeCategory"].hide();
+
       this.$notify(
         "success",
         "Operation completed successfully",

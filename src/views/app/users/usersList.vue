@@ -10,6 +10,7 @@
       :cancle="cancle"
       :transaction_filter="false"
       :add_new_button="true"
+      :add_new_title="$t('todo.add-new')"
       :changeOrderBy="changeOrderBy"
       :from="from"
       @add_new="add_New"

@@ -6,6 +6,7 @@
       :keymap="keymap"
       :transaction_filter="false"
       :add_new_button="true"
+      :add_new_title="$t('todo.add-new')"
       :changePageSize="changePageSize"
       :searchChange="searchChange"
       :from="from"
@@ -46,7 +47,7 @@
               <b-button
                 variant="outline-theme-6"
                 class="icon-button"
-                @click="delete_auction(props.rowData.id)"
+                @click="open_model('deleteModal', props.rowData.id)"
               >
                 <i class="simple-icon-trash"></i>
               </b-button>
@@ -78,10 +79,17 @@
         <span>Delete</span>
       </v-contextmenu-item>
     </v-contextmenu>
+    <deleteModal
+      :hideModel="hideModel"
+      :message="$t('forms.deleteAuctionQuestion')"
+      :modalName="modalName"
+      @delete_event="delete_auction()"
+    />
   </div>
 </template>
 <script>
 import Vuetable from "vuetable-2/src/components/Vuetable";
+import deleteModal from "../../../components/shared/deleteModal.vue"
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { mapGetters, mapActions } from "vuex";
@@ -91,6 +99,7 @@ import { adminRoot } from "../../../constants/config";
 export default {
   components: {
     vuetable: Vuetable,
+    'deleteModal': deleteModal,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "datatable-heading": DatatableHeading
   },
@@ -99,7 +108,9 @@ export default {
       dir: null,
       order_by: null,
       search: null,
-      actions: null,
+           modalName: null,
+      hideModel: false,
+      auctionId: null,
       isLoad: false,
       apiBase: "/cakes/fordatatable",
       sort: {
@@ -132,6 +143,10 @@ export default {
 
         {
           name: "start_date",
+          callback: value => {
+            return value ;
+          },
+
           sortField: "start_date",
           title: "Start Date",
           titleClass: "",
@@ -149,6 +164,22 @@ export default {
         {
           name: "opening_price",
           title: "Opening Price",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "15%"
+        },
+        {
+          name: "minimum_paid",
+          sortField: "minimum_paid",
+          title: "Minimum Paid",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "15%"
+        },
+          {
+          name: "minimum_paid",
+          sortField: "minimum_paid",
+          title: "number of bidding",
           titleClass: "",
           dataClass: "list-item-heading",
           width: "15%"
@@ -206,6 +237,10 @@ export default {
         } else this.selectedItems.push(itemId);
       }
     },
+      open_model(refname, id) {
+      this.modalName = refname;
+      this.auctionId = id;
+    },
     rightClicked(dataItem, field, event) {
       event.preventDefault();
       if (!this.selectedItems.includes(dataItem.id)) {
@@ -249,8 +284,8 @@ export default {
         }
       }
     },
-    delete_auction(id) {
-      this.deleteAuction({ Id: id });
+    delete_auction() {
+      this.deleteAuction({ Id: this.auctionId });
     },
     onChangePage(page) {
       if (page == "next" || page == "prev") {
@@ -321,7 +356,11 @@ export default {
       this.$router.push({
         path: `${adminRoot}/auctions/auction`
       });
-    }
+    },
+        toDateFormat(value){
+      console.log(value);
+     return value.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"});
+    },
   },
   computed: {
     ...mapGetters([
@@ -330,6 +369,10 @@ export default {
       "_successDeleteAuction",
       "_isLoadAuctions"
     ]),
+    // toDateFormat(value){
+    //   console.log(value);
+    //  return value.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"});
+    // },
     isSelectedAll() {
       return this.selectedItems.length >= this.items.length;
     },
@@ -346,6 +389,8 @@ export default {
       }
     },
     _successDeleteAuction(newVal, old) {
+            this.hideModel = !this.hideModel
+
       this.$notify(
         "success",
         "Operation completed successfully",

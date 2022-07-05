@@ -151,7 +151,17 @@ body {
     }
   }
 }
-
+.delete-span {
+  color: red;
+  float: right;
+  position: absolute;
+  cursor: pointer;
+  font-size: 28px;
+  margin: 7px 0px 0px -37px;
+  &:hover {
+    color: rgb(146, 146, 146);
+  }
+}
 .rtl * {
   text-align: right;
 }
@@ -1100,7 +1110,13 @@ button {
     border-color: $separator-color;
   }
 }
-
+.image-review-show {
+  border: 1px solid #eceaea;
+  height: 370px;
+}
+.image-review-hide {
+  display: none;
+}
 .btn-header-primary {
   color: $theme-color-1;
   border-color: transparent;
@@ -1349,6 +1365,9 @@ button {
       align-items: center;
       margin-right: 5px;
     }
+  }
+  .edit-category {
+    margin: 0px 12px;
   }
 
   .dropdown {

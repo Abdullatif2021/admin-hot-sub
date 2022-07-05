@@ -4,14 +4,21 @@
       <h1>{{ title }}</h1>
       <div v-if="add_new_button" class="top-right-button-container">
         <b-button
-          v-b-modal.modalright
           variant="primary"
           size="lg"
           class="top-right-button"
           @click="add_New()"
-          >{{
-            attachment ? $t("todo.add-new-attach") : $t("todo.add-new")
-          }}</b-button
+          >{{ add_new_title }}</b-button
+        >
+      </div>
+      <div v-if="categoryBtn" class="top-right-button-container">
+        <b-button
+          v-b-modal.modalright
+          variant="primary"
+          size="lg"
+          class="top-right-button edit-category"
+          @click="$emit('edit_category')"
+          >{{ $t("todo.edit-block-category") }} {{ title }}</b-button
         >
       </div>
       <piaf-breadcrumb />
@@ -131,6 +138,20 @@
 </template>
 <script>
 export default {
+  props: {
+    name: {
+      type: String,
+      default: "NONE"
+    },
+    name: {
+      type: String,
+      default: "NONE"
+    },
+    name: {
+      type: String,
+      default: "NONE"
+    }
+  },
   props: [
     "title",
     "selectAll",
@@ -141,9 +162,11 @@ export default {
     "searchChange",
     "cancle",
     "changeOrderBy",
+    "categoryBtn",
     "from",
     "add_new_button",
     "to",
+    "add_new_title",
     "sort",
     "state_sort",
     "method_sort",

@@ -67,22 +67,6 @@
                     <span>{{ $t("forms.type") }}</span>
                   </label>
                   <label class="form-group has-float-label">
-                    <input
-                      type="text"
-                      v-model="pageData.link1"
-                      class="form-control"
-                    />
-                    <span>{{ $t("forms.link1") }}</span>
-                  </label>
-                  <label class="form-group has-float-label">
-                    <input
-                      type="text"
-                      v-model="pageData.link2"
-                      class="form-control"
-                    />
-                    <span>{{ $t("forms.link2") }}</span>
-                  </label>
-                  <label class="form-group has-float-label">
                     <b-colxx xxs="12" style="padding: 0px;margin-top: 20px;">
                       <vue-dropzone
                         ref="myVueDropzone"
@@ -278,8 +262,6 @@ export default {
         this.updatePageData({
           id: this.pageData.id,
           data: {
-            link1: this.pageData.link1,
-            link2: this.pageData.link2,
             type: this.pageData.type
           },
           info: this.$v.details_form.$model,

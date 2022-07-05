@@ -17,14 +17,21 @@ const state = {
   Categorymetadata: null,
   successUpdateCategoryMeta: null,
   create_category_meta_success: null,
-  categoryMetaTypeList: null
+  categoryMetaTypeList: null,
+  customFields: null,
+  create_customField: null,
+  successDeleteCustom: null
 };
 
 const getters = {
   _isLoadCategories: state => state.processing,
+  _isLoadCustomField: state => state.processing,
   cateError: state => state.Error,
   cate_paginations: state => state.paginations,
+  _customFields: state => state.customFields,
   categories: state => state.categories,
+  _createCustomField: state => state.create_customField,
+  _successDeleteCustomField: state => state.successDeleteCustom,
   _category: state => state.category,
   _create_category_success: state => state.create_category_success,
   _updatedCategorySuccessfuly: state => state.updated_Successfuly,
@@ -50,6 +57,7 @@ const mutations = {
   getCategorySuccess(state, data) {
     state.category = data.data;
   },
+
   updatedCategorySuccessfuly(state, data) {
     state.updated_Successfuly = data;
   },
@@ -84,6 +92,15 @@ const mutations = {
   },
   getCategoryMetaTypeList(state, payload) {
     state.categoryMetaTypeList = payload.data;
+  },
+  getCustomFields(state, data) {
+    state.customFields = data.data;
+  },
+  createCustomField(state, payload) {
+    state.create_customField = payload;
+  },
+  deleteCustomField(state, payload) {
+    state.successDeleteCustom = payload;
   }
 };
 
@@ -114,9 +131,15 @@ const actions = {
   },
   getCategory({ commit, dispatch }, payload) {
     const id = payload.id;
-    axios.get(`${apiUrl}/categories/${id}`).then(res => {
-      commit("getCategorySuccess", res.data);
-    });
+    axios
+      .get(`${apiUrl}/categories/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getCategorySuccess", res.data);
+      });
   },
   createCategory({ commit, dispatch }, payload) {
     const formData = new FormData();
@@ -244,6 +267,57 @@ const actions = {
     axios.get(`${apiUrl}/metadata/meta-type`).then(res => {
       commit("getCategoryMetaTypeList", res.data);
     });
+  },
+
+  //  %%%%%%%%%%%%% Custom Feild &&&&&&&&&&&&&&&&&&&&&&&&
+  getCustomFieldList({ commit, dispatch }, payload) {
+    commit("setProcessing", false);
+
+    const id = payload.id;
+    axios
+      .get(`${apiUrl}/categories/custom_fields/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getCustomFields", res.data);
+      });
+  },
+  getCustomField({ commit, dispatch }, payload) {},
+  createCustomField({ commit, dispatch }, payload) {
+    const id = payload.categoryId;
+    const formData = new FormData();
+
+    formData.append("type", payload.type);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[name]`, el.key);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
+    });
+    axios
+      .post(`${apiUrl}/categories/custom_fields/${id}`, formData, {})
+      .then(res => {
+        if (res.status === 201) {
+          commit("createCustomField", res.data.data);
+        }
+      })
+      .catch(err => {});
+  },
+  updateCustomField({ commit, dispatch }, payload) {},
+  deleteCustomField({ commit, dispatch }, payload) {
+    const id = payload.categoryId;
+    const custom_id = payload.custom_id;
+    axios
+      .delete(`${apiUrl}/categories/custom_fields/${id}/${custom_id}`)
+      .then(res => {
+        if (res.status === 200) {
+          commit("deleteCustomField", res);
+          dispatch("getCustomFieldList", { id });
+        }
+      })
+      .catch(err => {});
   }
 };
 

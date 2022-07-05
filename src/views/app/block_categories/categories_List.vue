@@ -9,6 +9,7 @@
       :transaction_filter="false"
       :from="from"
       :add_new_button="true"
+      :add_new_title="$t('todo.add-new')"
       @add_new="add_New"
       :reload="true"
       :sort="sort"
@@ -30,10 +31,7 @@
             :reactive-api-url="true"
             :fields="fields"
             pagination-path
-            :row-class="onRowClass"
             @vuetable:pagination-data="onPaginationData"
-            @vuetable:row-clicked="rowClicked"
-            @vuetable:cell-rightclicked="rightClicked"
           >
             <template slot="actions" slot-scope="props">
               <b-button
@@ -56,17 +54,6 @@
         </template>
       </b-colxx>
     </b-row>
-
-    <v-contextmenu ref="contextmenu">
-      <v-contextmenu-item @click="onContextMenuAction('copy')">
-        <i class="simple-icon-docs" />
-        <span>Copy</span>
-      </v-contextmenu-item>
-      <v-contextmenu-item @click="onContextMenuAction('move-to-archive')">
-        <i class="simple-icon-drawer" />
-        <span>Move to archive</span>
-      </v-contextmenu-item>
-    </v-contextmenu>
   </div>
 </template>
 <script>

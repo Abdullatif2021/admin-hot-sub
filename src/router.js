@@ -85,6 +85,13 @@ const routes = [
               import(
                 /* webpackChunkName: "blog" */ "./views/app/block/add_block"
               )
+          },
+          {
+            path: "category",
+            component: () =>
+              import(
+                /* webpackChunkName: "blog" */ "./views/app/block_categories/block_category"
+              )
           }
         ]
       },

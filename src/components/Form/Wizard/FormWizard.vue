@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ul :class="`nav nav-tabs ${navClass}`">
+    <ul :class="`nav nav-tabs justify-content-center`">
       <li
         :class="{
           'nav-item': true,
@@ -19,7 +19,12 @@
           href="#"
           @click.prevent="clickedTab(tabIndex)"
         >
-          <span>{{ tab.name }}</span>
+          <span
+            style="
+    font-size: 18px;
+"
+            >{{ tab.name }}</span
+          >
           <small>{{ tab.desc }}</small>
         </a>
       </li>
@@ -32,7 +37,7 @@
       <button
         type="button"
         class="mr-1 btn btn-primary"
-        :disabled="!currentActive > 0"
+        :disabled="!currentActive > 0 "
         @click="previousTab()"
       >
         {{ $t("wizard.prev") }}
@@ -40,7 +45,7 @@
       <button
         type="button"
         class="btn btn-primary"
-        :disabled="currentActive > totalTabs - 1"
+        :disabled="currentActive > totalTabs - 1 || disableNextBtn"
         @click="nextTab()"
       >
         {{ $t("wizard.next") }}
@@ -57,6 +62,9 @@ export default {
       default: "justify-content-center"
     },
     lastStepEnd: {
+      default: false
+    },
+        disableNextBtn: {
       default: false
     },
     topNavDisabled: {

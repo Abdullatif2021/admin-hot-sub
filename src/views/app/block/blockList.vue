@@ -1,17 +1,20 @@
 <template>
   <div>
     <datatable-heading
-      :title="$t('menu.blocks-table')"
+      :title="categoryTitle"
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
+      :categoryBtn="true"
       :changePageSize="changePageSize"
       :searchChange="searchChange"
       :transaction_filter="false"
       :sortOptions="sortOptions"
       :reload="true"
       :add_new_button="true"
+      :add_new_title="$t('todo.add-new')"
       :category="category"
       @add_new="add_New"
+      @edit_category="edit_Category"
       :cancle="cancle"
       :changeOrderBy="changeOrderBy"
       :from="from"
@@ -52,7 +55,7 @@
               <b-button
                 variant="outline-theme-6"
                 class="icon-button"
-                @click="delete_block(props.rowData.id)"
+                @click="open_model('deleteModal', props.rowData.id)"
               >
                 <i class="simple-icon-trash"></i>
               </b-button>
@@ -84,6 +87,12 @@
         <span>Delete</span>
       </v-contextmenu-item>
     </v-contextmenu>
+    <deleteModal
+      :message="$t('forms.deleteBlockQuestion')"
+      :modalName="modalName"
+      :hideModel="hideModel"
+      @delete_event="delete_block()"
+    />
   </div>
 </template>
 <script>
@@ -91,12 +100,14 @@ import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { mapGetters, mapActions } from "vuex";
+import deleteModal from "../../../components/shared/deleteModal.vue";
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
 export default {
   props: ["title"],
   components: {
     vuetable: Vuetable,
+    deleteModal: deleteModal,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "datatable-heading": DatatableHeading
   },
@@ -105,9 +116,12 @@ export default {
       dir: null,
       role: null,
       order_by: null,
+      modalName: null,
       search: null,
       type: null,
+      categoryTitle: null,
       actions: null,
+      hideModel: false,
       category: true,
       sortOptions: [],
       isLoad: false,
@@ -215,9 +229,7 @@ export default {
       }
       return "";
     },
-    delete_block(id) {
-      this.deleteBlock({ blockId: id });
-    },
+
     cancle() {
       this.this.getBlocksList({
         block_category_id: this.type,
@@ -243,7 +255,12 @@ export default {
       });
       this.setCategoryId({ id: this.type });
     },
-
+    edit_Category() {
+      this.$router.push({
+        path: `${adminRoot}/blocks/category`,
+        query: { id: this.type }
+      });
+    },
     rowClicked(dataItem, event) {
       const itemId = dataItem.id;
       if (event.shiftKey && this.selectedItems.length > 0) {
@@ -350,7 +367,16 @@ export default {
         page: this.page
       });
     },
-
+    delete_block() {
+      this.deleteBlock({ blockId: this.blockId });
+    },
+    open_model(refname, id) {
+      this.modalName = refname;
+      this.blockId = id;
+    },
+    hideModal(refname) {
+      this.$refs[refname].hide();
+    },
     changeOrderBy(sort) {
       this.sort = sort;
 
@@ -434,12 +460,26 @@ export default {
         limit: 8,
         page: null
       });
+      this.getBlockCategories({
+        dir: null,
+        search: null,
+        order_by: null,
+        limit: null,
+        page: null
+      });
     },
     searchChange(newQuestion, oldQuestion) {
       if (newQuestion) {
       }
     },
     _successDeleteBlock(newVal, old) {
+      this.hideModel = !this.hideModel;
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Block have been deleted successfully",
+        { duration: 3000, permanent: false }
+      );
       this.getBlocksList({
         block_category_id: this.type,
         dir: this.dir,
@@ -469,6 +509,11 @@ export default {
             label: option.slug.toUpperCase()
           })
         );
+      });
+      newval.map(item => {
+        if (item.id == this.type) {
+          this.categoryTitle = item.slug.toUpperCase();
+        }
       });
     }
   }
