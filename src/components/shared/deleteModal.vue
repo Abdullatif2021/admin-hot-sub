@@ -6,7 +6,12 @@
   >
     {{ message }}
     <template slot="modal-footer">
-      <b-button variant="primary" @click="$emit('delete_event')" class="mr-1">
+      <b-button
+        variant="primary"
+        :disabled="disableBtn"
+        @click="$emit('delete_event')"
+        class="mr-1"
+      >
         {{ $t("button.yes") }}</b-button
       >
       <b-button variant="secondary" @click="hideModal('deleteModal')">{{
@@ -18,7 +23,7 @@
 
 <script>
 export default {
-  props: ["message", "modalName", "hideModel"],
+  props: ["message", "modalName", "hideModel", "disableBtn"],
   data() {
     return {
       refname: "deleteModal"
@@ -27,11 +32,14 @@ export default {
   methods: {
     hideModal(refname) {
       this.$refs[refname].hide();
+      this.$emit("hide-modal");
     }
   },
   watch: {
     modalName: function(val) {
-      this.$refs[val].show();
+      if (val) {
+        this.$refs[val].show();
+      }
     },
     hideModel: function(val) {
       this.hideModal(this.refname);

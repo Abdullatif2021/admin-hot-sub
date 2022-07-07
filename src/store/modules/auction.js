@@ -15,6 +15,7 @@ const state = {
   processing: false,
   cities: null,
   auctionSide: null,
+  auctionOwner: null,
   areas: null,
   File_List: null,
   create_File: null,
@@ -39,6 +40,7 @@ const getters = {
   _deleteAuctionImage: state => state.delete_Image,
   _areas: state => state.areas,
   _auctionSide: state => state.auctionSide,
+  _auctionOwner: state => state.auctionOwner,
   auction: state => state.auction,
   _isLoadAuctions: state => state.processing,
   _updatedAuctionSuccessfuly: state => state.updated_Successfuly,
@@ -80,6 +82,9 @@ const mutations = {
 
   getAuctionSide(state, payload) {
     state.auctionSide = payload;
+  },
+  getAuctionOwner(state, payload) {
+    state.auctionOwner = payload;
   },
   getAuctionFileList(state, payload) {
     state.File_List = payload;
@@ -168,11 +173,13 @@ const actions = {
     if (payload.terms_conditions != null) {
       formData.append("terms_conditions", payload.terms_conditions);
     }
+    commit("setProcessing", false);
     axios
       .post(`${apiUrl}/auctions`, formData, {})
       .then(res => {
         if (res.status === 201) {
           commit("createAuctionSuccessfuly", res);
+          dispatch("getCustomFieldList", { id: res.data.data.category_id });
         } else {
         }
       })
@@ -227,6 +234,14 @@ const actions = {
       }
     });
   },
+  getAuctionOwner({ commit, dispatch }, payload) {
+    axios.get(`${apiUrl}/auctions/owners`).then(res => {
+      if (res.status === 200) {
+        commit("getAuctionOwner", res.data.data);
+      }
+    });
+  },
+
   getCities({ commit, dispatch }, payload) {
     const country_id = payload.country_id;
     axios
@@ -349,6 +364,31 @@ const actions = {
         if (res.status === 200) {
           commit("deleteAuctionImage", res.data.data);
           dispatch("getAuctionImages", { id });
+        }
+      })
+      .catch(err => {});
+  },
+  createCustomValue({ commit, dispatch }, payload) {
+    const id = payload.id;
+    const formData = new FormData();
+    const langs = localStorage.getItem("Languages");
+
+    JSON.parse(langs).forEach(el => {
+      formData.append(`${el.name}[value]`, payload.info.value);
+    });
+    if (payload.info.unit) {
+      JSON.parse(langs).forEach(el => {
+        formData.append(`${el.name}[unit]`, payload.info.unit);
+      });
+    }
+    formData.append(`auction_id`, payload.auction_id);
+    axios
+      .post(`${apiUrl}/categories/additional/${id}`, formData, {})
+      .then(res => {
+        if (res.status === 201) {
+          // commit("createAuctionImage", res.data.data);
+          // dispatch("getAuctionImages", { id });
+          console.log("hi from valueeeeeeeeee");
         }
       })
       .catch(err => {});

@@ -127,7 +127,7 @@
                     <b-button
                       variant="outline-theme-3"
                       class="icon-button"
-                      @click="modify(props.rowData.id)"
+                      @click="modify(props.rowData)"
                     >
                       <i class="simple-icon-pencil"></i>
                     </b-button>
@@ -215,8 +215,12 @@
             <div class="loading"></div>
           </template>
           <add-new-custom-field
+            @hide-create-modal="hideCreateModal"
             @create-custom-field="create_custom_field"
+            @update-custom-field="update_custom_field"
             :showCreateModal="showCreateModal"
+            :showUpdateModal="showUpdateModal"
+            :customFieldInfo="customFieldInfo"
           />
         </b-tab>
         <b-tab
@@ -232,6 +236,8 @@
     </b-card>
     <deleteModal
       :hideModel="hideModel"
+      :disableBtn="disableDeleteBtn"
+      @hide-modal="hideDeleteModal"
       :message="$t('forms.deleteCustomFieldQuestion')"
       :modalName="modalName"
       @delete_event="delete_customField()"
@@ -270,9 +276,12 @@ export default {
       customFieldId: null,
       type: null,
       enable: false,
+      customFieldInfo: null,
       edit: true,
+      disableDeleteBtn: false,
       hideModel: false,
       modalName: null,
+      showUpdateModal: false,
       showCustomTab: false,
       password: null,
       is_block_category: false,
@@ -415,14 +424,28 @@ export default {
       this.modalName = refname;
       this.customFieldId = id;
     },
+    modify(data){
+      this.customFieldInfo = data;
+      this.showUpdateModal = !this.showUpdateModal;
+    },
+    hideDeleteModal(){
+this.modalName = null;
+    },
     delete_customField(){
+      this.disableDeleteBtn = true;
       this.deleteCustomField({custom_id: this.customFieldId,  categoryId: this._id})
     },
      create_custom_field(val,type){
           this.createCustomField({info: val, type: type, categoryId: this._id })
         },
+        update_custom_field(val,type){
+          this.createCustomField({info: val, type: type, categoryId: this._id })
+        },
     fileAdded(file) {
       this.file = file;
+    },
+    hideCreateModal(){
+ this.$emit("createdSuccessfuly")
     },
     fileRemoved(file) {
       this.file = null;
@@ -467,8 +490,14 @@ export default {
   watch: {
       _createCustomField: function(val){
         console.log('wferferferferferf');
-      this.showCreateModal = false;
+      this.$emit("createdSuccessfuly")
       this.getCustomFieldList({id: this._id})
+       this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Custom Field have been created successfully",
+        { duration: 3000, permanent: false }
+      );
 
     },
     _category(newInfo, oldOne) {
@@ -486,7 +515,8 @@ export default {
     },
        _successDeleteCustomField(newVal, old) {
             this.hideModel = !this.hideModel
-
+              this.disableDeleteBtn = false;
+      this.modalName = null;
       this.$notify(
         "success",
         "Operation completed successfully",

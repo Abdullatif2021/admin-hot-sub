@@ -177,8 +177,7 @@ export default {
           width: "15%"
         },
           {
-          name: "minimum_paid",
-          sortField: "minimum_paid",
+          name: "bids_count",
           title: "number of bidding",
           titleClass: "",
           dataClass: "list-item-heading",

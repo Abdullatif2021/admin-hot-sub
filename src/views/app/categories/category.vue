@@ -12,6 +12,7 @@
       ></datatable-heading>
       <category_details
         @showAddCustomField="showAddCustomField"
+        @createdSuccessfuly="createdSuccessfuly"
         :showCreateModal="showCreateModal"
         v-if="id"
         :_id="id"
@@ -52,6 +53,9 @@ export default {
     },
     add_newCustomField() {
       this.showCreateModal = true;
+    },
+    createdSuccessfuly() {
+      this.showCreateModal = false;
     }
   },
   computed: {

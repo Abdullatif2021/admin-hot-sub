@@ -37,7 +37,7 @@
       <button
         type="button"
         class="mr-1 btn btn-primary"
-        :disabled="!currentActive > 0 "
+        :disabled="!currentActive > 0"
         @click="previousTab()"
       >
         {{ $t("wizard.prev") }}
@@ -48,7 +48,7 @@
         :disabled="currentActive > totalTabs - 1 || disableNextBtn"
         @click="nextTab()"
       >
-        {{ $t("wizard.next") }}
+        {{ $t(`forms.${saveBtn}`) }}
       </button>
     </div>
   </div>
@@ -64,8 +64,11 @@ export default {
     lastStepEnd: {
       default: false
     },
-        disableNextBtn: {
+    disableNextBtn: {
       default: false
+    },
+    saveBtn: {
+      default: "next"
     },
     topNavDisabled: {
       default: false

@@ -18,6 +18,7 @@ const state = {
   successUpdateCategoryMeta: null,
   create_category_meta_success: null,
   categoryMetaTypeList: null,
+  subCategories: null,
   customFields: null,
   create_customField: null,
   successDeleteCustom: null
@@ -27,6 +28,7 @@ const getters = {
   _isLoadCategories: state => state.processing,
   _isLoadCustomField: state => state.processing,
   cateError: state => state.Error,
+  _subCategories: state => state.subCategories,
   cate_paginations: state => state.paginations,
   _customFields: state => state.customFields,
   categories: state => state.categories,
@@ -50,6 +52,9 @@ const mutations = {
   getCategoriesSuccess(state, categories) {
     state.categories = categories.data;
     state.paginations = categories;
+  },
+  getSubCategoriesSuccess(state, subCategories) {
+    state.subCategories = subCategories.data;
   },
   setProcessing(state, payload) {
     state.processing = payload;
@@ -126,6 +131,27 @@ const actions = {
       .then(res => {
         if (res.status === 200) {
           commit("getCategoriesSuccess", res.data);
+        }
+      });
+  },
+  getSubCategories: async ({ commit }, payload) => {
+    commit("setProcessing", false);
+    const id = payload.id;
+
+    await axios
+      .get(`${apiUrl}/categories`, {
+        params: {
+          parent_id: payload.id
+        }
+      })
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+
+      .then(res => {
+        if (res.status === 200) {
+          commit("getSubCategoriesSuccess", res.data);
         }
       });
   },
@@ -301,6 +327,7 @@ const actions = {
       .then(res => {
         if (res.status === 201) {
           commit("createCustomField", res.data.data);
+          dispatch("getCustomFieldList", { id: id });
         }
       })
       .catch(err => {});
