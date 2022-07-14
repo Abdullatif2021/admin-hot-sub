@@ -14,11 +14,13 @@ const state = {
   successDeleteAuction: null,
   processing: false,
   cities: null,
+  isCustomValueCreated: false,
   auctionSide: null,
   auctionOwner: null,
   areas: null,
   File_List: null,
   create_File: null,
+  deleteAuctionError: null,
   delete_File: null,
   Image_List: null,
   create_Image: null,
@@ -33,6 +35,7 @@ const getters = {
   auctions: state => state.auctions,
   _cities: state => state.cities,
   _File_List: state => state.File_List,
+  _isCustomValueCreated: state => state.isCustomValueCreated,
   _createAuctionFile: state => state.create_File,
   _deleteAuctionFile: state => state.delete_File,
   _Image_List: state => state.Image_List,
@@ -40,6 +43,7 @@ const getters = {
   _deleteAuctionImage: state => state.delete_Image,
   _areas: state => state.areas,
   _auctionSide: state => state.auctionSide,
+  _deleteAuctionError: state => state.deleteAuctionError,
   _auctionOwner: state => state.auctionOwner,
   auction: state => state.auction,
   _isLoadAuctions: state => state.processing,
@@ -89,6 +93,9 @@ const mutations = {
   getAuctionFileList(state, payload) {
     state.File_List = payload;
   },
+  createAuctionCustomValue(state, payload) {
+    state.isCustomValueCreated = !state.isCustomValueCreated;
+  },
   createAuctionFile(state, payload) {
     state.create_File = payload;
   },
@@ -97,6 +104,9 @@ const mutations = {
   },
   getAuctionImageList(state, payload) {
     state.Image_List = payload;
+  },
+  deleteAuctionError(state, payload) {
+    state.deleteAuctionError = payload;
   },
   createAuctionImage(state, payload) {
     state.create_Image = payload;
@@ -219,11 +229,24 @@ const actions = {
       }
     });
   },
+  updateAuctionStatus({ commit, dispatch }, payload) {
+    const id = payload.id;
+    const formData = new FormData();
+    formData.append("active", payload.active);
+    formData.append("_method", "PUT");
+    axios.post(`${apiUrl}/auctions/${id}`, formData, {}).then(res => {
+      if (res.status === 200) {
+        commit("updatedAuctionSuccessfuly", res);
+      }
+    });
+  },
   deleteAuction({ commit, dispatch }, payload) {
     const id = payload.Id;
     axios.delete(`${apiUrl}/auctions/${id}`).then(res => {
-      if (res.status === 200) {
+      if (res.data.status === 200) {
         commit("deleteAuction", res);
+      } else if (res.data.status === 400) {
+        commit("deleteAuctionError", res);
       }
     });
   },
@@ -385,8 +408,8 @@ const actions = {
     axios
       .post(`${apiUrl}/categories/additional/${id}`, formData, {})
       .then(res => {
-        if (res.status === 201) {
-          // commit("createAuctionImage", res.data.data);
+        if (res.status === 200) {
+          commit("createAuctionCustomValue", res.data.data);
           // dispatch("getAuctionImages", { id });
           console.log("hi from valueeeeeeeeee");
         }

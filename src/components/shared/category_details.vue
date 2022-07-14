@@ -142,74 +142,6 @@
                 </vuetable>
               </b-card>
             </b-colxx>
-            <!-- <b-colxx xs="12" md="6" class="mb-3">
-        <b-card class="mb-4" :title="$t('forms.create')">
-          <b-form
-            @submit.prevent="onValitadeFormSubmit()"
-            class="av-tooltip tooltip-label-right"
-          >
-            <div v-for="(lang, index) in $v.info_form.$each.$iter" :key="index">
-              <b-form-group
-                :label="$t(`pages.${lang.name.$model}_title`)"
-                class="has-float-label mb-4"
-              >
-                <b-form-input
-                  type="text"
-                  v-model="lang.title.$model"
-                  :state="!lang.title.$error"
-                />
-                <b-form-invalid-feedback v-if="!lang.title.required">{{
-                  $t("forms.title_filed")
-                }}</b-form-invalid-feedback>
-              </b-form-group>
-              <b-form-group
-                :label="$t(`pages.${lang.name.$model}_desc`)"
-                class="has-float-label mb-4"
-              >
-                <b-form-input
-                  type="text"
-                  v-model="lang.description.$model"
-                  :state="!lang.description.$error"
-                />
-                <b-form-invalid-feedback v-if="!lang.description.required">
-                  {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
-                >
-              </b-form-group>
-            </div>
-            <label class="form-group has-float-label">
-              <b-colxx xxs="12" style="padding: 0px;">
-                <b-form-group>
-                  <b-form-input
-                    style="display: none;"
-                    :state="!$v.file_form.file.$error"
-                    v-model="$v.file_form.file.$model"
-                  />
-
-                  <vue-dropzone
-                    ref="myVueDropzone"
-                    id="dropzone"
-                    :options="dropzoneOptions"
-                    @vdropzone-files-added="fileAdded"
-                    @vdropzone-removed-file="fileRemoved"
-                  ></vue-dropzone>
-                  <b-form-invalid-feedback v-if="!$v.file_form.file.required">{{
-                    $t("forms.choose-file-message")
-                  }}</b-form-invalid-feedback>
-                </b-form-group>
-              </b-colxx>
-              <span>{{ $t("block.file") }}</span>
-            </label>
-
-            <b-button
-              :disabled="enable"
-              type="submit"
-              variant="primary"
-              class="mt-4"
-              >{{ $t("forms.submit") }}</b-button
-            >
-          </b-form>
-        </b-card>
-      </b-colxx> -->
           </template>
           <template v-else>
             <div class="loading"></div>
@@ -385,6 +317,7 @@ export default {
       "updateBlockCategory",
       "updateCategory",
       "getBlockCategoryTypes",
+      "updateCustomField",
       "getCustomFieldList",
       "deleteCustomField",
       "createCustomField",
@@ -438,8 +371,8 @@ this.modalName = null;
      create_custom_field(val,type){
           this.createCustomField({info: val, type: type, categoryId: this._id })
         },
-        update_custom_field(val,type){
-          this.createCustomField({info: val, type: type, categoryId: this._id })
+        update_custom_field(val,type,custom_id){
+          this.updateCustomField({info: val, type: type, categoryId: this._id,custom_id: custom_id })
         },
     fileAdded(file) {
       this.file = file;

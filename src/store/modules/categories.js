@@ -12,6 +12,7 @@ const state = {
   successDeleteCategory: null,
   successActiveCategory: null,
   processing: false,
+  customProcessing: false,
   create_category_success: null,
   successUpdateCategory: null,
   Categorymetadata: null,
@@ -26,7 +27,7 @@ const state = {
 
 const getters = {
   _isLoadCategories: state => state.processing,
-  _isLoadCustomField: state => state.processing,
+  _isLoadCustomField: state => state.customProcessing,
   cateError: state => state.Error,
   _subCategories: state => state.subCategories,
   cate_paginations: state => state.paginations,
@@ -58,6 +59,9 @@ const mutations = {
   },
   setProcessing(state, payload) {
     state.processing = payload;
+  },
+  setCustomProcessing(state, payload) {
+    state.customProcessing = payload;
   },
   getCategorySuccess(state, data) {
     state.category = data.data;
@@ -99,7 +103,7 @@ const mutations = {
     state.categoryMetaTypeList = payload.data;
   },
   getCustomFields(state, data) {
-    state.customFields = data.data;
+    state.customFields = data;
   },
   createCustomField(state, payload) {
     state.create_customField = payload;
@@ -187,10 +191,16 @@ const actions = {
   updateCategory({ commit, dispatch }, payload) {
     const id = payload.id;
     const formData = new FormData();
-    Object.entries(payload.info).forEach(entry => {
-      const [key, value] = entry;
-      if (value != null) {
-        formData.append(key, value);
+    // Object.entries(payload.info).forEach(entry => {
+    //   const [key, value] = entry;
+    //   if (value != null) {
+    //     formData.append(key, value);
+    //   }
+    // });
+    payload.info.forEach(el => {
+      formData.append(`${el._name}[name]`, el.name);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
       }
     });
     formData.append("_method", "PUT");
@@ -297,17 +307,17 @@ const actions = {
 
   //  %%%%%%%%%%%%% Custom Feild &&&&&&&&&&&&&&&&&&&&&&&&
   getCustomFieldList({ commit, dispatch }, payload) {
-    commit("setProcessing", false);
+    commit("setCustomProcessing", false);
 
     const id = payload.id;
     axios
       .get(`${apiUrl}/categories/custom_fields/${id}`)
       .then(res => {
-        commit("setProcessing", true);
+        commit("setCustomProcessing", true);
         return res;
       })
       .then(res => {
-        commit("getCustomFields", res.data);
+        commit("getCustomFields", res.data.data);
       });
   },
   getCustomField({ commit, dispatch }, payload) {},
@@ -332,7 +342,31 @@ const actions = {
       })
       .catch(err => {});
   },
-  updateCustomField({ commit, dispatch }, payload) {},
+  updateCustomField({ commit, dispatch }, payload) {
+    const id = payload.categoryId;
+    const formData = new FormData();
+    const custom_id = payload.custom_id;
+    formData.append("type", payload.type);
+    payload.info.forEach(el => {
+      formData.append(`${el.name}[name]`, el.key);
+      if (el.description) {
+        formData.append(`${el.name}[description]`, el.description);
+      }
+    });
+    axios
+      .put(
+        `${apiUrl}/categories/custom_fields/${id}/${custom_id}`,
+        formData,
+        {}
+      )
+      .then(res => {
+        if (res.status === 200) {
+          commit("updateCustomField", res.data.data);
+          dispatch("getCustomFieldList", { id: id });
+        }
+      })
+      .catch(err => {});
+  },
   deleteCustomField({ commit, dispatch }, payload) {
     const id = payload.categoryId;
     const custom_id = payload.custom_id;

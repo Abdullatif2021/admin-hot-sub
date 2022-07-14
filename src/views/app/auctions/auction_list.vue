@@ -38,6 +38,37 @@
           >
             <template slot="actions" slot-scope="props">
               <b-button
+                id="activate"
+                :variant="
+                  props.rowData.active === 1
+                    ? 'outline-theme-6'
+                    : 'outline-theme-7'
+                "
+                class="icon-button"
+                @click="
+                  open_model(
+                    'activeAuction',
+                    props.rowData.id,
+                    props.rowData.active
+                  )
+                "
+              >
+                <i
+                  :class="
+                    props.rowData.active === 1
+                      ? 'iconsminds-close'
+                      : 'iconsminds-yes'
+                  "
+                ></i>
+                <b-tooltip
+                  target="activate"
+                  placement="left"
+                  :title="$t('forms.active_tooltip')"
+                >
+                </b-tooltip>
+              </b-button>
+
+              <b-button
                 variant="outline-theme-3"
                 class="icon-button"
                 @click="modify(props.rowData.id)"
@@ -47,7 +78,7 @@
               <b-button
                 variant="outline-theme-6"
                 class="icon-button"
-                @click="open_model('deleteModal', props.rowData.id)"
+                @click="open_model('deleteAuction', props.rowData.id)"
               >
                 <i class="simple-icon-trash"></i>
               </b-button>
@@ -79,12 +110,50 @@
         <span>Delete</span>
       </v-contextmenu-item>
     </v-contextmenu>
-    <deleteModal
-      :hideModel="hideModel"
-      :message="$t('forms.deleteAuctionQuestion')"
-      :modalName="modalName"
-      @delete_event="delete_auction()"
-    />
+
+    <b-modal
+      id="activeAuction"
+      ref="activeAuction"
+      :title="$t('modal.modal-active-auction-title')"
+    >
+      {{
+        active === 1
+          ? $t("forms.activeAuctionQuestion")
+          : $t("forms.inactiveAuctionQuestion")
+      }}
+      <template slot="modal-footer">
+        <b-button
+          :disabled="enableModalBtn"
+          variant="primary"
+          @click="active_auction()"
+          class="mr-1"
+        >
+          {{ $t("button.yes") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('activeAuction')">{{
+          $t("button.no")
+        }}</b-button>
+      </template>
+    </b-modal>
+    <b-modal
+      id="deleteAuction"
+      ref="deleteAuction"
+      :title="$t('modal.modal-active-auction-title')"
+      >{{ $t("forms.deleteAuctionQuestion") }}
+      <template slot="modal-footer">
+        <b-button
+          :disabled="enableModalBtn"
+          variant="primary"
+          @click="delete_auction()"
+          class="mr-1"
+        >
+          {{ $t("button.yes") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('deleteAuction')">{{
+          $t("button.no")
+        }}</b-button>
+      </template>
+    </b-modal>
   </div>
 </template>
 <script>
@@ -94,6 +163,7 @@ import VuetablePaginationBootstrap from "../../../components/Common/VuetablePagi
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { mapGetters, mapActions } from "vuex";
 import { getCurrentLanguage } from "../../../utils";
+import * as moment from 'moment'
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
 export default {
@@ -119,8 +189,11 @@ export default {
       },
       page: 1,
       language: null,
+      enableModalBtn: false,
       limit: null,
+      auction_id: null,
       perPage: 8,
+      active: null,
       from: 0,
       to: 0,
       total: 0,
@@ -144,7 +217,8 @@ export default {
         {
           name: "start_date",
           callback: value => {
-            return value ;
+            // console.log(value.toLocaleString('ko-KR', { timeZone: 'UTC' }).toDateString());
+            return value;
           },
 
           sortField: "start_date",
@@ -166,7 +240,7 @@ export default {
           title: "Opening Price",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "15%"
+          width: "10%"
         },
         {
           name: "minimum_paid",
@@ -188,7 +262,7 @@ export default {
           title: "",
           titleClass: "center aligned text-right",
           dataClass: "center aligned text-right",
-          width: "25%"
+          width: "30%"
         }
       ]
     };
@@ -205,7 +279,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["getAuctions", "deleteAuction"]),
+    ...mapActions(["getAuctions", "deleteAuction", "updateAuctionStatus"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -236,9 +310,15 @@ export default {
         } else this.selectedItems.push(itemId);
       }
     },
-      open_model(refname, id) {
-      this.modalName = refname;
+      open_model(refname, id, active) {
+              this.enableModalBtn= false;
+
+      this.$refs[refname].show();
       this.auctionId = id;
+      if (active) {
+this.active = active
+      }
+
     },
     rightClicked(dataItem, field, event) {
       event.preventDefault();
@@ -247,6 +327,7 @@ export default {
       }
       this.$refs.contextmenu.show({ top: event.pageY, left: event.pageX });
     },
+
     onPaginationData(paginationData) {
       this.from = paginationData.from;
       this.to = paginationData.to;
@@ -254,6 +335,10 @@ export default {
       this.lastPage = paginationData.last_page;
       this.items = paginationData.data;
       this.$refs.pagination.setPaginationData(paginationData);
+    },
+     formatDate(d) {
+
+        return moment(d).format("MMM Do YYYY");
     },
     dataManager(sortOrder, pagination) {
       if (sortOrder.length > 0) {
@@ -284,7 +369,18 @@ export default {
       }
     },
     delete_auction() {
+      this.enableModalBtn= true;
       this.deleteAuction({ Id: this.auctionId });
+    },
+    active_auction(){
+      this.enableModalBtn= true;
+      this.updateAuctionStatus({
+            active : this.active === 1 ? 0 : 1,
+            id: this.auctionId
+          });
+    },
+    hideModal(refname) {
+      this.$refs[refname].hide();
     },
     onChangePage(page) {
       if (page == "next" || page == "prev") {
@@ -366,7 +462,8 @@ export default {
       "auctions",
       "auction_paginations",
       "_successDeleteAuction",
-      "_isLoadAuctions"
+      "_isLoadAuctions",
+      "_updatedAuctionSuccessfuly","_deleteAuctionError"
     ]),
     // toDateFormat(value){
     //   console.log(value);
@@ -387,9 +484,21 @@ export default {
       if (newQuestion) {
       }
     },
+    _deleteAuctionError: function(val){
+       this.enableModalBtn= false;
+      this.$refs['deleteAuction'].hide();
+this.$notify(
+        "error",
+        "Operation failed",
+        "You can't delete this auction since it started",
+        { duration: 5000, permanent: false }
+      );
+    },
     _successDeleteAuction(newVal, old) {
-            this.hideModel = !this.hideModel
-
+      console.log(newVal)
+      this.enableModalBtn= false;
+      this.hideModel = !this.hideModel
+      this.$refs['deleteAuction'].hide();
       this.$notify(
         "success",
         "Operation completed successfully",
@@ -406,6 +515,26 @@ export default {
     },
     auctions(newList, old) {
       this.$refs.vuetable.setData(newList);
+    },
+     _updatedAuctionSuccessfuly(newInfo, oldOne) {
+      this.enableModalBtn= true;
+            this.$refs['activeAuction'].hide();
+
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Status of auction have been changed successfully",
+        { duration: 3000, permanent: false }
+      );
+
+          this.getAuctions({
+        dir: this.dir,
+        search: this.search,
+        order_by: this.order_by,
+        limit: this.limit,
+        page: this.page
+      });
+
     },
     auction_paginations(newActions, old) {
       this.perPage = newActions.per_page;

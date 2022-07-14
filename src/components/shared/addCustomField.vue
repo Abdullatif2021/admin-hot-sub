@@ -20,9 +20,11 @@
           <b-form-radio value="2">{{ $t("NUMBER") }}</b-form-radio>
         </b-form-radio-group>
 
-        <b-form-invalid-feedback v-if="!$v.select_form.type.required">{{
-          $t("forms.category_filed")
-        }}</b-form-invalid-feedback>
+        <b-form-invalid-feedback
+          style="margin-left: 30%;"
+          v-if="!$v.select_form.type.required"
+          >{{ $t("forms.category_filed") }}</b-form-invalid-feedback
+        >
       </b-form-group>
       <div v-for="(lang, index) in $v.keys_form.$each.$iter" :key="index">
         <b-form-group
@@ -127,7 +129,9 @@ export default {
            this.$emit(
           "update-custom-field",
           this.$v.keys_form.$model,
-          this.select_form.type
+          this.select_form.type,
+          this.customFieldInfo.id
+
         );
         }else{
   this.$emit(
@@ -143,29 +147,35 @@ export default {
   },
   watch: {
     showCreateModal: function(val) {
-      this.$v.$reset();
+      this.select_form.type = null;
+       this.keys_form.forEach(el => {
+         el.key = null;
+      });
       this.enable = false;
       if (val) {
         this.$refs["add_newCustomField"].show();
       } else {
         this.$refs["add_newCustomField"].hide();
       }
+       this.$v.$reset();
     },
     showUpdateModal: function(val) {
-      this.$v.$reset();
       this.enable = false;
-
-        this.$refs["add_newCustomField"].show();
-
-        // this.$refs["add_newCustomField"].hide();
-
+      this.select_form.type = null;
+      this.keys_form.forEach(el => {
+          el.key = null;
+        });
+      this.$refs["add_newCustomField"].show();
+      this.$v.$reset();
     },
     customFieldInfo: function(val) {
+        console.log('hi from info',val);
+        this.select_form.type = val.type;
         this.keys_form.forEach(el => {
-         el.key = val.locales.[el.name].name;
-      });
-      val.type === "INT" ?  this.selected = 2 : this.selected = 1;
-      console.log(this.selected);
+        el.key = val.locales.[el.name].name;
+            });
+        val.type === "INT" ?  this.selected = 2 : this.selected = 1;
+        console.log(this.selected);
     }
   }
 };

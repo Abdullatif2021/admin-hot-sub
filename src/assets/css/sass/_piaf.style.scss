@@ -165,7 +165,12 @@ body {
 .rtl * {
   text-align: right;
 }
-
+.addCustomBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 40px;
+}
 .fixed-background {
   background: url('/assets/img/login/balloon-lg.jpg') no-repeat center center
     fixed;
