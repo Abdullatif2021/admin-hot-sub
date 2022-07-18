@@ -172,23 +172,22 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.city')">
+                        <b-form-group :label="$t('forms.area')">
                           <b-form-select
-                            :state="!$v.gridForm.city_id.$error"
-                            v-model="$v.gridForm.city_id.$model"
-                            :options="cityOptions"
-                            @change="getArea()"
+                            :state="!$v.gridForm.area_id.$error"
+                            v-model="$v.gridForm.area_id.$model"
+                            :options="areaOptions"
+                            @change="get_cities()"
                             plain
                           />
                           <b-form-invalid-feedback
-                            v-if="!$v.gridForm.city_id.required"
+                            v-if="!$v.gridForm.area_id.required"
                             >{{
-                              $t("forms.city-message")
+                              $t("forms.area-message")
                             }}</b-form-invalid-feedback
                           >
                         </b-form-group>
                       </b-colxx>
-
                       <b-colxx sm="6">
                         <b-form-group :label="$t('forms.start_date')">
                           <datepicker
@@ -212,17 +211,17 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.area')">
+                        <b-form-group :label="$t('forms.city')">
                           <b-form-select
-                            :state="!$v.gridForm.area_id.$error"
-                            v-model="$v.gridForm.area_id.$model"
-                            :options="areaOptions"
+                            :state="!$v.gridForm.city_id.$error"
+                            v-model="$v.gridForm.city_id.$model"
+                            :options="cityOptions"
                             plain
                           />
                           <b-form-invalid-feedback
-                            v-if="!$v.gridForm.area_id.required"
+                            v-if="!$v.gridForm.city_id.required"
                             >{{
-                              $t("forms.area-message")
+                              $t("forms.city-message")
                             }}</b-form-invalid-feedback
                           >
                         </b-form-group>
@@ -292,7 +291,14 @@
                               :src="imgUrl"
                               alt="Fluid image"
                             />
-                            <span v-if="image" class="delete-span">
+                            <span
+                              v-if="image"
+                              :class="
+                                language === 'en'
+                                  ? 'delete-span-en'
+                                  : 'delete-span-ar'
+                              "
+                            >
                               <i
                                 @click="delete_img"
                                 class="simple-icon-trash"
@@ -351,14 +357,6 @@
                         </b-form-group>
                       </b-colxx>
                     </b-row>
-
-                    <!-- <b-button
-                      :disabled="!disabled"
-                      type="submit"
-                      variant="primary"
-                      class="mt-4"
-                      >{{ $t("forms.save") }}</b-button
-                    > -->
                   </b-form>
                 </div>
               </tab>
@@ -424,7 +422,7 @@
           <b-tabs card no-fade>
             <b-tab
               title-item-class="w-30 text-center"
-              :title="$t('basic_details')"
+              :title="$t(`forms.basic_details`)"
               active
               @click="isLoadCustomField = false"
             >
@@ -565,21 +563,20 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.city')">
+                    <b-form-group :label="$t('forms.area')">
                       <b-form-select
-                        :state="!$v.gridForm.city_id.$error"
-                        v-model="$v.gridForm.city_id.$model"
-                        :options="cityOptions"
-                        @change="getArea()"
+                        :state="!$v.gridForm.area_id.$error"
+                        v-model="$v.gridForm.area_id.$model"
+                        :options="areaOptions"
+                        @change="get_cities()"
                         plain
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.city_id.required"
-                        >{{ $t("forms.city-message") }}</b-form-invalid-feedback
+                        v-if="!$v.gridForm.area_id.required"
+                        >{{ $t("forms.area-message") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
                   </b-colxx>
-
                   <b-colxx sm="6">
                     <b-form-group :label="$t('forms.start_date')">
                       <datepicker
@@ -604,16 +601,16 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.area')">
+                    <b-form-group :label="$t('forms.city')">
                       <b-form-select
-                        :state="!$v.gridForm.area_id.$error"
-                        v-model="$v.gridForm.area_id.$model"
-                        :options="areaOptions"
+                        :state="!$v.gridForm.city_id.$error"
+                        v-model="$v.gridForm.city_id.$model"
+                        :options="cityOptions"
                         plain
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.area_id.required"
-                        >{{ $t("forms.area-message") }}</b-form-invalid-feedback
+                        v-if="!$v.gridForm.city_id.required"
+                        >{{ $t("forms.city-message") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
                   </b-colxx>
@@ -692,7 +689,11 @@
                         />
                         <span
                           v-if="$v.files_form.image.$model"
-                          class="delete-span"
+                          :class="
+                            language === 'en'
+                              ? 'delete-span-en'
+                              : 'delete-span-ar'
+                          "
                         >
                           <i @click="delete_img" class="simple-icon-trash"></i>
                         </span>
@@ -792,10 +793,22 @@
                     :key="index"
                   >
                     <b-colxx :sm="field.type === 'STRING' ? 12 : 6">
-                      <b-form-group :label="field.locales.en.name">
+                      <b-form-group
+                        :label="
+                          language === 'en'
+                            ? field.locales.en.name
+                            : field.locales.ar.name
+                        "
+                      >
                         <b-form-input
+                        v-if="language === 'en'"
                           :type="field.type === 'INT' ? 'number' : 'text'"
                           v-model="field.values[0].locales.en.value"
+                        />
+                         <b-form-input
+                             v-if="language === 'ar'"
+                          :type="field.type === 'INT' ? 'number' : 'text'"
+                          v-model="field.values[0].locales.ar.value"
                         />
                       </b-form-group>
                     </b-colxx>
@@ -1067,7 +1080,7 @@ export default {
       coords: [],
       isLoadCustomField: false,
       location: [],
-      country_id: 248,
+      country_id: 1,
       categoryIdOptions: [],
       auctionSideOptions: [],
       auctionOwnerOptions: [],
@@ -1081,7 +1094,7 @@ export default {
         terms_conditions: null,
         brochure: null
       },
-      is_city_selected: false,
+      is_area_selected: false,
       create_categoryId: null,
       lang_form: [],
       gridForm: {
@@ -1145,10 +1158,10 @@ export default {
       sub_category_id: {
 
       },
-      city_id: {},
-      area_id: {
+      area_id: {},
+      city_id: {
         required: requiredIf(function() {
-          return this.area_req;
+          return this.city_req;
         })
       },
       minimum_paid: {
@@ -1193,7 +1206,7 @@ export default {
       limit: null,
       page: null
     });
-    this.getCities({ country_id: this.country_id });
+    this.getAreas({ country_id: this.country_id });
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.lang_form);
     this.getAuctionSide();
@@ -1210,6 +1223,7 @@ export default {
       "deleteAuctionFile",
       "createAuctionFile",
       "getAuctionFiles",
+      "updateCustomValue",
       "getAuctionImages",
       "getAuctionOwner",
       "getSubCategories",
@@ -1266,19 +1280,21 @@ export default {
       this.createAuctionFile({ info: info, path: path, id: this.auctionId });
     },
     getSubCateory(){
-       this.getSubCategories({id : this.gridForm.category_id
-       })
+      this.subCategoryOptions = [];
+      this.getSubCategories({id : this.gridForm.category_id})
     },
     delete_File(id) {
-      this.deleteAuctionFile({ id: this.auctionId, fileId: id });
+      this.delteAuctionFile({ id: this.auctionId, fileId: id });
     },
     set_location(data) {
       this.gridForm.latitude = data.lat;
       this.gridForm.longitude = data.lng;
     },
-    getArea() {
-      this.is_city_selected = true;
-      this.getAreas({ city_id: this.gridForm.city_id });
+    get_cities() {
+      console.log('here from get cities');
+      this.is_area_selected = true;
+      this.gridForm.city_id = null;
+      this.getCities({ area_id: this.gridForm.area_id });
     },
     selectedDate(data) {
       switch (data) {
@@ -1413,15 +1429,18 @@ export default {
 
         },
         editCustomValue(){
+
           this.custom_fields.forEach(el => {
-                 this.createCustomValue({auction_id: this.auctionId,info: el, id: el.id })
+            console.log('this is the el',el);
+                 this.updateCustomValue({info: el, custom_id: el.id, value_id: el.values[0].id})
             });
         },
         addNewCustomValue(type){
             this.customFields.forEach(el => {
               console.log(el);
               if (el.value) {
-                 this.createCustomValue({auction_id: this.auctionId,info: el, id: el.id })
+                                 this.createCustomValue({auction_id: this.auctionId,info: el, id: el.id })
+
               }
             });
         },
@@ -1461,8 +1480,8 @@ export default {
       "_updatedAuctionSuccessfuly",
       "_createAuctionSuccessfuly"
     ]),
-    area_req() {
-      return this.is_city_selected; // some conditional logic here...
+    city_req() {
+      return this.is_area_selected; // some conditional logic here...
     }
   },
   watch: {
@@ -1478,6 +1497,7 @@ export default {
       });
       this.image_basename = newInfo.image_basename;
       this.gridForm.category_id = newInfo.category_id;
+      this.gridForm.sub_category_id = newInfo.sub_category_id;
       this.gridForm.opening_price = newInfo.opening_price;
       this.custom_fields = newInfo.custom_fields;
       this.gridForm.minimum_paid = newInfo.minimum_paid;
@@ -1495,12 +1515,11 @@ export default {
         : (this.files_form.brochure = newInfo.brochure);
       this.gridForm.start_date = newInfo.start_date;
       this.gridForm.end_date = newInfo.end_date;
-      newInfo.city.id ? this.gridForm.city_id = newInfo.city.id : this.gridForm.city_id ='';
-      newInfo.area.id ? this.gridForm.area_id = newInfo.area.id : this.gridForm.area_id ='';
+      this.gridForm.city_id = newInfo.city.id;
+      this.gridForm.area_id = newInfo.area.id;
       this.image_basename = newInfo.image_basename;
-
-
-      this.getArea();
+      this.getCities({ area_id: this.gridForm.area_id });
+      this.getSubCategories({id : this.gridForm.category_id})
     },
     _Image_List: function(val) {
       this.enable = false;
@@ -1526,11 +1545,13 @@ export default {
       // this.getCustomFieldList({id: this.gridForm.category_id})
     },
     _cities: function(val) {
+      this.gridForm.city = null;
+      this.cityOptions = [];
       val.forEach(option => {
         this.cityOptions.push(
           new Object({
             value: option.id,
-            text: option.locales.en.name
+            text: option.locales.[this.language].name
           })
         );
       });
@@ -1540,19 +1561,18 @@ export default {
         this.subCategoryOptions.push(
           new Object({
             value: option.id,
-            text: option.locales.en.name
+            text: option.locales.[this.language].name
           })
         );
       });
     },
     _areas: function(val) {
-      this.gridForm.area = null;
-      this.areaOptions = [];
+
       val.forEach(option => {
         this.areaOptions.push(
           new Object({
             value: option.id,
-            text: option.locales.en.name
+            text: option.locales.[this.language].name
           })
         );
       });

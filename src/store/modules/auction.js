@@ -266,11 +266,11 @@ const actions = {
   },
 
   getCities({ commit, dispatch }, payload) {
-    const country_id = payload.country_id;
+    const area_id = payload.area_id;
     axios
       .get(`${apiUrl}/cities`, {
         params: {
-          country_id: country_id
+          area_id: area_id
         }
       })
       .then(res => {
@@ -281,11 +281,11 @@ const actions = {
       .catch(err => {});
   },
   getAreas({ commit, dispatch }, payload) {
-    const city_id = payload.city_id;
+    const country_id = payload.country_id;
     axios
       .get(`${apiUrl}/areas`, {
         params: {
-          city_id: city_id
+          country_id: country_id
         }
       })
       .then(res => {
@@ -407,6 +407,41 @@ const actions = {
     formData.append(`auction_id`, payload.auction_id);
     axios
       .post(`${apiUrl}/categories/additional/${id}`, formData, {})
+      .then(res => {
+        if (res.status === 200) {
+          commit("createAuctionCustomValue", res.data.data);
+          // dispatch("getAuctionImages", { id });
+          console.log("hi from valueeeeeeeeee");
+        }
+      })
+      .catch(err => {});
+  },
+  updateCustomValue({ commit, dispatch }, payload) {
+    const custom_id = payload.custom_id;
+    const value_id = payload.value_id;
+
+    const formData = new FormData();
+    const langs = localStorage.getItem("Languages");
+    JSON.parse(langs).forEach(el => {
+      formData.append(
+        `${el.name}[value]`,
+        payload.info.values[0].locales.en.value
+      );
+    });
+    if (payload.info.unit) {
+      JSON.parse(langs).forEach(el => {
+        formData.append(
+          `${el.name}[unit]`,
+          payload.info.values[0].locales.en.unit
+        );
+      });
+    }
+    axios
+      .put(
+        `${apiUrl}/categories/additional/${custom_id}/${value_id}`,
+        formData,
+        {}
+      )
       .then(res => {
         if (res.status === 200) {
           commit("createAuctionCustomValue", res.data.data);

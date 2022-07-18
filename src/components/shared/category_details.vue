@@ -6,9 +6,9 @@
           :title="$t(`forms.basic_details`)"
           active
           :title-item-class="
-            showCustomTab ? 'w-30 text-center' : 'w-50 text-center'
+            isAuctionCategory ? 'w-25 text-center' : 'w-50 text-center'
           "
-          @click="$emit('showAddCustomField', false)"
+          @click="$emit('showAddButton', false)"
         >
           <template v-if="!is_Load">
             <b-form @submit.prevent="onGridFormSubmit">
@@ -110,9 +110,11 @@
         </b-tab>
         <b-tab
           :title="$t(`forms.custom_field`)"
-          title-item-class="w-30 text-center"
-          v-if="showCustomTab"
-          @click="$emit('showAddCustomField', true)"
+          title-item-class="w-25 text-center"
+          v-if="isAuctionCategory"
+          @click="
+            $emit('showAddButton', true, $t(`todo.add-new-custom-filed`), false)
+          "
         >
           <template v-if="_isLoadCustomField">
             <b-colxx xs="12" md="12" class="mb-3">
@@ -156,11 +158,60 @@
           />
         </b-tab>
         <b-tab
+          :title="$t(`forms.sub-category`)"
+          title-item-class="w-25 text-center"
+          v-if="isAuctionCategory"
+          @click="
+            $emit('showAddButton', true, $t(`todo.add-new-sub-category`), true)
+          "
+        >
+          <template v-if="_isLoadCustomField">
+            <b-colxx xs="12" md="12" class="mb-3">
+              <b-card>
+                <vuetable
+                  ref="subCategoryVuetable"
+                  :api-mode="false"
+                  :reactive-api-url="true"
+                  :fields="subCategoryFields"
+                >
+                  <template slot="actions" slot-scope="props">
+                    <b-button
+                      variant="outline-theme-3"
+                      class="icon-button"
+                      @click="modify(props.rowData)"
+                    >
+                      <i class="simple-icon-pencil"></i>
+                    </b-button>
+                    <b-button
+                      variant="outline-theme-6"
+                      class="icon-button"
+                      @click="open_model('deleteModal', props.rowData.id)"
+                    >
+                      <i class="simple-icon-trash"></i>
+                    </b-button>
+                  </template>
+                </vuetable>
+              </b-card>
+            </b-colxx>
+          </template>
+          <template v-else>
+            <div class="loading"></div>
+          </template>
+          <add-new-custom-field
+            @hide-create-modal="hideCreateModal"
+            @create-custom-field="create_custom_field"
+            @update-custom-field="update_custom_field"
+            :showCreateModal="showCreateModal"
+            :showUpdateModal="showUpdateModal"
+            :customFieldInfo="customFieldInfo"
+          />
+        </b-tab>
+        <b-tab
           :title="$t(`forms.meta_data`)"
           :title-item-class="
-            showCustomTab ? 'w-30 text-center' : 'w-50 text-center'
+            isAuctionCategory ? 'w-25 text-center' : 'w-50 text-center'
           "
-          @click="$emit('showAddCustomField', false)"
+          @click="$emit('showAddButton', false)"
         >
           <meta_data :id="_id" :type="_type" />
         </b-tab>
@@ -214,7 +265,7 @@ export default {
       hideModel: false,
       modalName: null,
       showUpdateModal: false,
-      showCustomTab: false,
+      isAuctionCategory: false,
       password: null,
       is_block_category: false,
       image: null,
@@ -281,6 +332,64 @@ export default {
           dataClass: "center aligned text-right",
           width: "25%"
         }
+      ],
+      subCategoryFields: [
+         {
+          name: "image",
+          callback: value => {
+            return `<img src="${value}" style="border-radius: 34%;" alt="Image" width="50" height="50">`;
+          },
+          title: "Image",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "20%"
+        },
+        {
+          name: "locales",
+          callback: value => {
+            return value.[this.language].name;
+          },
+          sortField: "slug",
+          title: "Title",
+          titleClass: "title",
+          dataClass: "list-item-heading",
+          width: "30%"
+        },
+        {
+          name: "locales",
+          callback: value => {
+            return value.[this.language].description;
+          },
+          sortField: "description",
+          title: "Description",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "20%"
+        },
+        {
+          name: "active",
+          callback: value => {
+            return value === 1
+              ? `<span class="badge badge-pill badge-success handle mr-1">
+                Active
+              </span>`
+              : `<span class="badge badge-pill badge-danger handle mr-1">
+                Inactive
+              </span>`;
+          },
+          sortField: "active",
+          title: "Status",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "10%"
+        },
+        {
+          name: "__slot:actions",
+          title: "",
+          titleClass: "center aligned text-right",
+          dataClass: "center aligned text-right",
+          width: "20%"
+        }
       ]
     };
   },
@@ -304,7 +413,8 @@ export default {
       ? ((this.is_block_category = true),
         this.getBlockCategory({ id: this._id }),
         this.getBlockCategoryTypes())
-      : this.getCategory({ id: this._id }),
+      : this.getCategory({ id: this._id })
+      this.getSubCategories({ id: this._id }),
       this.getCustomFieldList({id: this._id}),
       (this.gridForm.select = "just for form submit");
     this.langs = localStorage.getItem("Languages");
@@ -315,6 +425,7 @@ export default {
     ...mapActions([
       "getBlockCategory",
       "updateBlockCategory",
+      "getSubCategories",
       "updateCategory",
       "getBlockCategoryTypes",
       "updateCustomField",
@@ -416,6 +527,7 @@ this.modalName = null;
       "_blockCategory",
       "_successUpdateBlockCategory",
       "_isLoadBlock",
+      "_subCategories",
        "_createCustomField",
       "_isLoadCustomField"
     ])
@@ -433,8 +545,12 @@ this.modalName = null;
       );
 
     },
+    _subCategories: function(val){
+      this.$refs.subCategoryVuetable.setData(val);
+
+    },
     _category(newInfo, oldOne) {
-      this.showCustomTab = true;
+      this.isAuctionCategory = true;
       this.category_form.forEach(el => {
          el.name = newInfo.locales.[el._name].name;
           el.description = newInfo.locales.[el._name].description;
@@ -469,7 +585,7 @@ this.modalName = null;
     },
     _blockCategory(newInfo, oldOne) {
       this.is_block_category = true;
-      this.showCustomTab = false;
+      this.isAuctionCategory = false;
       this.category_form.forEach(el => {
            el.name = newInfo.locales.[el._name].name;
           el.description = newInfo.locales.[el._name].description;

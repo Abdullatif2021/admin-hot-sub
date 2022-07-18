@@ -63,24 +63,38 @@
                 <b-tooltip
                   target="activate"
                   placement="left"
-                  :title="$t('forms.active_tooltip')"
+                  :title="$t('forms.active_auction')"
                 >
                 </b-tooltip>
               </b-button>
 
               <b-button
                 variant="outline-theme-3"
+                id="edit"
                 class="icon-button"
                 @click="modify(props.rowData.id)"
               >
                 <i class="simple-icon-pencil"></i>
+                <b-tooltip
+                  target="edit"
+                  placement="top"
+                  :title="$t('forms.edit')"
+                >
+                </b-tooltip>
               </b-button>
               <b-button
                 variant="outline-theme-6"
+                id="delete"
                 class="icon-button"
                 @click="open_model('deleteAuction', props.rowData.id)"
               >
                 <i class="simple-icon-trash"></i>
+                <b-tooltip
+                  target="delete"
+                  placement="bottom"
+                  :title="$t('forms.delete')"
+                >
+                </b-tooltip>
               </b-button>
             </template>
           </vuetable>

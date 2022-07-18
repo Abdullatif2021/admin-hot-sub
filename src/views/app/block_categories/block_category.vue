@@ -9,7 +9,11 @@
     ></datatable-heading>
 
     <category_details v-if="id" :_id="id" :_type="blockCategory" />
-    <add_category v-if="!id" :_type="blockCategory" />
+    <add_category
+      @create-category="createCategory"
+      v-if="!id"
+      :_type="blockCategory"
+    />
   </b-colxx>
 </template>
 

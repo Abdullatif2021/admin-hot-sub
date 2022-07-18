@@ -22,7 +22,8 @@ const state = {
   subCategories: null,
   customFields: null,
   create_customField: null,
-  successDeleteCustom: null
+  successDeleteCustom: null,
+  successCreateSubCategory: null
 };
 
 const getters = {
@@ -41,6 +42,7 @@ const getters = {
   _successDeleteCategory: state => state.successDeleteCategory,
   _successActiveCategory: state => state.successActiveCategory,
   _successUpdateCategory: state => state.successUpdateCategory,
+  _successCreateSubCategory: state => state.successCreateSubCategory,
   _categoryMetaTypeList: state => state.categoryMetaTypeList,
   // block category metaData
   _CategoryMeta: state => state.Categorymetadata,
@@ -110,6 +112,9 @@ const mutations = {
   },
   deleteCustomField(state, payload) {
     state.successDeleteCustom = payload;
+  },
+  createSubCategory(state, payload) {
+    state.successCreateSubCategory = payload;
   }
 };
 
@@ -304,7 +309,51 @@ const actions = {
       commit("getCategoryMetaTypeList", res.data);
     });
   },
+  // %%%%%%%%%%%%%%%%% Sub Category &&&&&&&&&&&&&&&&&&&&&&
+  getSubCategories: async ({ commit }, payload) => {
+    commit("setProcessing", false);
+    const id = payload.id;
 
+    await axios
+      .get(`${apiUrl}/categories`, {
+        params: {
+          parent_id: payload.id
+        }
+      })
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+
+      .then(res => {
+        if (res.status === 200) {
+          commit("getSubCategoriesSuccess", res.data);
+        }
+      });
+  },
+  createSubCategory: async ({ commit, dispatch }, payload) => {
+    commit("setProcessing", false);
+    const formData = new FormData();
+    formData.append(`parent_id`, payload.id);
+    if (payload.image) {
+      formData.append(`image`, payload.image);
+    }
+    payload.info.forEach(el => {
+      formData.append(`${el._name}[name]`, el.name);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
+      }
+    });
+    await axios
+      .post(`${apiUrl}/categories`, formData, {})
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("createSubCategory", res.data.data);
+      });
+  },
   //  %%%%%%%%%%%%% Custom Feild &&&&&&&&&&&&&&&&&&&&&&&&
   getCustomFieldList({ commit, dispatch }, payload) {
     commit("setCustomProcessing", false);

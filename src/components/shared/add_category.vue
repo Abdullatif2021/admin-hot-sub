@@ -64,7 +64,6 @@
                 id="dropzone"
                 :options="dropzoneOptions"
                 @vdropzone-files-added="fileAdded"
-                @vdropzone-sending-multiple="sendMessage"
                 @vdropzone-removed-file="fileRemoved"
               ></vue-dropzone>
             </b-form-group>
@@ -148,11 +147,7 @@ export default {
     this.make_collaction(this.langs, this.category_form);
   },
   methods: {
-    ...mapActions([
-      "createBlockCategory",
-      "createCategory",
-      "getBlockCategoryTypes"
-    ]),
+    ...mapActions(["createBlockCategory", "getBlockCategoryTypes"]),
     make_collaction(langs, form) {
       JSON.parse(langs).forEach(el => {
         form.push({
@@ -168,18 +163,12 @@ export default {
       this.$v.category_form.$touch();
       if (!this.$v.gridForm.$invalid && !this.$v.category_form.$invalid) {
         this.enable = true;
-        if (this._type == "block") {
-          this.createBlockCategory({
-            info: this.$v.category_form.$model,
-            type: this.gridForm.select,
-            image: this.file ? this.file[0] : null
-          });
-        } else {
-          this.createCategory({
-            info: this.$v.category_form.$model,
-            image: this.file ? this.file[0] : null
-          });
-        }
+        this.$emit(
+          "create-category",
+          this.$v.category_form.$model,
+          this.file ? this.file[0] : null,
+          this.gridForm.select
+        );
       }
     },
     fileAdded(file) {
@@ -188,11 +177,6 @@ export default {
     fileRemoved(file) {
       this.file = null;
     },
-    shootMessage: async function() {
-      this.$refs.myVueDropzone.processQueue();
-    },
-    sendMessage: async function(files, xhr, formData) {},
-
     dropzoneTemplate() {
       return `<div class="dz-preview dz-file-preview mb-3">
                   <div class="d-flex flex-row "> <div class="p-0 w-30 position-relative">
@@ -232,15 +216,15 @@ export default {
       );
       router.push(`${adminRoot}/blockCategories`);
     },
-    _create_category_success(newInfo, oldOne) {
-      this.$notify(
-        "success",
-        "Operation completed successfully",
-        "Category have been created successfully",
-        { duration: 3000, permanent: false }
-      );
-      router.push(`${adminRoot}/categories`);
-    },
+    // _create_category_success(newInfo, oldOne) {
+    //   this.$notify(
+    //     "success",
+    //     "Operation completed successfully",
+    //     "Category have been created successfully",
+    //     { duration: 3000, permanent: false }
+    //   );
+    //   router.push(`${adminRoot}/categories`);
+    // },
 
     _blockCategoryTypes(newInfo, oldOne) {
       newInfo.forEach(el => {

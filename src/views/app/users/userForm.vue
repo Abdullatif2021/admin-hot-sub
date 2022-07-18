@@ -562,35 +562,58 @@
                       pagination-path
                     >
                       <template slot="actions" slot-scope="props">
-                        <b-dropdown
-                          id="langddm"
-                          class="ml-2"
-                          variant="light"
-                          size="sm"
-                          toggle-class="language-button"
+                        <b-button
+                          id="open"
+                          class="icon-button"
+                          @click="open_attach(props.rowData)"
                         >
-                          <template #button-content>
-                            <i class="simple-icon-pencil"></i>
-                          </template>
-                          <b-dropdown-item
-                            @click="open_attach(props.rowData)"
-                            >{{ $t("OPEN") }}</b-dropdown-item
+                          <i class="simple-icon-arrow-right-circle"></i>
+                          <b-tooltip
+                            target="open"
+                            placement="left"
+                            :title="$t('forms.open_tooltip')"
                           >
-                          <b-dropdown-item
-                            @click="verfiy_attach(props.rowData)"
-                            :disabled="props.rowData.verfied === 1"
-                            >{{ $t("VERIFY") }}</b-dropdown-item
+                          </b-tooltip>
+                        </b-button>
+                        <b-button
+                        v-if="props.rowData.verfied !== 1"
+                          id="activate"
+                          class="icon-button"
+                          @click="open_verfiy(props.rowData)"
+                        ><i class="iconsminds-yes"></i>
+                          <b-tooltip
+                            target="activate"
+                            placement="top"
+                            :title="$t('forms.activate_tooltip')"
                           >
-                          <b-dropdown-item
-                            @click="update_attach(props.rowData)"
-                            >{{ $t("UPDATE") }}</b-dropdown-item
+                          </b-tooltip>
+                        </b-button>
+                        <b-button
+                          id="update"
+                          class="icon-button"
+                          @click="update_attach(props.rowData)"
+                        >
+                          <i class="iconsminds-gears"></i>
+                          <b-tooltip
+                            target="update"
+                            placement="bottom"
+                            :title="$t('forms.update_tooltip')"
                           >
-                          <b-dropdown-item
-                            @click="note_attach(props.rowData)"
-                            :disabled="props.rowData.notes !== null"
-                            >{{ $t("SEND_NOTE") }}</b-dropdown-item
+                          </b-tooltip>
+                        </b-button>
+                        <b-button
+                          id="note"
+                          class="icon-button"
+                          @click="note_attach(props.rowData)"
+                        >
+                          <i class="simple-icon-pencil"></i>
+                          <b-tooltip
+                            target="note"
+                            placement="right"
+                            :title="$t('forms.note_tooltip')"
                           >
-                        </b-dropdown>
+                          </b-tooltip>
+                        </b-button>
                       </template>
                     </vuetable>
                   </template>
@@ -691,6 +714,25 @@
         >
         <b-button variant="secondary" @click="hideModal('attach')">{{
           $t("survey.cancel")
+        }}</b-button>
+      </template>
+    </b-modal>
+    <b-modal
+      id="activeAttach"
+      ref="activeAttach"
+      :title="$t('modal.modal-active-auction-title')"
+    >
+      {{$t("forms.activeAttachQuestion")}}
+      <template slot="modal-footer">
+        <b-button
+          variant="primary"
+          @click="verfiy_attach()"
+          class="mr-1"
+        >
+          {{ $t("button.yes") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('activeAttach')">{{
+          $t("button.no")
         }}</b-button>
       </template>
     </b-modal>
@@ -810,14 +852,14 @@ export default {
           title: "File",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "30%"
+          width: "20%"
         },
         {
           name: "category",
           title: "Category",
           titleClass: "",
           dataClass: "text-muted",
-          width: "30%"
+          width: "20%"
         },
 
         {
@@ -834,14 +876,14 @@ export default {
           title: "Status",
           titleClass: "",
           dataClass: "text-muted",
-          width: "30%"
+          width: "20%"
         },
         {
           name: "__slot:actions",
           title: "",
           titleClass: "center aligned text-right",
           dataClass: "center aligned text-right",
-          width: "20%"
+          width: "40%"
         }
       ]
     };
@@ -1025,8 +1067,13 @@ export default {
       this.update_attachment = true;
       window.open(item.path);
     },
-    verfiy_attach(item) {
-      this.verfiyAttach({ id: item.id });
+    open_verfiy(item) {
+       this.$refs["activeAttach"].show();
+       this.item_id = item.id
+      // this.verfiyAttach({ id: item.id });
+    },
+     verfiy_attach(item) {
+       this.verfiyAttach({ id: this.item_id });
     },
     update_attach(item) {
       this.update_attachment = false;
@@ -1243,6 +1290,14 @@ export default {
       this.getUserAttach({ id: this.userId });
     },
     _verfiedAtachmet(newVal, odt) {
+       this.$refs["activeAttach"].hide();
+        this.$notify(
+        "success",
+        "Operation completed successfully",
+        "ِAttachment have been Verified successfully",
+        { duration: 4000, permanent: false }
+      );
+
       this.getUserAttach({ id: this.userId });
     },
     _phoneVerification(newVal, odt) {

@@ -51,6 +51,7 @@
                   >
                     <template slot="actions" slot-scope="props">
                       <b-button
+                        :disabled="props.rowData.payment_status == 'ACCEPTED'"
                         v-b-modal.bank_notice
                         variant="outline-theme-3"
                         class="icon-button"
@@ -119,6 +120,7 @@
     </b-row>
     <b-modal
       id="bank_notice"
+      ref="bank_notice"
       hide-footer
       size="lg"
       :title="$t('forms.bank_notice')"

@@ -151,13 +151,24 @@ body {
     }
   }
 }
-.delete-span {
+.delete-span-en {
   color: red;
   float: right;
   position: absolute;
   cursor: pointer;
   font-size: 28px;
   margin: 7px 0px 0px -37px;
+  &:hover {
+    color: rgb(146, 146, 146);
+  }
+}
+.delete-span-ar {
+  color: red;
+  float: right;
+  position: absolute;
+  cursor: pointer;
+  font-size: 28px;
+  margin: 7px -37px 0px 0px;
   &:hover {
     color: rgb(146, 146, 146);
   }

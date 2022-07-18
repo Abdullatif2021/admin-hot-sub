@@ -71,7 +71,7 @@
               <b-button
                 variant="outline-theme-6"
                 class="icon-button"
-                @click="open_model('deleteModal', props.rowData.id)"
+                @click="open_model('deleteCategory', props.rowData.id)"
               >
                 <i class="simple-icon-trash"></i>
               </b-button>
@@ -122,12 +122,27 @@
         }}</b-button>
       </template>
     </b-modal>
-    <deleteModal
+    <b-modal
+      id="deleteCategory"
+      ref="deleteCategory"
+      :title="$t('modal.modal-active-category-title')"
+    >
+      {{ $t("forms.deleteCategoryQuestion") }}
+      <template slot="modal-footer">
+        <b-button :disabled="deleteBtn" variant="primary" @click="delete_category()" class="mr-1">
+          {{ $t("button.yes") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('deleteCategory')">{{
+          $t("button.no")
+        }}</b-button>
+      </template>
+    </b-modal>
+    <!-- <deleteModal
       :hideModel="hideModel"
       :message="$t('forms.deleteCategoryQuestion')"
       :modalName="modalName"
       @delete_event="delete_category()"
-    />
+    /> -->
   </div>
 </template>
 <script>
@@ -153,6 +168,7 @@ export default {
       order_by: null,
       search: null,
       modalName: null,
+      deleteBtn: false,
       hideModel: false,
       actions: null,
       isLoad: false,
@@ -324,6 +340,7 @@ export default {
       }
     },
     delete_category() {
+      this.deleteBtn = true;
       this.deleteCategory({ id: this.id });
     },
     onChangePage(page) {
@@ -345,16 +362,9 @@ export default {
       this.active = active
     },
     open_model(refname, id, active) {
-      if (active) {
         this.$refs[refname].show();
         this.id = id;
         this.active = active;
-      }else{
-        this.modalName = refname;
-        this.id = id;
-      }
-
-
     },
     changePageSize(perPage) {
       this.limit = perPage;
@@ -442,7 +452,8 @@ export default {
     },
     _successDeleteCategory(newVal, old) {
       this.hideModel = !this.hideModel
-
+      this.deleteBtn = false;
+      this.$refs['deleteCategory'].hide();
       this.$notify(
         "success",
         "Operation completed successfully",

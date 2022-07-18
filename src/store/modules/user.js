@@ -190,8 +190,8 @@ export default {
           password: payload.password
         })
         .then(res => {
-          let refreshToken = res.data.refresh_token;
-          let accessToken = res.data.access_token;
+          let refreshToken = res.data.data.refresh_token;
+          let accessToken = res.data.data.access_token;
           setTokens(accessToken, refreshToken);
 
           if (res.status) {
@@ -270,7 +270,6 @@ export default {
           }
         });
     },
-
     activateUser({ commit }, payload) {
       const id = payload.id;
       axios
