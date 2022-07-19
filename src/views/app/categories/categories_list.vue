@@ -125,11 +125,16 @@
     <b-modal
       id="deleteCategory"
       ref="deleteCategory"
-      :title="$t('modal.modal-active-category-title')"
+      :title="$t('modal.modal-delete-category-title')"
     >
       {{ $t("forms.deleteCategoryQuestion") }}
       <template slot="modal-footer">
-        <b-button :disabled="deleteBtn" variant="primary" @click="delete_category()" class="mr-1">
+        <b-button
+          :disabled="deleteBtn"
+          variant="primary"
+          @click="delete_category()"
+          class="mr-1"
+        >
           {{ $t("button.yes") }}</b-button
         >
         <b-button variant="secondary" @click="hideModal('deleteCategory')">{{

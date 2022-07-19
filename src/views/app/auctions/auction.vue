@@ -294,9 +294,9 @@
                             <span
                               v-if="image"
                               :class="
-                                language === 'en'
-                                  ? 'delete-span-en'
-                                  : 'delete-span-ar'
+                                language === 'ar'
+                                  ? 'delete-span-ar'
+                                  : 'delete-span-en'
                               "
                             >
                               <i
@@ -690,9 +690,9 @@
                         <span
                           v-if="$v.files_form.image.$model"
                           :class="
-                            language === 'en'
-                              ? 'delete-span-en'
-                              : 'delete-span-ar'
+                            language === 'ar'
+                              ? 'delete-span-ar'
+                              : 'delete-span-en'
                           "
                         >
                           <i @click="delete_img" class="simple-icon-trash"></i>
@@ -795,18 +795,18 @@
                     <b-colxx :sm="field.type === 'STRING' ? 12 : 6">
                       <b-form-group
                         :label="
-                          language === 'en'
-                            ? field.locales.en.name
-                            : field.locales.ar.name
+                          language === 'ar'
+                            ? field.locales.ar.name
+                            : field.locales.en.name
                         "
                       >
                         <b-form-input
-                        v-if="language === 'en'"
+                          v-if="language === 'en'"
                           :type="field.type === 'INT' ? 'number' : 'text'"
                           v-model="field.values[0].locales.en.value"
                         />
-                         <b-form-input
-                             v-if="language === 'ar'"
+                        <b-form-input
+                          v-if="language === 'ar'"
                           :type="field.type === 'INT' ? 'number' : 'text'"
                           v-model="field.values[0].locales.ar.value"
                         />

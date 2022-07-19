@@ -852,7 +852,20 @@ button {
   min-height: 1.1rem;
   margin-top: -7px;
 }
-
+.top-faq-right-button {
+  float: right;
+}
+.top-faq-left-button {
+  float: left;
+}
+.top-faq-category-right-button {
+  margin-right: 10px;
+  float: right;
+}
+.top-faq-category-left-button {
+  margin-left: 10px;
+  float: left;
+}
 .dropdown-menu {
   font-size: 0.8rem;
   border-radius: $border-radius;

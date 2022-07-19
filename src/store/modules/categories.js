@@ -20,6 +20,7 @@ const state = {
   create_category_meta_success: null,
   categoryMetaTypeList: null,
   subCategories: null,
+  successDeleteSubCategory: null,
   customFields: null,
   create_customField: null,
   successDeleteCustom: null,
@@ -31,6 +32,7 @@ const getters = {
   _isLoadCustomField: state => state.customProcessing,
   cateError: state => state.Error,
   _subCategories: state => state.subCategories,
+  _isLoadSubCategory: state => state.processing,
   cate_paginations: state => state.paginations,
   _customFields: state => state.customFields,
   categories: state => state.categories,
@@ -40,6 +42,7 @@ const getters = {
   _create_category_success: state => state.create_category_success,
   _updatedCategorySuccessfuly: state => state.updated_Successfuly,
   _successDeleteCategory: state => state.successDeleteCategory,
+  _successDeleteSubCategory: state => state.successDeleteSubCategory,
   _successActiveCategory: state => state.successActiveCategory,
   _successUpdateCategory: state => state.successUpdateCategory,
   _successCreateSubCategory: state => state.successCreateSubCategory,
@@ -113,6 +116,9 @@ const mutations = {
   deleteCustomField(state, payload) {
     state.successDeleteCustom = payload;
   },
+  deleteSubCategory(state, payload) {
+    state.successDeleteSubCategory = payload;
+  },
   createSubCategory(state, payload) {
     state.successCreateSubCategory = payload;
   }
@@ -143,27 +149,7 @@ const actions = {
         }
       });
   },
-  getSubCategories: async ({ commit }, payload) => {
-    commit("setProcessing", false);
-    const id = payload.id;
 
-    await axios
-      .get(`${apiUrl}/categories`, {
-        params: {
-          parent_id: payload.id
-        }
-      })
-      .then(res => {
-        commit("setProcessing", true);
-        return res;
-      })
-
-      .then(res => {
-        if (res.status === 200) {
-          commit("getSubCategoriesSuccess", res.data);
-        }
-      });
-  },
   getCategory({ commit, dispatch }, payload) {
     const id = payload.id;
     axios
@@ -186,6 +172,9 @@ const actions = {
     });
     if (payload.image !== null) {
       formData.append("image", payload.image);
+    }
+    if (payload.icon) {
+      formData.append(`icon`, payload.icon);
     }
     axios.post(`${apiUrl}/categories`, formData, {}).then(res => {
       if (res.status === 201) {
@@ -334,9 +323,13 @@ const actions = {
   createSubCategory: async ({ commit, dispatch }, payload) => {
     commit("setProcessing", false);
     const formData = new FormData();
+    const id = payload.id;
     formData.append(`parent_id`, payload.id);
     if (payload.image) {
       formData.append(`image`, payload.image);
+    }
+    if (payload.icon) {
+      formData.append(`icon`, payload.icon);
     }
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);
@@ -352,7 +345,25 @@ const actions = {
       })
       .then(res => {
         commit("createSubCategory", res.data.data);
+        dispatch("getSubCategories", { id });
       });
+  },
+  deleteSubCategory: async ({ commit, dispatch }, payload) => {
+    const id = payload.categoryId;
+    const sub_id = payload.sub_id;
+    await axios
+      .delete(`${apiUrl}/categories/${sub_id}`, {
+        params: {
+          parent_id: payload.categoryId
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          commit("deleteSubCategory", res.data);
+          dispatch("getSubCategories", { id });
+        }
+      })
+      .catch(err => {});
   },
   //  %%%%%%%%%%%%% Custom Feild &&&&&&&&&&&&&&&&&&&&&&&&
   getCustomFieldList({ commit, dispatch }, payload) {

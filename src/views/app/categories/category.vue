@@ -19,6 +19,7 @@
       <category_details
         @showAddButton="showAddButton"
         @createdSuccessfuly="createdSuccessfuly"
+        @modifySubCategory="modifySubCategory"
         :showCreateModal="showCreateModal"
         v-if="id"
         :_id="id"
@@ -33,14 +34,32 @@
     </b-colxx>
 
     <b-modal
-      ref="addSubCategoryModal"
-      id="addSubCategoryModal"
+      ref="subCategoryModal"
+      id="subCategoryModal"
       size="lg"
-      :title="$t('forms.addSubCategoryTitle')"
+      :title="
+        isModify
+          ? $t('forms.editSubCategoryTitle')
+          : $t('forms.addSubCategoryTitle')
+      "
       :hide-backdrop="true"
       :no-close-on-backdrop="true"
     >
       <div>
+        <b-colxx v-if="iseEditCategory" sm="12">
+          <label
+            style="display: flex;justify-content: center;"
+            class="form-group has-float-label"
+          >
+            <img
+              :src="image"
+              style="border-radius: 20%;"
+              alt="Image"
+              width="120"
+              height="120"
+            />
+          </label>
+        </b-colxx>
         <b-form @submit.prevent="onGridFormSubmit">
           <div v-for="(lang, index) in $v.lang_form.$each.$iter" :key="index">
             <b-colxx sm="12">
@@ -77,6 +96,42 @@
           <b-colxx xxs="12">
             <b-form-group
               class="has-float-label mb-4"
+              :label="$t('forms.icon')"
+            >
+              <b-form-input
+                style="display: none;"
+                :state="!$v.icon_form.icon.$error"
+                v-model="$v.icon_form.icon.$model"
+              />
+              <vue-dropzone
+                ref="myVueDropzone"
+                id="dropzone"
+                :options="iconDropzoneOptions"
+                @vdropzone-files-added="iconAdded"
+                @vdropzone-removed-file="iconRemoved"
+              ></vue-dropzone>
+              <b-form-invalid-feedback v-if="!$v.icon_form.icon.required">{{
+                $t("forms.choose-icon-message")
+              }}</b-form-invalid-feedback>
+              <div v-if="icon" class="image-review-show">
+                <img
+                  style="max-width: 100%;max-height: 100%;"
+                  :src="getIconUrl"
+                  alt="icon"
+                />
+                <span
+                  :class="
+                    language === 'en' ? 'delete-span-en' : 'delete-span-ar'
+                  "
+                >
+                  <i @click="iconRemoved" class="simple-icon-trash"></i>
+                </span>
+              </div>
+            </b-form-group>
+          </b-colxx>
+          <b-colxx xxs="12">
+            <b-form-group
+              class="has-float-label mb-4"
               :label="$t('forms.image')"
             >
               <vue-dropzone
@@ -87,7 +142,20 @@
                 @vdropzone-removed-file="fileRemoved"
               ></vue-dropzone>
             </b-form-group>
+            <div v-if="image" class="image-review-show">
+              <img
+                style="max-width: 100%;max-height: 100%;"
+                :src="isattachModify ? image : getImageUrl"
+                alt="image"
+              />
+              <span
+                :class="language === 'en' ? 'delete-span-en' : 'delete-span-ar'"
+              >
+                <i @click="fileRemoved" class="simple-icon-trash"></i>
+              </span>
+            </div>
           </b-colxx>
+
           <!-- <b-button
             :disabled="enable"
             type="submit"
@@ -103,13 +171,11 @@
           :disabled="enable"
           @click="addSubCategory()"
           class="mr-1"
-          >{{ $t("pages.add-new") }}</b-button
+          >{{ isModify ? $t("forms.submit") : $t("pages.add-new") }}</b-button
         >
-        <b-button
-          variant="secondary"
-          @click="hideModal('addSubCategoryModal')"
-          >{{ $t("pages.cancel") }}</b-button
-        >
+        <b-button variant="secondary" @click="hideModal('subCategoryModal')">{{
+          $t("pages.cancel")
+        }}</b-button>
       </template>
     </b-modal>
   </b-row>
@@ -122,6 +188,7 @@ import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue
 import add_category from "../../../components/shared/add_category.vue";
 import { mapActions, mapGetters } from "vuex";
 import { validationMixin } from "vuelidate";
+import { getCurrentLanguage } from "../../../utils";
 const { required } = require("vuelidate/lib/validators");
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
@@ -138,12 +205,31 @@ export default {
       category: "category",
       id: null,
       lang_form: [],
+      isattachModify: false,
+      icon_form: {
+        icon: null
+      },
       image: null,
+      isModify: false,
       enable: false,
+      iseEditCategory: false,
+      icon: null,
       addBtnTitle: null,
       isSubCategory: false,
       AddBtn: false,
       showCreateModal: false,
+      iconDropzoneOptions: {
+        url: "https://lilacmarketingevents.com",
+        thumbnailHeight: 160,
+        thumbnailWidth: 150,
+        parallelUploads: 3,
+        maxFiles: 1,
+        uploadMultiple: false,
+        autoProcessQueue: false,
+        previewTemplate: this.dropzoneTemplate(),
+        headers: {},
+        acceptedFiles: ".svg"
+      },
       dropzoneOptions: {
         url: "https://lilacmarketingevents.com",
         thumbnailHeight: 160,
@@ -168,12 +254,19 @@ export default {
         description: {},
         _name: {}
       }
+    },
+    icon_form: {
+      icon: {
+        required
+      }
     }
   },
   created() {
     this.id = this.$route.query.id;
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.lang_form);
+           this.language = getCurrentLanguage();
+
   },
   methods: {
     ...mapActions(["createSubCategory", "createCategory"]),
@@ -189,11 +282,13 @@ export default {
     addSubCategory() {
       this.$v.$touch();
       this.$v.lang_form.$touch();
-      if (!this.$v.lang_form.$invalid) {
+      this.$v.icon_form.$touch();
+      if (!this.$v.lang_form.$invalid && !this.$v.icon_form.$invalid) {
         this.enable = true;
         this.createSubCategory({
           info: this.$v.lang_form.$model,
-          image: this.image[0],
+          image: this.image ? this.image[0] : null,
+          icon: this.icon ? this.icon[0] : null,
           id: this.id
         });
       }
@@ -209,9 +304,28 @@ export default {
     hideModal(refname) {
       this.$refs[refname].hide();
     },
+    modifySubCategory(item) {
+      this.isModify = true;
+      this.isattachModify = true;
+       this.lang_form.forEach(el => {
+        el.name = item.locales.[el._name].name;
+        el.description = item.locales.[el._name].description;
+      });
+      this.image = item.image;
+    this.$refs["subCategoryModal"].show();
+      console.log(item);
+    },
     add_new() {
+         this.lang_form.forEach(el => {
+        el.name = null;
+        el.description = null;
+      });
+      this.icon_form.icon = null;
+      this.image = null;
+      this.$v.$reset();
       if (this.isSubCategory) {
-        this.$refs["addSubCategoryModal"].show();
+        this.isModify = false;
+        this.$refs["subCategoryModal"].show();
       } else {
         this.showCreateModal = true;
       }
@@ -224,6 +338,16 @@ export default {
     },
     fileRemoved(image) {
       this.image = null;
+      this.isattachModify = false;
+    },
+    iconAdded(icon) {
+      this.icon_form.icon = "icon";
+      this.icon = icon;
+    },
+    iconRemoved() {
+      this.icon_form.icon = null;
+
+      this.icon = null;
     },
     dropzoneTemplate() {
       return `<div class="dz-preview dz-file-preview mb-3">
@@ -251,7 +375,22 @@ export default {
       "_isLoadCustomField",
       "_successCreateSubCategory",
       "_create_category_success"
-    ])
+    ]),
+    getImageUrl(){
+      if (this.isModify) {
+          return this.image[0];
+      }else{
+        return URL.createObjectURL(this.image[0]);
+      }
+    },
+    getIconUrl(){
+      console.log(this.isModify);
+       if (this.isModify) {
+              return this.icon[0]
+      }else{
+         return URL.createObjectURL(this.icon[0]);
+      }
+    }
   },
   watch: {
     _createCustomField: function(val) {
@@ -259,13 +398,19 @@ export default {
       this.showCreateModal = false;
     },
     _successCreateSubCategory: function(val) {
+      this.lang_form.forEach(el => {
+        el.name = null;
+        el.description = null;
+      });
+      this.icon_form.icon = null;
+      this.$v.$reset();
       this.$notify(
         "success",
         "Operation completed successfully",
         "Auction Sub Category have been created successfully",
         { duration: 3000, permanent: false }
       );
-      this.$refs["addSubCategoryModal"].hide();
+      this.$refs["subCategoryModal"].hide();
       this.enable = false;
     },
     _create_category_success: function(val) {

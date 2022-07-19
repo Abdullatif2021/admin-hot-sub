@@ -225,7 +225,7 @@ export default {
           title: "Title",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "15%"
+          width: "10%"
         },
 
         {
@@ -262,11 +262,37 @@ export default {
           title: "Minimum Paid",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "15%"
+          width: "10%"
         },
           {
           name: "bids_count",
           title: "number of bidding",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "10%"
+        },
+           {
+          name: "auction_type",
+           callback: value => {
+            switch (value) {
+              case 1 :
+                return `<span style="background: #ff540d;" class="badge badge-pill badge-success handle mr-1">
+               IN Progress
+              </span>`;
+              case 2 :
+                return `<span style="background: grey;" class="badge badge-pill badge-success handle mr-1">
+               Up Coming
+              </span>`;x
+              case 3 :
+                return `<span style="background: #6bc950;" class="badge badge-pill badge-success handle mr-1">
+               Ended
+              </span>`;
+            }
+            return `<span class="badge badge-pill badge-success handle mr-1">
+                ${value}
+              </span>`;
+          },
+          title: "Status",
           titleClass: "",
           dataClass: "list-item-heading",
           width: "15%"

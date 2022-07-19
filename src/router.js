@@ -122,6 +122,27 @@ const routes = [
           }
         ]
       },
+
+      {
+        path: "faq",
+        component: () =>
+          import(/* webpackChunkName: "second-menu" */ "./views/app/faq"),
+        redirect: `${adminRoot}/faq/faq_list`,
+        meta: { loginRequired: true, roles: ["superadmin", "admin"] },
+
+        children: [
+          {
+            path: "faq_list",
+            component: () =>
+              import(/* webpackChunkName: "piaf" */ "./views/app/faq/faq_list")
+          },
+          {
+            path: "faq",
+            component: () =>
+              import(/* webpackChunkName: "blog" */ "./views/app/faq/faq")
+          }
+        ]
+      },
       {
         path: "auctions",
         component: () =>

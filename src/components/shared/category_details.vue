@@ -136,7 +136,7 @@
                     <b-button
                       variant="outline-theme-6"
                       class="icon-button"
-                      @click="open_model('deleteModal', props.rowData.id)"
+                      @click="open_model('customDeleteModal', props.rowData.id)"
                     >
                       <i class="simple-icon-trash"></i>
                     </b-button>
@@ -165,11 +165,11 @@
             $emit('showAddButton', true, $t(`todo.add-new-sub-category`), true)
           "
         >
-          <template v-if="_isLoadCustomField">
+          <template v-if="_isLoadSubCategory">
             <b-colxx xs="12" md="12" class="mb-3">
               <b-card>
                 <vuetable
-                  ref="subCategoryVuetable"
+                  ref="subVuetable"
                   :api-mode="false"
                   :reactive-api-url="true"
                   :fields="subCategoryFields"
@@ -178,14 +178,14 @@
                     <b-button
                       variant="outline-theme-3"
                       class="icon-button"
-                      @click="modify(props.rowData)"
+                      @click="$emit('modifySubCategory', props.rowData)"
                     >
                       <i class="simple-icon-pencil"></i>
                     </b-button>
                     <b-button
                       variant="outline-theme-6"
                       class="icon-button"
-                      @click="open_model('deleteModal', props.rowData.id)"
+                      @click="open_model('subDeleteModal', props.rowData.id)"
                     >
                       <i class="simple-icon-trash"></i>
                     </b-button>
@@ -217,14 +217,34 @@
         </b-tab>
       </b-tabs>
     </b-card>
-    <deleteModal
-      :hideModel="hideModel"
-      :disableBtn="disableDeleteBtn"
-      @hide-modal="hideDeleteModal"
-      :message="$t('forms.deleteCustomFieldQuestion')"
-      :modalName="modalName"
-      @delete_event="delete_customField()"
-    />
+    <b-modal
+      id="deleteModal"
+      ref="deleteModal"
+      :title="
+        isCustomFieldDelete
+          ? $t(`modal.modal-delete-customField-title`)
+          : $t(`modal.modal-delete-sub-category-title`)
+      "
+    >
+      {{
+        isCustomFieldDelete
+          ? $t("forms.deleteCustomFieldQuestion")
+          : $t("forms.deleteSubCategoryQuestion")
+      }}
+      <template slot="modal-footer">
+        <b-button
+          :disabled="disableDeleteBtn"
+          variant="primary"
+          @click="delete_action()"
+          class="mr-1"
+        >
+          {{ $t("button.yes") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('deleteModal')">{{
+          $t("button.no")
+        }}</b-button>
+      </template>
+    </b-modal>
   </b-colxx>
 </template>
 <script>
@@ -239,6 +259,7 @@ const { required } = require("vuelidate/lib/validators");
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import addCustomField from "./addCustomField.vue";
 import deleteModal from "./deleteModal.vue"
+import { getCurrentLanguage } from "../../utils";
 
 
 export default {
@@ -263,6 +284,8 @@ export default {
       edit: true,
       disableDeleteBtn: false,
       hideModel: false,
+      subCategoryId: null,
+      isCustomFieldDelete: false,
       modalName: null,
       showUpdateModal: false,
       isAuctionCategory: false,
@@ -271,6 +294,7 @@ export default {
       image: null,
       select: null,
       create_role: null,
+      language: null,
       file: null,
       category_form: [],
       typeOptions: [],
@@ -353,7 +377,7 @@ export default {
           title: "Title",
           titleClass: "title",
           dataClass: "list-item-heading",
-          width: "30%"
+          width: "20%"
         },
         {
           name: "locales",
@@ -364,7 +388,7 @@ export default {
           title: "Description",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "20%"
+          width: "30%"
         },
         {
           name: "active",
@@ -419,6 +443,7 @@ export default {
       (this.gridForm.select = "just for form submit");
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.category_form);
+    this.language = getCurrentLanguage();
 
   },
   methods: {
@@ -427,6 +452,7 @@ export default {
       "updateBlockCategory",
       "getSubCategories",
       "updateCategory",
+      "deleteSubCategory",
       "getBlockCategoryTypes",
       "updateCustomField",
       "getCustomFieldList",
@@ -465,20 +491,35 @@ export default {
       }
     },
     open_model(refname, id) {
-      this.modalName = refname;
-      this.customFieldId = id;
+      if (refname === 'customDeleteModal') {
+        this.isCustomFieldDelete = true;
+          this.customFieldId = id;
+      }else{
+        this.isCustomFieldDelete = false;
+        this.subCategoryId = id;
+      }
+      this.$refs['deleteModal'].show();
     },
     modify(data){
       this.customFieldInfo = data;
       this.showUpdateModal = !this.showUpdateModal;
     },
+      hideModal(refname) {
+      this.$refs[refname].hide();
+    },
+    delete_action(){
+                this.disableDeleteBtn = true;
+
+      if (this.isCustomFieldDelete) {
+      this.deleteCustomField({custom_id: this.customFieldId,  categoryId: this._id})
+      }else{
+        this.deleteSubCategory({sub_id: this.subCategoryId,  categoryId: this._id})
+      }
+    },
     hideDeleteModal(){
 this.modalName = null;
     },
-    delete_customField(){
-      this.disableDeleteBtn = true;
-      this.deleteCustomField({custom_id: this.customFieldId,  categoryId: this._id})
-    },
+
      create_custom_field(val,type){
           this.createCustomField({info: val, type: type, categoryId: this._id })
         },
@@ -524,8 +565,10 @@ this.modalName = null;
       "_customFields",
       "_successUpdateCategory",
       "_successDeleteCustomField",
+      "_isLoadSubCategory",
       "_blockCategory",
       "_successUpdateBlockCategory",
+      "_successDeleteSubCategory",
       "_isLoadBlock",
       "_subCategories",
        "_createCustomField",
@@ -546,7 +589,8 @@ this.modalName = null;
 
     },
     _subCategories: function(val){
-      this.$refs.subCategoryVuetable.setData(val);
+      console.log(val);
+      this.$refs.subVuetable.setData(val);
 
     },
     _category(newInfo, oldOne) {
@@ -572,7 +616,18 @@ this.modalName = null;
         "Custom Field have been deleted successfully",
         { duration: 4000, permanent: false }
       );
+       this.$refs['deleteModal'].hide();
+    },
+    _successDeleteSubCategory: function(val){
+                    this.disableDeleteBtn = false;
 
+    this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Sub category have been deleted successfully",
+        { duration: 3000, permanent: false }
+      );
+       this.$refs['deleteModal'].hide();
     },
     _successUpdateCategory(newInfo, oldOne) {
       this.$notify(

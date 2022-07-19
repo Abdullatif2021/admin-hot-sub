@@ -57,6 +57,28 @@
           <b-colxx xxs="12">
             <b-form-group
               class="has-float-label mb-4"
+              :label="$t('forms.icon')"
+            >
+              <b-form-input
+                style="display: none;"
+                :state="!$v.icon_form.icon.$error"
+                v-model="$v.icon_form.icon.$model"
+              />
+              <vue-dropzone
+                ref="myVueDropzone"
+                id="dropzone"
+                :options="iconDropzoneOptions"
+                @vdropzone-files-added="iconAdded"
+                @vdropzone-removed-file="iconRemoved"
+              ></vue-dropzone>
+              <b-form-invalid-feedback v-if="!$v.icon_form.icon.required">{{
+                $t("forms.choose-icon-message")
+              }}</b-form-invalid-feedback>
+            </b-form-group>
+          </b-colxx>
+          <b-colxx xxs="12">
+            <b-form-group
+              class="has-float-label mb-4"
               :label="$t('forms.image')"
             >
               <vue-dropzone
@@ -104,9 +126,25 @@ export default {
       file: null,
       enable: false,
       typeOptions: [],
+      icon: null,
       category_form: [],
+      icon_form: {
+        icon: null
+      },
       gridForm: {
         select: ""
+      },
+      iconDropzoneOptions: {
+        url: "https://lilacmarketingevents.com",
+        thumbnailHeight: 160,
+        thumbnailWidth: 150,
+        parallelUploads: 3,
+        maxFiles: 1,
+        uploadMultiple: false,
+        autoProcessQueue: false,
+        previewTemplate: this.dropzoneTemplate(),
+        headers: {},
+        acceptedFiles: "image/svg"
       },
       dropzoneOptions: {
         url: "https://lilacmarketingevents.com",
@@ -137,6 +175,11 @@ export default {
       select: {
         required
       }
+    },
+    icon_form: {
+      icon: {
+        required
+      }
     }
   },
   created() {
@@ -160,14 +203,21 @@ export default {
     onGridFormSubmit() {
       this.$v.$touch();
       this.$v.gridForm.$touch();
+      this.$v.icon_form.$touch();
+
       this.$v.category_form.$touch();
-      if (!this.$v.gridForm.$invalid && !this.$v.category_form.$invalid) {
+      if (
+        !this.$v.gridForm.$invalid &&
+        !this.$v.category_form.$invalid &&
+        !this.$v.icon_form.$invalid
+      ) {
         this.enable = true;
         this.$emit(
           "create-category",
           this.$v.category_form.$model,
           this.file ? this.file[0] : null,
-          this.gridForm.select
+          this.gridForm.select,
+          this.icon ? this.icon[0] : null
         );
       }
     },
@@ -176,6 +226,12 @@ export default {
     },
     fileRemoved(file) {
       this.file = null;
+    },
+    iconAdded(icon) {
+      this.icon = icon;
+    },
+    iconRemoved() {
+      this.icon = null;
     },
     dropzoneTemplate() {
       return `<div class="dz-preview dz-file-preview mb-3">
