@@ -5,16 +5,19 @@
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
       :transaction_filter="false"
+      :sortTitle="$t(`todo.orderbyState`)"
       :add_new_button="true"
       :add_new_title="$t('todo.add-new')"
+      :sortOptions="sortOptions"
       :changePageSize="changePageSize"
       :searchChange="searchChange"
       :from="from"
       @add_new="add_New"
       :reload="true"
+      :changeOrderBy="changeOrderBy"
       :sort="sort"
       :to="to"
-      :Filtered="false"
+      :Filtered="true"
       :total="total"
       :perPage="perPage"
     ></datatable-heading>
@@ -38,6 +41,10 @@
           >
             <template slot="actions" slot-scope="props">
               <b-button
+                v-if="
+                  props.rowData.auction_type_value !== 1 &&
+                    props.rowData.auction_type_value !== 3
+                "
                 id="activate"
                 :variant="
                   props.rowData.active === 1
@@ -74,7 +81,14 @@
                 class="icon-button"
                 @click="modify(props.rowData.id)"
               >
-                <i class="simple-icon-pencil"></i>
+                <i
+                  v-if="
+                    props.rowData.auction_type_value === 1 ||
+                      props.rowData.auction_type_value === 3
+                  "
+                  class="simple-icon-arrow-right-circle"
+                ></i>
+                <i v-else class="simple-icon-pencil"></i>
                 <b-tooltip
                   target="edit"
                   placement="top"
@@ -83,6 +97,7 @@
                 </b-tooltip>
               </b-button>
               <b-button
+                v-if="props.rowData.auction_type_value !== 1"
                 variant="outline-theme-6"
                 id="delete"
                 class="icon-button"
@@ -191,6 +206,7 @@ export default {
     return {
       dir: null,
       order_by: null,
+      auctionType_id: null,
       search: null,
            modalName: null,
       hideModel: false,
@@ -205,6 +221,24 @@ export default {
       language: null,
       enableModalBtn: false,
       limit: null,
+       sortOptions: [
+         {
+        column: null,
+        label: "All"
+      },
+        {
+            column: 1,
+            label: 'inProgress'
+        },
+          {
+            column: 2,
+            label: 'upComing'
+        },
+          {
+            column: 3,
+            label: 'ended'
+        },
+       ],
       auction_id: null,
       perPage: 8,
       active: null,
@@ -274,23 +308,11 @@ export default {
            {
           name: "auction_type",
            callback: value => {
-            switch (value) {
-              case 1 :
-                return `<span style="background: #ff540d;" class="badge badge-pill badge-success handle mr-1">
-               IN Progress
-              </span>`;
-              case 2 :
-                return `<span style="background: grey;" class="badge badge-pill badge-success handle mr-1">
-               Up Coming
-              </span>`;x
-              case 3 :
-                return `<span style="background: #6bc950;" class="badge badge-pill badge-success handle mr-1">
-               Ended
-              </span>`;
-            }
-            return `<span class="badge badge-pill badge-success handle mr-1">
+
+            return `<span class="badge badge-pill badge-${value.split(' ')[0]} handle mr-1">
                 ${value}
               </span>`;
+
           },
           title: "Status",
           titleClass: "",
@@ -312,6 +334,7 @@ export default {
 
     this.getAuctions({
       dir: null,
+      auctionType: null,
       search: null,
       order_by: null,
       limit: null,
@@ -388,6 +411,7 @@ this.active = active
           this.getAuctions({
             dir: this.dir,
             sorting: true,
+             auctionType: this.auctionType_id,
             search: this.search,
             order_by: this.order_by,
             limit: this.limit,
@@ -401,6 +425,7 @@ this.active = active
             dir: this.dir,
             sorting: true,
             search: this.search,
+            auctionType: this.auctionType_id,
             order_by: this.order_by,
             limit: this.limit,
             page: this.page
@@ -429,6 +454,7 @@ this.active = active
         this.getAuctions({
           dir: this.dir,
           search: this.search,
+          auctionType: this.auctionType_id,
           order_by: this.order_by,
           limit: this.limit,
           page: this.page
@@ -440,6 +466,7 @@ this.active = active
       this.limit = perPage;
       this.getAuctions({
         dir: this.dir,
+        auctionType: this.auctionType_id,
         search: this.search,
         order_by: this.order_by,
         limit: this.limit,
@@ -450,14 +477,28 @@ this.active = active
     searchChange(val) {
       this.search = val;
       this.getAuctions({
-        dir: this.dir,
+        dir: null,
         search: val,
-        order_by: this.order_by,
-        limit: this.limit,
-        page: this.page
+        auctionType: this.auctionType_id,
+        order_by: null,
+        limit: null,
+        page: null
       });
     },
 
+    changeOrderBy(sort){
+      console.log(sort);
+      this.sort = sort
+      this.auctionType_id = sort.column;
+    this.getAuctions({
+        dir: null,
+        auctionType: sort.column,
+        search: null,
+        order_by: null,
+        limit: null,
+        page: null
+      });
+    },
     selectAll(isToggle) {
       if (this.selectedItems.length >= this.items.length) {
         if (isToggle) this.selectedItems = [];
@@ -549,6 +590,7 @@ this.$notify(
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
+        auctionType: this.auctionType_id,
         limit: this.limit,
         page: this.page
       });
@@ -571,6 +613,7 @@ this.$notify(
         dir: this.dir,
         search: this.search,
         order_by: this.order_by,
+        auctionType: this.auctionType_id,
         limit: this.limit,
         page: this.page
       });

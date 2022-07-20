@@ -18,7 +18,7 @@
           size="lg"
           class="top-right-button edit-category"
           @click="$emit('edit_category')"
-          >{{ $t("todo.edit-block-category") }} {{ title }}</b-button
+          >{{ $t("todo.edit-block-category") }} {{ categoryName }}</b-button
         >
       </div>
       <piaf-breadcrumb />
@@ -28,11 +28,7 @@
             <b-dropdown
               v-if="Filtered"
               id="ddown1"
-              :text="
-                category
-                  ? `${$t('todo.orderbycategory')} ${$t(sort.label)}`
-                  : `${$t('todo.orderbyrole')} ${$t(sort.label)}`
-              "
+              :text="`${sortTitle} ${$t(sort.label)}`"
               variant="outline-dark"
               class="mr-1 float-md-left btn-group"
               size="xs"
@@ -53,7 +49,7 @@
             </div>
             <!-- <i @click="cancle()" class="simple-icon-close" /> -->
           </div>
-          <div class="float-md-right pt-1">
+          <div v-if="!pagination" class="float-md-right pt-1">
             <span class="text-muted text-small mr-1 mb-2"
               >{{ from }}-{{ to }} {{ $t("forms.of") }} {{ total }}</span
             >
@@ -155,10 +151,12 @@ export default {
   props: [
     "title",
     "selectAll",
+    "categoryName",
     "isSelectedAll",
     "isAnyItemSelected",
     "keymap",
     "changePageSize",
+
     "searchChange",
     "cancle",
     "changeOrderBy",
@@ -166,9 +164,11 @@ export default {
     "from",
     "add_new_button",
     "to",
+    "sortTitle",
     "add_new_title",
     "sort",
     "state_sort",
+    "pagination",
     "method_sort",
     "type_sort",
     "total",

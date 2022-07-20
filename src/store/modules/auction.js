@@ -130,7 +130,8 @@ const actions = {
           keyword: payload.search,
           order_by: payload.order_by,
           limit: payload.limit,
-          page: payload.page
+          page: payload.page,
+          auction_type: payload.auctionType
         }
       })
       .then(res => {

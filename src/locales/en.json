@@ -330,7 +330,7 @@
     "another-action": "Another action",
     "display-options": "Display Options",
     "orderby": "Order By : ",
-    "orderbycategory": "Order By Category",
+    "orderbycategory": "Order By Category : ",
 
     "orderbytype": "Order By Type :",
     "orderbystate": "Order By State :",
@@ -338,6 +338,7 @@
 
     "orderbyrole": "Order By Role : ",
 
+    "orderbyState": "Order By State : ",
     "all-tasks": "All Tasks",
     "pending-tasks": "Pending Tasks",
     "completed-tasks": "Completed Tasks",
@@ -497,7 +498,14 @@
   "forms": {
     "Yemail_filed": "Please enter your email",
     "send": "Send",
+    "ar_question": "Question in arabic",
+    "ar_answer": "Answer in arabic",
+    "en_question": "Question in english",
+    "en_answer": "Answer in english",
+    "question_filed": "Please enter the question",
+    "answer_filed": "Please enter the answer",
     "deleteFaqQuestion": "Are you sure you want to delete this question?",
+    "new_faq": "New FAQ",
     "choose-file-message": "Please choose a file",
     "choose-icon-message": "Please choose an icon",
     "choose-video-message": "Please choose a video",
@@ -890,6 +898,9 @@
   "create_sub_category": "Create Sub Category",
   "DELETE": "Delete",
   "TEXT": "Text",
+  "upComing": "Upcoming",
+  "ended": "Ended",
+  "inProgress": "In Progress",
   "NUMBER": "Number",
   "OPEN": "Open",
   "VERIFY": "Verify",

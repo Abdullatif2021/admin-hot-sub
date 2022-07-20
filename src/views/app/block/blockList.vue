@@ -10,6 +10,7 @@
       :transaction_filter="false"
       :sortOptions="sortOptions"
       :reload="true"
+      :categoryName="categoryTitle"
       :add_new_button="true"
       :add_new_title="$t('todo.add-new')"
       :category="category"

@@ -1600,6 +1600,18 @@ button {
 .badge-success {
   background-color: $success-color;
 }
+.badge-in {
+  background-color: #8dca26;
+  color: white;
+}
+.badge-ended {
+  background-color: #f1516d;
+  color: white;
+}
+.badge-up {
+  background-color: #26bfca;
+  color: white;
+}
 
 .badge-info {
   background-color: $info-color;
