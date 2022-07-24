@@ -8,7 +8,6 @@
       :sortTitle="$t(`todo.orderbycategory`)"
       :searchChange="searchChange"
       @add_new="add_New"
-      :categoryBtn="categoryName ? true : false"
       :reload="true"
       :categoryName="categoryName"
       :pagination="true"
@@ -17,27 +16,6 @@
       :Filtered="true"
     ></datatable-heading>
     <b-row>
-      <!-- <b-colxx xxs="12">
-        <piaf-breadcrumb :heading="$t('menu.faq')" />
-        <b-button
-          variant="primary"
-          size="lg"
-          :class="dir.isRtl ? 'top-faq-left-button' : 'top-faq-right-button'"
-          >{{ $t(`forms.new_faq`) }}</b-button
-        >
-        <b-button
-          variant="primary"
-          size="lg"
-          :class="
-            dir.isRtl
-              ? 'top-faq-category-left-button'
-              : 'top-faq-category-right-button'
-          "
-          >{{ $t(`forms.edit`) }} {{ category }}</b-button
-        >
-
-        <div class="separator mb-5"></div>
-      </b-colxx> -->
       <template v-if="_isLoadFaq">
         <b-colxx xxs="12" class="mb-4">
           <b-card
@@ -128,14 +106,14 @@ export default {
       categoryName: null,
       sort: {
         column: null,
-        label: "All"
+        label: 'All'
       },
       deleteBtn: false,
       category: "bull",
       sortOptions: [
         {
         column: null,
-        label: "All"
+        label: 'All'
       },
       ],
       language: null,
@@ -147,10 +125,10 @@ export default {
     this.dir = getDirection();
     this.language = getCurrentLanguage();
     this.getFaqs({category_id: null});
-    this.getFaqCategory();
+    this.getFaqCategories({search: null});
   },
   methods: {
-       ...mapActions(["getFaqs", "updateFaq", "deleteFaq", "getFaqCategory"]),
+       ...mapActions(["getFaqs", "updateFaq", "deleteFaq", "getFaqCategories"]),
     delete_faq() {
       this.deleteBtn = true;
       console.log("delete_faq");
@@ -216,6 +194,9 @@ export default {
     _deleteFaqSuccessfuly: function(val) {
         this.deleteBtn = false;
         this.$refs['deleteFaq'].hide();
+         this.getFaqs({
+          category_id : this.sort.column,
+        });
         this.$notify(
         "success",
         "Operation completed successfully",

@@ -124,13 +124,13 @@ export default {
     }
      this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.lang_form);
-        this.getFaqCategory();
+        this.getFaqCategories({search: null});
 
   },
   methods: {
      ...mapActions([
       "getFaq",
-      "getFaqCategory",
+      "getFaqCategories",
       "createFaq",
       "updateFaq"
 
@@ -154,9 +154,11 @@ export default {
       ) {
         this.enable = true;
         if (this.faqId) {
+
             this.updateFaq({info : this.$v.lang_form.$model,
-          category_id: this.select_form.select})
+          category_id: this.select_form.select, id: this.faqId})
         }else{
+
               this.createFaq({info : this.$v.lang_form.$model,
           category_id: this.select_form.select})
         }

@@ -57,7 +57,21 @@ const data = [
     icon: "simple-icon-question",
     label: "FAQ",
     to: `${adminRoot}/faq`,
-    roles: ["superadmin", "admin"]
+    roles: ["superadmin", "admin"],
+    subs: [
+      {
+        icon: "simple-icon-list",
+        label: "menu.list",
+        to: `${adminRoot}/faq/faq_list`,
+        roles: ["superadmin", "admin"]
+      },
+      {
+        icon: "simple-icon-pie-chart",
+        label: "menu.categories",
+        to: `${adminRoot}/faq/categories`,
+        roles: ["superadmin", "admin"]
+      }
+    ]
   },
 
   {

@@ -27,6 +27,9 @@
   "menu": {
     "home": "Home",
     "faq_list": "List",
+    "faq-categories-table": "FAQ Category Table",
+    "list": "List",
+    "categories": "Categories",
     "add-block": "Add block",
     "customers": "Customers",
     "blocks-category": "Blocks Category",
@@ -153,7 +156,6 @@
     "start": "Start",
     "settings": "Settings",
     "settings-list": "Settings List",
-    "categories": "Categories",
     "auctions": "Auctions"
   },
   "dashboards": {
@@ -211,7 +213,9 @@
   },
   "pages": {
     "add-new": "ADD NEW",
+    "edit-faq-category": "Edit Category",
     "en_desc": "English Description",
+    "add-new-category": "Add New Category",
     "ar_desc": "Arabic Description",
     "ar_title": "Arabic Title",
     "en_title": "English Title",
@@ -789,6 +793,7 @@
     "modal-active-category-title": "Category Activation",
     "modal-delete-category-title": "Category deletion",
     "modal-delete-faq-title": "Faq deletion",
+    "modal-delete-faq-category-title": "Faq Category deletion",
     "modal-delete-sub-category-title": "Sub category deletion",
     "modal-delete-customField-title": "Custom field deletion",
     "launch-demo-modal": "Launch Demo Modal",
@@ -904,6 +909,7 @@
   "NUMBER": "Number",
   "OPEN": "Open",
   "VERIFY": "Verify",
+  "All": "All",
   "EDIT": "Edit",
   "SEND_NOTE": "Send Note",
   "SEND_Attach": "Add Attachment",
