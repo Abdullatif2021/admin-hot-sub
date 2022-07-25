@@ -511,6 +511,8 @@
   "forms": {
     "send": "ارسال",
     "new_faq": "اضافة سؤال",
+    "preview-requests": "طلبات المعاينة",
+    "reject": "رفض",
     "ar_question": " السؤال بالعربية",
     "ar_answer": "الجواب بالعربية",
     "en_question": " السؤال بالانجليزية",
@@ -538,6 +540,8 @@
     "deleteCustomFieldQuestion": "هل انت متاكد بانك تريد حذف هذا الحقل؟",
     "deleteSubCategoryQuestion": "هل انت متاكد بانك تريد حذف هذه الصنف الفرعية؟",
     "activeAuctionQuestion": "هل انت متاكد بانك تريد تفعيل هذا المزاد؟",
+    "requestReview": "طلب المعاينة",
+    "request_notes": "ملاحظات",
     "inactiveAuctionQuestion": "هل انت متاكد بانك تريد ايقاف تفعيل هذا المزاد؟",
     "accepted": "مقبول",
     "content_message": "الرجاء ادخال محتوى",

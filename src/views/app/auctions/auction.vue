@@ -421,7 +421,7 @@
         <b-card v-if="auctionId" class="mb-4">
           <b-tabs card no-fade>
             <b-tab
-              title-item-class="w-30 text-center"
+              title-item-class="w-25 text-center"
               :title="$t(`forms.basic_details`)"
               active
               @click="isLoadCustomField = false"
@@ -781,7 +781,7 @@
               </b-form>
             </b-tab>
             <b-tab
-              title-item-class="w-30 text-center"
+              title-item-class="w-25 text-center"
               :title="$t('forms.custom_field')"
               @click="isLoadCustomField = true"
             >
@@ -840,10 +840,58 @@
               </div>
             </b-tab>
             <b-tab
+              title-item-class="w-25 text-center"
+              :title="$t('forms.preview-requests')"
+              @click="get_review_request"
+            >
+              <div class="wizard-basic-step">
+                <template v-if="_isLoadAuctions">
+                  <vuetable
+                    ref="vuetable"
+                    class="table-divided order-with-arrow"
+                    :api-mode="false"
+                    :reactive-api-url="true"
+                    :fields="fields"
+                    pagination-path
+                  >
+                    <template slot="actions" slot-scope="props">
+                      <b-button
+                        variant="outline-theme-3"
+                        id="edit"
+                        class="icon-button"
+                        @click="
+                          open_modal(
+                            'requestReview',
+                            props.rowData.id,
+                            props.rowData.notes
+                          )
+                        "
+                      >
+                        <i class="simple-icon-pencil"></i>
+                        <b-tooltip
+                          target="edit"
+                          placement="top"
+                          :title="$t('forms.edit')"
+                        >
+                        </b-tooltip>
+                      </b-button>
+                    </template>
+                  </vuetable>
+                </template>
+                <template v-else>
+                  <div class="loading"></div>
+                </template>
+                <add-new-custom-field
+                  @create-custom-field="create_custom_field"
+                  :showCreateModal="showCreateModal"
+                />
+              </div>
+            </b-tab>
+            <b-tab
               @click="
                 getAuctionImages({ id: auctionId }), (isLoadCustomField = false)
               "
-              title-item-class="w-30 text-center"
+              title-item-class="w-25 text-center"
               :title="$t('forms.attach')"
             >
               <b-card class="mb-4" no-body>
@@ -1006,6 +1054,43 @@
         }}</b-button>
       </template>
     </b-modal>
+    <b-modal
+      id="requestReview"
+      ref="requestReview"
+      hide-footer
+      size="lg"
+      :title="$t('forms.requestReview')"
+    >
+      <b-card class="mb-4" no-body>
+        <b-card-body>
+          <div class="mb-5">
+            <h5 class="card-title">{{ $t("forms.request_notes") }}</h5>
+            <b-form-textarea
+              id="textarea"
+              v-model="request_notes"
+              readonly
+              rows="3"
+              max-rows="6"
+            ></b-form-textarea>
+          </div>
+        </b-card-body>
+        <div style="margin: 14px; display: flex; justify-content: right;">
+          <b-button
+            :disabled="requestBtn"
+            variant="success"
+            @click="verfiy_request('ACCEPTED')"
+            class="mr-1"
+            >{{ $t("forms.accept") }}</b-button
+          >
+          <b-button
+            variant="danger"
+            :disabled="requestBtn"
+            @click="verfiy_request('REJECTED')"
+            >{{ $t("forms.reject") }}</b-button
+          >
+        </div>
+      </b-card>
+    </b-modal>
   </b-row>
 </template>
 <script>
@@ -1017,6 +1102,7 @@ import "vue2-datepicker/index.css";
 // import Datepicker from "vuejs-datepicker";
 import VueDropzone from "vue2-dropzone";
 const { required, requiredIf } = require("vuelidate/lib/validators");
+import Vuetable from "vuetable-2/src/components/Vuetable";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { adminRoot } from "../../../constants/config";
 import file from "../../../components/shared/file.vue";
@@ -1031,6 +1117,7 @@ import Tab from "../../../components/Form/Wizard/Tab";
 export default {
   components: {
     googleMaps : googleMaps,
+        vuetable: Vuetable,
     "vue-dropzone": VueDropzone,
      "form-wizard": FormWizard,
         "tab": Tab,
@@ -1065,6 +1152,7 @@ export default {
       imgUrl: null,
       terms_conditions: null,
       auction_id: null,
+      request_notes: null,
       brochure: null,
       isLoadAuctionImages: false,
       disabled: true,
@@ -1087,6 +1175,7 @@ export default {
       subCategoryOptions: [],
       areaOptions: [],
       auctionFileList: null,
+      requestBtn: false,
       image_basename: null,
       cityOptions: [],
       files_form: {
@@ -1111,7 +1200,50 @@ export default {
         opening_price: null,
         latitude: null,
         longitude: null
-      }
+      },
+            fields: [
+        {
+          name: "name",
+          title: "Name",
+          sortField: "name",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "20%"
+        },
+        {
+          name: "phone",
+          title: "Phone number",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "20%"
+        },
+        {
+          name: "date",
+          title: "Date",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "20%"
+        },
+        {
+          name: "status",
+           callback: value => {
+            return `<span class="badge badge-pill badge-${value.toLowerCase()} handle mr-1">
+                ${value}
+              </span>`;
+          },
+          title: "Status",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "20%"
+        },
+        {
+          name: "__slot:actions",
+          title: "",
+          titleClass: "center aligned text-right",
+          dataClass: "center aligned text-right",
+          width: "20%"
+        }
+      ]
     };
   },
   mixins: [validationMixin],
@@ -1198,6 +1330,7 @@ export default {
       this.isLoadAuction = true;
       this.isEdit = false;
       this.location= null;
+
     }
     this.getCategories({
       dir: null,
@@ -1218,6 +1351,7 @@ export default {
       "updateAuction",
       "getCategories",
       "createCustomValue",
+      "updateReviewRequest",
       "getCustomFieldList",
       "createAuctionImage",
       "deleteAuctionFile",
@@ -1232,6 +1366,7 @@ export default {
       "createCustomField",
       "getCities",
       "getAreas",
+      "getReviewRequests",
       "deleteAuctionImage",
       "getAuctionSide"
     ]),
@@ -1276,6 +1411,11 @@ export default {
         }
       }
     },
+    get_review_request(){
+      this.isLoadCustomField = false;
+      this.getReviewRequests({auction_id : this.auctionId})
+      console.log('get_reviewi_request');
+    },
     create_File(info, path) {
       this.createAuctionFile({ info: info, path: path, id: this.auctionId });
     },
@@ -1315,6 +1455,9 @@ export default {
         path: value.image ? value.image : null,
         id: this.auctionId
       });
+    },
+    review(){
+
     },
     delete_img(){
         this.image = null;
@@ -1406,6 +1549,10 @@ export default {
       }
 
         },
+        verfiy_request(val){
+          this.requestBtn = true;
+            this.updateReviewRequest({val: val, request_id: this.request_id})
+        },
         create_custom_field(val,type){
           this.createCustomField({info: val, type: type, categoryId: this.gridForm.category_id })
         },
@@ -1428,6 +1575,11 @@ export default {
             });
 
         },
+        open_modal(refname,id, notes){
+ this.$refs[refname].show();
+  this.request_id = id;
+  this.request_notes = notes;
+ },
         editCustomValue(){
 
           this.custom_fields.forEach(el => {
@@ -1471,11 +1623,14 @@ export default {
       "_createAuctionFile",
       "_isLoadAuctions",
       "_deleteAuctionFile",
+      "_auctionReviewRequests",
       "_areas",
       "_auctionSide",
       "_isCustomValueCreated",
+      "_updateReviewRequest",
       "_subCategories",
       "_customFields",
+      "_isLoadPreviewRequests",
       "_dateError",
       "_updatedAuctionSuccessfuly",
       "_createAuctionSuccessfuly"
@@ -1527,6 +1682,20 @@ export default {
     },
     _customFields: function(val) {
        this.customFields = val;
+    },
+    _auctionReviewRequests: function(val){
+  this.$refs.vuetable.setData(val);
+    },
+    _updateReviewRequest: function(val){
+       this.$refs['requestReview'].hide();
+       this.getReviewRequests({auction_id : this.auctionId})
+       this.requestBtn = false;
+       this.$notify(
+        "success",
+        "Operation completed successfully",
+        "this request have been updated successfully",
+        { duration: 4000, permanent: false }
+      );
     },
     _dateError: function(val) {
       this.disableNextBtn = false;

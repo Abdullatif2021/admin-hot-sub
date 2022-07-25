@@ -21,9 +21,11 @@ const state = {
   File_List: null,
   create_File: null,
   deleteAuctionError: null,
+  updateReviewRequest: false,
   delete_File: null,
   Image_List: null,
   create_Image: null,
+  auctionReviewRequests: null,
   delete_Image: null,
   date_error: false
 };
@@ -32,9 +34,11 @@ const getters = {
   isLoadAuctions: state => state.isLoadAuctions,
   auctionError: state => state.Error,
   auction_paginations: state => state.paginations,
+  _auctionReviewRequests: state => state.auctionReviewRequests,
   auctions: state => state.auctions,
   _cities: state => state.cities,
   _File_List: state => state.File_List,
+  _updateReviewRequest: state => state.updateReviewRequest,
   _isCustomValueCreated: state => state.isCustomValueCreated,
   _createAuctionFile: state => state.create_File,
   _deleteAuctionFile: state => state.delete_File,
@@ -116,6 +120,12 @@ const mutations = {
   },
   dateError(state, payload) {
     state.date_error = !state.date_error;
+  },
+  getAuctionReviewRequests(state, payload) {
+    state.auctionReviewRequests = payload;
+  },
+  updateReviewRequest(state, payload) {
+    state.updateReviewRequest = !state.updateReviewRequest;
   }
 };
 
@@ -449,6 +459,36 @@ const actions = {
           // dispatch("getAuctionImages", { id });
           console.log("hi from valueeeeeeeeee");
         }
+      })
+      .catch(err => {});
+  },
+  getReviewRequests({ commit }, payload) {
+    commit("setProcessing", false);
+    const auction_id = payload.auction_id;
+    axios
+      .get(`${apiUrl}/auctions/preview`, {
+        params: {
+          auction_id: auction_id
+        }
+      })
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getAuctionReviewRequests", res.data.data);
+      })
+      .catch(err => {});
+  },
+  updateReviewRequest({ commit }, payload) {
+    const request_id = payload.request_id;
+    const formData = new FormData();
+    formData.append(`_method`, "PUT");
+    formData.append(`status`, payload.val);
+    axios
+      .post(`${apiUrl}/auctions/preview/${request_id}`, formData, {})
+      .then(res => {
+        commit("updateReviewRequest");
       })
       .catch(err => {});
   }
