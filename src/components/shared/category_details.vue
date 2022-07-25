@@ -595,6 +595,7 @@ this.modalName = null;
     },
     _category(newInfo, oldOne) {
       this.isAuctionCategory = true;
+      console.log('rujfrjrjrfjrrejrejrfrfrrrffrer')
       this.category_form.forEach(el => {
          el.name = newInfo.locales.[el._name].name;
           el.description = newInfo.locales.[el._name].description;

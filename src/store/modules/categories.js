@@ -131,6 +131,7 @@ const actions = {
     await axios
       .get(`${apiUrl}/categories`, {
         params: {
+          category: 1,
           order_dir: payload.dir,
           keyword: payload.search,
           order_by: payload.order_by,

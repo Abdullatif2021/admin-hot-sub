@@ -1424,7 +1424,7 @@ export default {
       this.getSubCategories({id : this.gridForm.category_id})
     },
     delete_File(id) {
-      this.delteAuctionFile({ id: this.auctionId, fileId: id });
+      this.deleteAuctionFile({ id: this.auctionId, fileId: id });
     },
     set_location(data) {
       this.gridForm.latitude = data.lat;

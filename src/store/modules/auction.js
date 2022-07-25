@@ -488,7 +488,9 @@ const actions = {
     axios
       .post(`${apiUrl}/auctions/preview/${request_id}`, formData, {})
       .then(res => {
-        commit("updateReviewRequest");
+        if (res.status === 200) {
+          commit("updateReviewRequest");
+        }
       })
       .catch(err => {});
   }

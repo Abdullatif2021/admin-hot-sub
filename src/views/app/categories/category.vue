@@ -104,7 +104,7 @@
                 v-model="$v.icon_form.icon.$model"
               />
               <vue-dropzone
-                ref="myVueDropzone"
+                ref="iconVueDropzone"
                 id="dropzone"
                 :options="iconDropzoneOptions"
                 @vdropzone-files-added="iconAdded"
@@ -116,7 +116,7 @@
               <div v-if="icon" class="image-review-show">
                 <img
                   style="max-width: 100%;max-height: 100%;"
-                  :src="getIconUrl"
+                  :src="isiconModify ? icon : getIconUrl"
                   alt="icon"
                 />
                 <span
@@ -124,7 +124,11 @@
                     language === 'en' ? 'delete-span-en' : 'delete-span-ar'
                   "
                 >
-                  <i @click="iconRemoved" class="simple-icon-trash"></i>
+                  <i
+                    v-if="isModify"
+                    @click="iconRemoved"
+                    class="simple-icon-trash"
+                  ></i>
                 </span>
               </div>
             </b-form-group>
@@ -145,24 +149,20 @@
             <div v-if="image" class="image-review-show">
               <img
                 style="max-width: 100%;max-height: 100%;"
-                :src="isattachModify ? image : getImageUrl"
+                :src="isimgModify ? image : getImageUrl"
                 alt="image"
               />
               <span
                 :class="language === 'en' ? 'delete-span-en' : 'delete-span-ar'"
               >
-                <i @click="fileRemoved" class="simple-icon-trash"></i>
+                <i
+                  v-if="isModify"
+                  @click="fileRemoved"
+                  class="simple-icon-trash"
+                ></i>
               </span>
             </div>
           </b-colxx>
-
-          <!-- <b-button
-            :disabled="enable"
-            type="submit"
-            variant="primary"
-            class="mt-4"
-            >{{ $t("forms.save") }}</b-button
-          > -->
         </b-form>
       </div>
       <template slot="modal-footer">
@@ -205,7 +205,8 @@ export default {
       category: "category",
       id: null,
       lang_form: [],
-      isattachModify: false,
+      isimgModify: false,
+      isiconModify: false,
       icon_form: {
         icon: null
       },
@@ -306,22 +307,26 @@ export default {
     },
     modifySubCategory(item) {
       this.isModify = true;
-      this.isattachModify = true;
+      this.isimgModify = true;
+      this.isiconModify = true;
        this.lang_form.forEach(el => {
         el.name = item.locales.[el._name].name;
         el.description = item.locales.[el._name].description;
       });
       this.image = item.image;
+      this.icon = item.icon;
     this.$refs["subCategoryModal"].show();
       console.log(item);
     },
     add_new() {
+       this.isModify = false;
          this.lang_form.forEach(el => {
         el.name = null;
         el.description = null;
       });
       this.icon_form.icon = null;
       this.image = null;
+      this.icon = null;
       this.$v.$reset();
       if (this.isSubCategory) {
         this.isModify = false;
@@ -338,15 +343,17 @@ export default {
     },
     fileRemoved(image) {
       this.image = null;
-      this.isattachModify = false;
+      this.isimgModify = false;
     },
     iconAdded(icon) {
       this.icon_form.icon = "icon";
       this.icon = icon;
-    },
-    iconRemoved() {
-      this.icon_form.icon = null;
 
+
+    },
+    iconRemoved(icon) {
+      this.icon_form.icon = null;
+      this.isiconModify = false;
       this.icon = null;
     },
     dropzoneTemplate() {
@@ -377,19 +384,12 @@ export default {
       "_create_category_success"
     ]),
     getImageUrl(){
-      if (this.isModify) {
-          return this.image[0];
-      }else{
         return URL.createObjectURL(this.image[0]);
-      }
+
     },
     getIconUrl(){
-      console.log(this.isModify);
-       if (this.isModify) {
-              return this.icon[0]
-      }else{
          return URL.createObjectURL(this.icon[0]);
-      }
+
     }
   },
   watch: {
