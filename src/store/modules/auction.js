@@ -432,6 +432,7 @@ const actions = {
     const value_id = payload.value_id;
 
     const formData = new FormData();
+    formData.append(`_method`, "PUT");
     const langs = localStorage.getItem("Languages");
     JSON.parse(langs).forEach(el => {
       formData.append(
@@ -448,7 +449,7 @@ const actions = {
       });
     }
     axios
-      .put(
+      .post(
         `${apiUrl}/categories/additional/${custom_id}/${value_id}`,
         formData,
         {}

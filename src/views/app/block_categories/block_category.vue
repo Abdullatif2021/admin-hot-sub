@@ -20,8 +20,10 @@
 <script>
 import category_details from "../../../components/shared/category_details.vue";
 import add_category from "../../../components/shared/add_category.vue";
-
+import { mapActions, mapGetters } from "vuex";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
+import router from "../../../router";
+import { adminRoot } from "../../../constants/config";
 
 export default {
   components: {
@@ -37,6 +39,26 @@ export default {
   },
   created() {
     this.id = this.$route.query.id;
+  },
+  methods: {
+    ...mapActions(["createBlockCategory"]),
+    createCategory(info, img, type) {
+      this.createBlockCategory({ info: info, type: type, image: img });
+    }
+  },
+  computed: {
+    ...mapGetters(["_create_block_category_success"])
+  },
+  watch: {
+    _create_block_category_success: function(val) {
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Block Category have been created successfully",
+        { duration: 3000, permanent: false }
+      );
+      router.push(`${adminRoot}/blockCategories`);
+    }
   }
 };
 </script>

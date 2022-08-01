@@ -149,7 +149,7 @@
             <div class="loading"></div>
           </template>
           <add-new-custom-field
-            @hide-create-modal="hideCreateModal"
+            :hideCustomModal="hideCustomModal"
             @create-custom-field="create_custom_field"
             @update-custom-field="update_custom_field"
             :showCreateModal="showCreateModal"
@@ -197,14 +197,6 @@
           <template v-else>
             <div class="loading"></div>
           </template>
-          <add-new-custom-field
-            @hide-create-modal="hideCreateModal"
-            @create-custom-field="create_custom_field"
-            @update-custom-field="update_custom_field"
-            :showCreateModal="showCreateModal"
-            :showUpdateModal="showUpdateModal"
-            :customFieldInfo="customFieldInfo"
-          />
         </b-tab>
         <b-tab
           :title="$t(`forms.meta_data`)"
@@ -290,6 +282,7 @@ export default {
       showUpdateModal: false,
       isAuctionCategory: false,
       password: null,
+      hideCustomModal: false,
       is_block_category: false,
       image: null,
       select: null,
@@ -529,9 +522,7 @@ this.modalName = null;
     fileAdded(file) {
       this.file = file;
     },
-    hideCreateModal(){
- this.$emit("createdSuccessfuly")
-    },
+
     fileRemoved(file) {
       this.file = null;
     },
@@ -564,6 +555,7 @@ this.modalName = null;
       "_blockCategoryTypes",
       "_customFields",
       "_successUpdateCategory",
+      "_updateCustomField",
       "_successDeleteCustomField",
       "_isLoadSubCategory",
       "_blockCategory",
@@ -577,9 +569,7 @@ this.modalName = null;
   },
   watch: {
       _createCustomField: function(val){
-        console.log('wferferferferferf');
-      this.$emit("createdSuccessfuly")
-      this.getCustomFieldList({id: this._id})
+        this.hideCustomModal = !this.hideCustomModal;
        this.$notify(
         "success",
         "Operation completed successfully",
@@ -587,6 +577,16 @@ this.modalName = null;
         { duration: 3000, permanent: false }
       );
 
+
+    },
+    _updateCustomField: function(val){
+    this.hideCustomModal = !this.hideCustomModal;
+       this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Custom Field have been updated successfully",
+        { duration: 3000, permanent: false }
+      );
     },
     _subCategories: function(val){
       console.log(val);
@@ -630,14 +630,17 @@ this.modalName = null;
       );
        this.$refs['deleteModal'].hide();
     },
-    _successUpdateCategory(newInfo, oldOne) {
+    _successUpdateCategory: function(val) {
+      console.log(val);
       this.$notify(
         "success",
         "Operation completed successfully",
         "Category have been updated successfully",
         { duration: 3000, permanent: false }
       );
-      router.push(`${adminRoot}/categories`);
+       this.image = val.image;
+      this.enable = false;
+
     },
     _blockCategory(newInfo, oldOne) {
       this.is_block_category = true;

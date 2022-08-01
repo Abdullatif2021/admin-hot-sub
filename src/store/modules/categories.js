@@ -14,17 +14,20 @@ const state = {
   processing: false,
   customProcessing: false,
   create_category_success: null,
+  error: false,
   successUpdateCategory: null,
   Categorymetadata: null,
   successUpdateCategoryMeta: null,
   create_category_meta_success: null,
   categoryMetaTypeList: null,
+  updateCustomField: null,
   subCategories: null,
   successDeleteSubCategory: null,
   customFields: null,
   create_customField: null,
   successDeleteCustom: null,
-  successCreateSubCategory: null
+  successCreateSubCategory: null,
+  successUpdateSubCategory: null
 };
 
 const getters = {
@@ -39,6 +42,7 @@ const getters = {
   _createCustomField: state => state.create_customField,
   _successDeleteCustomField: state => state.successDeleteCustom,
   _category: state => state.category,
+  _updateCustomField: state => state.updateCustomField,
   _create_category_success: state => state.create_category_success,
   _updatedCategorySuccessfuly: state => state.updated_Successfuly,
   _successDeleteCategory: state => state.successDeleteCategory,
@@ -46,7 +50,9 @@ const getters = {
   _successActiveCategory: state => state.successActiveCategory,
   _successUpdateCategory: state => state.successUpdateCategory,
   _successCreateSubCategory: state => state.successCreateSubCategory,
+  _successUpdateSubCategory: state => state.successUpdateSubCategory,
   _categoryMetaTypeList: state => state.categoryMetaTypeList,
+  _error: state => state.error,
   // block category metaData
   _CategoryMeta: state => state.Categorymetadata,
   _isLoadCategoryMeta: state => state.processing,
@@ -113,6 +119,9 @@ const mutations = {
   createCustomField(state, payload) {
     state.create_customField = payload;
   },
+  updateCustomField(state, payload) {
+    state.updateCustomField = payload;
+  },
   deleteCustomField(state, payload) {
     state.successDeleteCustom = payload;
   },
@@ -121,6 +130,12 @@ const mutations = {
   },
   createSubCategory(state, payload) {
     state.successCreateSubCategory = payload;
+  },
+  updateSubCategory(state, payload) {
+    state.successUpdateSubCategory = payload;
+  },
+  error(state, payload) {
+    state.error = !state.error;
   }
 };
 
@@ -349,6 +364,40 @@ const actions = {
         dispatch("getSubCategories", { id });
       });
   },
+  updateSubCategory: async ({ commit, dispatch }, payload) => {
+    commit("setProcessing", false);
+    const formData = new FormData();
+    const sub_id = payload.sub_id;
+    const id = payload.id;
+
+    formData.append("_method", "PUT");
+    formData.append(`parent_id`, payload.id);
+    if (payload.image) {
+      formData.append(`image`, payload.image);
+    }
+    if (payload.icon) {
+      formData.append(`icon`, payload.icon);
+    }
+    payload.info.forEach(el => {
+      formData.append(`${el._name}[name]`, el.name);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
+      }
+    });
+    await axios
+      .post(`${apiUrl}/categories/${sub_id}`, formData, {})
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("updateSubCategory", res.data.data);
+        dispatch("getSubCategories", { id });
+      })
+      .catch(res => {
+        commit("error");
+      });
+  },
   deleteSubCategory: async ({ commit, dispatch }, payload) => {
     const id = payload.categoryId;
     const sub_id = payload.sub_id;
@@ -408,6 +457,8 @@ const actions = {
     const formData = new FormData();
     const custom_id = payload.custom_id;
     formData.append("type", payload.type);
+    formData.append("_method", "PUT");
+
     payload.info.forEach(el => {
       formData.append(`${el.name}[name]`, el.key);
       if (el.description) {
@@ -415,7 +466,7 @@ const actions = {
       }
     });
     axios
-      .put(
+      .post(
         `${apiUrl}/categories/custom_fields/${id}/${custom_id}`,
         formData,
         {}

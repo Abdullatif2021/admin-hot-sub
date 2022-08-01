@@ -54,7 +54,7 @@
               }}</b-form-invalid-feedback>
             </b-form-group>
           </b-colxx>
-          <b-colxx xxs="12">
+          <b-colxx v-if="_type !== 'block'" xxs="12">
             <b-form-group
               class="has-float-label mb-4"
               :label="$t('forms.icon')"
@@ -109,16 +109,12 @@
 import { mapGetters, mapActions } from "vuex";
 import { validationMixin } from "vuelidate";
 import VueDropzone from "vue2-dropzone";
-import DatatableHeading from "../../containers/datatable/DatatableHeading.vue";
-import router from "../../router";
-import { adminRoot } from "../../constants/config";
-const { required } = require("vuelidate/lib/validators");
+const { required, requiredIf } = require("vuelidate/lib/validators");
 
 export default {
   props: ["_type"],
   components: {
-    "vue-dropzone": VueDropzone,
-    "datatable-heading": DatatableHeading
+    "vue-dropzone": VueDropzone
   },
   data() {
     return {
@@ -173,12 +169,16 @@ export default {
     },
     gridForm: {
       select: {
-        required
+        required: requiredIf(function() {
+          return this.isOptional;
+        })
       }
     },
     icon_form: {
       icon: {
-        required
+        required: requiredIf(function() {
+          return !this.isOptional;
+        })
       }
     }
   },
@@ -255,34 +255,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      "_blockCategoryTypes",
-      "_create_block_category_success",
-      "_create_category_success",
-      "_isLoadBlock"
-    ])
+    ...mapGetters(["_blockCategoryTypes", "_isLoadBlock"]),
+    isOptional() {
+      return this.is_block_category; // some conditional logic here...
+    }
   },
   watch: {
-    _create_block_category_success(newInfo, oldOne) {
-      this.$notify(
-        "success",
-        "Operation completed successfully",
-        "Block Category have been created successfully",
-        { duration: 3000, permanent: false }
-      );
-      router.push(`${adminRoot}/blockCategories`);
-    },
-    // _create_category_success(newInfo, oldOne) {
-    //   this.$notify(
-    //     "success",
-    //     "Operation completed successfully",
-    //     "Category have been created successfully",
-    //     { duration: 3000, permanent: false }
-    //   );
-    //   router.push(`${adminRoot}/categories`);
-    // },
-
     _blockCategoryTypes(newInfo, oldOne) {
+      console.log("here from cate typesy");
       newInfo.forEach(el => {
         this.typeOptions.push(el);
       });

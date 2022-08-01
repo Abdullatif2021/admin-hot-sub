@@ -396,6 +396,7 @@
                   <add-new-custom-field
                     @create-custom-field="create_custom_field"
                     :showCreateModal="showCreateModal"
+                    :hideCustomModal="hideCustomModal"
                   />
                 </div>
               </tab>
@@ -833,10 +834,6 @@
                 <template v-else>
                   <div class="loading"></div>
                 </template>
-                <add-new-custom-field
-                  @create-custom-field="create_custom_field"
-                  :showCreateModal="showCreateModal"
-                />
               </div>
             </b-tab>
             <b-tab
@@ -881,10 +878,6 @@
                 <template v-else>
                   <div class="loading"></div>
                 </template>
-                <add-new-custom-field
-                  @create-custom-field="create_custom_field"
-                  :showCreateModal="showCreateModal"
-                />
               </div>
             </b-tab>
             <b-tab
@@ -982,10 +975,6 @@
           <template v-else>
             <div class="loading"></div>
           </template>
-          <add-new-custom-field
-            @create-custom-field="create_custom_field"
-            :showCreateModal="showCreateModal"
-          />
         </div>
       </b-form>
       <template slot="modal-footer">
@@ -1012,7 +1001,9 @@
       <div>
         <template v-if="_isLoadCustomField">
           <div class="addCustomBtn">
-            <b-button variant="primary" @click="showCreateModal = true"
+            <b-button
+              variant="primary"
+              @click="showCreateModal = !showCreateModal"
               >Add New Custom Field to the Category</b-button
             >
           </div>
@@ -1043,6 +1034,7 @@
         <add-new-custom-field
           @create-custom-field="create_custom_field"
           :showCreateModal="showCreateModal"
+          :hideCustomModal="hideCustomModal"
         />
       </div>
       <template slot="modal-footer">
@@ -1150,6 +1142,7 @@ export default {
       saveBtn: `next`,
       showCreateModal: false,
       imgUrl: null,
+      hideCustomModal: false,
       terms_conditions: null,
       auction_id: null,
       request_notes: null,
@@ -1497,7 +1490,7 @@ export default {
  this.$refs['modallg'].show();
  this.getCustomFieldList({id: this.gridForm.category_id})
        }else{
- this.showCreateModal = true;
+  this.showCreateModal = !this.showCreateModal;
        }
 
 
@@ -1710,7 +1703,7 @@ export default {
       this.disabled = true;
     },
     _createCustomField: function(val){
-      this.showCreateModal = false;
+      this.hideCustomModal = !this.hideCustomModal;
       // this.getCustomFieldList({id: this.gridForm.category_id})
     },
     _cities: function(val) {
@@ -1811,7 +1804,7 @@ export default {
         "Value of custom field have been created successfully",
         { duration: 2000, permanent: false }
       );
-       router.push(`${adminRoot}/auctions`);
+      //  router.push(`${adminRoot}/auctions`);
     },
     image: function(val) {
       if (val) {

@@ -64,11 +64,12 @@ const { required } = require("vuelidate/lib/validators");
 import { validationMixin } from "vuelidate";
 
 export default {
-  props: ["showCreateModal", "customFieldInfo", "showUpdateModal"],
+  props: ["showCreateModal","hideCustomModal", "customFieldInfo", "showUpdateModal"],
   data() {
     return {
       keys_form: [],
       enable: false,
+      editCustomField: false,
       selected: null,
       select_form: {
         type: null
@@ -117,7 +118,7 @@ export default {
     hideModal(refname) {
       this.$refs[refname].hide();
       this.$v.$reset();
-      this.$emit("hide-create-modal");
+      // this.$emit("hide-create-modal");
     },
     formSubmit() {
       this.$v.$touch();
@@ -125,7 +126,7 @@ export default {
       this.$v.keys_form.$touch();
       if (!this.$v.keys_form.$invalid && !this.$v.select_form.$invalid) {
         this.enable = true;
-        if (this.customFieldInfo) {
+        if (this.editCustomField) {
            this.$emit(
           "update-custom-field",
           this.$v.keys_form.$model,
@@ -147,28 +148,21 @@ export default {
   },
   watch: {
     showCreateModal: function(val) {
+        this.editCustomField = false;;
       this.select_form.type = null;
        this.keys_form.forEach(el => {
          el.key = null;
       });
       this.enable = false;
-      if (val) {
         this.$refs["add_newCustomField"].show();
-      } else {
-        this.$refs["add_newCustomField"].hide();
-      }
        this.$v.$reset();
     },
     showUpdateModal: function(val) {
       this.enable = false;
-      this.select_form.type = null;
-      this.keys_form.forEach(el => {
-          el.key = null;
-        });
       this.$refs["add_newCustomField"].show();
-      this.$v.$reset();
     },
     customFieldInfo: function(val) {
+        this.editCustomField = true;
         console.log('hi from info',val);
         this.select_form.type = val.type;
         this.keys_form.forEach(el => {
@@ -176,6 +170,16 @@ export default {
             });
         val.type === "INT" ?  this.selected = 2 : this.selected = 1;
         console.log(this.selected);
+    },
+    hideCustomModal: function(val) {
+      this.$refs["add_newCustomField"].hide();
+      this.select_form.type = null;
+       this.keys_form.forEach(el => {
+         el.key = null;
+      });
+      this.editCustomField = false;
+      this.enable = false;
+       this.$v.$reset();
     }
   }
 };

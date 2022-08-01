@@ -211,6 +211,7 @@ export default {
         icon: null
       },
       image: null,
+      sub_id : null,
       isModify: false,
       enable: false,
       iseEditCategory: false,
@@ -270,7 +271,7 @@ export default {
 
   },
   methods: {
-    ...mapActions(["createSubCategory", "createCategory"]),
+    ...mapActions(["createSubCategory","updateSubCategory", "createCategory"]),
     make_collaction(langs, form) {
       JSON.parse(langs).forEach(el => {
         form.push({
@@ -281,17 +282,29 @@ export default {
       });
     },
     addSubCategory() {
+      console.log('rfrfsnrsnorfnofrnownoefnoesnoesno');
       this.$v.$touch();
       this.$v.lang_form.$touch();
       this.$v.icon_form.$touch();
       if (!this.$v.lang_form.$invalid && !this.$v.icon_form.$invalid) {
         this.enable = true;
+        if (this.isModify) {
+           this.updateSubCategory({
+          info: this.$v.lang_form.$model,
+          image: this.isimgModify ? null: this.image[0] ,
+          icon: this.isiconModify ? null : this.icon[0],
+          sub_id: this.sub_id,
+          id: this.id
+        });
+        }else{
         this.createSubCategory({
           info: this.$v.lang_form.$model,
           image: this.image ? this.image[0] : null,
           icon: this.icon ? this.icon[0] : null,
           id: this.id
         });
+        }
+
       }
     },
     showAddButton(val, title, isSubCategory) {
@@ -314,7 +327,9 @@ export default {
         el.description = item.locales.[el._name].description;
       });
       this.image = item.image;
+      this.sub_id = item.id
       this.icon = item.icon;
+      this.icon_form.icon = "icon";
     this.$refs["subCategoryModal"].show();
       console.log(item);
     },
@@ -332,12 +347,11 @@ export default {
         this.isModify = false;
         this.$refs["subCategoryModal"].show();
       } else {
-        this.showCreateModal = true;
+        this.showCreateModal = !this.showCreateModal;
       }
     },
     createdSuccessfuly() {
-      this.showCreateModal = false;
-    },
+     },
     fileAdded(image) {
       this.image = image;
     },
@@ -381,7 +395,9 @@ export default {
     ...mapGetters([
       "_isLoadCustomField",
       "_successCreateSubCategory",
-      "_create_category_success"
+      "_successUpdateSubCategory",
+      "_create_category_success",
+      "_error"
     ]),
     getImageUrl(){
         return URL.createObjectURL(this.image[0]);
@@ -393,10 +409,15 @@ export default {
     }
   },
   watch: {
-    _createCustomField: function(val) {
-      console.log("frfrfrfrfrfrfrfr");
-      this.showCreateModal = false;
-    },
+    // _createCustomField: function(val) {
+    //   this.showCreateModal = !this.showCreateModal;
+    //   this.$notify(
+    //     "success",
+    //     "Operation completed successfully",
+    //     "Custom Field have been created successfully",
+    //     { duration: 3000, permanent: false }
+    //   );
+    // },
     _successCreateSubCategory: function(val) {
       this.lang_form.forEach(el => {
         el.name = null;
@@ -413,6 +434,22 @@ export default {
       this.$refs["subCategoryModal"].hide();
       this.enable = false;
     },
+    _successUpdateSubCategory: function(val) {
+            this.lang_form.forEach(el => {
+        el.name = null;
+        el.description = null;
+      });
+      this.icon_form.icon = null;
+      this.$v.$reset();
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Auction Sub Category have been updated successfully",
+        { duration: 3000, permanent: false }
+      );
+      this.$refs["subCategoryModal"].hide();
+      this.enable = false;
+    },
     _create_category_success: function(val) {
       this.$notify(
         "success",
@@ -421,6 +458,15 @@ export default {
         { duration: 3000, permanent: false }
       );
       router.push(`${adminRoot}/categories`);
+    },
+    _error: function(val){
+              this.enable = false;
+       this.$notify(
+        "error",
+        "there is something wrong",
+        "Please try again",
+        { duration: 3000, permanent: false }
+      );
     }
   }
 };
