@@ -345,7 +345,7 @@ export default {
       commit("setAttachProcessing", false);
       const userId = payload.id;
       axios
-        .get(`${apiUrl}/user/attachments/all?user_id=${userId}`)
+        .get(`${apiUrl}/user/attachments?user_id=${userId}`)
         .then(res => {
           commit("setAttachProcessing", true);
           return res;
@@ -502,11 +502,7 @@ export default {
         }
       });
       axios
-        .post(
-          `${apiUrl}/user/attachments/${attachment_id}/${userId}`,
-          formData,
-          {}
-        )
+        .post(`${apiUrl}/user/attachments/${attachment_id}`, formData, {})
         .then(res => {
           if (res.status === 200) {
             commit("updateAttachSuccess", res);

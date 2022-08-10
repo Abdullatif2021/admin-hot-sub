@@ -87,7 +87,6 @@ const mutations = {
   getAreas(state, payload) {
     state.areas = payload;
   },
-
   getAuctionSide(state, payload) {
     state.auctionSide = payload;
   },
@@ -415,6 +414,7 @@ const actions = {
         formData.append(`${el.name}[unit]`, payload.info.unit);
       });
     }
+
     formData.append(`auction_id`, payload.auction_id);
     axios
       .post(`${apiUrl}/categories/additional/${id}`, formData, {})

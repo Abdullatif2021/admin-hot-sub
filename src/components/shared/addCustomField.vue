@@ -3,7 +3,7 @@
     id="add_newCustomField"
     ref="add_newCustomField"
     :title="$t('todo.add-new-custom-filed')"
-    modal-class="modal-right"
+    :modal-class="modalClass"
     :hide-backdrop="true"
     :no-close-on-backdrop="true"
   >
@@ -64,7 +64,15 @@ const { required } = require("vuelidate/lib/validators");
 import { validationMixin } from "vuelidate";
 
 export default {
-  props: ["showCreateModal","hideCustomModal", "customFieldInfo", "showUpdateModal"],
+    props: {
+    showCreateModal: { type: Boolean },
+    hideCustomModal: { type: Boolean },
+    showUpdateModal: { type: Boolean },
+    customFieldInfo: {  },
+    modalClass: { type: String, default: "modal-right"},
+
+  },
+  // props: ["showCreateModal","hideCustomModal", "customFieldInfo", "showUpdateModal"],
   data() {
     return {
       keys_form: [],

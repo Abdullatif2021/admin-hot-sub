@@ -773,7 +773,7 @@
                 </b-row>
 
                 <b-button
-                  :disabled="!disabled"
+                  :disabled="!disabled || auction.auction_type_value != 2"
                   type="submit"
                   variant="primary"
                   class="mt-4"
@@ -784,7 +784,7 @@
             <b-tab
               title-item-class="w-25 text-center"
               :title="$t('forms.custom_field')"
-              @click="isLoadCustomField = true"
+              @click="open_custom_tab"
             >
               <div class="wizard-basic-step">
                 <template v-if="_isLoadCustomField || _isLoadAuctions">
@@ -823,7 +823,7 @@
                     </b-colxx>
                   </div>
                   <b-button
-                    :disabled="!disabled"
+                    :disabled="!disabled || auction.auction_type_value != 2"
                     type="submit"
                     @click="editCustomValue('edit')"
                     variant="primary"
@@ -855,6 +855,7 @@
                       <b-button
                         variant="outline-theme-3"
                         id="edit"
+                        :disabled="auction.auction_type_value != 2"
                         class="icon-button"
                         @click="
                           open_modal(
@@ -937,7 +938,7 @@
         <div class="loading"></div>
       </template>
     </b-colxx>
-    <b-modal
+    <!-- <b-modal
       id="modalbackdrop"
       ref="modalbackdrop"
       :title="$t('modal.modal-custom')"
@@ -957,7 +958,13 @@
               :key="index"
             >
               <b-colxx :sm="field.type === 'STRING' ? 12 : 6">
-                <b-form-group :label="field.locales.en.name">
+                <b-form-group
+                  :label="
+                    language === 'en'
+                      ? field.locales.en.name
+                      : field.locales.ar.name
+                  "
+                >
                   <b-form-input
                     @change="addCustomValue"
                     :type="field.type === 'INT' ? 'number' : 'text'"
@@ -989,7 +996,7 @@
           $t("pages.cancel")
         }}</b-button>
       </template>
-    </b-modal>
+    </b-modal> -->
     <b-modal
       ref="modallg"
       id="modallg"
@@ -1004,7 +1011,7 @@
             <b-button
               variant="primary"
               @click="showCreateModal = !showCreateModal"
-              >Add New Custom Field to the Category</b-button
+              >{{ $t("forms.add-custom-category") }}</b-button
             >
           </div>
           <div
@@ -1034,13 +1041,18 @@
         <add-new-custom-field
           @create-custom-field="create_custom_field"
           :showCreateModal="showCreateModal"
+          :modalClass="modallong"
           :hideCustomModal="hideCustomModal"
         />
       </div>
       <template slot="modal-footer">
-        <b-button variant="primary" @click="addNewCustomValue()" class="mr-1">{{
-          $t("forms.save")
-        }}</b-button>
+        <b-button
+          variant="primary"
+          :disabled="enableModelBtn"
+          @click="addNewCustomValue()"
+          class="mr-1"
+          >{{ $t("forms.save") }}</b-button
+        >
         <b-button variant="secondary" @click="hideModal('modallg')">{{
           $t("survey.cancel")
         }}</b-button>
@@ -1123,6 +1135,7 @@ export default {
   data() {
     return {
       auctionId: null,
+      modallong:"modallong",
       _categoryId: null,
       password: null,
        isProcessing: true,
@@ -1141,6 +1154,7 @@ export default {
       isAbleToMove: false,
       saveBtn: `next`,
       showCreateModal: false,
+      testArray: [],
       imgUrl: null,
       hideCustomModal: false,
       terms_conditions: null,
@@ -1151,6 +1165,7 @@ export default {
       disabled: true,
       disableNextBtn: false,
       custom_fields: null,
+      enableModelBtn: false,
       endDateSelected: false,
       startDateSelected: false,
       isLoadAuction: false,
@@ -1409,6 +1424,13 @@ export default {
       this.getReviewRequests({auction_id : this.auctionId})
       console.log('get_reviewi_request');
     },
+    open_custom_tab(){
+      console.log(this.auction.auction_type_value);
+      if(this.auction.auction_type_value === 2){
+        console.log('انا');
+this.isLoadCustomField = true
+      }
+    },
     create_File(info, path) {
       this.createAuctionFile({ info: info, path: path, id: this.auctionId });
     },
@@ -1568,6 +1590,13 @@ export default {
             });
 
         },
+      getDifference(array1, array2) {
+  return array1.filter(object1 => {
+    return !array2.some(object2 => {
+      return object1.id === object2.id;
+    });
+  });
+},
         open_modal(refname,id, notes){
  this.$refs[refname].show();
   this.request_id = id;
@@ -1576,13 +1605,12 @@ export default {
         editCustomValue(){
 
           this.custom_fields.forEach(el => {
-            console.log('this is the el',el);
                  this.updateCustomValue({info: el, custom_id: el.id, value_id: el.values[0].id})
             });
         },
         addNewCustomValue(type){
+          this.enableModelBtn= true;
             this.customFields.forEach(el => {
-              console.log(el);
               if (el.value) {
                                  this.createCustomValue({auction_id: this.auctionId,info: el, id: el.id })
 
@@ -1674,8 +1702,8 @@ export default {
       this.isLoadAuctionImages = true;
     },
     _customFields: function(val) {
-       this.customFields = val;
-    },
+        this.customFields = this.getDifference(val, this.custom_fields);
+      },
     _auctionReviewRequests: function(val){
   this.$refs.vuetable.setData(val);
     },
@@ -1797,6 +1825,7 @@ export default {
       });
     },
     _isCustomValueCreated: function(val){
+      this.enableModelBtn = false;
       this.$refs['modallg'].hide();
       this.$notify(
         "success",
@@ -1812,9 +1841,7 @@ export default {
           this.files_form.image = URL.createObjectURL(val)
       }
     },
-    customFields: function(val) {
-      console.log('customFields');
-    }
+
 
 
   }

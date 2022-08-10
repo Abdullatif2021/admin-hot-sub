@@ -510,6 +510,7 @@
   },
   "forms": {
     "send": "ارسال",
+    "add-custom-category": "اضافة حقلل مخصص الى الصنف",
     "new_faq": "اضافة سؤال",
     "preview-requests": "طلبات المعاينة",
     "reject": "رفض",
