@@ -262,7 +262,6 @@ export default {
   },
   watch: {
     _blockCategoryTypes(newInfo, oldOne) {
-      console.log("here from cate typesy");
       newInfo.forEach(el => {
         this.typeOptions.push(el);
       });

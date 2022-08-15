@@ -282,7 +282,6 @@ export default {
       });
     },
     addSubCategory() {
-      console.log('rfrfsnrsnorfnofrnownoefnoesnoesno');
       this.$v.$touch();
       this.$v.lang_form.$touch();
       this.$v.icon_form.$touch();
@@ -331,7 +330,6 @@ export default {
       this.icon = item.icon;
       this.icon_form.icon = "icon";
     this.$refs["subCategoryModal"].show();
-      console.log(item);
     },
     add_new() {
        this.isModify = false;

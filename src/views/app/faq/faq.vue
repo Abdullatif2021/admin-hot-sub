@@ -170,12 +170,9 @@ export default {
   },
   watch: {
     _Faq: function(val){
-        console.log(val);
-
-         this.lang_form.forEach(el => {
-           el.question = val[0].locales.[el._name].question;
+          this.lang_form.forEach(el => {
+          el.question = val[0].locales.[el._name].question;
           el.answer = val[0].locales.[el._name].answer;
-
       })
       this.select_form.select = val[0].category_id;
           },

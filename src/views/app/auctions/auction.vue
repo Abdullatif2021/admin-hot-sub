@@ -61,7 +61,10 @@
                         </div>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.deposit')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.deposit')"
+                        >
                           <b-form-input
                             type="number"
                             :state="!$v.gridForm.deposit.$error"
@@ -76,7 +79,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.minimum_price')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.minimum_price')"
+                        >
                           <b-form-input
                             type="number"
                             :state="!$v.gridForm.minimum_paid.$error"
@@ -92,7 +98,10 @@
                       </b-colxx>
 
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.opening_price')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.opening_price')"
+                        >
                           <b-form-input
                             type="number"
                             :state="!$v.gridForm.opening_price.$error"
@@ -107,7 +116,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.category')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.category')"
+                        >
                           <b-form-select
                             @change="getSubCateory"
                             :state="!$v.gridForm.category_id.$error"
@@ -124,7 +136,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.sub-category')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.sub-category')"
+                        >
                           <b-form-select
                             :state="!$v.gridForm.sub_category_id.$error"
                             v-model="$v.gridForm.sub_category_id.$model"
@@ -140,7 +155,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="3">
-                        <b-form-group :label="$t('forms.auction_side')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.auction_side')"
+                        >
                           <b-form-select
                             :state="!$v.gridForm.auction_side.$error"
                             v-model="$v.gridForm.auction_side.$model"
@@ -156,7 +174,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="3">
-                        <b-form-group :label="$t('forms.auction_owner')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.auction_owner')"
+                        >
                           <b-form-select
                             :state="!$v.gridForm.auction_owner.$error"
                             v-model="$v.gridForm.auction_owner.$model"
@@ -172,7 +193,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.area')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.area')"
+                        >
                           <b-form-select
                             :state="!$v.gridForm.area_id.$error"
                             v-model="$v.gridForm.area_id.$model"
@@ -189,7 +213,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.start_date')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.start_date')"
+                        >
                           <datepicker
                             style="width: 100%;"
                             type="datetime"
@@ -211,7 +238,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.city')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.city')"
+                        >
                           <b-form-select
                             :state="!$v.gridForm.city_id.$error"
                             v-model="$v.gridForm.city_id.$model"
@@ -227,7 +257,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.end_date')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.end_date')"
+                        >
                           <datepicker
                             style="width: 100%;"
                             type="datetime"
@@ -249,7 +282,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.location')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.location')"
+                        >
                           <googleMaps
                             :location="location"
                             @select_location="set_location"
@@ -269,7 +305,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.image')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.image')"
+                        >
                           <b-form-input
                             style="display: none;"
                             :state="!$v.files_form.image.$error"
@@ -315,7 +354,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.brochure')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.brochure')"
+                        >
                           <b-form-input
                             style="display: none;"
                             :state="!$v.files_form.brochure.$error"
@@ -335,7 +377,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx sm="6">
-                        <b-form-group :label="$t('forms.terms_conditions')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.terms_conditions')"
+                        >
                           <b-form-input
                             style="display: none;"
                             :state="!$v.files_form.terms_conditions.$error"
@@ -375,7 +420,10 @@
                       :key="index"
                     >
                       <b-colxx :sm="field.type === 'STRING' ? 12 : 6">
-                        <b-form-group :label="field.locales.en.name">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="field.locales.en.name"
+                        >
                           <b-form-input
                             @change="addCustomValue"
                             :type="field.type === 'INT' ? 'number' : 'text'"
@@ -384,7 +432,10 @@
                         </b-form-group>
                       </b-colxx>
                       <b-colxx v-if="field.type === 'INT'" sm="6">
-                        <b-form-group :label="$t('forms.unit')">
+                        <b-form-group
+                          class="form-group-label"
+                          :label="$t('forms.unit')"
+                        >
                           <b-form-input type="text" v-model="field.unit" />
                         </b-form-group>
                       </b-colxx>
@@ -420,7 +471,429 @@
           </b-card-body>
         </b-card>
         <b-card v-if="auctionId" class="mb-4">
-          <b-tabs card no-fade>
+          <b-row>
+            <b-colxx style="margin-top: 50px;" xxs="12">
+              <b-card class="mb-4">
+                <b-form @submit.prevent="onGridFormSubmit">
+                  <b-row>
+                    <b-colxx style="position: absolute;top: -96px;" sm="12">
+                      <label
+                        style="display: flex;justify-content: center;"
+                        class="form-group has-float-label"
+                      >
+                        <img
+                          :src="image ? imgUrl : $v.files_form.image.$model"
+                          style="border-radius: 50%;"
+                          alt="Image"
+                          width="160"
+                          height="160"
+                        />
+                      </label>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group>
+                        <label class="form-group-label" for="desc">{{
+                          $t("forms.auction_no")
+                        }}</label>
+                        <b-form-input
+                          type="number"
+                          :state="!$v.gridForm.auction_no.$error"
+                          v-model="$v.gridForm.auction_no.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.auction_no.required"
+                          >{{
+                            $t("forms.auction_no_message")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group>
+                        <label class="form-group-label" for="cate">{{
+                          $t("forms.category")
+                        }}</label>
+                        <b-form-select
+                          id="cate"
+                          @change="getSubCateory"
+                          :state="!$v.gridForm.category_id.$error"
+                          v-model="$v.gridForm.category_id.$model"
+                          :options="categoryIdOptions"
+                          plain
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.category_id.required"
+                          >{{
+                            $t("forms.category_type_select")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group>
+                        <label class="form-group-label" for="start">{{
+                          $t("forms.start_date")
+                        }}</label>
+                        <datepicker
+                          id="start"
+                          style="width: 100%;"
+                          type="datetime"
+                          :disabledDates="disabledAfter"
+                          value-type="YYYY-MM-DD HH:mm:ss"
+                          v-model="$v.gridForm.start_date.$model"
+                          @change="selectedDate('start')"
+                        >
+                        </datepicker>
+
+                        <div
+                          :class="{
+                            'invalid-feedback': true,
+                            'd-block':
+                              $v.gridForm.start_date.$error &&
+                              !$v.gridForm.start_date.required
+                          }"
+                        >
+                          {{ $t("forms.start_date_req") }}
+                        </div>
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group>
+                        <label class="form-group-label" for="end">{{
+                          $t("forms.end_date")
+                        }}</label>
+                        <datepicker
+                          id="id"
+                          style="width: 100%;"
+                          type="datetime"
+                          value-type="YYYY-MM-DD HH:mm:ss"
+                          v-model="$v.gridForm.end_date.$model"
+                          @change="selectedDate('end')"
+                        >
+                        </datepicker>
+                        <div
+                          :class="{
+                            'invalid-feedback': true,
+                            'd-block':
+                              $v.gridForm.end_date.$error &&
+                              !$v.gridForm.end_date.required
+                          }"
+                        >
+                          {{ $t("forms.end_date_req") }}
+                        </div>
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group>
+                        <label class="form-group-label" for="bro">{{
+                          $t("forms.brochure")
+                        }}</label>
+                        <b-form-input
+                          style="display: none;"
+                          :state="!$v.files_form.brochure.$error"
+                          v-model="$v.files_form.brochure.$model"
+                        />
+                        <b-input-group id="bro" class="mb-3">
+                          <b-form-file
+                            accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
+                            :placeholder="$t('input-groups.change-brochure')"
+                            v-model="brochure"
+                          ></b-form-file>
+                          <b-input-group-append>
+                            <b-button
+                              @click="open($v.files_form.brochure.$model)"
+                              variant="light default"
+                              :disabled="files_form.brochure == null"
+                              >{{ $t("OPEN") }}</b-button
+                            >
+                          </b-input-group-append>
+                        </b-input-group>
+
+                        <b-form-invalid-feedback
+                          v-if="!$v.files_form.brochure.required"
+                          >{{
+                            $t("forms.choose-brochure-message")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group>
+                        <label class="form-group-label" for="cond">{{
+                          $t("forms.terms_conditions")
+                        }}</label>
+                        <input
+                          style="display: none;"
+                          :state="!$v.files_form.terms_conditions.$error"
+                          v-model="$v.files_form.terms_conditions.$model"
+                        />
+                        <b-input-group id="cond" class="mb-3">
+                          <b-form-file
+                            accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
+                            :placeholder="
+                              $t('input-groups.change-terms_conditions')
+                            "
+                            v-model="terms_conditions"
+                          ></b-form-file>
+                          <b-input-group-append>
+                            <b-button
+                              @click="
+                                open($v.files_form.terms_conditions.$model)
+                              "
+                              variant="light default"
+                              :disabled="files_form.terms_conditions == null"
+                              >{{ $t("OPEN") }}</b-button
+                            >
+                          </b-input-group-append>
+                        </b-input-group>
+                        <b-form-invalid-feedback
+                          v-if="!$v.files_form.terms_conditions.required"
+                          >{{
+                            $t("forms.choose-terms_conditions-message")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                  </b-row>
+                </b-form>
+              </b-card>
+              <b-card class="mb-4" :title="$t('forms.localzations')">
+                <div
+                  v-for="(lang, index) in $v.lang_form.$each.$iter"
+                  :key="index"
+                >
+                  <div class="d-flex flex-grow-1 min-width-zero" role="tab">
+                    <b-button
+                      href="#"
+                      class="callBtn"
+                      v-b-toggle="`faq_${lang._name.$model}`"
+                      variant="link"
+                      >{{ $t(`forms.${lang._name.$model}_lang`) }}
+                      ---------------------------------------------------------------------------------------------------
+                      >
+                    </b-button>
+                  </div>
+                  <b-collapse
+                    :id="`faq_${lang._name.$model}`"
+                    :visible="index === 0"
+                    accordion="faq-accordion"
+                    role="tabpanel"
+                  >
+                    <div class="card-body accordion-content pt-0">
+                      <b-form @submit.prevent="onGridFormSubmit">
+                        <b-row>
+                          <b-colxx sm="12">
+                            <b-form-group>
+                              <label class="form-group-label" for="Name">{{
+                                $t(`forms.${lang._name.$model}_title`)
+                              }}</label>
+                              <b-form-input
+                                id="Name"
+                                type="text"
+                                v-model="lang.title.$model"
+                                :state="!lang.title.$error"
+                              />
+                              <b-form-invalid-feedback
+                                v-if="!lang.title.required"
+                                >{{
+                                  $t(`forms.${lang._name.$model}_massege`)
+                                }}</b-form-invalid-feedback
+                              >
+                            </b-form-group>
+                          </b-colxx>
+                          <b-colxx sm="12">
+                            <b-form-group>
+                              <label class="form-group-label" for="desc">{{
+                                $t(`forms.${lang._name.$model}_desc`)
+                              }}</label>
+                              <b-form-textarea
+                                id="textarea"
+                                rows="3"
+                                max-rows="6"
+                                v-model="lang.description.$model"
+                              ></b-form-textarea>
+                            </b-form-group>
+                          </b-colxx>
+                        </b-row>
+                      </b-form>
+                    </div>
+                  </b-collapse>
+                </div>
+              </b-card>
+              <b-card class="mb-4" :title="$t('forms.binig-info')">
+                <b-row>
+                  <b-colxx sm="4">
+                    <b-form-group>
+                      <label class="form-group-label" for="desc">{{
+                        $t("forms.deposit")
+                      }}</label>
+                      <b-form-input
+                        type="number"
+                        :state="!$v.gridForm.deposit.$error"
+                        v-model="$v.gridForm.deposit.$model"
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.gridForm.deposit.required"
+                        >{{
+                          $t("forms.deposit_message")
+                        }}</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                  </b-colxx>
+                  <b-colxx sm="4">
+                    <b-form-group>
+                      <label class="form-group-label" for="open">{{
+                        $t("forms.opening_price")
+                      }}</label>
+                      <b-form-input
+                        id="open"
+                        type="number"
+                        :state="!$v.gridForm.opening_price.$error"
+                        v-model="$v.gridForm.opening_price.$model"
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.gridForm.opening_price.required"
+                        >{{ $t("forms.open_price") }}</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                  </b-colxx>
+                  <b-colxx sm="4">
+                    <b-form-group>
+                      <label class="form-group-label" for="min">{{
+                        $t("forms.minimum_price")
+                      }}</label>
+                      <b-form-input
+                        id="min"
+                        type="number"
+                        :state="!$v.gridForm.minimum_paid.$error"
+                        v-model="$v.gridForm.minimum_paid.$model"
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.gridForm.minimum_paid.required"
+                        >{{ $t("forms.min_price") }}</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                  </b-colxx>
+                </b-row>
+              </b-card>
+              <b-card class="mb-4" :title="$t('forms.location')">
+                <b-row>
+                  <b-colxx sm="6">
+                    <b-form-group>
+                      <label class="form-group-label" for="area">{{
+                        $t("forms.area")
+                      }}</label>
+                      <b-form-select
+                        id="area"
+                        :state="!$v.gridForm.area_id.$error"
+                        v-model="$v.gridForm.area_id.$model"
+                        :options="areaOptions"
+                        @change="get_cities()"
+                        plain
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.gridForm.area_id.required"
+                        >{{ $t("forms.area-message") }}</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                  </b-colxx>
+                  <b-colxx sm="6">
+                    <b-form-group>
+                      <label class="form-group-label" for="city">{{
+                        $t("forms.city")
+                      }}</label>
+                      <b-form-select
+                        id="city"
+                        :state="!$v.gridForm.city_id.$error"
+                        v-model="$v.gridForm.city_id.$model"
+                        :options="cityOptions"
+                        plain
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.gridForm.city_id.required"
+                        >{{ $t("forms.city-message") }}</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                  </b-colxx>
+                  <b-colxx sm="12">
+                    <b-form-group>
+                      <googleMaps
+                        id="maps"
+                        :location="location"
+                        @select_location="set_location"
+                      />
+                      <b-form-input
+                        style="display: none;"
+                        :state="!$v.gridForm.latitude.$error"
+                        v-model="$v.gridForm.latitude.$model"
+                      />
+
+                      <b-form-invalid-feedback
+                        v-if="!$v.gridForm.latitude.required"
+                        >{{ $t("forms.location_req") }}</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                  </b-colxx>
+                </b-row>
+              </b-card>
+              <b-card class="mb-4" :title="$t('forms.additional')">
+                <template v-if="_isLoadCustomField || _isLoadAuctions">
+                  <div
+                    style="display: flex;"
+                    v-for="(field, index) in custom_fields"
+                    :key="index"
+                  >
+                    <b-colxx :sm="field.type === 'STRING' ? 12 : 6">
+                      <b-form-group
+                        :label="
+                          language === 'ar'
+                            ? field.locales.ar.name
+                            : field.locales.en.name
+                        "
+                      >
+                        <b-form-input
+                          v-if="language === 'en'"
+                          :type="field.type === 'INT' ? 'number' : 'text'"
+                          v-model="field.values[0].locales.en.value"
+                        />
+                        <b-form-input
+                          v-if="language === 'ar'"
+                          :type="field.type === 'INT' ? 'number' : 'text'"
+                          v-model="field.values[0].locales.ar.value"
+                        />
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx v-if="field.type === 'INT'" sm="6">
+                      <b-form-group
+                        class="form-group-label"
+                        :label="$t('forms.unit')"
+                      >
+                        <b-form-input
+                          type="text"
+                          v-model="field.values[0].locales.en.unit"
+                        />
+                      </b-form-group>
+                    </b-colxx>
+                  </div>
+                  <b-button
+                    :disabled="!disabled || auction.auction_type_value != 2"
+                    type="submit"
+                    @click="editCustomValue('edit')"
+                    :variant="
+                      auction.auction_type_value != 2 ? 'light' : 'primary'
+                    "
+                    class="mt-4"
+                    >{{ $t("forms.save") }}</b-button
+                  >
+                </template>
+                <template v-else>
+                  <div class="loading"></div>
+                </template>
+              </b-card>
+            </b-colxx>
+          </b-row>
+
+          <!-- <b-tabs card no-fade>
             <b-tab
               title-item-class="w-25 text-center"
               :title="$t(`forms.basic_details`)"
@@ -434,10 +907,12 @@
                       v-for="(lang, index) in $v.lang_form.$each.$iter"
                       :key="index"
                     >
-                      <b-form-group
-                        :label="$t(`forms.${lang._name.$model}_title`)"
-                      >
+                      <b-form-group>
+                        <label class="form-group-label" for="Name">{{
+                          $t(`forms.${lang._name.$model}_title`)
+                        }}</label>
                         <b-form-input
+                          id="Name"
                           type="text"
                           v-model="lang.title.$model"
                           :state="!lang.title.$error"
@@ -446,10 +921,12 @@
                           $t(`forms.${lang._name.$model}_massege`)
                         }}</b-form-invalid-feedback>
                       </b-form-group>
-                      <b-form-group
-                        :label="$t(`forms.${lang._name.$model}_desc`)"
-                      >
+                      <b-form-group>
+                        <label class="form-group-label" for="desc">{{
+                          $t(`forms.${lang._name.$model}_desc`)
+                        }}</label>
                         <b-form-input
+                          id="desc"
                           type="text"
                           v-model="lang.description.$model"
                         />
@@ -457,7 +934,10 @@
                     </div>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.deposit')">
+                    <b-form-group>
+                      <label class="form-group-label" for="desc">{{
+                        $t("forms.deposit")
+                      }}</label>
                       <b-form-input
                         type="number"
                         :state="!$v.gridForm.deposit.$error"
@@ -472,8 +952,12 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.minimum_price')">
+                    <b-form-group>
+                      <label class="form-group-label" for="min">{{
+                        $t("forms.minimum_price")
+                      }}</label>
                       <b-form-input
+                        id="min"
                         type="number"
                         :state="!$v.gridForm.minimum_paid.$error"
                         v-model="$v.gridForm.minimum_paid.$model"
@@ -484,10 +968,13 @@
                       >
                     </b-form-group>
                   </b-colxx>
-
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.opening_price')">
+                    <b-form-group>
+                      <label class="form-group-label" for="open">{{
+                        $t("forms.opening_price")
+                      }}</label>
                       <b-form-input
+                        id="open"
                         type="number"
                         :state="!$v.gridForm.opening_price.$error"
                         v-model="$v.gridForm.opening_price.$model"
@@ -499,8 +986,12 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.category')">
+                    <b-form-group>
+                      <label class="form-group-label" for="cate">{{
+                        $t("forms.category")
+                      }}</label>
                       <b-form-select
+                        id="cate"
                         @change="getSubCateory"
                         :state="!$v.gridForm.category_id.$error"
                         v-model="$v.gridForm.category_id.$model"
@@ -516,8 +1007,12 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.sub-category')">
+                    <b-form-group>
+                      <label class="form-group-label" for="sub">{{
+                        $t("forms.sub-category")
+                      }}</label>
                       <b-form-select
+                        id="sub"
                         :state="!$v.gridForm.sub_category_id.$error"
                         v-model="$v.gridForm.sub_category_id.$model"
                         :options="subCategoryOptions"
@@ -532,8 +1027,12 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="3">
-                    <b-form-group :label="$t('forms.auction_side')">
+                    <b-form-group>
+                      <label class="form-group-label" for="side">{{
+                        $t("forms.auction_side")
+                      }}</label>
                       <b-form-select
+                        id="side"
                         :state="!$v.gridForm.auction_side.$error"
                         v-model="$v.gridForm.auction_side.$model"
                         :options="auctionSideOptions"
@@ -548,8 +1047,12 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="3">
-                    <b-form-group :label="$t('forms.auction_owner')">
+                    <b-form-group>
+                      <label class="form-group-label" for="owner">{{
+                        $t("forms.auction_owner")
+                      }}</label>
                       <b-form-select
+                        id="owner"
                         :state="!$v.gridForm.auction_owner.$error"
                         v-model="$v.gridForm.auction_owner.$model"
                         :options="auctionOwnerOptions"
@@ -564,8 +1067,12 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.area')">
+                    <b-form-group>
+                      <label class="form-group-label" for="area">{{
+                        $t("forms.area")
+                      }}</label>
                       <b-form-select
+                        id="area"
                         :state="!$v.gridForm.area_id.$error"
                         v-model="$v.gridForm.area_id.$model"
                         :options="areaOptions"
@@ -579,8 +1086,12 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.start_date')">
+                    <b-form-group>
+                      <label class="form-group-label" for="start">{{
+                        $t("forms.start_date")
+                      }}</label>
                       <datepicker
+                        id="start"
                         style="width: 100%;"
                         type="datetime"
                         value-type="YYYY-MM-DD HH:mm:ss"
@@ -602,8 +1113,12 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.city')">
+                    <b-form-group>
+                      <label class="form-group-label" for="city">{{
+                        $t("forms.city")
+                      }}</label>
                       <b-form-select
+                        id="city"
                         :state="!$v.gridForm.city_id.$error"
                         v-model="$v.gridForm.city_id.$model"
                         :options="cityOptions"
@@ -616,8 +1131,12 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.end_date')">
+                    <b-form-group>
+                      <label class="form-group-label" for="end">{{
+                        $t("forms.end_date")
+                      }}</label>
                       <datepicker
+                        id="id"
                         style="width: 100%;"
                         type="datetime"
                         value-type="YYYY-MM-DD HH:mm:ss"
@@ -638,8 +1157,12 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.location')">
+                    <b-form-group>
+                      <label class="form-group-label" for="maps">{{
+                        $t("forms.location")
+                      }}</label>
                       <googleMaps
+                        id="maps"
                         :location="location"
                         @select_location="set_location"
                       />
@@ -656,13 +1179,16 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.image')">
+                    <b-form-group>
+                      <label class="form-group-label" for="img">{{
+                        $t("forms.image")
+                      }}</label>
                       <b-form-input
                         style="display: none;"
                         :state="!$v.files_form.image.$error"
                         v-model="$v.files_form.image.$model"
                       />
-                      <b-input-group class="mb-3">
+                      <b-input-group id="img" class="mb-3">
                         <b-form-file
                           accept="image/*"
                           :placeholder="image_basename"
@@ -708,13 +1234,16 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.brochure')">
+                    <b-form-group>
+                      <label class="form-group-label" for="bro">{{
+                        $t("forms.brochure")
+                      }}</label>
                       <b-form-input
                         style="display: none;"
                         :state="!$v.files_form.brochure.$error"
                         v-model="$v.files_form.brochure.$model"
                       />
-                      <b-input-group class="mb-3">
+                      <b-input-group id="bro" class="mb-3">
                         <b-form-file
                           accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
                           :placeholder="$t('input-groups.change-brochure')"
@@ -739,13 +1268,16 @@
                     </b-form-group>
                   </b-colxx>
                   <b-colxx sm="6">
-                    <b-form-group :label="$t('forms.terms_conditions')">
+                    <b-form-group>
+                      <label class="form-group-label" for="cond">{{
+                        $t("forms.terms_conditions")
+                      }}</label>
                       <input
                         style="display: none;"
                         :state="!$v.files_form.terms_conditions.$error"
                         v-model="$v.files_form.terms_conditions.$model"
                       />
-                      <b-input-group class="mb-3">
+                      <b-input-group id="cond" class="mb-3">
                         <b-form-file
                           accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
                           :placeholder="
@@ -771,11 +1303,12 @@
                     </b-form-group>
                   </b-colxx>
                 </b-row>
-
                 <b-button
                   :disabled="!disabled || auction.auction_type_value != 2"
                   type="submit"
-                  variant="primary"
+                  :variant="
+                    auction.auction_type_value != 2 ? 'light' : 'primary'
+                  "
                   class="mt-4"
                   >{{ $t("forms.save") }}</b-button
                 >
@@ -814,7 +1347,10 @@
                       </b-form-group>
                     </b-colxx>
                     <b-colxx v-if="field.type === 'INT'" sm="6">
-                      <b-form-group :label="$t('forms.unit')">
+                      <b-form-group
+                        class="form-group-label"
+                        :label="$t('forms.unit')"
+                      >
                         <b-form-input
                           type="text"
                           v-model="field.values[0].locales.en.unit"
@@ -826,7 +1362,9 @@
                     :disabled="!disabled || auction.auction_type_value != 2"
                     type="submit"
                     @click="editCustomValue('edit')"
-                    variant="primary"
+                    :variant="
+                      auction.auction_type_value != 2 ? 'light' : 'primary'
+                    "
                     class="mt-4"
                     >{{ $t("forms.save") }}</b-button
                   >
@@ -931,72 +1469,13 @@
                 </b-tabs>
               </b-card>
             </b-tab>
-          </b-tabs>
+          </b-tabs> -->
         </b-card>
       </template>
       <template v-else>
         <div class="loading"></div>
       </template>
     </b-colxx>
-    <!-- <b-modal
-      id="modalbackdrop"
-      ref="modalbackdrop"
-      :title="$t('modal.modal-custom')"
-      :hide-backdrop="true"
-      :no-close-on-backdrop="true"
-    >
-      <b-form>
-        <div class="wizard-basic-step">
-          <template v-if="_isLoadCustomField || _isLoadAuctions"
-            >\
-
-            <div
-              style="
-    display: flex;
-"
-              v-for="(field, index) in customFields"
-              :key="index"
-            >
-              <b-colxx :sm="field.type === 'STRING' ? 12 : 6">
-                <b-form-group
-                  :label="
-                    language === 'en'
-                      ? field.locales.en.name
-                      : field.locales.ar.name
-                  "
-                >
-                  <b-form-input
-                    @change="addCustomValue"
-                    :type="field.type === 'INT' ? 'number' : 'text'"
-                    v-model="field.value"
-                  />
-                </b-form-group>
-              </b-colxx>
-              <b-colxx v-if="field.type === 'INT'" sm="6">
-                <b-form-group :label="$t('forms.unit')">
-                  <b-form-input type="text" v-model="field.unit" />
-                </b-form-group>
-              </b-colxx>
-            </div>
-          </template>
-          <template v-else>
-            <div class="loading"></div>
-          </template>
-        </div>
-      </b-form>
-      <template slot="modal-footer">
-        <b-button
-          variant="primary"
-          :disabled="enable"
-          @click="addCustomVal()"
-          class="mr-1"
-          >{{ $t("pages.add-new") }}</b-button
-        >
-        <b-button variant="secondary" @click="hideModal('modalbackdrop')">{{
-          $t("pages.cancel")
-        }}</b-button>
-      </template>
-    </b-modal> -->
     <b-modal
       ref="modallg"
       id="modallg"
@@ -1020,7 +1499,10 @@
             :key="index"
           >
             <b-colxx :sm="field.type === 'STRING' ? 12 : 6">
-              <b-form-group :label="field.locales.en.name">
+              <b-form-group
+                class="form-group-label"
+                :label="field.locales.en.name"
+              >
                 <b-form-input
                   @change="addCustomValue"
                   :type="field.type === 'INT' ? 'number' : 'text'"
@@ -1029,7 +1511,7 @@
               </b-form-group>
             </b-colxx>
             <b-colxx v-if="field.type === 'INT'" sm="6">
-              <b-form-group :label="$t('forms.unit')">
+              <b-form-group class="form-group-label" :label="$t('forms.unit')">
                 <b-form-input type="text" v-model="field.unit" />
               </b-form-group>
             </b-colxx>
@@ -1160,6 +1642,8 @@ export default {
       terms_conditions: null,
       auction_id: null,
       request_notes: null,
+      disabledBefore: new Date(2019, 10, 2),
+disabledAfter: new Date(2019, 10, 6),
       brochure: null,
       isLoadAuctionImages: false,
       disabled: true,
@@ -1196,6 +1680,7 @@ export default {
       lang_form: [],
       gridForm: {
         auction_side: null,
+        auction_no: null,
         auction_owner: null,
         city_id: null,
         area_id: null,
@@ -1287,6 +1772,9 @@ export default {
       },
 
       auction_side: {
+        required
+      },
+      auction_no: {
         required
       },
       auction_owner: {
@@ -1422,12 +1910,9 @@ export default {
     get_review_request(){
       this.isLoadCustomField = false;
       this.getReviewRequests({auction_id : this.auctionId})
-      console.log('get_reviewi_request');
     },
     open_custom_tab(){
-      console.log(this.auction.auction_type_value);
       if(this.auction.auction_type_value === 2){
-        console.log('انا');
 this.isLoadCustomField = true
       }
     },
@@ -1446,7 +1931,6 @@ this.isLoadCustomField = true
       this.gridForm.longitude = data.lng;
     },
     get_cities() {
-      console.log('here from get cities');
       this.is_area_selected = true;
       this.gridForm.city_id = null;
       this.getCities({ area_id: this.gridForm.area_id });
@@ -1494,7 +1978,6 @@ this.isLoadCustomField = true
       this.file = file;
     },
     addCustomValue(){
-      console.log('input testing');
       this.saveBtn = 'save';
     },
     open(item) {
@@ -1576,13 +2059,11 @@ this.isLoadCustomField = true
         },
         validateStep2() {
             this.$v.formStep2.$touch();
-            console.log(!this.$v.formStep2.$anyError);
             return true;
         },
         submitStep2() {
 
             this.customFields.forEach(el => {
-              console.log(el);
               if (el.value) {
                  this.createCustomValue({auction_id: this.auction_id,info: el, id: el.id })
               }
@@ -1624,7 +2105,6 @@ this.isLoadCustomField = true
                 password: this.formStep3.password
             };
             this.onGridFormSubmit();
-            console.log("form submitting : ", form)
             setTimeout(() => {
                 this.isProcessing = false;
             }, 3000)

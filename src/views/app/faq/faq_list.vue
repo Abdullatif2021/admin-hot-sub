@@ -131,7 +131,6 @@ export default {
        ...mapActions(["getFaqs", "updateFaq", "deleteFaq", "getFaqCategories"]),
     delete_faq() {
       this.deleteBtn = true;
-      console.log("delete_faq");
       this.deleteFaq({faq_id: this.faq_id})
     },
     add_New(){
@@ -157,7 +156,6 @@ export default {
 
     },
     changeOrderBy(sort){
-      console.log(sort);
       this.sort = sort;
       if (!sort.column) {
         this.categoryName= null

@@ -589,13 +589,11 @@ this.modalName = null;
       );
     },
     _subCategories: function(val){
-      console.log(val);
       this.$refs.subVuetable.setData(val);
 
     },
     _category(newInfo, oldOne) {
       this.isAuctionCategory = true;
-      console.log('rujfrjrjrfjrrejrejrfrfrrrffrer')
       this.category_form.forEach(el => {
          el.name = newInfo.locales.[el._name].name;
           el.description = newInfo.locales.[el._name].description;
@@ -631,7 +629,6 @@ this.modalName = null;
        this.$refs['deleteModal'].hide();
     },
     _successUpdateCategory: function(val) {
-      console.log(val);
       this.$notify(
         "success",
         "Operation completed successfully",

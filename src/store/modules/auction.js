@@ -422,7 +422,6 @@ const actions = {
         if (res.status === 200) {
           commit("createAuctionCustomValue", res.data.data);
           // dispatch("getAuctionImages", { id });
-          console.log("hi from valueeeeeeeeee");
         }
       })
       .catch(err => {});
@@ -458,7 +457,6 @@ const actions = {
         if (res.status === 200) {
           commit("createAuctionCustomValue", res.data.data);
           // dispatch("getAuctionImages", { id });
-          console.log("hi from valueeeeeeeeee");
         }
       })
       .catch(err => {});

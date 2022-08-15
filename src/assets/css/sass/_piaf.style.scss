@@ -1143,6 +1143,10 @@ button {
   border: 1px solid #eceaea;
   height: 370px;
 }
+.image-review-show-1 {
+  // border: 1px solid #eceaea;
+  height: 200px;
+}
 .image-review-hide {
   display: none;
 }
@@ -3609,6 +3613,10 @@ div[data-notify='container'] {
     margin-left: 0;
   }
 }
+.form-group-label {
+  font-weight: bold;
+  font-size: 1rem;
+}
 
 .tooltip-center-top .invalid-feedback {
   bottom: 80%;
@@ -4165,16 +4173,25 @@ select.form-control[multiple] {
 .form-group {
   position: relative;
 }
+.callBtn {
+  /* overflow-anchor: none; */
+  text-decoration: none !important;
+  color: #3a3a3a;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-left: -20px;
+}
 
 .form-control,
 .form-control.is-valid {
   height: initial;
-  border-radius: $border-radius;
+  border-radius: 10px;
   outline: initial !important;
   box-shadow: initial !important;
   font-size: 0.8rem;
   padding: 0.5rem 0.75rem;
   line-height: 1;
+
   border: 1px solid $separator-color;
   background: $input-background;
   color: $primary-color;

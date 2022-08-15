@@ -15,15 +15,15 @@ const routes = [
   {
     path: adminRoot,
     component: () => import(/* webpackChunkName: "app" */ "./views/app"),
-    redirect: `${adminRoot}/piaf`,
+    redirect: `${adminRoot}/static`,
     meta: { loginRequired: true },
 
     children: [
       {
-        path: "piaf",
+        path: "static",
         component: () =>
           import(/* webpackChunkName: "piaf" */ "./views/app/piaf"),
-        redirect: `${adminRoot}/piaf/start`,
+        redirect: `${adminRoot}/static/start`,
         children: [
           {
             path: "start",

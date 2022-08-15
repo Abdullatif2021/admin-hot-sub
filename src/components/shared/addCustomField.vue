@@ -116,7 +116,6 @@ export default {
       });
     },
     typeSelect(val) {
-      console.log(val);
       if (val == 1) {
         this.select_form.type = "STRING";
       } else {
@@ -171,13 +170,11 @@ export default {
     },
     customFieldInfo: function(val) {
         this.editCustomField = true;
-        console.log('hi from info',val);
         this.select_form.type = val.type;
         this.keys_form.forEach(el => {
         el.key = val.locales.[el.name].name;
             });
         val.type === "INT" ?  this.selected = 2 : this.selected = 1;
-        console.log(this.selected);
     },
     hideCustomModal: function(val) {
       this.$refs["add_newCustomField"].hide();

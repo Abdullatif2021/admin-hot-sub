@@ -79,7 +79,13 @@
                 variant="outline-theme-3"
                 id="edit"
                 class="icon-button"
-                @click="modify(props.rowData.id)"
+                @click="
+                  modify(
+                    props.rowData,
+                    props.rowData.id,
+                    props.rowData.auction_type_value
+                  )
+                "
               >
                 <i
                   v-if="
@@ -96,7 +102,7 @@
                 >
                 </b-tooltip>
               </b-button>
-              <b-button
+              <!-- <b-button
                 v-if="props.rowData.auction_type_value !== 1"
                 variant="outline-theme-6"
                 id="delete"
@@ -110,7 +116,7 @@
                   :title="$t('forms.delete')"
                 >
                 </b-tooltip>
-              </b-button>
+              </b-button> -->
             </template>
           </vuetable>
           <vuetable-pagination-bootstrap
@@ -183,6 +189,187 @@
         }}</b-button>
       </template>
     </b-modal>
+    <b-modal
+      id="auction_details"
+      ref="auction_details"
+      modal-class="modal-right"
+      :title="$t('modal.modal-auction-details')"
+      hide-footer
+    >
+      <template v-if="_isLoadCategories">
+        <div v-if="enable_details">
+          <div v-for="(lang, index) in langs" :key="index">
+            <b-button
+              class="callBtn"
+              v-b-toggle="`collapse-${index}`"
+              variant="link"
+              >{{ $t(`forms.${lang.name}_lang`) }}
+              <i
+                style="position: absolute;margin: 4px;"
+                class="simple-icon-plus"
+              ></i
+            ></b-button>
+            <b-collapse :id="`collapse-${index}`" accordion="my-accordion">
+              <div class="p-4">
+                <b-form-group>
+                  <label class="form-group-label" for="open">{{
+                    $t("forms.title")
+                  }}</label>
+                  <b-form-input
+                    v-model="lang.value.title"
+                    type="text"
+                    readonly
+                  />
+                </b-form-group>
+                <b-form-group>
+                  <label class="form-group-label" for="open">{{
+                    $t("forms.description")
+                  }}</label>
+                  <b-form-input
+                    v-model="lang.value.description"
+                    type="text"
+                    readonly
+                  />
+                </b-form-group>
+              </div>
+            </b-collapse>
+          </div>
+          <b-form-group>
+            <label class="form-group-label" for="open">{{
+              $t("forms.opening_price")
+            }}</label>
+            <b-form-input
+              v-model="auction.opening_price"
+              type="text"
+              readonly
+            />
+          </b-form-group>
+          <b-form-group>
+            <label class="form-group-label" for="open">{{
+              $t("forms.deposit")
+            }}</label>
+            <b-form-input v-model="auction.deposit" type="text" readonly />
+          </b-form-group>
+          <b-form-group>
+            <label class="form-group-label" for="open">{{
+              $t("forms.category")
+            }}</label>
+            <b-form-input v-model="categoryName" type="text" readonly />
+          </b-form-group>
+          <b-form-group>
+            <label class="form-group-label" for="open">{{
+              $t("forms.sub-category")
+            }}</label>
+            <b-form-input v-model="subCategoryName" type="text" readonly />
+          </b-form-group>
+          <b-form-group>
+            <label class="form-group-label" for="open">{{
+              $t("forms.auction_side")
+            }}</label>
+            <b-form-input
+              v-model="auction.auction_side.name"
+              type="text"
+              readonly
+            />
+          </b-form-group>
+          <b-form-group>
+            <label class="form-group-label" for="open">{{
+              $t("forms.auction_owner")
+            }}</label>
+            <b-form-input
+              v-model="auction.auction_owner.name"
+              type="text"
+              readonly
+            />
+          </b-form-group>
+          <b-form-group>
+            <label class="form-group-label" for="open">{{
+              $t("forms.area")
+            }}</label>
+            <b-form-input
+              v-if="language === 'en'"
+              v-model="auction.area.locales.en.name"
+              type="text"
+              readonly
+            />
+            <b-form-input
+              v-if="language === 'ar'"
+              v-model="auction.area.locales.ar.name"
+              type="text"
+              readonly
+            />
+          </b-form-group>
+          <b-form-group>
+            <label class="form-group-label" for="open">{{
+              $t("forms.city")
+            }}</label>
+            <b-form-input
+              v-if="language === 'en'"
+              v-model="auction.city.locales.en.name"
+              type="text"
+              readonly
+            />
+            <b-form-input
+              v-if="language === 'ar'"
+              v-model="auction.city.locales.ar.name"
+              type="text"
+              readonly
+            />
+          </b-form-group>
+          <b-form-group>
+            <label class="form-group-label" for="open">{{
+              $t("forms.image")
+            }}</label>
+            <div class="image-review-show-1">
+              <img
+                style="max-width: 100%; max-height: 100%;"
+                :src="auction.image"
+                alt="Auction image"
+              />
+            </div>
+          </b-form-group>
+          <b-form-group>
+            <label class="form-group-label" for="open">{{
+              $t("forms.location")
+            }}</label>
+            <googleMaps
+              id="maps"
+              :location="location"
+              @select_location="set_location"
+            />
+          </b-form-group>
+          <b-form-group>
+            <div style="display: grid;">
+              <label class="form-group-label" for="open">{{
+                $t("forms.brochure")
+              }}</label>
+              <b-button
+                :variant="auction.brochure == '' ? 'light' : 'primary'"
+                :disabled="auction.brochure == '' ? true : false"
+                @click="open_link(auction.brochure)"
+                >show</b-button
+              >
+            </div>
+          </b-form-group>
+          <b-form-group>
+            <div style="display: grid;">
+              <label class="form-group-label" for="open">{{
+                $t("forms.terms_conditions")
+              }}</label>
+              <b-button
+                :variant="auction.terms_conditions == '' ? 'light' : 'primary'"
+                :disabled="auction.terms_conditions == '' ? true : false"
+                @click="open_link(auction.terms_conditions)"
+                >show</b-button
+              >
+            </div>
+          </b-form-group>
+        </div>
+      </template>
+      <template v-else>
+        <div class="loading"></div>
+      </template>
+    </b-modal>
   </div>
 </template>
 <script>
@@ -193,24 +380,35 @@ import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue
 import { mapGetters, mapActions } from "vuex";
 import { getCurrentLanguage } from "../../../utils";
 import * as moment from 'moment'
+import Switches from "vue-switches";
+import googleMaps from "../../../components/shared/googleMaps.vue";
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
 export default {
   components: {
+    googleMaps : googleMaps,
     vuetable: Vuetable,
     'deleteModal': deleteModal,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
-    "datatable-heading": DatatableHeading
+    "datatable-heading": DatatableHeading,
+     switches: Switches
   },
   data() {
     return {
       dir: null,
       order_by: null,
       auctionType_id: null,
+      categoryName: null,
+
       search: null,
+      langs: [],
+      enable_details: false,
            modalName: null,
       hideModel: false,
+      subCategoryName: null,
       auctionId: null,
+            location: [],
+
       isLoad: false,
       apiBase: "/cakes/fordatatable",
       sort: {
@@ -241,6 +439,7 @@ export default {
        ],
       auction_id: null,
       perPage: 8,
+      auction: null,
       active: null,
       from: 0,
       to: 0,
@@ -251,6 +450,14 @@ export default {
       selectedItems: [],
 
       fields: [
+         {
+          name: "id",
+          title: "NO.",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "10%"
+        },
+
         {
           name: "locales",
           callback: value => {
@@ -263,44 +470,36 @@ export default {
         },
 
         {
-          name: "start_date",
+          name: "",
           callback: value => {
-            // console.log(value.toLocaleString('ko-KR', { timeZone: 'UTC' }).toDateString());
-            return value;
+
+            return  `<span>
+                ${value.start_date}
+              </span>
+              <br/>
+              <span>
+                ${value.end_date}
+              </span>
+              `;
           },
 
           sortField: "start_date",
-          title: "Start Date",
+          title: "Duration",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "15%"
-        },
-        {
-          name: "end_date",
-          sortField: "end_date",
-          title: "End Date",
-          titleClass: "",
-          dataClass: "list-item-heading",
-          width: "15%"
-        },
-        {
-          name: "opening_price",
-          title: "Opening Price",
-          titleClass: "",
-          dataClass: "list-item-heading",
-          width: "10%"
+          width: "20%"
         },
         {
           name: "minimum_paid",
           sortField: "minimum_paid",
-          title: "Minimum Paid",
+          title: "Minimum Pid",
           titleClass: "",
           dataClass: "list-item-heading",
           width: "10%"
         },
           {
           name: "bids_count",
-          title: "number of bidding",
+          title: "Bidds",
           titleClass: "",
           dataClass: "list-item-heading",
           width: "10%"
@@ -320,11 +519,22 @@ export default {
           width: "15%"
         },
         {
+          name: "",
+           callback: value => {
+            return `${value.active}`;
+
+          },
+          title: "Activate",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "15%"
+        },
+        {
           name: "__slot:actions",
           title: "",
           titleClass: "center aligned text-right",
           dataClass: "center aligned text-right",
-          width: "30%"
+          width: "10%"
         }
       ]
     };
@@ -342,7 +552,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["getAuctions", "deleteAuction", "updateAuctionStatus"]),
+    ...mapActions(["getAuctions", "deleteAuction", "updateAuctionStatus", "getCategory", "getSubCategory"]),
 
     onRowClass(dataItem, index) {
       if (this.selectedItems.includes(dataItem.id)) {
@@ -351,11 +561,30 @@ export default {
       return "";
     },
 
-    modify(id) {
-      this.$router.push({
+    modify(auction,id, type) {
+      if(type === 2){
+this.$router.push({
         path: `${adminRoot}/auctions/auction`,
         query: { id: id }
       });
+      }else{
+        this.getCategory({ id: auction.category_id })
+        this.getSubCategory({ id: auction.sub_category_id })
+        this.langs = [];
+        this.enable_details = true;
+        this.auction = auction;
+        this.location.push(auction.latitude, auction.longitude);
+        Object.keys(auction.locales).forEach(key => {
+           this.langs.push(
+          new Object({
+            name: key,
+            value: auction.locales[key]
+          })
+        );
+});
+        this.$refs['auction_details'].show();
+      }
+
     },
 
     rowClicked(dataItem, event) {
@@ -433,6 +662,9 @@ this.active = active
         }
       }
     },
+       set_location(data) {
+        console.log(data);
+    },
     delete_auction() {
       this.enableModalBtn= true;
       this.deleteAuction({ Id: this.auctionId });
@@ -443,6 +675,9 @@ this.active = active
             active : this.active === 1 ? 0 : 1,
             id: this.auctionId
           });
+    },
+    open_link(link){
+      window.open(link);
     },
     hideModal(refname) {
       this.$refs[refname].hide();
@@ -487,7 +722,6 @@ this.active = active
     },
 
     changeOrderBy(sort){
-      console.log(sort);
       this.sort = sort
       this.auctionType_id = sort.column;
     this.getAuctions({
@@ -534,7 +768,6 @@ this.active = active
       });
     },
         toDateFormat(value){
-      console.log(value);
      return value.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"});
     },
   },
@@ -543,11 +776,14 @@ this.active = active
       "auctions",
       "auction_paginations",
       "_successDeleteAuction",
+      "_isLoadCategories",
+      "_getSubCategorySuccess",
+      "_category",
       "_isLoadAuctions",
-      "_updatedAuctionSuccessfuly","_deleteAuctionError"
+      "_updatedAuctionSuccessfuly",
+      "_deleteAuctionError"
     ]),
     // toDateFormat(value){
-    //   console.log(value);
     //  return value.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"});
     // },
     isSelectedAll() {
@@ -576,7 +812,6 @@ this.$notify(
       );
     },
     _successDeleteAuction(newVal, old) {
-      console.log(newVal)
       this.enableModalBtn= false;
       this.hideModel = !this.hideModel
       this.$refs['deleteAuction'].hide();
@@ -618,6 +853,14 @@ this.$notify(
         page: this.page
       });
 
+    },
+    _category: function(val){
+        console.log(val);
+        this.categoryName = val.locales.[this.language].name
+    },
+     _getSubCategorySuccess: function(val){
+        console.log(val);
+        this.subCategoryName = val.data.locales.[this.language].name
     },
     auction_paginations(newActions, old) {
       this.perPage = newActions.per_page;

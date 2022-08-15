@@ -235,7 +235,6 @@ export default {
       });
     },
     onPaginationData(paginationData) {
-      console.log(paginationData);
       this.from = paginationData.from;
       this.to = paginationData.to;
       this.total = paginationData.total;
@@ -355,10 +354,8 @@ export default {
       this.$v.$reset();
     },
     _isNavigationON: function(val) {
-      console.log(val);
     },
     _faqCategory: function(val){
-        console.log(val);
     this.category_form.forEach(el => {
             el.title = val.locales.[el.name].title;
 

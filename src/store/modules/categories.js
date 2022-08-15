@@ -20,6 +20,7 @@ const state = {
   successUpdateCategoryMeta: null,
   create_category_meta_success: null,
   categoryMetaTypeList: null,
+  getSubCategorySuccess: null,
   updateCustomField: null,
   subCategories: null,
   successDeleteSubCategory: null,
@@ -42,6 +43,7 @@ const getters = {
   _createCustomField: state => state.create_customField,
   _successDeleteCustomField: state => state.successDeleteCustom,
   _category: state => state.category,
+  _getSubCategorySuccess: state => state.getSubCategorySuccess,
   _updateCustomField: state => state.updateCustomField,
   _create_category_success: state => state.create_category_success,
   _updatedCategorySuccessfuly: state => state.updated_Successfuly,
@@ -97,6 +99,7 @@ const mutations = {
   successUpdateCategory(state, payload) {
     state.successUpdateCategory = payload;
   },
+
   // category metaData
   updateCategoryMetaSuccess(state, payload) {
     state.successUpdateCategoryMeta = payload;
@@ -133,6 +136,9 @@ const mutations = {
   },
   updateSubCategory(state, payload) {
     state.successUpdateSubCategory = payload;
+  },
+  getSubCategorySuccess(state, payload) {
+    state.getSubCategorySuccess = payload;
   },
   error(state, payload) {
     state.error = !state.error;
@@ -334,6 +340,18 @@ const actions = {
         if (res.status === 200) {
           commit("getSubCategoriesSuccess", res.data);
         }
+      });
+  },
+  getSubCategory({ commit, dispatch }, payload) {
+    const id = payload.id;
+    axios
+      .get(`${apiUrl}/categories/${id}`)
+      .then(res => {
+        commit("setProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getSubCategorySuccess", res.data);
       });
   },
   createSubCategory: async ({ commit, dispatch }, payload) => {
