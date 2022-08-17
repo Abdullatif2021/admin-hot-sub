@@ -318,8 +318,10 @@
   },
   "todo": {
     "add-new": "ADD NEW",
+    "main_image": "Update main image",
     "add-new-custom-filed": "Custom Filed",
     "add-new-sub-category": "Add Sub Category",
+    "attachment-details": "Attachment Details",
     "add-new-attach": "Add Attachment",
     "edit-block-category": "Edit ",
     "title": "Title",

@@ -321,9 +321,11 @@
   },
   "todo": {
     "add-new": "اضافة جديد",
+    "main_image": "تحديث الصورة الرئيسية",
     "edit-block-category": "تعديل الصنف",
     "add-new-title": "Add New Todo",
     "add-new-attach": "إضافة مرفق",
+    "attachment-details": "تفاصيل المرفق",
     "update-attach": "تعديل المرفق",
     "add-new-custom-filed": "الحقل مخصص",
     "add-new-sub-category": "اضافة صنف فرعية",

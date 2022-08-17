@@ -3152,7 +3152,21 @@ body.default-transition main {
     padding: 0.35rem;
   }
 }
+.card-top-buttons-1 {
+  padding: 1.3rem;
+  /* right: 0; */
+  top: 0;
+  margin: 100px;
 
+  @include respond-below(xs) {
+    padding: 0.35rem;
+  }
+}
+
+.auction_card{
+  border-radius: 12px;
+  box-shadow: 3px 3px rgb(79, 78, 78), 3px 3px rgb(84, 84, 84);
+}
 .card-header {
   border: initial;
   background: initial;
@@ -3617,7 +3631,14 @@ div[data-notify='container'] {
   font-weight: bold;
   font-size: 1rem;
 }
-
+.btn-container {
+  display: flex;
+  justify-content: center;
+}
+.add-btn {
+  width: 39px;
+  height: 38px;
+}
 .tooltip-center-top .invalid-feedback {
   bottom: 80%;
   transform: translateX(-50%) translateY(50%);

@@ -15,6 +15,7 @@ const state = {
   processing: false,
   cities: null,
   isCustomValueCreated: false,
+  updatedAuctionMainImageSuccessfuly: false,
   auctionSide: null,
   auctionOwner: null,
   areas: null,
@@ -40,6 +41,7 @@ const getters = {
   _File_List: state => state.File_List,
   _updateReviewRequest: state => state.updateReviewRequest,
   _isCustomValueCreated: state => state.isCustomValueCreated,
+  _updatedAuctionMainImageSuccessfuly: state => state.updatedAuctionMainImageSuccessfuly,
   _createAuctionFile: state => state.create_File,
   _deleteAuctionFile: state => state.delete_File,
   _Image_List: state => state.Image_List,
@@ -107,6 +109,9 @@ const mutations = {
   },
   getAuctionImageList(state, payload) {
     state.Image_List = payload;
+  },
+  updatedAuctionMainImageSuccessfuly(state, payload) {
+    state.updatedAuctionMainImageSuccessfuly = payload;
   },
   deleteAuctionError(state, payload) {
     state.deleteAuctionError = payload;
@@ -239,6 +244,17 @@ const actions = {
       }
     });
   },
+  updateAuctionMainImage({ commit, dispatch }, payload) {
+    const id = payload.id;
+    const formData = new FormData();
+    formData.append("image", payload.img);
+    formData.append("_method", "PUT");
+    axios.post(`${apiUrl}/auctions/${id}`, formData, {}).then(res => {
+      if (res.status === 200) {
+        commit("updatedAuctionMainImageSuccessfuly", res.data.data);
+      }
+    });
+  },
   updateAuctionStatus({ commit, dispatch }, payload) {
     const id = payload.id;
     const formData = new FormData();
@@ -325,9 +341,9 @@ const actions = {
     const formData = new FormData();
     formData.append("path", payload.path);
     payload.info.forEach(el => {
-      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el._name}[title]`, el.title);
       if (el.description) {
-        formData.append(`${el.name}[description]`, el.description);
+        formData.append(`${el._name}[description]`, el.description);
       }
     });
     axios
@@ -373,9 +389,9 @@ const actions = {
     const formData = new FormData();
     formData.append("path", payload.path);
     payload.info.forEach(el => {
-      formData.append(`${el.name}[title]`, el.title);
+      formData.append(`${el._name}[title]`, el.title);
       if (el.description) {
-        formData.append(`${el.name}[description]`, el.description);
+        formData.append(`${el._name}[description]`, el.description);
       }
     });
     axios

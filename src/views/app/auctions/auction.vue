@@ -473,14 +473,19 @@
         <b-card v-if="auctionId" class="mb-4">
           <b-row>
             <b-colxx style="margin-top: 50px;" xxs="12">
-              <b-card class="mb-4">
+              <b-card class="mb-4 auction_card">
                 <b-form @submit.prevent="onGridFormSubmit">
-                  <b-row>
-                    <b-colxx style="position: absolute;top: -96px;" sm="12">
+                  <b-row style="margin: 42px;">
+                    <b-colxx style="position: absolute;top: -104px;left: 1px;padding: 0px;" sm="12">
                       <label
                         style="display: flex;justify-content: center;"
                         class="form-group has-float-label"
                       >
+                      <div class="position-absolute card-top-buttons-1">
+                <b-button v-b-modal.main_image variant="outline-white" class="icon-button">
+                  <i class="simple-icon-pencil" />
+                </b-button>
+              </div>
                         <img
                           :src="image ? imgUrl : $v.files_form.image.$model"
                           style="border-radius: 50%;"
@@ -490,6 +495,7 @@
                         />
                       </label>
                     </b-colxx>
+                  
                     <b-colxx sm="6">
                       <b-form-group>
                         <label class="form-group-label" for="desc">{{
@@ -657,7 +663,7 @@
                   </b-row>
                 </b-form>
               </b-card>
-              <b-card class="mb-4" :title="$t('forms.localzations')">
+              <b-card class="mb-4 auction_card" :title="$t('forms.localzations')">
                 <div
                   v-for="(lang, index) in $v.lang_form.$each.$iter"
                   :key="index"
@@ -669,7 +675,9 @@
                       v-b-toggle="`faq_${lang._name.$model}`"
                       variant="link"
                       >{{ $t(`forms.${lang._name.$model}_lang`) }}
-                      ---------------------------------------------------------------------------------------------------
+                      <span>
+                        -----------------------------------------------------------------------------------------------------------------------------------------
+                        ></span
                       >
                     </b-button>
                   </div>
@@ -720,7 +728,7 @@
                   </b-collapse>
                 </div>
               </b-card>
-              <b-card class="mb-4" :title="$t('forms.binig-info')">
+              <b-card class="mb-4 auction_card" :title="$t('forms.binig-info')">
                 <b-row>
                   <b-colxx sm="4">
                     <b-form-group>
@@ -776,7 +784,7 @@
                   </b-colxx>
                 </b-row>
               </b-card>
-              <b-card class="mb-4" :title="$t('forms.location')">
+              <b-card class="mb-4 auction_card" :title="$t('forms.location')">
                 <b-row>
                   <b-colxx sm="6">
                     <b-form-group>
@@ -836,7 +844,7 @@
                   </b-colxx>
                 </b-row>
               </b-card>
-              <b-card class="mb-4" :title="$t('forms.additional')">
+              <b-card class="mb-4 auction_card" :title="$t('forms.additional')">
                 <template v-if="_isLoadCustomField || _isLoadAuctions">
                   <div
                     style="display: flex;"
@@ -875,16 +883,118 @@
                       </b-form-group>
                     </b-colxx>
                   </div>
+                  <b-colxx sm="12">
+                    <b-form-group class="form-group-label">
+                      <b-form-select
+                        v-model="selectedCustomField"
+                        :options="categoryCustomFieldOptions"
+                        @change="selectCustomField"
+                        plain
+                      />
+                    </b-form-group>
+                  </b-colxx>
+
+                  <div
+                    style="display: flex;"
+                    v-for="field in selectedFields"
+                    :key="field.id"
+                  >
+                    <b-colxx :sm="field.type === 'STRING' ? 12 : 6">
+                      <b-form-group
+                        class="form-group-label"
+                        :label="field.locales.en.name"
+                      >
+                        <b-form-input
+                          @change="addCustomValue"
+                          :type="field.type === 'INT' ? 'number' : 'text'"
+                          v-model="field.value"
+                        />
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx v-if="field.type === 'INT'" sm="6">
+                      <b-form-group
+                        class="form-group-label"
+                        :label="$t('forms.unit')"
+                      >
+                        <b-form-input type="text" v-model="field.unit" />
+                      </b-form-group>
+                    </b-colxx>
+                  </div>
+                  <div class="btn-container">
+                    <b-button
+                      @click="add_newCustomField()"
+                      type="submit"
+                      variant="primary"
+                      class="mt-4"
+                      >+ Add</b-button
+                    >
+                  </div>
+
                   <b-button
-                    :disabled="!disabled || auction.auction_type_value != 2"
+                    :disabled="enable_custom_save_btn"
                     type="submit"
                     @click="editCustomValue('edit')"
-                    :variant="
-                      auction.auction_type_value != 2 ? 'light' : 'primary'
-                    "
+                    :variant="enable_custom_save_btn ? 'light' : 'primary'"
                     class="mt-4"
                     >{{ $t("forms.save") }}</b-button
                   >
+                  <add-new-custom-field
+                    @create-custom-field="create_custom_field"
+                    :showCreateModal="showCreateModal"
+                    :modalClass="modallong"
+                    :hideCustomModal="hideCustomModal"
+                  />
+                </template>
+                <template v-else>
+                  <div class="loading"></div>
+                </template>
+              </b-card>
+              <b-card class="mb-4 auction_card" :title="$t('forms.attach')">
+                <template v-if="_isLoadCustomField || _isLoadAuctions">
+                  <label class="form-group has-float-label">
+                    <b-colxx xxs="12" style="padding: 0px;">
+                      <b-form-group >
+                        <vue-dropzone
+                          v-if="show_dropzone"
+                          ref="myVueDropzone"
+                          id="dropzone"
+                          :options="dropzoneOptions"
+                          @vdropzone-files-added="fileAdded"
+                          @vdropzone-removed-file="fileRemoved"
+                        ></vue-dropzone>
+                      </b-form-group>
+                    </b-colxx>
+                  </label>
+                  <!-- <b-colxx xxs="12" xl="8" class="col-left">
+                    <b-card class="mb-4" no-body>
+                      <b-card-body>
+                        <glide-component-thumbs
+                          :settingsImages="{
+                            bound: true,
+                            rewind: false,
+                            focusAt: 0,
+                            startAt: 0,
+                            gap: 5,
+                            perView: 1,
+                            data: file_lists
+                          }"
+                          :settingsThumbs="{
+                            bbound: true,
+                            rewind: false,
+                            focusAt: 0,
+                            startAt: 0,
+                            gap: 10,
+                            perView: 5,
+                            data: file_lists,
+                            breakpoints: {
+                              576: { perView: 4 },
+                              420: { perView: 3 }
+                            }
+                          }"
+                        />
+                      </b-card-body>
+                    </b-card>
+                  </b-colxx> -->
                 </template>
                 <template v-else>
                   <div class="loading"></div>
@@ -1577,6 +1687,91 @@
         </div>
       </b-card>
     </b-modal>
+    <b-modal
+      id="main_image"
+      ref="main_image"
+      :title="$t('todo.main_image')"
+      :no-close-on-backdrop="true"
+    >
+      <b-form-group :label="$t('forms.image')">
+        <vue-dropzone
+          ref="myVueDropzone"
+          id="dropzone"
+          :options="imageDropzoneOptions"
+          @vdropzone-files-added="imageAdded"
+          @vdropzone-removed-file="imageRemoved"
+        ></vue-dropzone>
+      </b-form-group>
+      <template slot="modal-footer">
+        <b-button
+          variant="primary"
+          @click="updateImage()"
+          class="mr-1"
+          :disabled="image_added || model_button"
+          >{{ $t("forms.submit") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('main_image')">{{
+          $t("survey.cancel")
+        }}</b-button>
+      </template>
+    </b-modal>
+    <b-modal
+      id="attachDetails"
+      ref="attachDetails"
+      :title="$t('todo.attachment-details')"
+      :hide-backdrop="true"
+      :no-close-on-backdrop="true"
+    >
+      <b-form
+        @submit.prevent="onValitadeFormSubmit()"
+        class="av-tooltip tooltip-label-right"
+      >
+        <div v-for="(lang, index) in $v.attach_form.$each.$iter" :key="index">
+          <b-form-group
+            :label="$t(`pages.${lang._name.$model}_title`)"
+            class="has-float-label mb-4"
+          >
+            <b-form-input
+              type="text"
+              v-model="lang.title.$model"
+              :state="!lang.title.$error"
+            />
+            <b-form-invalid-feedback v-if="!lang.title.required">{{
+              $t("forms.title_filed")
+            }}</b-form-invalid-feedback>
+          </b-form-group>
+          <b-form-group
+            :label="$t(`pages.${lang._name.$model}_desc`)"
+            class="has-float-label mb-4"
+          >
+            <b-form-textarea
+              id="textarea"
+              rows="3"
+              max-rows="6"
+              v-model="lang.description.$model"
+              :state="!lang.description.$error"
+            ></b-form-textarea>
+            <b-form-invalid-feedback v-if="!lang.description.required">
+              {{ $t("forms.desc_filed") }}</b-form-invalid-feedback
+            >
+          </b-form-group>
+        </div>
+      </b-form>
+      <template slot="modal-footer">
+        <b-button
+          variant="outline-secondary"
+          @click="hideModal('attachDetails')"
+          >{{ $t("survey.cancel") }}</b-button
+        >
+        <b-button
+          :variant="enable_attach_btn ? 'light' : 'primary'"
+          :disabled="enable_attach_btn"
+          @click="createAttachment()"
+          class="mr-1"
+          >{{ $t("survey.submit") }}</b-button
+        >
+      </template>
+    </b-modal>
   </b-row>
 </template>
 <script>
@@ -1599,6 +1794,11 @@ import addCustomField from "../../../components/shared/addCustomField.vue";
 import { getCurrentLanguage } from "../../../utils";
 import FormWizard from "../../../components/Form/Wizard/FormWizard";
 import Tab from "../../../components/Form/Wizard/Tab";
+import GlideComponentThumbs from '../../../components/Carousel/GlideComponentThumbs.vue'
+import {
+    detailImages,
+    detailThumbs
+} from "../../../data/carouselItems";
 
 export default {
   components: {
@@ -1606,6 +1806,7 @@ export default {
         vuetable: Vuetable,
     "vue-dropzone": VueDropzone,
      "form-wizard": FormWizard,
+       'glide-component-thumbs': GlideComponentThumbs,
         "tab": Tab,
         "add-new-custom-field": addCustomField,
     "datatable-heading": DatatableHeading,
@@ -1620,6 +1821,8 @@ export default {
       modallong:"modallong",
       _categoryId: null,
       password: null,
+        detailImages,
+            detailThumbs,
        isProcessing: true,
 
             formStep1: {
@@ -1637,22 +1840,70 @@ export default {
       saveBtn: `next`,
       showCreateModal: false,
       testArray: [],
+      attach_form: [],
+      show_dropzone: true,
+      file: null,
+      showField: false,
       imgUrl: null,
+      image_added: true,
       hideCustomModal: false,
       terms_conditions: null,
       auction_id: null,
       request_notes: null,
       disabledBefore: new Date(2019, 10, 2),
-disabledAfter: new Date(2019, 10, 6),
+      mainImage: null,
+      disabledAfter: new Date(2019, 10, 6),
       brochure: null,
       isLoadAuctionImages: false,
+      model_button: false,
       disabled: true,
+      imageDropzoneOptions: {
+        url: "https://lilacmarketingevents.com",
+        thumbnailHeight: 160,
+        thumbnailWidth: 150,
+        parallelUploads: 3,
+        maxFiles: 1,
+        acceptedFiles:
+         "image/jpeg,image/png,image/gif",
+        uploadMultiple: false,
+        addRemoveLinks: true,
+        removedfile: function(file) {
+          var _ref;
+          return (_ref = file.previewElement) != null
+            ? _ref.parentNode.removeChild(file.previewElement)
+            : void 0;
+        },
+        autoProcessQueue: false,
+        previewTemplate: this.dropzoneTemplate(),
+        headers: {}
+      },
+       dropzoneOptions: {
+        url: "https://lilacmarketingevents.com",
+        thumbnailHeight: 160,
+        thumbnailWidth: 150,
+        parallelUploads: 3,
+        maxFiles: 10,
+        acceptedFiles:
+          "application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf",
+        uploadMultiple: true,
+        addRemoveLinks: true,
+        removedfile: function(file) {
+          var _ref;
+          return (_ref = file.previewElement) != null
+            ? _ref.parentNode.removeChild(file.previewElement)
+            : void 0;
+        },
+        autoProcessQueue: false,
+        previewTemplate: this.dropzoneTemplate(),
+        headers: {}
+      },
       disableNextBtn: false,
       custom_fields: null,
       enableModelBtn: false,
       endDateSelected: false,
       startDateSelected: false,
       isLoadAuction: false,
+      categoryCustomFieldOptions: [],
       language: null,
       enable: false,
       langs: null,
@@ -1661,9 +1912,14 @@ disabledAfter: new Date(2019, 10, 6),
       isLoadCustomField: false,
       location: [],
       country_id: 1,
+      selectedFields: [],
+      enable_custom_save_btn: false,
       categoryIdOptions: [],
+      file_lists: [],
       auctionSideOptions: [],
       auctionOwnerOptions: [],
+      enable_attach_btn : false,
+      selectedCustomField: null,
       subCategoryOptions: [],
       areaOptions: [],
       auctionFileList: null,
@@ -1742,6 +1998,15 @@ disabledAfter: new Date(2019, 10, 6),
   mixins: [validationMixin],
   validations: {
     lang_form: {
+      $each: {
+        title: {
+          required
+        },
+        description: {},
+        _name: {}
+      }
+    },
+    attach_form: {
       $each: {
         title: {
           required
@@ -1838,8 +2103,10 @@ disabledAfter: new Date(2019, 10, 6),
     this.getAreas({ country_id: this.country_id });
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.lang_form);
+    this.make_collaction(this.langs, this.attach_form);
     this.getAuctionSide();
     this.getAuctionOwner();
+
   },
   methods: {
     ...mapActions([
@@ -1857,6 +2124,7 @@ disabledAfter: new Date(2019, 10, 6),
       "getAuctionImages",
       "getAuctionOwner",
       "getSubCategories",
+      "updateAuctionMainImage",
       "createCustomValue",
       "createAuction",
       "createCustomField",
@@ -1949,14 +2217,22 @@ this.isLoadCustomField = true
     },
     createImage(value) {
       this.enable = true;
-      this.createAuctionImage({
-        info: value.info,
-        path: value.image ? value.image : null,
-        id: this.auctionId
-      });
+
     },
     review(){
 
+    },
+    imageAdded(file){
+      this.mainImage = file;
+      this.image_added = false;
+    },
+    imageRemoved(){
+      this.mainImage = null;
+      this.image_added = true;
+    },
+    selectCustomField(){
+      this.showField = true;
+      this.selectedFields.push(this.selectedCustomField)
     },
     delete_img(){
         this.image = null;
@@ -1975,6 +2251,9 @@ this.isLoadCustomField = true
       this.deleteAuctionImage({ id: this.auctionId, imgId: id });
     },
     fileAdded(file) {
+      console.log(file)
+
+      this.$refs['attachDetails'].show();
       this.file = file;
     },
     addCustomValue(){
@@ -1990,17 +2269,43 @@ this.isLoadCustomField = true
     addCustomVal(){
 
     },
-    add_newCustomField(){
-       if (this.auctionId) {
- this.$refs['modallg'].show();
- this.getCustomFieldList({id: this.gridForm.category_id})
-       }else{
-  this.showCreateModal = !this.showCreateModal;
-       }
+    updateImage(){
+      this.model_button = true;
+      this.updateAuctionMainImage({id: this.auctionId, img: this.mainImage ? this.mainImage[0] : null})
+    },
+    createAttachment(){
 
+      console.log(this.file[0])
+        this.$v.$touch();
+      this.$v.attach_form.$touch();
+
+      if (!this.$v.attach_form.$invalid) {
+        this.enable_attach_btn = true;
+      if(this.file[0].type.split('/')[0] === 'image'){
+        this.createAuctionImage({
+        info: this.$v.attach_form.$model,
+        path: this.file ? this.file[0] : null,
+        id: this.auctionId
+        });
+      }else{
+          this.createAuctionFile({ info: this.$v.attach_form.$model, path: this.file ? this.file[0] : null, id: this.auctionId });
+      }
+      }
 
     },
+    add_newCustomField(){
+      console.log(this.showCreateModal)
+  this.showCreateModal = !this.showCreateModal;
+    },
     fileRemoved(file) {
+      if(this.file[0].type.split('/')[0] === 'image'){
+             this.deleteAuctionImage({ id: this.auctionId, imgId: this.file[1]});
+
+
+          }else{
+                    this.deleteAuctionFile({ id: this.auctionId, fileId: this.file[1] });
+
+          }
       this.file = null;
     },
     shootMessage: async function() {
@@ -2084,9 +2389,13 @@ this.isLoadCustomField = true
   this.request_notes = notes;
  },
         editCustomValue(){
+                  this.enable_custom_save_btn= true;
 
           this.custom_fields.forEach(el => {
                  this.updateCustomValue({info: el, custom_id: el.id, value_id: el.values[0].id})
+            });
+             this.selectedFields.forEach(el => {
+                 this.createCustomValue({auction_id: this.auctionId,info: el, id: el.id })
             });
         },
         addNewCustomValue(type){
@@ -2108,6 +2417,9 @@ this.isLoadCustomField = true
             setTimeout(() => {
                 this.isProcessing = false;
             }, 3000)
+        },
+        open_field(){
+
         }
   },
   computed: {
@@ -2132,6 +2444,8 @@ this.isLoadCustomField = true
       "_subCategories",
       "_customFields",
       "_isLoadPreviewRequests",
+      "_updateCustomField",
+      "_updatedAuctionMainImageSuccessfuly",
       "_dateError",
       "_updatedAuctionSuccessfuly",
       "_createAuctionSuccessfuly"
@@ -2143,6 +2457,18 @@ this.isLoadCustomField = true
   watch: {
     _File_List(newInfo, oldOne) {
       this.auctionFileList = newInfo;
+      console.log('this is files', newInfo)
+      newInfo.forEach(el => {
+        this.file_lists.push(
+             new Object({
+            id: el.id,
+            link: el.path,
+            img:  "/assets/img/products/fileImg.svg"
+          })
+        )
+      })
+      console.log(this.file_lists)
+
     },
     auction(newInfo, oldOne) {
       this.isLoadAuction = true;
@@ -2176,16 +2502,54 @@ this.isLoadCustomField = true
       this.image_basename = newInfo.image_basename;
       this.getCities({ area_id: this.gridForm.area_id });
       this.getSubCategories({id : this.gridForm.category_id})
+      this.getCustomFieldList({id: this.gridForm.category_id})
+      this.getAuctionImages({ id: this.auctionId })
+      this.getAuctionFiles({ id: this.auctionId })
     },
     _Image_List: function(val) {
+      console.log('this is images', val)
       this.enable = false;
+      this.show_dropzone = false;
       this.isLoadAuctionImages = true;
+       val.forEach(el => {
+        this.file_lists.push(
+             new Object({
+            id: el.id,
+            link: el.path,
+            img:  el.path
+          })
+        )
+      })
+      setTimeout(() => {
+                this.show_dropzone = true;
+            }, 300)
+      console.log(this.file_lists)
     },
     _customFields: function(val) {
         this.customFields = this.getDifference(val, this.custom_fields);
+        this.categoryCustomFieldOptions = [];
+        this.customFields.forEach(option => {
+        this.categoryCustomFieldOptions.push(
+          new Object({
+            value: option,
+            text: option.locales.[this.language].name
+          })
+        );
+      });
+
       },
     _auctionReviewRequests: function(val){
   this.$refs.vuetable.setData(val);
+    },
+    _updateCustomField: function(val){
+       this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Custom Field have been updated successfully",
+        { duration: 3000, permanent: false }
+      );
+      this.enable_custom_save_btn= false;
+
     },
     _updateReviewRequest: function(val){
        this.$refs['requestReview'].hide();
@@ -2212,6 +2576,7 @@ this.isLoadCustomField = true
     },
     _createCustomField: function(val){
       this.hideCustomModal = !this.hideCustomModal;
+
       // this.getCustomFieldList({id: this.gridForm.category_id})
     },
     _cities: function(val) {
@@ -2225,6 +2590,40 @@ this.isLoadCustomField = true
           })
         );
       });
+    },
+    _createAuctionFile: function(val){
+      console.log(val)
+      this.enable_attach_btn = false;
+        this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Attachment have been created successfully",
+        { duration: 4000, permanent: false }
+      );
+            this.$refs['attachDetails'].hide();
+              this.attach_form.forEach(el => {
+         el.title = null;
+         el.description = null;
+      })
+             this.$v.$reset();
+    },
+    _createAuctionImage: function(val){
+      console.log(val)
+      this.enable_attach_btn = false;
+        this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Attachment have been created successfully",
+        { duration: 4000, permanent: false }
+      );
+            this.$refs['attachDetails'].hide();
+            this.attach_form.forEach(el => {
+         el.title = null;
+         el.description = null;
+      });
+             this.$v.$reset();
+
+
     },
     _subCategories: function(val) {
       val.forEach(option => {
@@ -2257,6 +2656,19 @@ this.isLoadCustomField = true
       router.push(`${adminRoot}/auctions`);
       this.$destroy();
     },
+    _updatedAuctionMainImageSuccessfuly: function(val){
+        this.files_form.image = val.image;
+        this.model_button = false;
+        this.$refs['main_image'].hide();
+        this.$notify(
+          "success",
+          "Operation completed successfully",
+          "Auction Image have been updated successfully",
+          { duration: 3000, permanent: false }
+        );
+      
+
+    },
     _createAuctionSuccessfuly(newInfo, oldOne) {
       this.disableNextBtn = false;
       this.auctn
@@ -2275,6 +2687,7 @@ this.isLoadCustomField = true
       // this.$destroy();
     },
     categories(newval, old) {
+      console.log('erferferf',newval)
       newval.forEach(option => {
         this.categoryIdOptions.push(
           new Object({
@@ -2313,6 +2726,8 @@ this.isLoadCustomField = true
         "Value of custom field have been created successfully",
         { duration: 2000, permanent: false }
       );
+                        this.enable_custom_save_btn= false;
+
       //  router.push(`${adminRoot}/auctions`);
     },
     image: function(val) {
@@ -2321,7 +2736,6 @@ this.isLoadCustomField = true
           this.files_form.image = URL.createObjectURL(val)
       }
     },
-
 
 
   }
