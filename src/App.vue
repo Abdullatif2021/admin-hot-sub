@@ -30,8 +30,5 @@ export default {
       document.body.classList.remove("rtl");
     }
   },
-  created() {
-    const Languages = getLanguages();
-  }
 };
 </script>

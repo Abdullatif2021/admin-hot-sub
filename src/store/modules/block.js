@@ -612,6 +612,7 @@ const actions = {
   },
   getBlock_Categories: async ({ commit }, payload) => {
     commit("setProcessing", payload.sorting ? payload.sorting : false);
+    localStorage.removeItem("blockCategories");
     await axios
       .get(`${apiUrl}/blocks/categories`)
       .then(res => {
@@ -620,6 +621,7 @@ const actions = {
       })
       .then(res => {
         commit("get_Block_Categories", res.data);
+        localStorage.setItem("blockCategories", JSON.stringify(res.data.data));
       });
   },
   getBlockCategory: async ({ commit }, payload) => {

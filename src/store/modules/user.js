@@ -198,7 +198,6 @@ export default {
             axios.get(`${apiUrl}/auth/user`).then(res => {
               if (res.status) {
                 setCurrentUser(res.data.data);
-                getLanguages();
                 commit("setUser", res.data.data);
                 dispatch("setLang", { locale: res.data.data.prefer_locale });
                 res.data.data.prefer_locale === "ar"
@@ -227,7 +226,7 @@ export default {
             admin_type: payload.type,
             role: payload.role,
             order_dir: payload.dir,
-            first_name: payload.search,
+            keyword: payload.search,
             order_by: payload.order_by,
             limit: payload.limit,
             page: payload.page

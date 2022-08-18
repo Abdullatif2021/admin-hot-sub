@@ -215,18 +215,22 @@ const actions = {
   updateAuction({ commit, dispatch }, payload) {
     const id = payload.id;
     const formData = new FormData();
-    payload.langs.forEach(el => {
-      formData.append(`${el._name}[title]`, el.title);
-      if (el.description) {
-        formData.append(`${el._name}[description]`, el.description);
-      }
-    });
+    if (payload.langs) {
+      payload.langs.forEach(el => {
+        formData.append(`${el._name}[title]`, el.title);
+        if (el.description) {
+          formData.append(`${el._name}[description]`, el.description);
+        }
+      });
+    }
+    if (payload.info) {
     Object.entries(payload.info).forEach(entry => {
       const [key, value] = entry;
       if (value != null) {
         formData.append(key, value);
       }
     });
+  }
     if (payload.brochure != null) {
       formData.append("brochure", payload.brochure);
     }

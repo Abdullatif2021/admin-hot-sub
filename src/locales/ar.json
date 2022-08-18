@@ -511,6 +511,7 @@
     "quill-bubble": "Quill Bubble"
   },
   "forms": {
+    "select-new-custom": "اختر او اضف حقل مخصص جديد",
     "send": "ارسال",
     "en_lang": "اللغة الانجليزية",
     "auction_no": "No.",

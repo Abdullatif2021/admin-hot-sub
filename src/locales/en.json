@@ -503,6 +503,7 @@
     "quill-bubble": "Quill Bubble"
   },
   "forms": {
+    "select-new-custom": "Select or Add new Custom filed",
     "Yemail_filed": "Please enter your email",
     "title": "Title",
     "send": "Send",

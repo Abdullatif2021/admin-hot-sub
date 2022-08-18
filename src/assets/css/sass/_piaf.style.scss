@@ -3165,7 +3165,18 @@ body.default-transition main {
 
 .auction_card{
   border-radius: 12px;
-  box-shadow: 3px 3px rgb(79, 78, 78), 3px 3px rgb(84, 84, 84);
+  // box-shadow: 3px 3px rgb(79, 78, 78), 3px 3px rgb(84, 84, 84);
+}
+.auctionDetailsContainer{
+  background: none;
+  box-shadow: none;
+  top: 38px;
+}
+.add_container {
+      /* margin: 28px; */
+      border: 1px solid #eee;
+      border-radius: 13px;
+      padding: 18px;
 }
 .card-header {
   border: initial;

@@ -73,7 +73,7 @@
                 type="submit"
                 variant="primary"
                 size="lg"
-                :disabled="processing"
+                
                 :class="{
                   'show-spinner': processing,
                   'btn-multiple-state btn-shadow': true,
@@ -108,6 +108,7 @@ import { validationMixin } from "vuelidate";
 import { adminRoot } from "../../constants/config";
 import { setCurrentLanguage } from "../../utils";
 import { defaultLocale } from "../../constants/config";
+import { getLanguages } from "../../utils";
 const {
   required,
   maxLength,
@@ -144,9 +145,21 @@ export default {
   },
   beforeMount() {
     setCurrentLanguage(defaultLocale);
+   
+  },
+  created(){
+      getLanguages();
+     this.getBlock_Categories({
+      dir: null,
+      search: null,
+      order_by: null,
+      limit: null,
+      page: null
+    });
   },
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["login", "getBlock_Categories"]),
+     
     formSubmit() {
       // window.top.close();
       this.$v.$touch();

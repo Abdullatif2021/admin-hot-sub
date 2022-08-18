@@ -470,9 +470,9 @@
             </form-wizard>
           </b-card-body>
         </b-card>
-        <b-card v-if="auctionId" class="mb-4">
+        <b-card v-if="auctionId" class="mb-4 auctionDetailsContainer">
           <b-row>
-            <b-colxx style="margin-top: 50px;" xxs="12">
+            <b-colxx style="margin-top: 10px;" xxs="12">
               <b-card class="mb-4 auction_card">
                 <b-form @submit.prevent="onGridFormSubmit">
                   <b-row style="margin: 42px;">
@@ -482,10 +482,10 @@
                         class="form-group has-float-label"
                       >
                       <div class="position-absolute card-top-buttons-1">
-                <b-button v-b-modal.main_image variant="outline-white" class="icon-button">
-                  <i class="simple-icon-pencil" />
-                </b-button>
-              </div>
+                        <b-button v-b-modal.main_image variant="outline-white" class="icon-button">
+                          <i class="simple-icon-pencil" />
+                        </b-button>
+                      </div>
                         <img
                           :src="image ? imgUrl : $v.files_form.image.$model"
                           style="border-radius: 50%;"
@@ -494,8 +494,7 @@
                           height="160"
                         />
                       </label>
-                    </b-colxx>
-                  
+                    </b-colxx>           
                     <b-colxx sm="6">
                       <b-form-group>
                         <label class="form-group-label" for="desc">{{
@@ -503,18 +502,18 @@
                         }}</label>
                         <b-form-input
                           type="number"
-                          :state="!$v.gridForm.auction_no.$error"
-                          v-model="$v.gridForm.auction_no.$model"
+                          :state="!$v.formStep1.auction_number.$error"
+                          v-model="$v.formStep1.auction_number.$model"
                         />
                         <b-form-invalid-feedback
-                          v-if="!$v.gridForm.auction_no.required"
+                          v-if="!$v.formStep1.auction_number.required"
                           >{{
-                            $t("forms.auction_no_message")
+                            $t("forms.auction_number_message")
                           }}</b-form-invalid-feedback
                         >
                       </b-form-group>
                     </b-colxx>
-                    <b-colxx sm="6">
+                    <b-colxx sm="3">
                       <b-form-group>
                         <label class="form-group-label" for="cate">{{
                           $t("forms.category")
@@ -522,19 +521,79 @@
                         <b-form-select
                           id="cate"
                           @change="getSubCateory"
-                          :state="!$v.gridForm.category_id.$error"
-                          v-model="$v.gridForm.category_id.$model"
+                          :state="!$v.formStep1.category_id.$error"
+                          v-model="$v.formStep1.category_id.$model"
                           :options="categoryIdOptions"
                           plain
                         />
                         <b-form-invalid-feedback
-                          v-if="!$v.gridForm.category_id.required"
+                          v-if="!$v.formStep1.category_id.required"
                           >{{
                             $t("forms.category_type_select")
                           }}</b-form-invalid-feedback
                         >
                       </b-form-group>
                     </b-colxx>
+                     <b-colxx sm="3">
+                    <b-form-group>
+                      <label class="form-group-label" for="sub">{{
+                        $t("forms.sub-category")
+                      }}</label>
+                      <b-form-select
+                        id="sub"
+                        :state="!$v.formStep1.sub_category_id.$error"
+                        v-model="$v.formStep1.sub_category_id.$model"
+                        :options="subCategoryOptions"
+                        plain
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.formStep1.sub_category_id.required"
+                        >{{
+                          $t("forms.category_type_select")
+                        }}</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                    <b-form-group>
+                      <label class="form-group-label" for="side">{{
+                        $t("forms.auction_side")
+                      }}</label>
+                      <b-form-select
+                        id="side"
+                        :state="!$v.formStep1.auction_side.$error"
+                        v-model="$v.formStep1.auction_side.$model"
+                        :options="auctionSideOptions"
+                        plain
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.formStep1.auction_side.required"
+                        >{{
+                          $t("forms.auction_side_message")
+                        }}</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                  </b-colxx>
+                  <b-colxx sm="6">
+                    <b-form-group>
+                      <label class="form-group-label" for="owner">{{
+                        $t("forms.auction_owner")
+                      }}</label>
+                      <b-form-select
+                        id="owner"
+                        :state="!$v.formStep1.auction_owner.$error"
+                        v-model="$v.formStep1.auction_owner.$model"
+                        :options="auctionOwnerOptions"
+                        plain
+                      />
+                      <b-form-invalid-feedback
+                        v-if="!$v.formStep1.auction_owner.required"
+                        >{{
+                          $t("forms.auction_owner_message")
+                        }}</b-form-invalid-feedback
+                      >
+                    </b-form-group>
+                  </b-colxx>
                     <b-colxx sm="6">
                       <b-form-group>
                         <label class="form-group-label" for="start">{{
@@ -546,7 +605,7 @@
                           type="datetime"
                           :disabledDates="disabledAfter"
                           value-type="YYYY-MM-DD HH:mm:ss"
-                          v-model="$v.gridForm.start_date.$model"
+                          v-model="$v.formStep1.start_date.$model"
                           @change="selectedDate('start')"
                         >
                         </datepicker>
@@ -555,8 +614,8 @@
                           :class="{
                             'invalid-feedback': true,
                             'd-block':
-                              $v.gridForm.start_date.$error &&
-                              !$v.gridForm.start_date.required
+                              $v.formStep1.start_date.$error &&
+                              !$v.formStep1.start_date.required
                           }"
                         >
                           {{ $t("forms.start_date_req") }}
@@ -573,7 +632,7 @@
                           style="width: 100%;"
                           type="datetime"
                           value-type="YYYY-MM-DD HH:mm:ss"
-                          v-model="$v.gridForm.end_date.$model"
+                          v-model="$v.formStep1.end_date.$model"
                           @change="selectedDate('end')"
                         >
                         </datepicker>
@@ -581,8 +640,8 @@
                           :class="{
                             'invalid-feedback': true,
                             'd-block':
-                              $v.gridForm.end_date.$error &&
-                              !$v.gridForm.end_date.required
+                              $v.formStep1.end_date.$error &&
+                              !$v.formStep1.end_date.required
                           }"
                         >
                           {{ $t("forms.end_date_req") }}
@@ -659,7 +718,15 @@
                           }}</b-form-invalid-feedback
                         >
                       </b-form-group>
-                    </b-colxx>
+                    </b-colxx> 
+                    <b-button
+                    :disabled="disabledFormStep1"
+                    type="submit"
+                    @click="onForm1Submited()"
+                    :variant="disabledFormStep1 ? 'light' : 'primary'"
+                    class="mt-4"
+                    >{{ $t("forms.save") }}</b-button
+                  >
                   </b-row>
                 </b-form>
               </b-card>
@@ -727,6 +794,14 @@
                     </div>
                   </b-collapse>
                 </div>
+                 <b-button
+                    :disabled="disabledFormStep2"
+                    type="submit"
+                    @click="onForm2Submited()"
+                    :variant="disabledFormStep2 ? 'light' : 'primary'"
+                    class="mt-4"
+                    >{{ $t("forms.save") }}</b-button
+                  >
               </b-card>
               <b-card class="mb-4 auction_card" :title="$t('forms.binig-info')">
                 <b-row>
@@ -737,11 +812,11 @@
                       }}</label>
                       <b-form-input
                         type="number"
-                        :state="!$v.gridForm.deposit.$error"
-                        v-model="$v.gridForm.deposit.$model"
+                        :state="!$v.formStep3.deposit.$error"
+                        v-model="$v.formStep3.deposit.$model"
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.deposit.required"
+                        v-if="!$v.formStep3.deposit.required"
                         >{{
                           $t("forms.deposit_message")
                         }}</b-form-invalid-feedback
@@ -756,11 +831,11 @@
                       <b-form-input
                         id="open"
                         type="number"
-                        :state="!$v.gridForm.opening_price.$error"
-                        v-model="$v.gridForm.opening_price.$model"
+                        :state="!$v.formStep3.opening_price.$error"
+                        v-model="$v.formStep3.opening_price.$model"
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.opening_price.required"
+                        v-if="!$v.formStep3.opening_price.required"
                         >{{ $t("forms.open_price") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
@@ -773,15 +848,23 @@
                       <b-form-input
                         id="min"
                         type="number"
-                        :state="!$v.gridForm.minimum_paid.$error"
-                        v-model="$v.gridForm.minimum_paid.$model"
+                        :state="!$v.formStep3.minimum_paid.$error"
+                        v-model="$v.formStep3.minimum_paid.$model"
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.minimum_paid.required"
+                        v-if="!$v.formStep3.minimum_paid.required"
                         >{{ $t("forms.min_price") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
                   </b-colxx>
+                    <b-button
+                    :disabled="disabledFormStep3"
+                    type="submit"
+                    @click="onForm3Submited()"
+                    :variant="disabledFormStep3 ? 'light' : 'primary'"
+                    class="mt-4"
+                    >{{ $t("forms.save") }}</b-button
+                  >
                 </b-row>
               </b-card>
               <b-card class="mb-4 auction_card" :title="$t('forms.location')">
@@ -793,14 +876,14 @@
                       }}</label>
                       <b-form-select
                         id="area"
-                        :state="!$v.gridForm.area_id.$error"
-                        v-model="$v.gridForm.area_id.$model"
+                        :state="!$v.formStep4.area_id.$error"
+                        v-model="$v.formStep4.area_id.$model"
                         :options="areaOptions"
                         @change="get_cities()"
                         plain
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.area_id.required"
+                        v-if="!$v.formStep4.area_id.required"
                         >{{ $t("forms.area-message") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
@@ -812,13 +895,13 @@
                       }}</label>
                       <b-form-select
                         id="city"
-                        :state="!$v.gridForm.city_id.$error"
-                        v-model="$v.gridForm.city_id.$model"
+                        :state="!$v.formStep4.city_id.$error"
+                        v-model="$v.formStep4.city_id.$model"
                         :options="cityOptions"
                         plain
                       />
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.city_id.required"
+                        v-if="!$v.formStep4.city_id.required"
                         >{{ $t("forms.city-message") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
@@ -832,16 +915,24 @@
                       />
                       <b-form-input
                         style="display: none;"
-                        :state="!$v.gridForm.latitude.$error"
-                        v-model="$v.gridForm.latitude.$model"
+                        :state="!$v.formStep4.latitude.$error"
+                        v-model="$v.formStep4.latitude.$model"
                       />
 
                       <b-form-invalid-feedback
-                        v-if="!$v.gridForm.latitude.required"
+                        v-if="!$v.formStep4.latitude.required"
                         >{{ $t("forms.location_req") }}</b-form-invalid-feedback
                       >
                     </b-form-group>
                   </b-colxx>
+                <b-button
+                    :disabled="disabledFormStep4"
+                    type="submit"
+                    @click="onForm4Submited()"
+                    :variant="disabledFormStep4 ? 'light' : 'primary'"
+                    class="mt-4"
+                    >{{ $t("forms.save") }}</b-button
+                  >
                 </b-row>
               </b-card>
               <b-card class="mb-4 auction_card" :title="$t('forms.additional')">
@@ -883,17 +974,36 @@
                       </b-form-group>
                     </b-colxx>
                   </div>
-                  <b-colxx sm="12">
-                    <b-form-group class="form-group-label">
+                  <b-form @submit.prevent="onGridFormSubmit">
+                  <b-row class="add_container">
+                  <b-colxx sm="10">
+                    <b-form-group  :label="$t(`forms.select-new-custom`)" class="form-group-label">
                       <b-form-select
                         v-model="selectedCustomField"
                         :options="categoryCustomFieldOptions"
                         @change="selectCustomField"
                         plain
                       />
+                    
                     </b-form-group>
+                    
+                   
                   </b-colxx>
-
+                   <b-colxx sm="2">
+                    <b-form-group style="margin: 8px;"  class="form-group-label">
+                       <b-button
+                        @click="add_newCustomField()"
+                        type="submit"
+                        variant="primary"
+                        class="mt-4"
+                        >+ Add</b-button
+                      >
+                    </b-form-group>
+                  
+                   
+                  </b-colxx>
+                   </b-row>
+                   </b-form>
                   <div
                     style="display: flex;"
                     v-for="field in selectedFields"
@@ -920,7 +1030,7 @@
                       </b-form-group>
                     </b-colxx>
                   </div>
-                  <div class="btn-container">
+                  <!-- <div class="btn-container">
                     <b-button
                       @click="add_newCustomField()"
                       type="submit"
@@ -928,7 +1038,7 @@
                       class="mt-4"
                       >+ Add</b-button
                     >
-                  </div>
+                  </div> -->
 
                   <b-button
                     :disabled="enable_custom_save_btn"
@@ -950,7 +1060,6 @@
                 </template>
               </b-card>
               <b-card class="mb-4 auction_card" :title="$t('forms.attach')">
-                <template v-if="_isLoadCustomField || _isLoadAuctions">
                   <label class="form-group has-float-label">
                     <b-colxx xxs="12" style="padding: 0px;">
                       <b-form-group >
@@ -995,15 +1104,13 @@
                       </b-card-body>
                     </b-card>
                   </b-colxx> -->
-                </template>
-                <template v-else>
-                  <div class="loading"></div>
-                </template>
+                
               </b-card>
             </b-colxx>
           </b-row>
 
           <!-- <b-tabs card no-fade>
+
             <b-tab
               title-item-class="w-25 text-center"
               :title="$t(`forms.basic_details`)"
@@ -1824,25 +1931,17 @@ export default {
         detailImages,
             detailThumbs,
        isProcessing: true,
-
-            formStep1: {
-                name: ""
-            },
-            formStep2: {
-                email: ""
-            },
-            formStep3: {
-                password: ""
-            },
       isEdit: false,
       image: null,
       isAbleToMove: false,
       saveBtn: `next`,
       showCreateModal: false,
+      disabledFormStep3: false,
       testArray: [],
       attach_form: [],
       show_dropzone: true,
       file: null,
+      disabledFormStep4: false,
       showField: false,
       imgUrl: null,
       image_added: true,
@@ -1853,6 +1952,8 @@ export default {
       disabledBefore: new Date(2019, 10, 2),
       mainImage: null,
       disabledAfter: new Date(2019, 10, 6),
+      disabledFormStep1: false,
+      disabledFormStep2: false,
       brochure: null,
       isLoadAuctionImages: false,
       model_button: false,
@@ -1934,18 +2035,43 @@ export default {
       is_area_selected: false,
       create_categoryId: null,
       lang_form: [],
+                 formStep1: {
+ auction_number: null,
+  category_id: null,
+  auction_side: null,
+          auction_owner: null,
+
+        sub_category_id: null,
+          start_date: null,
+        end_date: null,
+             },
+             formStep3: {
+deposit: null,
+       
+        minimum_paid: null,
+      
+        opening_price: null,
+             },
+             formStep4: {
+               city_id: null,
+        area_id: null,
+          latitude: null,
+        longitude: null
+             },
       gridForm: {
         auction_side: null,
-        auction_no: null,
+        auction_number: null,
+  category_id: null,
+        sub_category_id: null,
+          start_date: null,
+        end_date: null,
         auction_owner: null,
         city_id: null,
         area_id: null,
         deposit: null,
-        category_id: null,
-        sub_category_id: null,
+       
         minimum_paid: null,
-        start_date: null,
-        end_date: null,
+      
         opening_price: null,
         latitude: null,
         longitude: null
@@ -2016,33 +2142,13 @@ export default {
       }
     },
      formStep1: {
-            name: {
-                required
-            },
-        },
-        formStep2: {
-            email: {
-                required,
-
-            },
-        },
-        formStep3: {
-            password: {
-
-            },
-        },
-    gridForm: {
-      deposit: {
+            auction_number: {
         required
       },
-
-      auction_side: {
+         auction_owner: {
         required
       },
-      auction_no: {
-        required
-      },
-      auction_owner: {
+        auction_side: {
         required
       },
       category_id: {
@@ -2051,6 +2157,65 @@ export default {
       sub_category_id: {
 
       },
+           end_date: {
+        required
+      },
+           start_date: {
+        required
+      },
+        },
+         
+        formStep3: {
+             deposit: {
+        required
+      },
+    
+    opening_price: {
+        required
+      },
+           minimum_paid: {
+        required
+      },
+        },
+          formStep4: {
+area_id: {},
+      city_id: {
+        required: requiredIf(function() {
+          return this.city_req;
+        })
+      },
+        latitude: {
+        required
+      },
+      },
+
+    gridForm: {
+      deposit: {
+        required
+      },
+
+      auction_side: {
+        required
+      },
+        auction_number: {
+        required
+      },
+      category_id: {
+        required
+      },
+      sub_category_id: {
+
+      },
+           end_date: {
+        required
+      },
+           start_date: {
+        required
+      },
+      auction_owner: {
+        required
+      },
+      
       area_id: {},
       city_id: {
         required: requiredIf(function() {
@@ -2063,15 +2228,11 @@ export default {
       latitude: {
         required
       },
-      start_date: {
-        required
-      },
+ 
       opening_price: {
         required
       },
-      end_date: {
-        required
-      }
+ 
     },
     files_form: {
       image: {
@@ -2143,10 +2304,82 @@ export default {
         });
       });
     },
+    onForm1Submited(){
+       this.$v.$touch();
+      this.$v.formStep1.$touch();
+      this.$v.files_form.$touch();
+
+      if (
+        !this.$v.formStep1.$invalid &&
+        !this.$v.files_form.$invalid
+      ) {
+        this.disabledFormStep1 = true;
+          this.updateAuction({
+            info: this.formStep1,
+            terms_conditions: this.terms_conditions,
+            brochure: this.brochure,
+            id: this.auctionId,
+            image: null,
+            langs: null,
+          });
+        
+      }
+    },
+     onForm2Submited(){
+       this.$v.$touch();
+      this.$v.lang_form.$touch();
+      if (
+        !this.$v.lang_form.$invalid
+      ) {
+        this.disabledFormStep2 = true;
+          this.updateAuction({
+            langs: this.lang_form,
+              info: null,
+            terms_conditions: null,
+            brochure: null,
+            id: this.auctionId,
+            image: null,
+          });
+        
+      }
+    },
+    onForm3Submited(){
+        this.$v.$touch();
+      this.$v.formStep3.$touch();
+
+      if (
+        !this.$v.formStep3.$invalid
+      ) {
+        this.disabledFormStep3 = true;
+          this.updateAuction({
+            info: this.formStep3,
+               terms_conditions: null,
+            brochure: null,
+            id: this.auctionId,
+            image: null,
+            langs: null,
+          });
+    }
+    },
+     onForm4Submited(){
+        this.$v.$touch();
+        this.$v.formStep4.$touch();
+
+      if (
+        !this.$v.formStep4.$invalid
+      ) {
+        this.disabledFormStep4 = true;
+          this.updateAuction({
+            info: this.formStep4,
+            id: this.auctionId
+          });
+    }
+    },
     onGridFormSubmit() {
       this.$v.$touch();
       this.$v.gridForm.$touch();
-      this.$v.lang_form.$touch();
+            this.$v.lang_form.$touch();
+
       this.$v.files_form.$touch();
 
       if (
@@ -2197,11 +2430,15 @@ this.isLoadCustomField = true
     set_location(data) {
       this.gridForm.latitude = data.lat;
       this.gridForm.longitude = data.lng;
+       this.formStep4.latitude = data.lat;
+      this.formStep4.longitude = data.lng;
+      
     },
     get_cities() {
       this.is_area_selected = true;
       this.gridForm.city_id = null;
-      this.getCities({ area_id: this.gridForm.area_id });
+      this.formStep4.city_id = null;
+      this.getCities({ area_id: this.formStep4.area_id  ? this.formStep4.area_id : this.gridForm.area_id });
     },
     selectedDate(data) {
       switch (data) {
@@ -2357,7 +2594,7 @@ this.isLoadCustomField = true
             this.updateReviewRequest({val: val, request_id: this.request_id})
         },
         create_custom_field(val,type){
-          this.createCustomField({info: val, type: type, categoryId: this.gridForm.category_id })
+          this.createCustomField({info: val, type: type, categoryId: this.formStep1.category_id ?  this.formStep1.category_id : this.gridForm.category_id})
         },
         submitStep1() {
             this.onGridFormSubmit();
@@ -2478,38 +2715,39 @@ this.isLoadCustomField = true
         el.description = newInfo.locales.[el._name].description;
       });
       this.image_basename = newInfo.image_basename;
-      this.gridForm.category_id = newInfo.category_id;
-      this.gridForm.sub_category_id = newInfo.sub_category_id;
-      this.gridForm.opening_price = newInfo.opening_price;
+      this.formStep1.category_id = newInfo.category_id;
+      this.formStep1.sub_category_id = newInfo.sub_category_id;
+      this.formStep3.opening_price = newInfo.opening_price;
+      this.formStep1.auction_number = newInfo.auction_number;
       this.custom_fields = newInfo.custom_fields;
-      this.gridForm.minimum_paid = newInfo.minimum_paid;
-      this.gridForm.deposit = newInfo.deposit;
-      this.gridForm.auction_side = newInfo.auction_side.id;
-      this.gridForm.auction_owner = newInfo.auction_owner.id;
+      this.formStep3.minimum_paid = newInfo.minimum_paid;
+      this.formStep3.deposit = newInfo.deposit;
+      this.formStep1.auction_side = newInfo.auction_side.id;
+      this.formStep1.auction_owner = newInfo.auction_owner.id;
       this.files_form.image = newInfo.image;
-      this.gridForm.latitude = newInfo.latitude;
-      this.gridForm.longitude = newInfo.longitude;
+      this.formStep4.latitude = newInfo.latitude;
+      this.formStep4.longitude = newInfo.longitude;
       newInfo.terms_conditions == ""
         ? (this.files_form.terms_conditions = null)
         : (this.files_form.terms_conditions = newInfo.terms_conditions);
       newInfo.brochure == ""
         ? (this.files_form.brochure = null)
         : (this.files_form.brochure = newInfo.brochure);
-      this.gridForm.start_date = newInfo.start_date;
-      this.gridForm.end_date = newInfo.end_date;
-      this.gridForm.city_id = newInfo.city.id;
-      this.gridForm.area_id = newInfo.area.id;
+      this.formStep1.start_date = newInfo.start_date;
+      this.formStep1.end_date = newInfo.end_date;
+      this.formStep4.city_id = newInfo.city.id;
+      this.formStep4.area_id = newInfo.area.id;
       this.image_basename = newInfo.image_basename;
-      this.getCities({ area_id: this.gridForm.area_id });
-      this.getSubCategories({id : this.gridForm.category_id})
-      this.getCustomFieldList({id: this.gridForm.category_id})
+      this.getCities({ area_id: this.formStep4.area_id });
+      this.getSubCategories({id : this.formStep1.category_id})
+      this.getCustomFieldList({id: this.formStep1.category_id})
       this.getAuctionImages({ id: this.auctionId })
       this.getAuctionFiles({ id: this.auctionId })
     },
     _Image_List: function(val) {
       console.log('this is images', val)
       this.enable = false;
-      this.show_dropzone = false;
+      this.show_dropzone = true;
       this.isLoadAuctionImages = true;
        val.forEach(el => {
         this.file_lists.push(
@@ -2520,10 +2758,7 @@ this.isLoadCustomField = true
           })
         )
       })
-      setTimeout(() => {
-                this.show_dropzone = true;
-            }, 300)
-      console.log(this.file_lists)
+      
     },
     _customFields: function(val) {
         this.customFields = this.getDifference(val, this.custom_fields);
@@ -2653,8 +2888,10 @@ this.isLoadCustomField = true
         "Auction have been updated successfully",
         { duration: 3000, permanent: false }
       );
-      router.push(`${adminRoot}/auctions`);
-      this.$destroy();
+    this.disabledFormStep1 = false;
+    this.disabledFormStep2 = false;
+     this.disabledFormStep3 = false;
+     this.disabledFormStep4 = false;
     },
     _updatedAuctionMainImageSuccessfuly: function(val){
         this.files_form.image = val.image;

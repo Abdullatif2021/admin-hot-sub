@@ -143,6 +143,7 @@ export default {
     return {
       selectedParentMenu: "",
       menuItems,
+      blockCategories: null,
       viewingParentMenu: "",
       add: true
     };
@@ -152,19 +153,21 @@ export default {
     window.addEventListener("resize", this.handleWindowResize);
     document.addEventListener("click", this.handleDocumentClick);
     this.handleWindowResize();
-    this.getBlock_Categories({
-      dir: null,
-      search: null,
-      order_by: null,
-      limit: null,
-      page: null
-    });
+    // this.getBlock_Categories({
+    //   dir: null,
+    //   search: null,
+    //   order_by: null,
+    //   limit: null,
+    //   page: null
+    // });
   },
   beforeDestroy() {
     document.removeEventListener("click", this.handleDocumentClick);
     window.removeEventListener("resize", this.handleWindowResize);
   },
-
+  created(){
+    this.blockCategories =  localStorage.getItem("blockCategories")
+  },
   methods: {
     ...mapMutations([
       "changeSideMenuStatus",
@@ -208,7 +211,7 @@ export default {
       return isCurrentMenuHasSubItem;
     },
     setMenuItems(val) {
-      val.forEach(item => {
+     JSON.parse(val).forEach(item => {
         menuItems.push({
           id: item.id,
           icon: "iconsminds-blogger",
@@ -392,7 +395,8 @@ export default {
         window.scrollTo(0, top);
       }
     },
-    _Block_Categories(newVal, old) {
+    blockCategories(newVal, old) {
+      console.log(newVal);
       this.setMenuItems(newVal);
     }
   }
