@@ -1,18 +1,20 @@
 <template>
   <div>
-    <p class="lead color-theme-1 mb-1 value">{{labelPrefix}}{{labely}}</p>
-    <p class="mb-0 label text-small">{{labelx}}</p>
-    <div :class="containerClass">
-      <canvas ref="chart"></canvas>
-    </div>
+      <h4 class="mb-1">auction title</h4>
+      <p class="lead color-theme-1 mb-1 value">{{ labelPrefix }}{{ labely }}</p>
+      <p class="mb-0 label text-small">{{ labelx }}</p>
+      <div :class="containerClass">
+        <canvas ref="chart"></canvas>
+      </div>
   </div>
 </template>
 
 
 <script>
 import Chart from "chart.js";
-import { smallLineChartOptions } from "./config";
-import { addCommas } from "./utils";
+import {smallLineChartOptions} from "./config";
+import {addCommas} from "./utils";
+
 export default {
   props: {
     data: {
@@ -66,7 +68,7 @@ export default {
       data: this.data,
       plugins: [
         {
-          afterInit: function(chart, options) {
+          afterInit: function (chart, options) {
             const yLabel = chart.data.datasets[0].data[0];
             const xLabel = chart.data.labels[0];
             const label = chart.data.datasets[0].label;
@@ -75,12 +77,12 @@ export default {
         }
       ],
       options: Object.assign(
-        { ...smallLineChartOptions },
+        {...smallLineChartOptions},
         {
           tooltips: {
             intersect: false,
             enabled: false,
-            custom: function(tooltipModel, data) {
+            custom: function (tooltipModel, data) {
               if (tooltipModel && tooltipModel.dataPoints) {
                 const yLabel = tooltipModel.dataPoints[0].yLabel;
                 const xLabel = tooltipModel.dataPoints[0].xLabel;

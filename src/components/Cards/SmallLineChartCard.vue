@@ -1,8 +1,16 @@
 <template>
-  <b-card no-body>
-    <b-card-body>
-      <small-line-chart :data="data" labelPrefix="$" />
-    </b-card-body>
+  <b-card class="mb-3" no-body>
+    <b-row no-gutters>
+<!--      todo:fixing image layout-->
+      <b-col sm="3">
+        <b-card-img  src="https://picsum.photos/150/150/?image=20" alt="Image" class="list-thumbnail border-0 rounded-0 py-2"></b-card-img>
+      </b-col>
+      <b-col sm="9">
+        <b-card-body class="p-3">
+          <small-line-chart :data="data" labelPrefix="$"/>
+        </b-card-body>
+      </b-col>
+    </b-row>
   </b-card>
 </template>
 
@@ -21,7 +29,7 @@ export default {
     };
   },
   methods: {
-    onChartMouseOver({ labelx, labely }) {
+    onChartMouseOver({labelx, labely}) {
       this.labelx = labelx;
       this.labely = labely;
     }
