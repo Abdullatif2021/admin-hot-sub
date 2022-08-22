@@ -174,7 +174,12 @@ const routes = [
             component: () =>
               import(
                 /* webpackChunkName: "blog" */ "./views/app/auctions/auction"
-              )
+              ) 
+          },
+          {
+            path: "auction-review",
+            component: () =>
+            import ( /* webpackChunkName: "blog" */ "./views/app/auctions/auction_review")  
           }
         ]
       },

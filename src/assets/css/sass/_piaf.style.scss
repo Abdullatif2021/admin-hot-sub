@@ -416,7 +416,11 @@ hr {
 .list-item-heading {
   font-size: 1rem;
 }
-
+.biding_container{
+  display: flex;
+  width: 100%;
+  gap: 50%;
+}
 .truncate {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -3100,7 +3104,7 @@ body.default-transition main {
 
 .card-img {
   border-radius: calc(0.25rem - 1px);
-  height: 100%;
+  height: 90%;
   object-fit: cover;
   max-height: 200px;
   width: unset;
@@ -3172,11 +3176,16 @@ body.default-transition main {
   box-shadow: none;
   top: 38px;
 }
+.image_card{
+   max-height: 90%;
+    margin-left: 7px;
+}   
 .add_container {
-      /* margin: 28px; */
-      border: 1px solid #eee;
+      border: 1px solid #989292;
       border-radius: 13px;
       padding: 18px;
+      width: 96%;
+      margin: 17px;
 }
 .card-header {
   border: initial;

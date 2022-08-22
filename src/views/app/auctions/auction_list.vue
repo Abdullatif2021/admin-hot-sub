@@ -568,21 +568,25 @@ this.$router.push({
         query: { id: id }
       });
       }else{
-        this.getCategory({ id: auction.category_id })
-        this.getSubCategory({ id: auction.sub_category_id })
-        this.langs = [];
-        this.enable_details = true;
-        this.auction = auction;
-        this.location.push(auction.latitude, auction.longitude);
-        Object.keys(auction.locales).forEach(key => {
-           this.langs.push(
-          new Object({
-            name: key,
-            value: auction.locales[key]
-          })
-        );
-});
-        this.$refs['auction_details'].show();
+        this.$router.push({
+        path: `${adminRoot}/auctions/auction-review`,
+        query: { id: id }
+      });
+        // this.getCategory({ id: auction.category_id })
+        // this.getSubCategory({ id: auction.sub_category_id })
+        // this.langs = [];
+        // this.enable_details = true;
+        // this.auction = auction;
+        // this.location.push(auction.latitude, auction.longitude);
+        // Object.keys(auction.locales).forEach(key => {
+        //    this.langs.push(
+        //   new Object({
+        //     name: key,
+        //     value: auction.locales[key]
+        //   })
+        // );
+// });
+        // this.$refs['auction_details'].show();
       }
 
     },

@@ -638,6 +638,8 @@
     "ar_massege": "Please enter Arabic title",
     "start_date_req": "Start Date required",
     "end_date_req": "End Date required",
+    "duration": "Duration",
+    "current_price": "Current Price",
     "min_price": "Please enter minimum price",
     "open_price": "Please enter open price",
     "select_massege": "Please select an option!",

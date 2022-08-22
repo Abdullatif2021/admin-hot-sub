@@ -13,6 +13,7 @@ const state = {
   auction: null,
   successDeleteAuction: null,
   processing: false,
+  deleteAuctionterms: null,
   cities: null,
   isCustomValueCreated: false,
   updatedAuctionMainImageSuccessfuly: false,
@@ -49,6 +50,7 @@ const getters = {
   _deleteAuctionImage: state => state.delete_Image,
   _areas: state => state.areas,
   _auctionSide: state => state.auctionSide,
+  _deleteAuctionterms: state => state.deleteAuctionterms,
   _deleteAuctionError: state => state.deleteAuctionError,
   _auctionOwner: state => state.auctionOwner,
   auction: state => state.auction,
@@ -94,6 +96,9 @@ const mutations = {
   },
   getAuctionOwner(state, payload) {
     state.auctionOwner = payload;
+  },
+  deleteAuctionterms(state, payload){
+    state.deleteAuctionterms = payload;
   },
   getAuctionFileList(state, payload) {
     state.File_List = payload;
@@ -221,6 +226,12 @@ const actions = {
         if (el.description) {
           formData.append(`${el._name}[description]`, el.description);
         }
+        if (el.brochure) {
+          formData.append(`${el._name}[brochure]`, el.brochure);
+        }
+        if (el.terms_conditions) {
+          formData.append(`${el._name}[terms_conditions]`, el.terms_conditions);
+        }
       });
     }
     if (payload.info) {
@@ -246,6 +257,8 @@ const actions = {
       if (res.status === 200) {
         commit("updatedAuctionSuccessfuly", res);
       }
+    }).catch(error => {
+      commit("dateError");
     });
   },
   updateAuctionMainImage({ commit, dispatch }, payload) {
@@ -509,6 +522,18 @@ const actions = {
       .then(res => {
         if (res.status === 200) {
           commit("updateReviewRequest");
+        }
+      })
+      .catch(err => {});
+  },
+  deleteTermsBrochure({ commit }, payload) {
+    const id = payload.id;
+    const type = payload.type;
+    axios
+      .delete(`${apiUrl}/auctions/${type}/${id}`)
+      .then(res => {
+        if (res.status === 200) {
+          commit("deleteAuctionterms", res.data.data);
         }
       })
       .catch(err => {});

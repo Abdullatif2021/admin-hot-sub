@@ -343,6 +343,7 @@ const actions = {
       });
   },
   getSubCategory({ commit, dispatch }, payload) {
+    commit("setProcessing", false);
     const id = payload.id;
     axios
       .get(`${apiUrl}/categories/${id}`)
@@ -351,7 +352,7 @@ const actions = {
         return res;
       })
       .then(res => {
-        commit("getSubCategorySuccess", res.data);
+        commit("getSubCategorySuccess", res.data.data);
       });
   },
   createSubCategory: async ({ commit, dispatch }, payload) => {

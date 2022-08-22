@@ -10,7 +10,7 @@
         :transaction_filter="false"
         :title="auctionId ? $t('forms.editAuction') : $t('forms.createAuction')"
       ></datatable-heading>
-      <template v-if="isLoadAuction">
+      <template v-if="isLoadAuction || _isLoadSubCategory">
         <b-card v-if="!auctionId" class="mb-4">
           <b-card-body class="wizard wizard-default">
             <form-wizard
@@ -472,7 +472,7 @@
         </b-card>
         <b-card v-if="auctionId" class="mb-4 auctionDetailsContainer">
           <b-row>
-            <b-colxx style="margin-top: 10px;" xxs="12">
+            <b-colxx style="margin-top: 26px;" xxs="12">
               <b-card class="mb-4 auction_card">
                 <b-form @submit.prevent="onGridFormSubmit">
                   <b-row style="margin: 42px;">
@@ -513,47 +513,33 @@
                         >
                       </b-form-group>
                     </b-colxx>
-                    <b-colxx sm="3">
+                    <b-colxx sm="6">
                       <b-form-group>
                         <label class="form-group-label" for="cate">{{
                           $t("forms.category")
                         }}</label>
                         <b-form-select
                           id="cate"
-                          @change="getSubCateory"
-                          :state="!$v.formStep1.category_id.$error"
-                          v-model="$v.formStep1.category_id.$model"
-                          :options="categoryIdOptions"
+                          v-model="selected_sub_category"
+                          @change="get_SubCat"
                           plain
-                        />
+                        >
+                        <b-form-select-option-group v-for="(cate,index) in categoryIdOptions"  :key="index"   :label="cate.text">
+                          <b-form-select-option v-for="(sub_cate,index) in cate.value.sub_category"  :key="index" :value="sub_cate.id">{{sub_cate.slug}}</b-form-select-option>
+                          <!-- <b-form-select-option :value="{ R: '2D2' }">Another option with object value</b-form-select-option> -->
+                        </b-form-select-option-group>
+                        </b-form-select>
                         <b-form-invalid-feedback
                           v-if="!$v.formStep1.category_id.required"
                           >{{
                             $t("forms.category_type_select")
                           }}</b-form-invalid-feedback
                         >
+                          
+        
                       </b-form-group>
                     </b-colxx>
-                     <b-colxx sm="3">
-                    <b-form-group>
-                      <label class="form-group-label" for="sub">{{
-                        $t("forms.sub-category")
-                      }}</label>
-                      <b-form-select
-                        id="sub"
-                        :state="!$v.formStep1.sub_category_id.$error"
-                        v-model="$v.formStep1.sub_category_id.$model"
-                        :options="subCategoryOptions"
-                        plain
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.formStep1.sub_category_id.required"
-                        >{{
-                          $t("forms.category_type_select")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                    </b-colxx>
+                    
                     <b-colxx sm="6">
                     <b-form-group>
                       <label class="form-group-label" for="side">{{
@@ -603,7 +589,7 @@
                           id="start"
                           style="width: 100%;"
                           type="datetime"
-                          :disabledDates="disabledAfter"
+                          :disabled-date="disableDate"  
                           value-type="YYYY-MM-DD HH:mm:ss"
                           v-model="$v.formStep1.start_date.$model"
                           @change="selectedDate('start')"
@@ -631,6 +617,7 @@
                           id="id"
                           style="width: 100%;"
                           type="datetime"
+                          :disabled-date="disableDate"  
                           value-type="YYYY-MM-DD HH:mm:ss"
                           v-model="$v.formStep1.end_date.$model"
                           @change="selectedDate('end')"
@@ -648,77 +635,6 @@
                         </div>
                       </b-form-group>
                     </b-colxx>
-                    <b-colxx sm="6">
-                      <b-form-group>
-                        <label class="form-group-label" for="bro">{{
-                          $t("forms.brochure")
-                        }}</label>
-                        <b-form-input
-                          style="display: none;"
-                          :state="!$v.files_form.brochure.$error"
-                          v-model="$v.files_form.brochure.$model"
-                        />
-                        <b-input-group id="bro" class="mb-3">
-                          <b-form-file
-                            accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
-                            :placeholder="$t('input-groups.change-brochure')"
-                            v-model="brochure"
-                          ></b-form-file>
-                          <b-input-group-append>
-                            <b-button
-                              @click="open($v.files_form.brochure.$model)"
-                              variant="light default"
-                              :disabled="files_form.brochure == null"
-                              >{{ $t("OPEN") }}</b-button
-                            >
-                          </b-input-group-append>
-                        </b-input-group>
-
-                        <b-form-invalid-feedback
-                          v-if="!$v.files_form.brochure.required"
-                          >{{
-                            $t("forms.choose-brochure-message")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx sm="6">
-                      <b-form-group>
-                        <label class="form-group-label" for="cond">{{
-                          $t("forms.terms_conditions")
-                        }}</label>
-                        <input
-                          style="display: none;"
-                          :state="!$v.files_form.terms_conditions.$error"
-                          v-model="$v.files_form.terms_conditions.$model"
-                        />
-                        <b-input-group id="cond" class="mb-3">
-                          <b-form-file
-                            accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
-                            :placeholder="
-                              $t('input-groups.change-terms_conditions')
-                            "
-                            v-model="terms_conditions"
-                          ></b-form-file>
-                          <b-input-group-append>
-                            <b-button
-                              @click="
-                                open($v.files_form.terms_conditions.$model)
-                              "
-                              variant="light default"
-                              :disabled="files_form.terms_conditions == null"
-                              >{{ $t("OPEN") }}</b-button
-                            >
-                          </b-input-group-append>
-                        </b-input-group>
-                        <b-form-invalid-feedback
-                          v-if="!$v.files_form.terms_conditions.required"
-                          >{{
-                            $t("forms.choose-terms_conditions-message")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx> 
                     <b-button
                     :disabled="disabledFormStep1"
                     type="submit"
@@ -743,8 +659,7 @@
                       variant="link"
                       >{{ $t(`forms.${lang._name.$model}_lang`) }}
                       <span>
-                        -----------------------------------------------------------------------------------------------------------------------------------------
-                        ></span
+                        </span
                       >
                     </b-button>
                   </div>
@@ -789,6 +704,76 @@
                               ></b-form-textarea>
                             </b-form-group>
                           </b-colxx>
+                          <b-colxx sm="6">
+                            <b-form-group>
+                              <label class="form-group-label" for="bro">{{
+                                $t("forms.brochure")
+                              }}</label>
+                              <b-input-group id="bro" class="mb-3">
+                                <b-form-file
+                                  accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
+                                  :placeholder="$t('input-groups.change-brochure')"
+                                   v-model="lang.brochure.$model"
+                                ></b-form-file>
+                                <b-input-group-append>
+                                  <b-button
+                                    @click="open(lang.brochure.$model)"
+                                    variant="light default"
+                                    :disabled="lang.brochure == '' || disabledAttachLangsBtn"
+                                    >{{ $t("OPEN") }}</b-button
+                                  >
+                                  <p v-if="!lang.brochure">ijrejoejioejioejioejioerjioejioejiofjifoijor</p>
+                                  <b-button
+                                    @click="deleteTermsBrochure({type: 'brochure', id: lang.id.$model})"
+                                    variant="light"
+                                    :disabled="!lang.brochure || disabledAttachLangsBtn"
+                                    ><i style="font-size: 16px;color: red;" class="simple-icon-trash"></i></b-button
+                                  >
+                                </b-input-group-append>
+                              </b-input-group>
+
+                       
+                            </b-form-group>
+                          </b-colxx>
+                          <b-colxx sm="6">
+                            <b-form-group>
+                              <label class="form-group-label" for="cond">{{
+                                $t("forms.terms_conditions")
+                              }}</label>
+                             
+                              <b-input-group id="cond" class="mb-3">
+                                <b-form-file
+                                  accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
+                                  :placeholder="
+                                    $t('input-groups.change-terms_conditions')
+                                  "
+                                v-model="lang.terms_conditions.$model"
+                                ></b-form-file>
+                                <b-input-group-append>
+                                  <b-button
+                                    @click="
+                                      open(lang.terms_conditions.$model)
+                                    "
+                                    variant="light default"
+                                    :disabled="lang.terms_conditions == '' || disabledAttachLangsBtn"
+                                    >{{ $t("OPEN") }}</b-button
+                                  >
+                                  <b-button
+                                    @click="deleteTermsBrochure({type: 'terms_conditions', id: lang.id.$model})"
+                                    variant="light"
+                                    :disabled="lang.terms_conditions == '' || disabledAttachLangsBtn"
+                                    ><i style="font-size: 16px;color: red;" class="simple-icon-trash"></i></b-button
+                                  >
+                                </b-input-group-append>
+                              </b-input-group>
+                              <!-- <b-form-invalid-feedback
+                                v-if="!$v.files_form.terms_conditions.required"
+                                >{{
+                                  $t("forms.choose-terms_conditions-message")
+                                }}</b-form-invalid-feedback
+                              > -->
+                            </b-form-group>
+                          </b-colxx> 
                         </b-row>
                       </b-form>
                     </div>
@@ -1936,6 +1921,8 @@ export default {
       isAbleToMove: false,
       saveBtn: `next`,
       showCreateModal: false,
+      disabledBefore: new Date(2022, 10, 2),
+      disabledAfter: new Date(2022, 10, 6),
       disabledFormStep3: false,
       testArray: [],
       attach_form: [],
@@ -1946,15 +1933,31 @@ export default {
       imgUrl: null,
       image_added: true,
       hideCustomModal: false,
+      selected_sub_category: {
+        active: 1,
+        add_to_menu: 0,
+        company_id: 1,
+        created_at: "2022-07-25T11:37:29.000000Z",
+        created_by: 19,
+        deleted_at: null,
+        icon: "uploads/Kzr7OXqG0bFO0whJ2T8KMEfAO6ZN9MdFTdoTAx9z.svg",
+        id: 58,
+        image: "uploads/Zrz0lA32kqYdGi8KVrINMWvttVT6rq16brCrze8S.jpg",
+        parent_id: 34,
+        record_order: 38,
+        slug: "deed-2",
+        updated_at: "2022-07-25T11:37:29.000000Z",
+        updated_by: 19
+        },
       terms_conditions: null,
       auction_id: null,
       request_notes: null,
-      disabledBefore: new Date(2019, 10, 2),
       mainImage: null,
-      disabledAfter: new Date(2019, 10, 6),
+      sub_cate: null,
       disabledFormStep1: false,
       disabledFormStep2: false,
       brochure: null,
+      sub_categoryIdOptions: [],
       isLoadAuctionImages: false,
       model_button: false,
       disabled: true,
@@ -2026,6 +2029,7 @@ export default {
       auctionFileList: null,
       requestBtn: false,
       image_basename: null,
+      disabledAttachLangsBtn: false,
       cityOptions: [],
       files_form: {
         image: null,
@@ -2125,11 +2129,16 @@ deposit: null,
   validations: {
     lang_form: {
       $each: {
+        id: {
+
+        },
         title: {
           required
         },
         description: {},
-        _name: {}
+        _name: {},
+        terms_conditions: {},
+        brochure: {}
       }
     },
     attach_form: {
@@ -2138,7 +2147,8 @@ deposit: null,
           required
         },
         description: {},
-        _name: {}
+        _name: {},
+
       }
     },
      formStep1: {
@@ -2264,7 +2274,7 @@ area_id: {},
     this.getAreas({ country_id: this.country_id });
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.lang_form);
-    this.make_collaction(this.langs, this.attach_form);
+    this.make_collaction1(this.langs, this.attach_form);
     this.getAuctionSide();
     this.getAuctionOwner();
 
@@ -2273,12 +2283,15 @@ area_id: {},
     ...mapActions([
       "getAuction",
       "updateAuction",
+      "getSubCategory",
+      "deleteTermsBrochure",
       "getCategories",
       "createCustomValue",
       "updateReviewRequest",
       "getCustomFieldList",
       "createAuctionImage",
       "deleteAuctionFile",
+      "getCategory",
       "createAuctionFile",
       "getAuctionFiles",
       "updateCustomValue",
@@ -2298,6 +2311,22 @@ area_id: {},
     make_collaction(langs, form) {
       JSON.parse(langs).forEach(el => {
         form.push({
+          id: "",
+          title: "",
+          description: "",
+          _name: el.name,
+          terms_conditions : "",
+          brochure : "",
+        });
+      });
+    },
+    disableDate(date) {
+    return date < new Date();
+},
+
+    make_collaction1(langs, form) {
+      JSON.parse(langs).forEach(el => {
+        form.push({
           title: "",
           description: "",
           _name: el.name
@@ -2307,17 +2336,16 @@ area_id: {},
     onForm1Submited(){
        this.$v.$touch();
       this.$v.formStep1.$touch();
-      this.$v.files_form.$touch();
 
       if (
-        !this.$v.formStep1.$invalid &&
-        !this.$v.files_form.$invalid
+        !this.$v.formStep1.$invalid
       ) {
+        console.log(this.formStep1);
         this.disabledFormStep1 = true;
           this.updateAuction({
             info: this.formStep1,
-            terms_conditions: this.terms_conditions,
-            brochure: this.brochure,
+            terms_conditions: null,
+            brochure: null,
             id: this.auctionId,
             image: null,
             langs: null,
@@ -2463,6 +2491,7 @@ this.isLoadCustomField = true
       this.mainImage = file;
       this.image_added = false;
     },
+  
     imageRemoved(){
       this.mainImage = null;
       this.image_added = true;
@@ -2529,6 +2558,11 @@ this.isLoadCustomField = true
       }
       }
 
+    },
+    get_SubCat(val){
+      console.log('refrfrrfrrrerfrfrfrrf', val, this.selected_sub_category)
+      this.getSubCategory({id : val})
+    
     },
     add_newCustomField(){
       console.log(this.showCreateModal)
@@ -2678,11 +2712,14 @@ this.isLoadCustomField = true
       "_auctionSide",
       "_isCustomValueCreated",
       "_updateReviewRequest",
+      "_deleteAuctionterms",
       "_subCategories",
       "_customFields",
       "_isLoadPreviewRequests",
+      "_getSubCategorySuccess",
       "_updateCustomField",
       "_updatedAuctionMainImageSuccessfuly",
+      "_isLoadSubCategory",
       "_dateError",
       "_updatedAuctionSuccessfuly",
       "_createAuctionSuccessfuly"
@@ -2711,12 +2748,16 @@ this.isLoadCustomField = true
       this.isLoadAuction = true;
          this.location.push(newInfo.latitude, newInfo.longitude);
       this.lang_form.forEach(el => {
+        el.id = newInfo.locales.[el._name].id;
         el.title = newInfo.locales.[el._name].title;
         el.description = newInfo.locales.[el._name].description;
+         el.brochure = newInfo.locales.[el._name].brochure;
+        el.terms_conditions = newInfo.locales.[el._name].terms_conditions;
       });
       this.image_basename = newInfo.image_basename;
       this.formStep1.category_id = newInfo.category_id;
       this.formStep1.sub_category_id = newInfo.sub_category_id;
+      this.selected_sub_category = newInfo.sub_category_id;
       this.formStep3.opening_price = newInfo.opening_price;
       this.formStep1.auction_number = newInfo.auction_number;
       this.custom_fields = newInfo.custom_fields;
@@ -2739,7 +2780,7 @@ this.isLoadCustomField = true
       this.formStep4.area_id = newInfo.area.id;
       this.image_basename = newInfo.image_basename;
       this.getCities({ area_id: this.formStep4.area_id });
-      this.getSubCategories({id : this.formStep1.category_id})
+      // this.getSubCategory({id : this.formStep1.sub_category_id})
       this.getCustomFieldList({id: this.formStep1.category_id})
       this.getAuctionImages({ id: this.auctionId })
       this.getAuctionFiles({ id: this.auctionId })
@@ -2776,6 +2817,12 @@ this.isLoadCustomField = true
     _auctionReviewRequests: function(val){
   this.$refs.vuetable.setData(val);
     },
+    _getSubCategorySuccess:function(val){
+      console.log('hi from single sub',val)
+        this.formStep1.category_id = val.parent_id;
+      this.formStep1.sub_category_id = val.id;
+      // this.selected_sub_category = val
+    },
     _updateCustomField: function(val){
        this.$notify(
         "success",
@@ -2807,7 +2854,11 @@ this.isLoadCustomField = true
       );
       this.gridForm.start_date = null;
       this.gridForm.end_date = null;
+        this.formStep1.start_date = null;
+      this.formStep1.end_date = null;
       this.disabled = true;
+          this.disabledFormStep1 = false;
+
     },
     _createCustomField: function(val){
       this.hideCustomModal = !this.hideCustomModal;
@@ -2924,15 +2975,25 @@ this.isLoadCustomField = true
       // this.$destroy();
     },
     categories(newval, old) {
-      console.log('erferferf',newval)
       newval.forEach(option => {
         this.categoryIdOptions.push(
           new Object({
-            value: option.id,
+            value: option,
             text: option.locales.[this.language].name
           })
+         
         );
-      });
+           })
+
+    },
+    _deleteAuctionterms: function(val){
+ this.$notify(
+          "success",
+          "Operation completed successfully",
+          "Auction File have been deleted successfully",
+          { duration: 3000, permanent: false }
+        );
+        this.disabledAttachLangsBtn = true;
     },
     _auctionSide(newval, old) {
       newval.forEach(option => {
