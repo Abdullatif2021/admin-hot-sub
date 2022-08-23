@@ -254,7 +254,7 @@
                         :state="!$v.files_form.image.$error"
                         v-model="$v.files_form.image.$model"
                       />
-                      <b-input-group id="bro" class="mb-3">
+                      <b-input-group class="mb-3">
                         <b-form-file
                           accept="image/*"
                           :placeholder="$t('forms.choose-image')"
@@ -326,7 +326,7 @@
                               <label class="form-group-label" for="bro">{{
                                 $t("forms.brochure")
                               }}</label>
-                              <b-input-group id="bro" class="mb-3">
+                              <b-input-group class="mb-3">
                                 <b-form-file
                                   accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
                                   :placeholder="$t('input-groups.change-brochure')"
@@ -340,11 +340,11 @@
                           </b-colxx>
                           <b-colxx sm="6">
                             <b-form-group>
-                              <label class="form-group-label" for="cond">{{
+                              <label class="form-group-label" >{{
                                 $t("forms.terms_conditions")
                               }}</label>
                              
-                              <b-input-group id="cond" class="mb-3">
+                              <b-input-group class="mb-3">
                                 <b-form-file
                                   accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
                                   :placeholder="
@@ -825,10 +825,10 @@
                           </b-colxx>
                           <b-colxx sm="6">
                             <b-form-group>
-                              <label class="form-group-label" for="bro">{{
+                              <label class="form-group-label">{{
                                 $t("forms.brochure")
                               }}</label>
-                              <b-input-group id="bro" class="mb-3">
+                              <b-input-group class="mb-3">
                                 <b-form-file
                                   accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
                                   :placeholder="$t('input-groups.change-brochure')"
@@ -856,11 +856,11 @@
                           </b-colxx>
                           <b-colxx sm="6">
                             <b-form-group>
-                              <label class="form-group-label" for="cond">{{
+                              <label class="form-group-label" >{{
                                 $t("forms.terms_conditions")
                               }}</label>
                              
-                              <b-input-group id="cond" class="mb-3">
+                              <b-input-group class="mb-3">
                                 <b-form-file
                                   accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
                                   :placeholder="
@@ -3161,7 +3161,7 @@ this.date_check();
           "Auction File have been deleted successfully",
           { duration: 3000, permanent: false }
         );
-        this.disabledAttachLangsBtn = true;
+        this.disabledAttachLangsBtn = false;
     },
     _auctionSide(newval, old) {
       newval.forEach(option => {
@@ -3192,7 +3192,7 @@ this.date_check();
         "Value of custom field have been created successfully",
         { duration: 2000, permanent: false }
       );
-                        this.enable_custom_save_btn= false;
+      this.enable_custom_save_btn= false;
 
        router.push(`${adminRoot}/auctions`);
     },

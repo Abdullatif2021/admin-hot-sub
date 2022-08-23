@@ -90,6 +90,11 @@ export default {
     "thumb-list-item": ThumbListItem,
     "data-list-item": DataListItem
   },
+  data(){
+    return {
+      lastPage : null,
+    }
+  },
   props: [
     "displayMode",
     "items",

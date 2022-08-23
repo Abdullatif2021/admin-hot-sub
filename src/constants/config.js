@@ -4,7 +4,7 @@ export const defaultMenuType = "menu-default"; // 'menu-default', 'menu-sub-hidd
 export const adminRoot = "/app";
 export const searchPath = `${adminRoot}/#`;
 export const buyUrl = "https://1.envato.market/nEyZa";
-export const apiUrl = "https://alqias-api.lilacdev.com/public/api";
+export const apiUrl = "https://alqias-api2.lilacdev.com/public/api";
 
 export const subHiddenBreakpoint = 1440;
 export const menuHiddenBreakpoint = 768;

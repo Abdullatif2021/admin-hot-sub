@@ -62,7 +62,7 @@
                     <p class="text-muted text-small mb-2">
                       {{ $t("forms.duration") }}
                     </p>
-                    <p>{{auction_form.start_date}} <i style="font-size: 12px;margin: 10px;color: #a49f9f;" class="simple-icon-control-forward"></i> {{auction_form.end_date}}</p>
+                    <p>{{formatStartDate}} <i style="font-size: 12px;margin: 10px;color: #a49f9f;" class="simple-icon-control-forward"></i> {{formatEndDate}}</p>
                   </b-card-body>
                 </b-card>
                  <b-card class="mb-4" :title="$t('forms.location')">
@@ -74,6 +74,12 @@
                     </b-card-body>
                     <googleMaps id="maps" :location="auction_form.location" />
                   </b-card>
+                  <b-card class="mb-4" no-body>
+                <b-card-body>
+                  <b-card-title>{{$t('forms.attach')}}</b-card-title>
+                  <gallery-detail />
+                </b-card-body>
+              </b-card>
               
               </b-colxx>
               <b-colxx xxs="12" lg="8">
@@ -147,6 +153,7 @@ import RadialProgressCard from "../../../components/Cards/RadialProgressCard.vue
 import CommentItem from "../../../components/Listing/CommentItem.vue";
 import OrderItem from "../../../components/Listing/OrderItem.vue";
 import { comments } from "../../../data/comments";
+import GalleryDetail from "../../../containers/pages/GalleryDetail";
 import orders from "../../../data/orders";
 import SmallLineCharts from "../../../containers/dashboards/SmallLineCharts.vue";
 import WebsiteVisitsChartCard from "../../../containers/dashboards/WebsiteVisitsChartCard.vue";
@@ -158,6 +165,7 @@ import ListPageListing from "../../../containers/pages/ListPageListing";
 export default {
   components: {
     stars: Stars,
+    "gallery-detail": GalleryDetail,
       googleMaps : googleMaps,
     "radial-progress-card": RadialProgressCard,
     "comment-item": CommentItem,
@@ -171,6 +179,8 @@ export default {
       isLoad: false,
       comments: comments.slice(0, 5),
       orders,
+      formatStartDate: null,
+      formatEndDate: null,
         isLoad: false,
       displayMode: "list",
       items: [],
@@ -210,7 +220,22 @@ export default {
 
   },
   methods: {
-...mapActions(["getAuction"])
+...mapActions(["getAuction"]),
+
+    getStartDate(){
+      this.formatStartDate = this.auction_form.start_date.toString().slice(
+  this.auction_form.start_date.toString().indexOf(' '),
+  this.auction_form.start_date.toString().lastIndexOf(':'),
+);
+return this.formatStartDate;
+    },
+        getEndDate(){
+     this.formatEndDate = this.auction_form.end_date.toString().slice(
+  this.auction_form.end_date.toString().indexOf(' '),
+  this.auction_form.end_date.toString().lastIndexOf(':'),
+);
+return this.formatEndDate;
+    }
 
   },
   mounted() {
@@ -242,15 +267,16 @@ export default {
       this.auction_form.auction_owner = newInfo.auction_owner.name;
       this.auction_form.latitude = newInfo.latitude;
       this.auction_form.longitude = newInfo.longitude;
-      this.auction_form.start_date = newInfo.start_date;
-      this.auction_form.end_date = newInfo.end_date;
+      this.auction_form.start_date = new Date(newInfo.start_date);
+      this.auction_form.end_date = new Date(newInfo.end_date);
+      this.getStartDate();
+      this.getEndDate();
       this.auction_form.city = newInfo.city.locales.[this.language].name;
       this.auction_form.city = newInfo.city.locales.[this.language].name;
       this.auction_form.area = newInfo.area.locales.[this.language].name;
       this.auction_form.image = newInfo.image;
       this.auction_form.image = newInfo.image;
       this.auction_form.location.push(newInfo.latitude, newInfo.longitude);
-      console.log('this.auction_form.location',this.auction_form.location);
       newInfo.custom_fields != [] ? newInfo.custom_fields.forEach(field => {
         this.auction_form.custom_fields.push(
              new Object({

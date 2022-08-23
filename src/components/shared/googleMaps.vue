@@ -53,6 +53,7 @@ export default {
   },
   created() {
     if (this.location) {
+      console.log(this.location);
       this.markers[0].position.lat = this.location[0];
       this.markers[0].position.lng = this.location[1];
       this.center.lat = this.location[0];
@@ -70,6 +71,15 @@ export default {
       this.markers[0].position.lat = location.latLng.lat();
       this.markers[0].position.lng = location.latLng.lng();
       this.$emit("select_location", this.markers[0].position);
+    }
+  },
+  watch: {
+    location: function(val){
+       console.log(this.location);
+  this.markers[0].position.lat = this.location[0];
+      this.markers[0].position.lng = this.location[1];
+      this.center.lat = this.location[0];
+      this.center.lng = this.location[1];
     }
   }
 };
