@@ -185,6 +185,12 @@ const actions = {
       formData.append(`${el._name}[title]`, el.title);
       if (el.description) {
         formData.append(`${el._name}[description]`, el.description);
+        if (el.brochure) {
+          formData.append(`${el._name}[brochure]`, el.brochure);
+        }
+        if (el.terms_conditions) {
+          formData.append(`${el._name}[terms_conditions]`, el.terms_conditions);
+        }
       }
     });
     Object.entries(payload.info).forEach(entry => {
@@ -193,16 +199,24 @@ const actions = {
         formData.append(key, value);
       }
     });
+    Object.entries(payload.location).forEach(entry => {
+      const [key, value] = entry;
+      if (value != null) {
+        formData.append(key, value);
+      }
+    });
+    Object.entries(payload.biding).forEach(entry => {
+      const [key, value] = entry;
+      if (value != null) {
+        formData.append(key, value);
+      }
+    });
 
-    if (payload.brochure != null) {
-      formData.append("brochure", payload.brochure);
-    }
+ 
     if (payload.image != null) {
       formData.append("image", payload.image);
     }
-    if (payload.terms_conditions != null) {
-      formData.append("terms_conditions", payload.terms_conditions);
-    }
+
     commit("setProcessing", false);
     axios
       .post(`${apiUrl}/auctions`, formData, {})
