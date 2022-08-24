@@ -472,13 +472,16 @@ export default {
         {
           name: "",
           callback: value => {
-
+ 
             return  `<span>
-                ${value.start_date}
+                ${new Date(value.start_date).toString().slice(new Date(value.start_date).toString().indexOf(' '),
+  new Date(value.start_date).toString().lastIndexOf(':'),)}
               </span>
               <br/>
               <span>
-                ${value.end_date}
+               ${new Date(value.end_date).toString().slice(new Date(value.end_date).toString().indexOf(' '),
+  new Date(value.end_date).toString().lastIndexOf(':'),)}
+              
               </span>
               `;
           },

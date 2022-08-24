@@ -14,6 +14,7 @@ const state = {
   successDeleteAuction: null,
   processing: false,
   deleteAuctionterms: null,
+  bids: null,
   cities: null,
   isCustomValueCreated: false,
   updatedAuctionMainImageSuccessfuly: false,
@@ -29,15 +30,18 @@ const state = {
   create_Image: null,
   auctionReviewRequests: null,
   delete_Image: null,
-  date_error: false
+  date_error: false,
+  Bidsprocessing: false
 };
 
 const getters = {
   isLoadAuctions: state => state.isLoadAuctions,
   auctionError: state => state.Error,
+  _isLoadAuctionBids: state => state.Bidsprocessing,
   auction_paginations: state => state.paginations,
   _auctionReviewRequests: state => state.auctionReviewRequests,
   auctions: state => state.auctions,
+  _bids: state => state.bids,
   _cities: state => state.cities,
   _File_List: state => state.File_List,
   _updateReviewRequest: state => state.updateReviewRequest,
@@ -68,6 +72,9 @@ const mutations = {
   },
   setProcessing(state, payload) {
     state.processing = payload;
+  },
+  setBidsProcessing(state, payload) {
+    state.Bidsprocessing = payload;
   },
   getAuctionSuccess(state, data) {
     state.auction = data.data;
@@ -120,6 +127,10 @@ const mutations = {
   },
   deleteAuctionError(state, payload) {
     state.deleteAuctionError = payload;
+  },
+  getAuctionBidsSuccess(state, payload){
+    state.bids = payload;
+    
   },
   createAuctionImage(state, payload) {
     state.create_Image = payload;
@@ -296,6 +307,32 @@ const actions = {
         commit("updatedAuctionSuccessfuly", res);
       }
     });
+  },
+  getAuctionBids({ commit }, payload){
+    commit("setBidsProcessing", false);
+
+    const auction_id = payload.auction_id;
+    axios
+      .get(`${apiUrl}/auctions/bids`,  {
+        
+          params: {
+            auction_id: auction_id,
+            order_dir: payload.dir,
+            keyword: payload.search,
+            order_by: payload.order_by,
+            limit: payload.limit,
+            page: payload.page,
+          }
+        }
+      
+        )
+      .then(res => {
+        commit("setBidsProcessing", true);
+        return res;
+      })
+      .then(res => {
+        commit("getAuctionBidsSuccess", res.data);
+      });
   },
   deleteAuction({ commit, dispatch }, payload) {
     const id = payload.Id;

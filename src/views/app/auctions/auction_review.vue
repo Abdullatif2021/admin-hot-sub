@@ -1,29 +1,60 @@
 <template>
   <div>
+   
      <template v-if="_isLoadAuctions">
     <b-row>
       <b-colxx xxs="12">
-        <h1>Chocolate Cake</h1>
-        <!-- <div class="top-right-button-container">
-          <b-dropdown
-            id="ddown5"
-            :text="$t('pages.actions')"
-            size="lg"
-            variant="outline-primary"
-            class="top-right-button top-right-button-single"
-            no-fade="true"
-          >
-            <b-dropdown-item>{{ $t("dashboards.last-week") }}</b-dropdown-item>
-            <b-dropdown-item>{{ $t("dashboards.this-month") }}</b-dropdown-item>
-          </b-dropdown>
-        </div> -->
-        <piaf-breadcrumb />
+         <h1>{{auction_form.title}}</h1>
+      <div v-if="customFiledOn" class="top-right-button-container">
+        <b-button
+          variant="primary"
+          
+          class="top-right-button"
+          @click="refresh()"
+          ><i style="font-size: 19px;" class="simple-icon-refresh"></i></b-button
+        >
+      </div>
+        <piaf-breadcrumb /> 
+           <div v-if="customFiledOn" class="mb-2 mt-2">
+        <b-collapse id="displayOptions" class="d-md-block">
+          <div class="d-block d-md-inline-block pt-1">
+            
+
+            <div class="search-sm d-inline-block float-md-left mr-1 align-top">
+              <b-input
+                :placeholder="$t('menu.search')"
+                @input="val => searchChange(val)"
+              />
+            </div>
+          </div>
+          <div class="float-md-right pt-1">
+            <span class="text-muted text-small mr-1 mb-2"
+              >{{ from }}-{{ to }} {{ $t("forms.of") }} {{ total }}</span
+            >
+            <b-dropdown
+              id="ddown2"
+              right
+              :text="`${perPage}`"
+              variant="outline-dark"
+              class="d-inline-block"
+              size="xs"
+            >
+              <b-dropdown-item
+                v-for="(size, index) in pageSizes"
+                :key="index"
+                @click="changePageSize(size)"
+                >{{ size }}</b-dropdown-item
+              >
+            </b-dropdown>
+          </div>
+        </b-collapse>
+      </div>
         <b-tabs
           nav-class="separator-tabs ml-0 mb-5"
           content-class="tab-content"
           :no-fade="true"
         >
-          <b-tab :title="$t('pages.details')">
+          <b-tab @click="customFiledOn = false" :title="$t('pages.details')">
             <b-row>
               <b-colxx xxs="12" lg="4" class="mb-4">
                 <b-card class="mb-4" no-body>
@@ -77,7 +108,7 @@
                   <b-card class="mb-4" no-body>
                 <b-card-body>
                   <b-card-title>{{$t('forms.attach')}}</b-card-title>
-                  <gallery-detail />
+                  <gallery-detail :containerClass="containerClass" :items="file_lists" />
                 </b-card-body>
               </b-card>
               
@@ -111,7 +142,15 @@
                     </b-card-body>
                 </b-card> 
                 <b-card class="mb-4" :title="$t('forms.custom_field')">
-                  <template v-if="isLoad">
+          <vuetable
+            table-height="360px"
+            ref="vuetable"
+            :api-mode="false"
+            class="order-with-arrow"
+            :fields="fields"
+          >
+          </vuetable>
+                  <!-- <template v-if="isLoad">
                     <list-page-listing
                       :displayMode="displayMode"
                       :items="auction_form.custom_fields"
@@ -119,21 +158,49 @@
                   </template>
                   <template v-else>
                     <div class="loading"></div>
-                  </template>
+                  </template> -->
                 </b-card> 
               
               </b-colxx>
             </b-row>
           </b-tab>
-          <b-tab :title="$t('forms.preview-requests')">
+          <b-tab @click="customFiledOn = false , set_review_data()" :title="$t('forms.preview-requests')">
             <b-row>
               <b-colxx>
-                <order-item
-                  v-for="(order, index) in orders"
-                  :key="index"
-                  :data="order"
-                  detail-path="#"
-                />
+                <vuetable
+                  ref="previews_vuetable"
+                  class="table-divided order-with-arrow"
+                  :api-mode="false"
+                  :fields="review_fields"
+                >
+                </vuetable>
+               
+              </b-colxx>
+            </b-row>
+          </b-tab>
+          <b-tab @click="getAuctionBids({auction_id: auction_id})" :title="$t('forms.bids')">
+            <b-row>
+              <b-colxx>
+                <template v-if="_isLoadAuctionBids">
+                 <vuetable
+          ref="bids_vuetable"
+          class="table-divided order-with-arrow"
+          :per-page="perPage"
+          :api-mode="false"
+          :fields="bids_fields"
+          pagination-path
+          @vuetable:pagination-data="onPaginationData"
+        >
+        </vuetable>
+        <vuetable-pagination-bootstrap
+          class="mt-4"
+          ref="pagination"
+          @vuetable-pagination:change-page="onChangePage"
+        />
+        </template>
+        <template v-else>
+          <div class="loading"></div>
+        </template>
               </b-colxx>
             </b-row>
           </b-tab>
@@ -153,6 +220,7 @@ import RadialProgressCard from "../../../components/Cards/RadialProgressCard.vue
 import CommentItem from "../../../components/Listing/CommentItem.vue";
 import OrderItem from "../../../components/Listing/OrderItem.vue";
 import { comments } from "../../../data/comments";
+import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
 import GalleryDetail from "../../../containers/pages/GalleryDetail";
 import orders from "../../../data/orders";
 import SmallLineCharts from "../../../containers/dashboards/SmallLineCharts.vue";
@@ -161,15 +229,20 @@ import { getCurrentLanguage } from "../../../utils";
 import googleMaps from "../../../components/shared/googleMaps.vue";
 import { mapGetters, mapActions } from "vuex";
 import ListPageListing from "../../../containers/pages/ListPageListing";
+import Vuetable from "vuetable-2/src/components/Vuetable";
+import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 
 export default {
   components: {
+      vuetable: Vuetable,
     stars: Stars,
+    "datatable-heading": DatatableHeading,
     "gallery-detail": GalleryDetail,
       googleMaps : googleMaps,
     "radial-progress-card": RadialProgressCard,
     "comment-item": CommentItem,
     "order-item": OrderItem,
+        "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "small-line-charts": SmallLineCharts,
     "website-visit-chart-card": WebsiteVisitsChartCard,
      "list-page-listing": ListPageListing,
@@ -177,11 +250,137 @@ export default {
   data() {
     return {
       isLoad: false,
+      search: null,
+      customFiledOn: false,
+      limit: null,
       comments: comments.slice(0, 5),
       orders,
+        pageSizes: [4, 8, 12],
+      auction_id: null,
+     fields: [
+        {
+          name: "",
+          callback: value => {
+            return `<img src="${value.icon}" style="border-radius: 34%;" alt="Image" width="50" height="50"> 
+            `;
+          },
+          title: "Icon",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "30%"
+        },
+        {
+          name: "name",
+          title: "Name",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "30%"
+        },
+        {
+          name: "value",
+          title: "Value",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "30%"
+        },
+      ],
+      bids_fields: [
+        {
+          name: "user_info",
+          callback: value => {
+            return `<img src="${value.image}" style="border-radius: 34%;" alt="Image" width="50" height="50"> 
+            `;
+          },
+          title: "Image",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "25%"
+        },
+        {
+          name: "user_info",
+           callback: value => {
+            return `${value.first_name} ${value.last_name}`;
+          },
+          title: "Name",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "25%"
+        },
+        {
+          name: "amount",
+          title: "Amount",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "25%"
+        },
+         {
+          name: "created_at",
+             callback: value => {
+               return new Date(value).toString().slice(new Date(value).toString().indexOf(' '),
+  new Date(value).toString().lastIndexOf(':'),)
+            
+          },
+          title: "Date",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "25%"
+        },
+      ],
+      review_fields: [
+        {
+          name: "name",
+          title: "Name",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "20%"
+        },
+        {
+          name: "phone",
+          title: "Phone Number",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "20%"
+        },
+        {
+          name: "notes",
+          title: "Note",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "20%"
+        },
+         {
+          name: "date",
+             callback: value => {
+               return new Date(value).toString().slice(new Date(value).toString().indexOf(' '),
+  new Date(value).toString().lastIndexOf(':'),)
+            
+          },
+          title: "Date",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "20%"
+        },
+         {
+          name: "status",
+              callback: value => {
+
+            return `<span class="badge badge-pill badge-${value.toLowerCase()} handle mr-1">
+                ${value}
+              </span>`;
+
+          },
+          title: "Status",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "20%"
+        },
+      ], 
       formatStartDate: null,
       formatEndDate: null,
         isLoad: false,
+        file_lists: [],
+         attachments: [],
+        containerClass: "gallery_custom_container",
       displayMode: "list",
       items: [],
       auction_form: {
@@ -202,14 +401,20 @@ export default {
         current_price: null,
         custom_fields: [],
         deposit: null,
+        preview: [],
         end_date: null,
         start_date: null,
         latitude: null,
         longitude: null,
         minimum_paid: null,
         opening_price: null,
-        
       },
+      from: null,
+      to: null,
+      total: null,
+      lastPage: null,
+      perPage: null,
+      items: null,
       auctionId: null,
     };
   },
@@ -220,8 +425,15 @@ export default {
 
   },
   methods: {
-...mapActions(["getAuction"]),
-
+...mapActions(["getAuction", "getAuctionFiles", "getAuctionImages", "getAuctionBids"]),
+ onPaginationData(paginationData) {
+      this.from = paginationData.from;
+      this.to = paginationData.to;
+      this.total = paginationData.total;
+      this.lastPage = paginationData.last_page;
+      this.items = paginationData.data;
+      this.$refs.pagination.setPaginationData(paginationData);
+    },
     getStartDate(){
       this.formatStartDate = this.auction_form.start_date.toString().slice(
   this.auction_form.start_date.toString().indexOf(' '),
@@ -235,8 +447,43 @@ return this.formatStartDate;
   this.auction_form.end_date.toString().lastIndexOf(':'),
 );
 return this.formatEndDate;
-    }
+    },  
+    refresh(){
+        this.getAuctionBids({auction_id : this.auction_id})
+    },
+    set_review_data(){
+      console.log(this.auction_form.preview);
+            this.$refs.previews_vuetable.setData(this.auction_form.preview);
 
+    },
+     changePageSize(perPage) {
+      this.limit = perPage;
+      this.getAuctionBids({
+        search: this.search,
+        limit: this.limit,
+        page: this.page
+      });
+    },
+     searchChange(val) {
+      this.search = val;
+      this.getAuctionBids({
+        search: val,
+        limit: null,
+        page: null
+      });
+    },
+
+     onChangePage(page) {
+      if (page == "next" || page == "prev") {
+      } else {
+        this.page = page;
+        this.getAuctionBids({
+          search: this.search,
+          limit: this.limit,
+          page: this.page
+        });
+      }
+    },
   },
   mounted() {
     setTimeout(() => {
@@ -244,7 +491,7 @@ return this.formatEndDate;
     }, 50);
   },
    computed: {
-    ...mapGetters(["auction", "_isLoadAuctions"])
+    ...mapGetters(["auction", "_isLoadAuctions", "_Image_List", "_File_List", "_bids", "_isLoadAuctions", "_isLoadAuctionBids"])
   },
   watch: {
     auction(newInfo, oldOne) {
@@ -252,6 +499,7 @@ return this.formatEndDate;
       this.isLoadAuction = true;
       newInfo.category ? this.auction_form.category = newInfo.category.locales.[this.language].name : '';
       // this.auction_form.sub_category = newInfo.sub_category.locales.[this.language].name;
+      this.auction_id = newInfo.id;
 
       this.auction_form.title = newInfo.locales.[this.language].title;
       this.auction_form.description = newInfo.locales.[this.language].description;
@@ -260,7 +508,8 @@ return this.formatEndDate;
       this.auction_form.opening_price = newInfo.opening_price;
       this.auction_form.auction_number = newInfo.auction_number;
       this.auction_form.current_price = newInfo.current_price;
-     
+      this.getAuctionImages({ id: newInfo.id })
+      this.getAuctionFiles({ id: newInfo.id})
       this.auction_form.minimum_paid = newInfo.minimum_paid;
       this.auction_form.deposit = newInfo.deposit;
       this.auction_form.auction_side = newInfo.auction_side.name;
@@ -274,23 +523,66 @@ return this.formatEndDate;
       this.auction_form.city = newInfo.city.locales.[this.language].name;
       this.auction_form.city = newInfo.city.locales.[this.language].name;
       this.auction_form.area = newInfo.area.locales.[this.language].name;
+      this.auction_form.preview = newInfo.preview;
       this.auction_form.image = newInfo.image;
       this.auction_form.image = newInfo.image;
       this.auction_form.location.push(newInfo.latitude, newInfo.longitude);
       newInfo.custom_fields != [] ? newInfo.custom_fields.forEach(field => {
         this.auction_form.custom_fields.push(
              new Object({
+               icon: field.icon,
+               type: field.type,
               name: field.locales.[this.language].name,
               value: field.values[0].locales.[this.language].value,
               unit: field.values[0].locales.[this.language].unit,
-              type: field.type,
-              icon: field.icon
+            
+             
           })
         )
       }): this.auction_form.custom_fields = null;
-       this.isLoad = true;
+      this.isLoad = true;
+      this.$refs.previews_vuetable.setData(newInfo.preview);
+      this.$refs.vuetable.setData(this.auction_form.custom_fields);
        console.log(this.auction_form.custom_fields)
     },
+      _Image_List: function(val) {
+      console.log('this is images', val)
+    
+       val.forEach(el => {
+        this.file_lists.push(
+             new Object({
+            id: el.id,
+            link: el.path,
+            img:  el.path
+          })
+        )
+      })
+       console.log('this.file_lists from images',this.file_lists)
+    },
+     _File_List: function(newInfo) {
+      console.log('this is files', newInfo)
+      newInfo.forEach(el => {
+        this.file_lists.push(
+             new Object({
+            id: el.id,
+            link: el.path,
+            img:  "/assets/img/products/file-img.png",
+            original_filename: el.original_filename
+          })
+        )
+      })
+      console.log('this.file_lists from files',this.file_lists)
+
+    },
+    _bids: function(val){
+       this.$refs.bids_vuetable.setData(val.data);
+         this.perPage = val.per_page;
+      this.from = val.from;
+      this.to = val.to;
+      this.total = val.total;
+      this.$refs.pagination.setPaginationData(val);
+      this.customFiledOn = true
+    }
   }
 };
 </script>

@@ -1368,7 +1368,14 @@ button {
     width: calc(100%);
   }
 }
-
+.gallery_custom_container{
+  overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 250px;
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+}
 .top-right-button-container {
   float: right;
   position: relative;

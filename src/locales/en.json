@@ -26,6 +26,7 @@
   },
   "menu": {
     "home": "Home",
+    "auction-review": "auction review",
     "faq_list": "List",
     "faq-categories-table": "FAQ Category Table",
     "list": "List",
@@ -505,6 +506,7 @@
   "forms": {
     "select-new-custom": "Select or Add new Custom filed",
     "Yemail_filed": "Please enter your email",
+    "bids": "Bids",
     "title": "Title",
     "send": "Send",
     "en_lang": "English Language",
