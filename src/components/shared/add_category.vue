@@ -140,7 +140,7 @@ export default {
         autoProcessQueue: false,
         previewTemplate: this.dropzoneTemplate(),
         headers: {},
-        acceptedFiles: "image/svg"
+        acceptedFiles: ".svg"
       },
       dropzoneOptions: {
         url: "https://lilacmarketingevents.com",
@@ -229,9 +229,11 @@ export default {
     },
     iconAdded(icon) {
       this.icon = icon;
+      this.icon_form.icon = 'ok'
     },
     iconRemoved() {
       this.icon = null;
+      this.icon_form.icon = null
     },
     dropzoneTemplate() {
       return `<div class="dz-preview dz-file-preview mb-3">

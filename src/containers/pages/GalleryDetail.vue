@@ -73,10 +73,7 @@ export default {
       photoIndex: null
     };
   },
-  created(){
-    console.log(this.items, 'hi from gallery')
-
-  },
+ 
   methods: {
     onThumbClick(index) {
       this.photoIndex = index;

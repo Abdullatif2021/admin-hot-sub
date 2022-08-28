@@ -28,6 +28,7 @@ import VueLineClamp from "vue-line-clamp";
 import VueScrollTo from "vue-scrollto";
 import "firebase/auth";
 import { getCurrentLanguage } from "./utils";
+import auction from "./plugins/services/auction";
 // date picker
 
 Vue.use(BootstrapVue);
@@ -47,7 +48,7 @@ Vue.use(VueScrollTo);
 Vue.use(VueLineClamp, {
   importCss: true
 });
-
+// Vue.use(auction)
 Vue.component("piaf-breadcrumb", Breadcrumb);
 Vue.component("b-refresh-button", RefreshButton);
 Vue.component("b-colxx", Colxx);

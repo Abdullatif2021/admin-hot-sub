@@ -2,7 +2,25 @@ import axios from "../../plugins/axios";
 import { apiUrl } from "../../constants/config";
 import router from "../../router";
 import { adminRoot } from "../../constants/config";
+import {
+  get_categoeries,
+  get_category,
+  create_category,
+  update_category,
+  delete_category,
+  active_category,
+  get_metadata,
+  create_meta,
+  update_meta,
+  delete_meta,
+  get_metaType,
+  get_subCategories,
+  get_subCategory,
+  create_subCategory,
+  update_subCategory,
+  delete_subCategory
 
+} from "../../plugins/services/categories"
 const state = {
   paginations: null,
   categories: null,
@@ -146,20 +164,16 @@ const mutations = {
 };
 
 const actions = {
-  getCategories: async ({ commit }, payload) => {
+  getCategories ({ commit }, payload) {
     commit("setProcessing", payload.sorting ? payload.sorting : false);
-
-    await axios
-      .get(`${apiUrl}/categories`, {
-        params: {
-          category: 1,
-          order_dir: payload.dir,
-          keyword: payload.search,
-          order_by: payload.order_by,
-          limit: payload.limit,
-          page: payload.page
-        }
-      })
+    const categories = get_categoeries({ category: 1,
+      order_dir: payload.dir,
+      keyword: payload.search,
+      order_by: payload.order_by,
+      limit: payload.limit,
+      page: payload.page
+    })
+    categories
       .then(res => {
         commit("setProcessing", true);
         return res;
@@ -171,11 +185,10 @@ const actions = {
         }
       });
   },
-
   getCategory({ commit, dispatch }, payload) {
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/categories/${id}`)
+    const category = get_category(id);
+    category
       .then(res => {
         commit("setProcessing", true);
         return res;
@@ -193,12 +206,13 @@ const actions = {
       }
     });
     if (payload.image !== null) {
-      formData.append("image", payload.image);
+      formData.append("image", payload.image);   
     }
     if (payload.icon) {
       formData.append(`icon`, payload.icon);
     }
-    axios.post(`${apiUrl}/categories`, formData, {}).then(res => {
+    const createCategory = create_category(formData)
+    createCategory.then(res => {
       if (res.status === 201) {
         commit("create_category_success", res);
       }
@@ -207,12 +221,6 @@ const actions = {
   updateCategory({ commit, dispatch }, payload) {
     const id = payload.id;
     const formData = new FormData();
-    // Object.entries(payload.info).forEach(entry => {
-    //   const [key, value] = entry;
-    //   if (value != null) {
-    //     formData.append(key, value);
-    //   }
-    // });
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);
       if (el.description) {
@@ -223,16 +231,17 @@ const actions = {
     if (payload.image !== null) {
       formData.append("image", payload.image);
     }
-    axios.post(`${apiUrl}/categories/${id}`, formData, {}).then(res => {
+    const updateCategory = update_category({id, formData})
+    updateCategory.then(res => {
       if (res.status === 200) {
         commit("successUpdateCategory", res.data.data);
       }
     });
   },
-
   deleteCategory({ commit, dispatch }, payload) {
     const id = payload.id;
-    axios.delete(`${apiUrl}/categories/${id}`).then(res => {
+    const deleteCategory = delete_category(id)
+    deleteCategory.then(res => {
       if (res.status === 200) {
         commit("deleteCategory", res);
       }
@@ -240,31 +249,25 @@ const actions = {
   },
   categoryActivate({ commit, dispatch }, payload) {
     const id = payload.id;
-    const formData = new FormData();
+    const active = payload.active;
 
-    formData.append("active", payload.active);
-    axios
-      .put(
-        `${apiUrl}/categories/${id}`,
-        {
-          active: payload.active
-        },
-        {}
-      )
-      .then(res => {
+  
+    const categoryActivate = active_category({id, active})
+ 
+      categoryActivate.then(res => {
         if (res.status === 200) {
           commit("activeCategory", res);
         }
       });
   },
   // $$$$$$$$$$$$ category metadata $$$$$$$$$$
-  getCategoryMetadata: async ({ commit }, payload) => {
+  getCategoryMetadata ({ commit }, payload) {
     const id = payload.id;
     commit("setProcessing", false);
-
-    await axios
-      .get(`${apiUrl}/categories/metadata/${id}`)
-      .then(res => {
+    const getMeta = get_metadata(id)
+    
+      
+      getMeta.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -279,9 +282,9 @@ const actions = {
       formData.append(`${el.name}[meta_content]`, el.content);
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
-    axios
-      .post(`${apiUrl}/categories/metadata/${id}`, formData, {})
-      .then(res => {
+    const createMeta = create_meta({id, formData});
+   
+      createMeta.then(res => {
         if (res.status === 201 || res.status === 200) {
           dispatch("getCategoryMetadata", { id });
           commit("create_category_meta_success", res);
@@ -297,9 +300,9 @@ const actions = {
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
     formData.append("_method", "PUT");
-    axios
-      .post(`${apiUrl}/categories/metadata/${id}/${metadata_id}`, formData, {})
-      .then(res => {
+    const updateMeta = update_meta({id, metadata_id, formData}) 
+  
+      updateMeta.then(res => {
         if (res.status === 200 || res.status === 201) {
           dispatch("getCategoryMetadata", { id });
           commit("updateCategoryMetaSuccess", res);
@@ -309,29 +312,25 @@ const actions = {
   deleteCategoryMetadata: async ({ commit, dispatch }, payload) => {
     const id = payload.id;
     const metadata_id = payload.metadata_id;
-    await axios
-      .delete(`${apiUrl}/categories/metadata/${id}/${metadata_id}`)
-      .then(res => {
+    const deleteMeta = delete_meta({id, metadata_id})
+   
+      
+    deleteMeta.then(res => {
         dispatch("getCategoryMetadata", { id });
       });
   },
   getCategoryMetaTypeList({ commit }, payload) {
-    axios.get(`${apiUrl}/metadata/meta-type`).then(res => {
+    const metaType = get_metaType();
+    metaType.then(res => {
       commit("getCategoryMetaTypeList", res.data);
     });
   },
   // %%%%%%%%%%%%%%%%% Sub Category &&&&&&&&&&&&&&&&&&&&&&
   getSubCategories: async ({ commit }, payload) => {
     commit("setProcessing", false);
-    const id = payload.id;
-
-    await axios
-      .get(`${apiUrl}/categories`, {
-        params: {
-          parent_id: payload.id
-        }
-      })
-      .then(res => {
+      const subCategories = get_subCategories({ parent_id: payload.id})
+ 
+      subCategories.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -345,9 +344,9 @@ const actions = {
   getSubCategory({ commit, dispatch }, payload) {
     commit("setProcessing", false);
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/categories/${id}`)
-      .then(res => {
+    const subCategory = get_subCategory(id)
+   
+      subCategory.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -372,9 +371,9 @@ const actions = {
         formData.append(`${el._name}[description]`, el.description);
       }
     });
-    await axios
-      .post(`${apiUrl}/categories`, formData, {})
-      .then(res => {
+    const createSubCategory = create_subCategory(formData);
+      
+      createSubCategory.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -403,9 +402,10 @@ const actions = {
         formData.append(`${el._name}[description]`, el.description);
       }
     });
-    await axios
-      .post(`${apiUrl}/categories/${sub_id}`, formData, {})
-      .then(res => {
+    const updateSubCategory = update_subCategory({sub_id, formData})
+    
+    updateSubCategory
+    .then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -420,13 +420,9 @@ const actions = {
   deleteSubCategory: async ({ commit, dispatch }, payload) => {
     const id = payload.categoryId;
     const sub_id = payload.sub_id;
-    await axios
-      .delete(`${apiUrl}/categories/${sub_id}`, {
-        params: {
-          parent_id: payload.categoryId
-        }
-      })
-      .then(res => {
+    const deleteSubCategory = delete_subCategory({ sub_id , parent_id: payload.categoryId});
+
+      deleteSubCategory.then(res => {
         if (res.status === 200) {
           commit("deleteSubCategory", res.data);
           dispatch("getSubCategories", { id });

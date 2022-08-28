@@ -455,7 +455,7 @@ export default {
           title: "NO.",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "10%"
+          width: "2%"
         },
 
         {
@@ -466,10 +466,10 @@ export default {
           title: "Title",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "10%"
+          width: "30%"
         },
 
-        {
+        { 
           name: "",
           callback: value => {
  
@@ -490,7 +490,7 @@ export default {
           title: "Duration",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "20%"
+          width: "10%"
         },
         {
           name: "minimum_paid",
@@ -505,7 +505,7 @@ export default {
           title: "Bidds",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "10%"
+          width: "5%"
         },
            {
           name: "auction_type",
@@ -537,13 +537,15 @@ export default {
           title: "",
           titleClass: "center aligned text-right",
           dataClass: "center aligned text-right",
-          width: "10%"
+          width: "5%"
         }
       ]
     };
   },
   created() {
     this.language = getCurrentLanguage();
+  
+
 
     this.getAuctions({
       dir: null,
@@ -670,7 +672,6 @@ this.active = active
       }
     },
        set_location(data) {
-        console.log(data);
     },
     delete_auction() {
       this.enableModalBtn= true;
@@ -862,14 +863,13 @@ this.$notify(
 
     },
     _category: function(val){
-        console.log(val);
         this.categoryName = val.locales.[this.language].name
     },
      _getSubCategorySuccess: function(val){
-        console.log(val);
         this.subCategoryName = val.data.locales.[this.language].name
     },
     auction_paginations(newActions, old) {
+      console.log(newActions);
       this.perPage = newActions.per_page;
       this.from = newActions.from;
       this.to = newActions.to;

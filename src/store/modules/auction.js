@@ -1,8 +1,29 @@
 import axios from "../../plugins/axios";
 import { apiUrl } from "../../constants/config";
-import router from "../../router";
-import { adminRoot } from "../../constants/config";
+import {
+  get_Auctions,
+  get_auction,
+  create_auction,
+  update_auction,
+  delete_auction,
+  get_bids,
+  get_sides,
+  get_owners,
+  get_cities,
+  get_areas,
+  get_files,
+  create_file,
+  delete_file,
+  get_images,
+  create_image,
+  delete_image,
+  create_customVal,
+  update_customVal,
+  get_requests,
+  update_request,
+  delete_terms
 
+} from "../../plugins/services/auction"
 const state = {
   isLoadAuctions: true,
   paginations: null,
@@ -150,39 +171,36 @@ const mutations = {
 };
 
 const actions = {
-  getAuctions: async ({ commit }, payload) => {
+  getAuctions({ commit }, payload) {
     commit("setProcessing", payload.sorting ? payload.sorting : false);
-
-    await axios
-      .get(`${apiUrl}/auctions`, {
-        params: {
-          order_dir: payload.dir,
-          keyword: payload.search,
-          order_by: payload.order_by,
-          limit: payload.limit,
-          page: payload.page,
-          auction_type: payload.auctionType
-        }
-      })
-      .then(res => {
-        commit("setProcessing", true);
-        return res;
-      })
-      .then(res => {
-        if (res.status === 200) {
-          commit("getAuctionsSuccess", res.data);
-        } else {
-          commit("getAuctionsError", "error:getAuctions");
-        }
-      });
+    const auctions  = get_Auctions({ order_dir: payload.dir,
+      keyword: payload.search,
+      order_by: payload.order_by,
+      limit: payload.limit,
+      page: payload.page,
+      auction_type: payload.auctionType})
+    auctions.then(res => {
+            commit("setProcessing", true);
+            return res;
+          })
+          .then(res => {
+            if (res.status === 200) {
+              commit("getAuctionsSuccess", res.data);
+            } else {
+              commit("getAuctionsError", "error:getAuctions");
+            }
+          });
+      
+   
   },
+  
   getAuction({ commit, dispatch }, payload) {
     commit("setProcessing", false);
 
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/auctions/${id}`)
-      .then(res => {
+    const auction = get_auction(id)
+  
+      auction.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -222,16 +240,15 @@ const actions = {
         formData.append(key, value);
       }
     });
-
- 
     if (payload.image != null) {
       formData.append("image", payload.image);
     }
 
     commit("setProcessing", false);
-    axios
-      .post(`${apiUrl}/auctions`, formData, {})
-      .then(res => {
+    const createAuction = create_auction(formData);
+    // axios
+    //   .post(`${apiUrl}/auctions`, formData, {})
+    createAuction.then(res => {
         if (res.status === 201) {
           commit("createAuctionSuccessfuly", res);
           dispatch("getCustomFieldList", { id: res.data.data.category_id });
@@ -278,7 +295,8 @@ const actions = {
     }
 
     formData.append("_method", "PUT");
-    axios.post(`${apiUrl}/auctions/${id}`, formData, {}).then(res => {
+    const update = update_auction({id, formData});
+    update.then(res => {
       if (res.status === 200) {
         commit("updatedAuctionSuccessfuly", res);
       }
@@ -291,7 +309,8 @@ const actions = {
     const formData = new FormData();
     formData.append("image", payload.img);
     formData.append("_method", "PUT");
-    axios.post(`${apiUrl}/auctions/${id}`, formData, {}).then(res => {
+    const update_image = update_auction({id, formData});
+    update_image.then(res => {
       if (res.status === 200) {
         commit("updatedAuctionMainImageSuccessfuly", res.data.data);
       }
@@ -302,31 +321,38 @@ const actions = {
     const formData = new FormData();
     formData.append("active", payload.active);
     formData.append("_method", "PUT");
-    axios.post(`${apiUrl}/auctions/${id}`, formData, {}).then(res => {
+    const update_status =  update_auction({id, formData});
+    update_status.then(res => {
       if (res.status === 200) {
         commit("updatedAuctionSuccessfuly", res);
       }
     });
   },
+  deleteTermsBrochure({ commit }, payload) {
+    const id = payload.id;
+    const type = payload.type;
+    const deleteTerms = delete_terms({type, id})
+    deleteTerms
+      .then(res => {
+        if (res.status === 200) {
+          commit("deleteAuctionterms", res.data.data);
+        }
+      })
+      .catch(err => {});
+  },
   getAuctionBids({ commit }, payload){
     commit("setBidsProcessing", false);
 
     const auction_id = payload.auction_id;
-    axios
-      .get(`${apiUrl}/auctions/bids`,  {
-        
-          params: {
-            auction_id: auction_id,
-            order_dir: payload.dir,
-            keyword: payload.search,
-            order_by: payload.order_by,
-            limit: payload.limit,
-            page: payload.page,
-          }
-        }
-      
-        )
-      .then(res => {
+    const bids = get_bids({
+        auction_id: auction_id,
+        order_dir: payload.dir,
+        keyword: payload.search,
+        order_by: payload.order_by,
+        limit: payload.limit,
+        page: payload.page,
+    })
+   bids.then(res => {
         commit("setBidsProcessing", true);
         return res;
       })
@@ -336,7 +362,9 @@ const actions = {
   },
   deleteAuction({ commit, dispatch }, payload) {
     const id = payload.Id;
-    axios.delete(`${apiUrl}/auctions/${id}`).then(res => {
+    const delete_Auction = delete_auction(id);
+    
+    delete_Auction.then(res => {
       if (res.data.status === 200) {
         commit("deleteAuction", res);
       } else if (res.data.status === 400) {
@@ -345,28 +373,27 @@ const actions = {
     });
   },
   getAuctionSide({ commit, dispatch }, payload) {
-    axios.get(`${apiUrl}/auctions/sides`).then(res => {
+    const sides =  get_sides();
+    sides.then(res => {
       if (res.status === 200) {
         commit("getAuctionSide", res.data.data);
       }
     });
   },
   getAuctionOwner({ commit, dispatch }, payload) {
-    axios.get(`${apiUrl}/auctions/owners`).then(res => {
+    const owners = get_owners();
+    owners.then(res => {
       if (res.status === 200) {
         commit("getAuctionOwner", res.data.data);
       }
     });
   },
 
+  // &&&&&&&&&&&&&&&&&& LOCATION &&&&&&&&&&&&&
   getCities({ commit, dispatch }, payload) {
     const area_id = payload.area_id;
-    axios
-      .get(`${apiUrl}/cities`, {
-        params: {
-          area_id: area_id
-        }
-      })
+    const cities = get_cities({ area_id: area_id });
+   cities
       .then(res => {
         if (res.status === 200) {
           commit("getCities", res.data.data);
@@ -376,12 +403,8 @@ const actions = {
   },
   getAreas({ commit, dispatch }, payload) {
     const country_id = payload.country_id;
-    axios
-      .get(`${apiUrl}/areas`, {
-        params: {
-          country_id: country_id
-        }
-      })
+    const areas = get_areas({country_id: country_id})
+    areas
       .then(res => {
         if (res.status === 200) {
           commit("getAreas", res.data.data);
@@ -389,11 +412,12 @@ const actions = {
       })
       .catch(err => {});
   },
+  // &&&&&&&&&&&&&&&&&& FILES &&&&&&&&&&&&&
   getAuctionFiles({ commit, dispatch }, payload) {
     commit("setProcessing", false);
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/auctions/files/${id}`)
+    const files = get_files(id)
+   files
       .then(res => {
         commit("setProcessing", true);
         // commit("getAuctionFileList", res.data.data);
@@ -414,8 +438,8 @@ const actions = {
         formData.append(`${el._name}[description]`, el.description);
       }
     });
-    axios
-      .post(`${apiUrl}/auctions/files/${id}`, formData, {})
+    const createFile = create_file({id, formData})
+    createFile
       .then(res => {
         if (res.status === 201) {
           commit("createAuctionFile", res.data.data);
@@ -427,9 +451,8 @@ const actions = {
   deleteAuctionFile({ commit, dispatch }, payload) {
     const id = payload.id;
     const fileId = payload.fileId;
-    axios
-      .delete(`${apiUrl}/auctions/files/${id}/${fileId}`)
-      .then(res => {
+    const deleteFile = delete_file({id, fileId});
+    deleteFile.then(res => {
         if (res.status === 200) {
           commit("deleteAuctionFile", res.data.data);
           dispatch("getAuctionFiles", { id });
@@ -441,8 +464,8 @@ const actions = {
   getAuctionImages({ commit, dispatch }, payload) {
     commit("setProcessing", false);
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/auctions/images/${id}`)
+    const images = get_images(id);
+    images
       .then(res => {
         commit("setProcessing", true);
         return res;
@@ -462,9 +485,8 @@ const actions = {
         formData.append(`${el._name}[description]`, el.description);
       }
     });
-    axios
-      .post(`${apiUrl}/auctions/images/${id}`, formData, {})
-      .then(res => {
+    const createImage = create_image({id, formData});
+    createImage.then(res => {
         if (res.status === 201) {
           commit("createAuctionImage", res.data.data);
           dispatch("getAuctionImages", { id });
@@ -475,9 +497,8 @@ const actions = {
   deleteAuctionImage({ commit, dispatch }, payload) {
     const id = payload.id;
     const imgId = payload.imgId;
-    axios
-      .delete(`${apiUrl}/auctions/images/${id}/${imgId}`)
-      .then(res => {
+    const deleteImage = delete_image({id, imgId});
+    deleteImage.then(res => {
         if (res.status === 200) {
           commit("deleteAuctionImage", res.data.data);
           dispatch("getAuctionImages", { id });
@@ -485,6 +506,7 @@ const actions = {
       })
       .catch(err => {});
   },
+  // &&&&&&&&&&&&&&&&&& CUSTOM VALUE &&&&&&&&&&&&&
   createCustomValue({ commit, dispatch }, payload) {
     const id = payload.id;
     const formData = new FormData();
@@ -500,12 +522,12 @@ const actions = {
     }
 
     formData.append(`auction_id`, payload.auction_id);
-    axios
-      .post(`${apiUrl}/categories/additional/${id}`, formData, {})
+    const createCustomVal = create_customVal({id, formData})
+
+   createCustomVal
       .then(res => {
         if (res.status === 200) {
           commit("createAuctionCustomValue", res.data.data);
-          // dispatch("getAuctionImages", { id });
         }
       })
       .catch(err => {});
@@ -531,13 +553,8 @@ const actions = {
         );
       });
     }
-    axios
-      .post(
-        `${apiUrl}/categories/additional/${custom_id}/${value_id}`,
-        formData,
-        {}
-      )
-      .then(res => {
+ const updateCustomval = update_customVal({custom_id, value_id, formData})
+ updateCustomval.then(res => {
         if (res.status === 200) {
           commit("createAuctionCustomValue", res.data.data);
           // dispatch("getAuctionImages", { id });
@@ -545,15 +562,13 @@ const actions = {
       })
       .catch(err => {});
   },
+   // &&&&&&&&&&&&&&&&&& REVIEW REQUEST &&&&&&&&&&&&&
   getReviewRequests({ commit }, payload) {
     commit("setProcessing", false);
     const auction_id = payload.auction_id;
-    axios
-      .get(`${apiUrl}/auctions/preview`, {
-        params: {
-          auction_id: auction_id
-        }
-      })
+    const requests  = get_requests({auction_id}) 
+
+    requests
       .then(res => {
         commit("setProcessing", true);
         return res;
@@ -568,27 +583,16 @@ const actions = {
     const formData = new FormData();
     formData.append(`_method`, "PUT");
     formData.append(`status`, payload.val);
-    axios
-      .post(`${apiUrl}/auctions/preview/${request_id}`, formData, {})
-      .then(res => {
+    const updateRequest = update_request({request_id, formData}) 
+   
+      updateRequest.then(res => {
         if (res.status === 200) {
           commit("updateReviewRequest");
         }
       })
       .catch(err => {});
   },
-  deleteTermsBrochure({ commit }, payload) {
-    const id = payload.id;
-    const type = payload.type;
-    axios
-      .delete(`${apiUrl}/auctions/${type}/${id}`)
-      .then(res => {
-        if (res.status === 200) {
-          commit("deleteAuctionterms", res.data.data);
-        }
-      })
-      .catch(err => {});
-  }
+ 
 };
 
 export default {

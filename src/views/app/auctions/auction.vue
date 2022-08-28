@@ -2459,7 +2459,6 @@ area_id: {},
       if (
         !this.$v.formStep1.$invalid
       ) {
-        console.log(this.formStep1);
         this.disabledFormStep1 = true;
           this.updateAuction({
             info: this.formStep1,
@@ -2523,7 +2522,6 @@ area_id: {},
     }
     },
     onGridFormSubmit() {
-      console.log('here iam');
       
         this.disabled = false;
         if (this.auctionId) {
@@ -2628,7 +2626,6 @@ this.isLoadCustomField = true
       this.deleteAuctionImage({ id: this.auctionId, imgId: id });
     },
     fileAdded(file) {
-      console.log(file)
 
       this.$refs['attachDetails'].show();
       this.file = file;
@@ -2652,7 +2649,6 @@ this.isLoadCustomField = true
     },
     createAttachment(){
 
-      console.log(this.file[0])
         this.$v.$touch();
       this.$v.attach_form.$touch();
 
@@ -2671,12 +2667,10 @@ this.isLoadCustomField = true
 
     },
     get_SubCat(val){
-      console.log('refrfrrfrrrerfrfrfrrf', val, this.selected_sub_category)
       this.getSubCategory({id : val})
     
     },
     add_newCustomField(){
-      console.log(this.showCreateModal)
   this.showCreateModal = !this.showCreateModal;
     },
     fileRemoved(file) {
@@ -2724,7 +2718,6 @@ this.isLoadCustomField = true
            this.date1 = new Date(this.gridForm1.start_date);
         this.date2 = new Date(this.gridForm1.end_date);
 
-        console.log(this.date1.getTime(),this.date2.getTime())
         if(this.date2.getTime() < this.date1.getTime()){
           this.gridForm1.start_date = null;
           this.gridForm1.end_date = null;
@@ -2750,9 +2743,7 @@ this.date_check();
              this.$v.$touch();
       this.$v.gridForm1.$touch();
             this.$v.files_form.$touch();
-            console.log( !this.$v.gridForm1.$invalid ,
-                !this.$v.files_form.$invalid)
-
+ 
         if (
         !this.$v.gridForm1.$invalid &&
                 !this.$v.files_form.$invalid
@@ -2760,7 +2751,6 @@ this.date_check();
       ){
         this.$v.$reset();
               this.getCustomFieldList({id: this.gridForm1.category_id})
-      console.log(this.gridForm1)
  return true;
    
       }
@@ -2776,7 +2766,6 @@ this.date_check();
 
       ){   
         this.$v.$reset();
-  console.log(this.lang_form)
  return true;
       }
         },
@@ -2882,7 +2871,6 @@ this.date_check();
   watch: {
     _File_List(newInfo, oldOne) {
       this.auctionFileList = newInfo;
-      console.log('this is files', newInfo)
       newInfo.forEach(el => {
         this.file_lists.push(
              new Object({
@@ -2892,7 +2880,6 @@ this.date_check();
           })
         )
       })
-      console.log(this.file_lists)
 
     },
     auction(newInfo, oldOne) {
@@ -2937,7 +2924,6 @@ this.date_check();
       this.getAuctionFiles({ id: this.auctionId })
     },
     _Image_List: function(val) {
-      console.log('this is images', val)
       this.enable = false;
       this.show_dropzone = true;
       this.isLoadAuctionImages = true;
@@ -2983,7 +2969,6 @@ this.date_check();
   this.$refs.vuetable.setData(val);
     },
     _getSubCategorySuccess:function(val){
-      console.log('hi from single sub',val)
         this.formStep1.category_id = val.parent_id;
       this.formStep1.sub_category_id = val.id;
       this.gridForm1.category_id = val.parent_id;
@@ -3046,7 +3031,6 @@ this.date_check();
       });
     },
     _createAuctionFile: function(val){
-      console.log(val)
       this.enable_attach_btn = false;
         this.$notify(
         "success",
@@ -3062,7 +3046,6 @@ this.date_check();
              this.$v.$reset();
     },
     _createAuctionImage: function(val){
-      console.log(val)
       this.enable_attach_btn = false;
         this.$notify(
         "success",

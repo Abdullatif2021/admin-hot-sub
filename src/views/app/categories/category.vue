@@ -311,8 +311,8 @@ export default {
       this.AddBtn = val;
       this.addBtnTitle = title;
     },
-    create_category(info, img, type) {
-      this.createCategory({ info: info, image: img });
+    create_category(info, img, type, icon) {
+      this.createCategory({ info: info, image: img, icon: icon });
     },
     hideModal(refname) {
       this.$refs[refname].hide();

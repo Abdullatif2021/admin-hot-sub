@@ -15,19 +15,20 @@
         >
       </div>
         <piaf-breadcrumb /> 
-           <div v-if="customFiledOn" class="mb-2 mt-2">
+           <div v-if="customFiledOn"  style="display: grid;position: absolute;left: 77%;" class="mb-2 mt-2">
         <b-collapse id="displayOptions" class="d-md-block">
-          <div class="d-block d-md-inline-block pt-1">
+          <div class="d-block d-md-inline-block">
             
 
+      
+          </div>
+          <div class="float-md-right pt-1">
             <div class="search-sm d-inline-block float-md-left mr-1 align-top">
               <b-input
                 :placeholder="$t('menu.search')"
                 @input="val => searchChange(val)"
               />
             </div>
-          </div>
-          <div class="float-md-right pt-1">
             <span class="text-muted text-small mr-1 mb-2"
               >{{ from }}-{{ to }} {{ $t("forms.of") }} {{ total }}</span
             >
@@ -452,7 +453,6 @@ return this.formatEndDate;
         this.getAuctionBids({auction_id : this.auction_id})
     },
     set_review_data(){
-      console.log(this.auction_form.preview);
             this.$refs.previews_vuetable.setData(this.auction_form.preview);
 
     },
@@ -543,10 +543,8 @@ return this.formatEndDate;
       this.isLoad = true;
       this.$refs.previews_vuetable.setData(newInfo.preview);
       this.$refs.vuetable.setData(this.auction_form.custom_fields);
-       console.log(this.auction_form.custom_fields)
     },
       _Image_List: function(val) {
-      console.log('this is images', val)
     
        val.forEach(el => {
         this.file_lists.push(
@@ -557,10 +555,8 @@ return this.formatEndDate;
           })
         )
       })
-       console.log('this.file_lists from images',this.file_lists)
     },
      _File_List: function(newInfo) {
-      console.log('this is files', newInfo)
       newInfo.forEach(el => {
         this.file_lists.push(
              new Object({
@@ -571,7 +567,6 @@ return this.formatEndDate;
           })
         )
       })
-      console.log('this.file_lists from files',this.file_lists)
 
     },
     _bids: function(val){

@@ -396,7 +396,6 @@ export default {
       }
     },
     blockCategories(newVal, old) {
-      console.log(newVal);
       this.setMenuItems(newVal);
     }
   }

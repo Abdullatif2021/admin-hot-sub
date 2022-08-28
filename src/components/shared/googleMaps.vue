@@ -53,7 +53,6 @@ export default {
   },
   created() {
     if (this.location) {
-      console.log(this.location);
       this.markers[0].position.lat = this.location[0];
       this.markers[0].position.lng = this.location[1];
       this.center.lat = this.location[0];
@@ -75,7 +74,6 @@ export default {
   },
   watch: {
     location: function(val){
-       console.log(this.location);
   this.markers[0].position.lat = this.location[0];
       this.markers[0].position.lng = this.location[1];
       this.center.lat = this.location[0];
