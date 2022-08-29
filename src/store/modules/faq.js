@@ -1,6 +1,17 @@
 import axios from "../../plugins/axios";
 import { apiUrl } from "../../constants/config";
-
+import {
+  get_faqs,
+  get_faq,
+  create_faq,
+  update_faq,
+  delete_faq,
+  get_faqCategories,
+  get_faqCategory,
+  create_faqCategory,
+  update_faqCategory,
+  delete_faqCategory
+} from "../../plugins/services/faq"
 const state = {
   isLoadFaq: false,
   paginations: null,
@@ -80,13 +91,10 @@ const mutations = {
 const actions = {
   getFaqs({ commit }, payload) {
     commit("setProssing", false);
-
-    axios
-      .get(`${apiUrl}/faq`, {
-        params: {
-          category_id: payload.category_id
-        }
-      })
+      const faqs = get_faqs({
+        category_id: payload.category_id
+      });
+      faqs
       .then(res => {
         commit("setProssing", true);
         return res;
@@ -99,13 +107,8 @@ const actions = {
   },
   getFaq({ commit }, payload) {
     commit("setProssing", false);
-
-    axios
-      .get(`${apiUrl}/faq`, {
-        params: {
-          id: payload.faqId
-        }
-      })
+    const faq = get_faq({id: payload.faqId})
+    faq
       .then(res => {
         commit("setProssing", true);
         return res;
@@ -123,7 +126,8 @@ const actions = {
       formData.append(`${el._name}[answer]`, el.answer);
     });
     formData.append(`category_id`, payload.category_id);
-    axios.post(`${apiUrl}/faq`, formData, {}).then(res => {
+    const createFaq = create_faq(formData)
+    createFaq.then(res => {
       if (res.status === 201) {
         commit("createFaqSuccessfuly");
       }
@@ -138,8 +142,8 @@ const actions = {
     });
     formData.append(`category_id`, payload.category_id);
     formData.append(`_method`, "PUT");
-
-    axios.post(`${apiUrl}/faq/${id}`, formData, {}).then(res => {
+    const updateFaq = update_faq({id, formData})
+    updateFaq.then(res => {
       if (res.status === 200) {
         commit("updateFaqSuccessfuly");
       }
@@ -147,7 +151,8 @@ const actions = {
   },
   deleteFaq({ commit, dispatch }, payload) {
     const faq_id = payload.faq_id;
-    axios.delete(`${apiUrl}/faq/${faq_id}`).then(res => {
+    const deleteFaq = delete_faq(faq_id) 
+    deleteFaq.then(res => {
       if (res.status === 200) {
         commit("deleteSuccessfuly");
       }
@@ -156,13 +161,10 @@ const actions = {
   // *********************************** Category ********************************************
   getFaqCategories({ commit, dispatch }, payload) {
     commit("setProssing", false);
-
-    axios
-      .get(`${apiUrl}/faqcategory`, {
-        params: {
-          keyword: payload.search
-        }
-      })
+    const getFaqCategories = get_faqCategories({
+      keyword: payload.search
+    })
+   getFaqCategories
       .then(res => {
         commit("setProssing", true);
         return res;
@@ -176,9 +178,10 @@ const actions = {
   getFaqCategory({ commit, dispatch }, payload) {
     commit("setCategoryProssing", false);
     const category_id = payload.category_id;
-    axios
-      .get(`${apiUrl}/faqcategory/${category_id}`)
-      .then(res => {
+    const faqCategory = get_faqCategory(category_id);
+   
+      
+      faqCategory.then(res => {
         commit("setCategoryProssing", true);
         return res;
       })
@@ -193,7 +196,8 @@ const actions = {
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
     });
-    axios.post(`${apiUrl}/faqcategory`, formData, {}).then(res => {
+    const createFaqCategory = create_faqCategory(formData);
+   createFaqCategory.then(res => {
       if (res.status === 201) {
         commit("createFaqCategorySuccessfuly");
       }
@@ -206,9 +210,10 @@ const actions = {
       formData.append(`${el.name}[title]`, el.title);
     });
     formData.append(`_method`, "PUT");
-    axios
-      .post(`${apiUrl}/faqcategory/${category_id}`, formData, {})
-      .then(res => {
+    const updateFaqCategory = update_faqCategory({category_id, formData})
+    
+      
+      updateFaqCategory.then(res => {
         if (res.status === 200) {
           commit("updateFaqCategorySuccessfuly");
         }
@@ -216,7 +221,8 @@ const actions = {
   },
   deleteFaqCategory({ commit, dispatch }, payload) {
     const category_id = payload.category_id;
-    axios.delete(`${apiUrl}/faqcategory/${category_id}`).then(res => {
+    const deleteFaqCategory = delete_faqCategory(category_id)
+    deleteFaqCategory.then(res => {
       if (res.status === 200) {
         commit("deleteFaqCategory");
       }

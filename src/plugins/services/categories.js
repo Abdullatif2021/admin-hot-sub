@@ -50,24 +50,23 @@ export const update_subCategory = async ({sub_id, formData}) =>{
 export const delete_subCategory = async ({  sub_id, params}) =>{
     return await axios.delete(`${apiUrl}/categories/${sub_id}`, {params})
   }
-
-
-
-
-
-
-
-
-
-export const update_customVal = async ({custom_id, value_id, formData}) =>{
-  return await axios.post(`${apiUrl}/categories/additional/${custom_id}/${value_id}`, formData, {})
+export const get_customFileds = async (id) =>{
+  return await axios.get(`${apiUrl}/categories/custom_fields/${id}`)
 }
-export const get_requests = async (params) =>{
-  return await axios.get(`${apiUrl}/auctions/preview`, {params})
+export const create_customField = async ({id, formData}) =>{
+  return await axios.post(`${apiUrl}/categories/custom_fields/${id}`, formData, {})
 }
-export const update_request = async ({request_id, formData}) =>{
-  return await axios.post(`${apiUrl}/auctions/preview/${request_id}`, formData, {})
+export const update_customField = async ({id, custom_id, formData}) =>{
+  return await axios.post(`${apiUrl}/categories/custom_fields/${id}/${custom_id}`,formData,{})
 }
-export const delete_terms = async ({type, id}) =>{
-  return await axios.delete(`${apiUrl}/auctions/${type}/${id}`)
+export const delete_customField = async ({id, custom_id}) =>{
+  return await axios.delete(`${apiUrl}/categories/custom_fields/${id}/${custom_id}`)
 }
+
+
+
+
+
+
+
+

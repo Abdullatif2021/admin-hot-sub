@@ -13,6 +13,39 @@ import {
 } from "../../utils";
 import { adminRoot } from "../../constants/config";
 import { apiUrl, Headers, locale } from "../../constants/config";
+import {
+  login_user,
+  get_user,
+  get_users,
+  create_user,
+  update_user,
+  delete_user,
+  change_locale,
+  active_user,
+  reset_password,
+  get_userInfo,
+  phone_confirm,
+  verfiy_ident,
+  get_userAttach,
+  verfiy_attach,
+  send_note,
+  update_info,
+  verfiy_transaction,
+  forgot_password,
+  sign_out,
+  refresh_token,
+  get_countries,
+  get_nationalities,
+  update_attach,
+  add_attach,
+  get_attachCategory,
+  get_userWallet,
+  get_userTransaction,
+  get_userDeposit
+} from "../../plugins/services/user"
+
+
+
 export default {
   state: {
     currentUser: isAuthGuardActive ? getCurrentUser() : currentUser,
@@ -183,19 +216,19 @@ export default {
     login({ commit, dispatch }, payload) {
       commit("clearError");
       commit("setProcessing", true);
-
-      axios
-        .post(`${apiUrl}/auth`, {
-          username: payload.email,
-          password: payload.password
-        })
+      const login = login_user({
+        username: payload.email,
+        password: payload.password
+      })
+      login
         .then(res => {
           let refreshToken = res.data.data.refresh_token;
           let accessToken = res.data.data.access_token;
           setTokens(accessToken, refreshToken);
 
           if (res.status) {
-            axios.get(`${apiUrl}/auth/user`).then(res => {
+            const user = get_user();
+            user.then(res => {
               if (res.status) {
                 setCurrentUser(res.data.data);
                 commit("setUser", res.data.data);
@@ -218,21 +251,19 @@ export default {
           commit("setError", error.message);
         });
     },
-    getUsersList: async ({ commit }, payload) => {
+    getUsersList ({ commit }, payload) {
       commit("setProcessing", payload.sorting ? payload.sorting : false);
-      await axios
-        .get(`${apiUrl}/users`, {
-          params: {
-            admin_type: payload.type,
-            role: payload.role,
-            order_dir: payload.dir,
-            keyword: payload.search,
-            order_by: payload.order_by,
-            limit: payload.limit,
-            page: payload.page
-          }
-        })
-        .then(res => {
+      const userList = get_users({
+        admin_type: payload.type,
+        role: payload.role,
+        order_dir: payload.dir,
+        keyword: payload.search,
+        order_by: payload.order_by,
+        limit: payload.limit,
+        page: payload.page
+      })
+    
+        userList.then(res => {
           commit("setProcessing", true);
           return res;
         })
@@ -242,10 +273,9 @@ export default {
     },
     createUser({ commit }, payload) {
       const type = payload.type;
-
-      axios
-        .post(`${apiUrl}/users`, payload.user)
-        .then(res => {
+      const createUser = create_user(payload.user)
+      
+        createUser.then(res => {
           if (res.status === 201) {
             commit("update_UserInfo", res);
           }
@@ -259,11 +289,8 @@ export default {
         });
     },
     changePreferLocale({ commit }, payload) {
-      axios
-        .put(`${apiUrl}/users/prefer_locale`, {
-          prefer_locale: payload.locale
-        })
-        .then(res => {
+      const locale =  change_locale({prefer_locale: payload.locale})
+      locale.then(res => {
           if (res.status === 200) {
             commit("updatePreferLocale", res);
           }
@@ -271,15 +298,10 @@ export default {
     },
     activateUser({ commit }, payload) {
       const id = payload.id;
-      axios
-        .put(
-          `${apiUrl}/users/${id}`,
-          {
-            active: payload.active
-          },
-          {}
-        )
-        .then(res => {
+      const active = payload.active;
+      console.log(active);
+      const activate = active_user({id, active})
+        activate.then(res => {
           if (res.status === 200) {
             commit("successActivateUser", res);
           }
@@ -288,13 +310,14 @@ export default {
     resetPassword({ commit }, payload) {
       commit("clearError");
       commit("setProcessing", true);
-      axios
-        .post(`${apiUrl}/auth/password/forgot`, {
-          token: payload.token,
-          email: payload.email,
-          password: payload.newPassword,
-          password_confirmation: payload.password_confirmation
-        })
+      const resetPassword = reset_password({
+        token: payload.token,
+        email: payload.email,
+        password: payload.newPassword,
+        password_confirmation: payload.password_confirmation
+      })
+  
+        resetPassword
         .then(
           res => {
             commit("clearError");
@@ -308,12 +331,10 @@ export default {
     getUserInfo({ commit }, payload) {
       commit("setProcessing", false);
       const userId = payload.id;
-      axios
-        .get(`${apiUrl}/users`, {
-          params: {
-            id: userId
-          }
-        })
+      const userInfo = get_userInfo({
+        id: userId
+      })
+        userInfo
         .then(res => {
           commit("setProcessing", true);
           return res;
@@ -324,28 +345,23 @@ export default {
     },
     phoneConfirm({ commit }, payload) {
       const userId = payload.userId;
-      axios
-        .post(`${apiUrl}/verifyMobileByAdmin/${userId}`, {})
-
-        .then(res => {
+      const phoneConfirm = phone_confirm(userId)
+        phoneConfirm.then(res => {
           commit("phoneVerification", res.data);
         });
     },
     identityConfirm({ commit }, payload) {
       const userId = payload.userId;
-      axios
-        .post(`${apiUrl}/accountVerification/${userId}`, {})
-
-        .then(res => {
+      const identityVerification = verfiy_ident(userId)
+      identityVerification.then(res => {
           commit("identityVerification", res.data);
         });
     },
     getUserAttach({ commit }, payload) {
       commit("setAttachProcessing", false);
       const userId = payload.id;
-      axios
-        .get(`${apiUrl}/user/attachments?user_id=${userId}`)
-        .then(res => {
+      const getUserAttach = get_userAttach(userId)
+      getUserAttach.then(res => {
           commit("setAttachProcessing", true);
           return res;
         })
@@ -355,9 +371,8 @@ export default {
     },
     verfiyAttach({ commit }, payload) {
       const id = payload.id;
-      axios
-        .post(`${apiUrl}/user/attachments/verfiy/${id}`)
-        .then(res => {
+      const verfiyAttach = verfiy_attach(id);
+        verfiyAttach.then(res => {
           return res;
         })
         .then(res => {
@@ -372,9 +387,8 @@ export default {
           formData.append(key, value);
         }
       });
-      axios
-        .post(`${apiUrl}/user/attachments/report`, formData, {})
-        .then(res => {
+      const attachNote = send_note(formData)
+      attachNote.then(res => {
           if (res.status === 200) {
             commit("sendNoteSuccess", res.data.data);
           }
@@ -388,8 +402,8 @@ export default {
           formData.append(key, value);
         }
       });
-      axios
-        .post(`${apiUrl}/auth`, formData, {})
+      const updateUser = update_user(formData)
+      updateUser
         .then(res => {
           if (res.status === 200) {
             commit("updatedProfile", res);
@@ -404,10 +418,11 @@ export default {
     updateUserInfo({ commit }, payload) {
       commit("clearError");
       const id = payload.id;
+      const user = payload.user
       const type = payload.type;
-      axios
-        .put(`${apiUrl}/users/${id}`, payload.user, {})
-        .then(res => {
+      const updateInfo = update_info({id, user})
+      
+        updateInfo.then(res => {
           if (res.status === 200) {
             commit("update_UserInfo", res);
           }
@@ -419,27 +434,18 @@ export default {
     },
     verfiyTransaction({ commit }, payload) {
       const id = payload.id;
-
-      axios
-        .post(
-          `${apiUrl}/wallet/transactions/verfiy/${id}`,
-          {
-            payment_status: payload.type
-          },
-          {}
-        )
-        .then(res => {
+      const type = payload.type;
+      const verfiyTransaction = verfiy_transaction({id,type})
+      verfiyTransaction.then(res => {
           commit("verfiytransaction", res.data.data);
         });
     },
     forgotPassword({ commit }, payload) {
       commit("clearError");
       commit("setProcessing", true);
-      axios
-        .post(`${apiUrl}/auth/password/forgot`, {
-          email: payload.email
-        })
-        .then(
+      const email = payload.email
+      const forgetPassword = forgot_password(email)
+      forgetPassword.then(
           res => {
             commit("clearError");
             commit("setForgotMailSuccess");
@@ -450,9 +456,10 @@ export default {
         );
     },
     signOut({ commit }) {
-      axios
-        .post(`${apiUrl}/auth/logout`)
-        .then(res => {
+      const signOut = sign_out();
+
+      
+        signOut.then(res => {
           localStorage.removeItem("accessToken");
 
           localStorage.removeItem("refreshToken");
@@ -465,15 +472,13 @@ export default {
         });
     },
     refreshToken() {
-      axios
-        .post(`${apiUrl}/auth/refresh_token`, {
-          refresh_token: localStorage.getItem("refreshToken")
-        })
-        .then(
+      const refresh = refresh_token(localStorage.getItem("refreshToken"))
+      
+        refresh.then(
+        
           res => {
-            // response.status === 401
-            let refreshToken = res.data.refresh_token;
-            let accessToken = res.data.access_token;
+            let refreshToken = res.data.data.refresh_token;
+            let accessToken = res.data.data.access_token;
             setTokens(accessToken, refreshToken);
           },
           _error => {
@@ -483,11 +488,13 @@ export default {
         );
     },
     getCountries({ commit }) {
-      axios.get(`${apiUrl}/countries`).then(res => {
+      const countries = get_countries()
+      countries.then(res => {
         commit("getCountries", res.data.data);
       });
     },
     getNationalities() {
+      const nationalities = get_nationalities()
       // https://alqias-api.lilacdev.com/public/api/countries/getcountry
     },
     updateAttachment({ commit }, payload) {
@@ -500,9 +507,8 @@ export default {
           formData.append(key, value);
         }
       });
-      axios
-        .post(`${apiUrl}/user/attachments/${attachment_id}`, formData, {})
-        .then(res => {
+      const updateAttachment = update_attach({attachment_id, formData})
+      updateAttachment.then(res => {
           if (res.status === 200) {
             commit("updateAttachSuccess", res);
           }
@@ -518,9 +524,8 @@ export default {
           formData.append(key, value);
         }
       });
-      axios
-        .post(`${apiUrl}/user/attachments/${userId}`, formData, {})
-        .then(res => {
+      const addAttachment = add_attach({userId, formData})
+      addAttachment.then(res => {
           if (res.status === 201) {
             commit("addAttachSuccess", res);
           } else {
@@ -532,47 +537,37 @@ export default {
         });
     },
     getAttachCategory({ commit }, payload) {
-      axios.get(`${apiUrl}/user/attachments/categories`).then(res => {
+      const getAttachCategory = get_attachCategory()
+      getAttachCategory.then(res => {
         commit("getAttachCategory", res.data.data);
       });
     },
     // ************** WALLET ****************
     getUserWallet({ commit }, payload) {
       const userId = payload.userId;
-      axios
-        .get(`${apiUrl}/wallet`, {
-          params: {
-            owner_id: userId
-          }
-        })
-        .then(res => {
+      const userWallet = get_userWallet(userId)
+      userWallet.then(res => {
           commit("userWallet", res.data.data[0]);
         });
     },
     getUserTransactions({ commit }, payload) {
       const userId = payload.userId;
-      axios
-        .get(`${apiUrl}/wallet/transactions`, {
-          params: {
-            user_id: userId,
-            payment_status: payload.payment_status,
-            payment_method: payload.payment_method,
-            type: payload.type
-          }
-        })
+      const userTransactions = get_userTransaction({
+        user_id: userId,
+        payment_status: payload.payment_status,
+        payment_method: payload.payment_method,
+        type: payload.type
+      })  
+     
 
-        .then(res => {
+        userTransactions.then(res => {
           commit("userTransactions", res.data.data);
         });
     },
     getUserDeposits({ commit }, payload) {
       const userId = payload.userId;
-      axios
-        .get(`${apiUrl}/deposit`, {
-          params: {
-            user_id: userId
-          }
-        })
+      const userDeposit = get_userDeposit(userId)
+      
 
         .then(res => {
           commit("userDeposit", res.data.data);

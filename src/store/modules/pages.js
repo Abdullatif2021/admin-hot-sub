@@ -1,7 +1,33 @@
 import axios from "../../plugins/axios";
 import { apiUrl, adminRoot } from "../../constants/config";
 import router from "../../router";
-
+import {
+  get_pages,
+  get_page,
+  create_page,
+  update_page,
+  delete_page,
+  get_images,
+  create_image,
+  delete_image,
+  get_files,
+  create_file,
+  delete_file,
+  get_meta,
+  create_meta,
+  update_meta,
+  delete_meta,
+  get_metaType,
+  get_videos,
+  create_video,
+  delete_video,
+  get_youtube,
+  create_youtube,
+  update_youtube,
+  delete_youtube,
+ 
+ 
+} from '../../plugins/services/page'
 const state = {
   isLoadPages: true,
   pagesPaginations: null,
@@ -158,18 +184,15 @@ const actions = {
   // -------------------- general page ---------------------
   getPagesList({ commit }, payload) {
     commit("setProcessing", payload.sorting ? payload.sorting : false);
-
-    axios
-      .get(`${apiUrl}/pages`, {
-        params: {
-          type: payload.role,
-          order_dir: payload.dir,
-          keyword: payload.search,
-          order_by: payload.order_by,
-          limit: payload.limit,
-          page: payload.page
-        }
-      })
+    const pages = get_pages({
+      type: payload.role,
+      order_dir: payload.dir,
+      keyword: payload.search,
+      order_by: payload.order_by,
+      limit: payload.limit,
+      page: payload.page
+    })
+   pages
       .then(res => {
         commit("setProcessing", true);
         return res;
@@ -181,8 +204,8 @@ const actions = {
   getPage({ commit }, payload) {
     commit("setProcessing", false);
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/pages/${id}`)
+    const page = get_page(id);
+    page
       .then(res => {
         commit("setProcessing", true);
         return res;
@@ -211,7 +234,8 @@ const actions = {
       formData.append("image", payload.file);
     }
     formData.append("_method", "PUT");
-    axios.post(`${apiUrl}/pages/${id}`, formData, {}).then(res => {
+    const updatePage = update_page({id, formData});
+    updatePage.then(res => {
       if (res.status === 200) {
         dispatch("getPage", { id });
         commit("updatePageDetails", res);
@@ -220,27 +244,25 @@ const actions = {
   },
   deletePage({ commit, dispatch }, payload) {
     const id = payload.pageId;
-    axios.delete(`${apiUrl}/pages/${id}`).then(res => {
+    const deletePage = delete_page(id);
+    deletePage.then(res => {
       if (res.status === 200) {
         commit("deletePage", res);
       }
     });
   },
-  // -------------------- general page ---------------------
 
   // -------------------------- page images ------------------------------
   getPageImageList({ commit }, payload) {
     commit("setProcessing", false);
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/pages/images/${id}`)
-      .then(res => {
-        commit("setProcessing", true);
-        return res;
-      })
-      .then(res => {
-        commit("getPageImageList", res.data);
-      });
+    const images = get_images(id)
+    images.then(res => {
+      commit("setProcessing", true);
+      return res;
+    }).then(res => {
+      commit("getPageImageList", res.data);
+    });
   },
   createPageImage({ commit, dispatch }, payload) {
     const id = payload.id;
@@ -254,8 +276,8 @@ const actions = {
         formData.append(`${el.name}[description]`, el.description);
       }
     });
-
-    axios.post(`${apiUrl}/pages/images/${id}`, formData, {}).then(res => {
+    const createPage = create_image({id, formData})
+    createPage.then(res => {
       if (res.status === 201) {
         commit("successAddPageImage", res.data.data);
         dispatch("getPageImageList", { id });
@@ -265,22 +287,23 @@ const actions = {
   deletePageImage({ commit, dispatch }, payload) {
     const id = payload.id;
     const attachment_id = payload.attachment_id;
-    axios.delete(`${apiUrl}/pages/images/${id}/${attachment_id}`).then(res => {
+    const deleteImage = delete_image({id, attachment_id})
+    deleteImage.then(res => {
       if (res.status === 200) {
         dispatch("getPageImageList", { id });
       }
     });
   },
-  // -------------------------- page images ------------------------------
+ 
 
   // --------------------files---------------------------
+ 
   getPageFileList({ commit }, payload) {
     commit("setProcessing", false);
 
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/pages/files/${id}`)
-      .then(res => {
+    const files = get_files(id)
+    files.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -300,7 +323,8 @@ const actions = {
         formData.append(`${el.name}[description]`, el.description);
       }
     });
-    axios.post(`${apiUrl}/pages/files/${id}`, formData, {}).then(res => {
+    const createFile = create_file({id, formData});
+    createFile.then(res => {
       if (res.status === 201) {
         commit("successAddPageFile", res.data.data);
         dispatch("getPageFileList", { id });
@@ -308,23 +332,24 @@ const actions = {
     });
   },
   deletePageFile({ commit, dispatch }, payload) {
-    const id = payload.pageId;
+    const id = payload.id;
     const attachment_id = payload.file_id;
-    axios.delete(`${apiUrl}/pages/files/${id}/${attachment_id}`).then(res => {
+    const deleteFile = delete_file({id, attachment_id})
+    deleteFile.then(res => {
       if (res.status === 200) {
         dispatch("getPageFileList", { id });
       }
     });
   },
-  // --------------------files---------------------------
 
   // ------------------------- meta data --------------------
   getMetaList({ commit }, payload) {
     commit("setProcessing", false);
+
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/pages/metadata/${id}`)
-      .then(res => {
+    const metaData = get_meta(id)
+   
+      metaData.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -332,27 +357,25 @@ const actions = {
         commit("getMetaList", res.data);
       });
   },
-
   createMetaPage({ commit, dispatch }, payload) {
     commit("getmetaStarted");
+
     const id = payload.pageId;
     const formData = new FormData();
     payload.info.forEach(el => {
       formData.append(`${el.name}[meta_content]`, el.content);
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
-    axios
-      .post(`${apiUrl}/pages/metadata/${id}`, formData, {})
-      .then(res => {
-        commit("getmetaEnded");
-        return res;
-      })
-      .then(res => {
-        if (res.status === 201 || res.status === 200) {
-          dispatch("getMetaList", { id });
+    const createMeta = create_meta({id, formData});
+    createMeta.then(res => {
+      commit("getmetaEnded");
+      return res;
+    }).then(res => {
+      if (res.status === 201 || res.status === 200) {
+        dispatch("getMetaList", { id });
           commit("updateMetaPageSuccess");
-        }
-      });
+      }
+    });
   },
   updateMetaPage({ commit, dispatch }, payload) {
     commit("getmetaStarted");
@@ -365,14 +388,12 @@ const actions = {
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
     formData.append("_method", "PUT");
-
-    axios
-      .post(`${apiUrl}/pages/metadata/${id}/${metadata_id}`, formData, {})
-      .then(res => {
+    const updateMeta = update_meta({id,metadata_id, formData})
+    
+      updateMeta.then(res => {
         commit("getmetaEnded");
         return res;
-      })
-      .then(res => {
+      }).then(res => {
         if (res.status === 200 || res.status === 201) {
           dispatch("getMetaList", { id });
           commit("updateMetaPageSuccess", res);
@@ -384,31 +405,29 @@ const actions = {
 
     const metadata_id = payload.metadata_id;
     const id = payload.pageId;
-    axios
-      .delete(`${apiUrl}/pages/metadata/${id}/${metadata_id}`)
-      .then(res => {
-        commit("getmetaEnded");
-        return res;
-      })
-      .then(res => {
-        dispatch("getMetaList", { id });
-      });
+    const deleteMeta = delete_meta({id, metadata_id});
+    deleteMeta.then(res => {
+      commit("getmetaEnded");
+      return res;
+    }).then(res => {
+      dispatch("getMetaList", { id });
+    });
   },
   getMetaTypeList({ commit }, payload) {
-    axios.get(`${apiUrl}/metadata/meta-type`).then(res => {
+    const metaType = get_metaType();
+    metaType.then(res => {
       commit("getMetaTypeList", res.data);
     });
   },
-  // ------------------------- meta data --------------------
 
   // ********************* page videos ***************************
   getPageVideosList({ commit }, payload) {
     commit("setProcessing", false);
 
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/pages/videos/${id}`)
-      .then(res => {
+    const videos = get_videos(id);
+   
+      videos.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -428,33 +447,36 @@ const actions = {
         formData.append(`${el.name}[description]`, el.description);
       }
     });
-    axios.post(`${apiUrl}/pages/videos/${id}`, formData, {}).then(res => {
-      if (res.status === 201) {
-        commit("successAddPageVideo", res.data.data);
-        dispatch("getPageVideosList", { id });
-      }
-    });
+    const createvideo = create_video({id, formData});
+    
+      createvideo.then(res => {
+        if (res.status === 201) {
+          commit("successAddPageVideo", res.data.data);
+          dispatch("getPageVideosList", { id });
+        }
+      })
+      .catch(err => {
+        commit("errorAddPageVideo", err);
+      });
   },
   deletePageVideo({ commit, dispatch }, payload) {
-    const id = payload.pageId;
+    const id = payload.PageId;
     const attachment_id = payload.file_id;
-    axios.delete(`${apiUrl}/pages/videos/${id}/${attachment_id}`).then(res => {
+    const deleteVideo = delete_video({id, attachment_id}) 
+    deleteVideo.then(res => {
       if (res.status === 200) {
         dispatch("getPageVideosList", { id });
       }
     });
   },
-
-  // ********************* page videos ***************************
-
   // ############### youtube ##################
   getPageYoutubeVideoList({ commit }, payload) {
     commit("setProcessing", false);
 
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/pages/youtube-videos/${id}`)
-      .then(res => {
+    const youtubes = get_youtube(id)
+    
+      youtubes.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -472,9 +494,9 @@ const actions = {
         formData.append(`${el.name}[description]`, el.description);
       }
     });
-    axios
-      .post(`${apiUrl}/pages/youtube-videos/${id}`, formData, {})
-      .then(res => {
+    const createYouTube = create_youtube({id, formData});
+   
+      createYouTube.then(res => {
         if (res.status === 201) {
           commit("successAddPageYoutubeVideo", res.data.data);
           dispatch("getPageYoutubeVideoList", { id });
@@ -488,7 +510,6 @@ const actions = {
     const id = payload.id;
     const attachment_id = payload.attachment_id;
     const formData = new FormData();
-    formData.append("path", payload.path);
     payload.info.forEach(el => {
       formData.append(`${el.name}[title]`, el.title);
       if (el.description) {
@@ -496,34 +517,55 @@ const actions = {
       }
     });
     formData.append("_method", "PUT");
-
-    axios
-      .post(
-        `${apiUrl}/pages/youtube-videos/${id}/${attachment_id}`,
-        formData,
-        {}
-      )
-      .then(res => {
+    formData.append("path", payload.path);
+    const updateYouTube = update_youtube({id, attachment_id, formData})
+    
+      updateYouTube.then(res => {
         if (res.status === 201 || res.status === 200) {
           commit("successAddPageYoutubeVideo", res.data.data);
           dispatch("getPageYoutubeVideoList", { id });
         }
-      })
-      .catch(err => {
-        commit("wrongYoutubeurl", err);
       });
   },
   deletePageYoutubeVideo({ commit, dispatch }, payload) {
     const id = payload.pageId;
     const attachment_id = payload.youtube_id;
-    axios
-      .delete(`${apiUrl}/pages/youtube-videos/${id}/${attachment_id}`)
-      .then(res => {
+    const deleteYoutube = delete_youtube({id, attachment_id})
+    
+    deleteYoutube.then(res => {
         if (res.status === 200) {
           dispatch("getPageYoutubeVideoList", { id });
         }
       });
   }
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+ 
+  
+
+  
 };
 
 export default {

@@ -1,6 +1,39 @@
 import axios from "../../plugins/axios";
 import { apiUrl } from "../../constants/config";
-
+import {
+  get_blocks,
+  get_block,
+  create_block,
+  update_block,
+  delete_block,
+  get_images,
+  create_image,
+  delete_image,
+  get_files,
+  create_file,
+  delete_file,
+  get_meta,
+  create_meta,
+  update_meta,
+  delete_meta,
+  get_metaType,
+  get_videos,
+  create_video,
+  delete_video,
+  get_youtube,
+  create_youtube,
+  update_youtube,
+  delete_youtube,
+  get_categories,
+  get_categoryType,
+  get_category,
+  create_category,
+  update_category,
+  get_categoryMeta,
+  create_categoryMeta,
+  update_categoryMeta,
+  delete_categoryMeta
+} from '../../plugins/services/block'
 const state = {
   blocks: null,
   _paginations: null,
@@ -209,20 +242,17 @@ const mutations = {
 
 const actions = {
   // -------------------- general block ---------------------
-  getBlocksList: async ({ commit }, payload) => {
+  getBlocksList ({ commit }, payload) {
     commit("setProcessing", payload.sorting ? payload.sorting : false);
-    await axios
-      .get(`${apiUrl}/blocks`, {
-        params: {
-          order_dir: payload.dir,
-          keyword: payload.search,
-          order_by: payload.order_by,
-          limit: payload.limit,
-          block_category_id: payload.block_category_id,
-          page: payload.page
-        }
-      })
-      .then(res => {
+    const blocks = get_blocks({
+      order_dir: payload.dir,
+      keyword: payload.search,
+      order_by: payload.order_by,
+      limit: payload.limit,
+      block_category_id: payload.block_category_id,
+      page: payload.page
+    })
+      blocks.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -239,8 +269,8 @@ const actions = {
 
   getBlock({ commit }, payload) {
     const blockId = payload.id;
-    axios
-      .get(`${apiUrl}/blocks/${blockId}/slug`)
+    const block = get_block(blockId)
+    block
       .then(res => res.data)
       .then(res => {
         if (res.status) {
@@ -253,6 +283,7 @@ const actions = {
   },
   createBlock({ commit, dispatch }, payload) {
     const formData = new FormData();
+    
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);
       if (el.description) {
@@ -265,16 +296,15 @@ const actions = {
         formData.append(key, value);
       }
     });
-    // formData.append("url", payload.url);
-    // formData.append("post_date", payload.post_date);
-    // block_category_id
+    
     if (payload.file !== null) {
       formData.append("file", payload.file);
     }
     if (payload.image !== null) {
       formData.append("image", payload.image);
     }
-    axios.post(`${apiUrl}/blocks`, formData, {}).then(res => {
+    const createBlock = create_block(formData)
+    createBlock.then(res => {
       if (res.status === 201) {
         commit("createBlockSuccess", res);
       }
@@ -303,7 +333,8 @@ const actions = {
       formData.append("image", payload.image);
     }
     formData.append("_method", "PUT");
-    axios.post(`${apiUrl}/blocks/${id}`, formData, {}).then(res => {
+    const updateBlock = update_block({id, formData});
+    updateBlock.then(res => {
       if (res.status === 200) {
         dispatch("getBlock", { id });
         commit("updateBlockBasicData", res);
@@ -312,19 +343,20 @@ const actions = {
   },
   deleteBlock({ commit, dispatch }, payload) {
     const id = payload.blockId;
-    axios.delete(`${apiUrl}/blocks/${id}`).then(res => {
+    const deleteBlock = delete_block(id)
+    deleteBlock.then(res => {
       if (res.status === 200) {
         commit("deleteBlock", res);
       }
     });
   },
-  // -------------------- general block ---------------------
 
   // -------------------------- block images ------------------------------
   getBlockImageList({ commit }, payload) {
     commit("getBlockImageListStarted");
     const id = payload.id;
-    axios.get(`${apiUrl}/blocks/images/${id}`).then(res => {
+    const images = get_images(id)
+    images.then(res => {
       commit("getBlockImageList", res.data);
     });
   },
@@ -340,7 +372,8 @@ const actions = {
         formData.append(`${el.name}[description]`, el.description);
       }
     });
-    axios.post(`${apiUrl}/blocks/images/${id}`, formData, {}).then(res => {
+    const createBlock = create_image({id, formData})
+    createBlock.then(res => {
       if (res.status === 201) {
         commit("successAddBlockImage", res.data.data);
         dispatch("getBlockImageList", { id });
@@ -350,22 +383,21 @@ const actions = {
   deleteBlockImage({ commit, dispatch }, payload) {
     const id = payload.id;
     const attachment_id = payload.attachment_id;
-    axios.delete(`${apiUrl}/blocks/images/${id}/${attachment_id}`).then(res => {
+    const deleteImage = delete_image({id, attachment_id})
+    deleteImage.then(res => {
       if (res.status === 200) {
         dispatch("getBlockImageList", { id });
       }
     });
   },
-  // -------------------------- block images ------------------------------
 
   // --------------------files---------------------------
   getBlockFileList({ commit }, payload) {
     commit("setProcessing", false);
 
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/blocks/files/${id}`)
-      .then(res => {
+    const files = get_files(id)
+    files.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -385,7 +417,8 @@ const actions = {
         formData.append(`${el.name}[description]`, el.description);
       }
     });
-    axios.post(`${apiUrl}/blocks/files/${id}`, formData, {}).then(res => {
+    const createFile = create_file({id, formData});
+    createFile.then(res => {
       if (res.status === 201) {
         commit("successAddBlockFile", res.data.data);
         dispatch("getBlockFileList", { id });
@@ -395,22 +428,22 @@ const actions = {
   deleteBlockFile({ commit, dispatch }, payload) {
     const id = payload.id;
     const attachment_id = payload.file_id;
-    axios.delete(`${apiUrl}/blocks/files/${id}/${attachment_id}`).then(res => {
+    const deleteFile = delete_file({id, attachment_id})
+    deleteFile.then(res => {
       if (res.status === 200) {
         dispatch("getBlockFileList", { id });
       }
     });
   },
-  // --------------------files---------------------------
 
   // ------------------------- meta data --------------------
   getBlockMetaList({ commit }, payload) {
     commit("setProcessing", false);
 
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/blocks/metadata/${id}`)
-      .then(res => {
+    const metaData = get_meta(id)
+   
+      metaData.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -426,7 +459,8 @@ const actions = {
       formData.append(`${el.name}[meta_content]`, el.content);
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
-    axios.post(`${apiUrl}/blocks/metadata/${id}`, formData, {}).then(res => {
+    const createMeta = create_meta({id, formData});
+    createMeta.then(res => {
       if (res.status === 201 || res.status === 200) {
         dispatch("getBlockMetaList", { id });
         commit("updateMetaBlockSuccess", res);
@@ -442,10 +476,9 @@ const actions = {
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
     formData.append("_method", "PUT");
-
-    axios
-      .post(`${apiUrl}/blocks/metadata/${id}/${metadata_id}`, formData, {})
-      .then(res => {
+    const updateMeta = update_meta({id,metadata_id, formData})
+    
+      updateMeta.then(res => {
         if (res.status === 200 || res.status === 201) {
           dispatch("getBlockMetaList", { id });
           commit("updateMetaBlockSuccess", res);
@@ -455,25 +488,26 @@ const actions = {
   deleteBlockMeta({ commit, dispatch }, payload) {
     const metadata_id = payload.metadata_id;
     const id = payload.blockId;
-    axios.delete(`${apiUrl}/blocks/metadata/${id}/${metadata_id}`).then(res => {
+    const deleteMeta = delete_meta({id, metadata_id});
+    deleteMeta.then(res => {
       dispatch("getBlockMetaList", { id });
     });
   },
   getBlockMetaTypeList({ commit }, payload) {
-    axios.get(`${apiUrl}/metadata/meta-type`).then(res => {
+    const metaType = get_metaType();
+    metaType.then(res => {
       commit("getBlockMetaTypeList", res.data);
     });
   },
-  // ------------------------- meta data --------------------
 
   // ********************* blocks videos ***************************
   getBlockVideosList({ commit }, payload) {
     commit("setProcessing", false);
 
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/blocks/videos/${id}`)
-      .then(res => {
+    const videos = get_videos(id);
+   
+      videos.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -493,9 +527,9 @@ const actions = {
         formData.append(`${el.name}[description]`, el.description);
       }
     });
-    axios
-      .post(`${apiUrl}/blocks/videos/${id}`, formData, {})
-      .then(res => {
+    const createvideo = create_video({id, formData});
+    
+      createvideo.then(res => {
         if (res.status === 201) {
           commit("successAddBlockVideo", res.data.data);
           dispatch("getBlockVideosList", { id });
@@ -508,22 +542,22 @@ const actions = {
   deleteBlockVideo({ commit, dispatch }, payload) {
     const id = payload.blockId;
     const attachment_id = payload.file_id;
-    axios.delete(`${apiUrl}/blocks/videos/${id}/${attachment_id}`).then(res => {
+    const deleteVideo = delete_video({id, attachment_id}) 
+    deleteVideo.then(res => {
       if (res.status === 200) {
         dispatch("getBlockVideosList", { id });
       }
     });
   },
 
-  // ********************* block videos ***************************
   // ############### youtube ##################
   getBlockYoutubeVideoList({ commit }, payload) {
     commit("setProcessing", false);
 
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/blocks/youtube-videos/${id}`)
-      .then(res => {
+    const youtubes = get_youtube(id)
+    
+      youtubes.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -541,9 +575,9 @@ const actions = {
         formData.append(`${el.name}[description]`, el.description);
       }
     });
-    axios
-      .post(`${apiUrl}/blocks/youtube-videos/${id}`, formData, {})
-      .then(res => {
+    const createYouTube = create_youtube({id, formData});
+   
+      createYouTube.then(res => {
         if (res.status === 201) {
           commit("successAddBlockYoutubeVideo", res.data.data);
           dispatch("getBlockYoutubeVideoList", { id });
@@ -565,13 +599,9 @@ const actions = {
     });
     formData.append("_method", "PUT");
     formData.append("path", payload.path);
-    axios
-      .post(
-        `${apiUrl}/blocks/youtube-videos/${id}/${attachment_id}`,
-        formData,
-        {}
-      )
-      .then(res => {
+    const updateYouTube = update_youtube({id, attachment_id, formData})
+    
+      updateYouTube.then(res => {
         if (res.status === 201 || res.status === 200) {
           commit("successAddBlockYoutubeVideo", res.data.data);
           dispatch("getBlockYoutubeVideoList", { id });
@@ -581,27 +611,26 @@ const actions = {
   deleteBlockYoutubeVideo({ commit, dispatch }, payload) {
     const id = payload.blockId;
     const attachment_id = payload.youtube_id;
-    axios
-      .delete(`${apiUrl}/blocks/youtube-videos/${id}/${attachment_id}`)
-      .then(res => {
+    const deleteYoutube = delete_youtube({id, attachment_id})
+    
+    deleteYoutube.then(res => {
         if (res.status === 200) {
           dispatch("getBlockYoutubeVideoList", { id });
         }
       });
   },
   // ++++++++++++++++++++ Block Categories Managment +++++++++++++++++++++++
-  getBlockCategories: async ({ commit }, payload) => {
+  getBlockCategories ({ commit }, payload)  {
     commit("setProcessing", payload.sorting ? payload.sorting : false);
-    await axios
-      .get(`${apiUrl}/blocks/categories`, {
-        params: {
-          order_dir: payload.dir,
-          keyword: payload.search,
-          order_by: payload.order_by,
-          limit: payload.limit,
-          page: payload.page
-        }
-      })
+    const blockCategories = get_categories({
+      order_dir: payload.dir,
+      keyword: payload.search,
+      order_by: payload.order_by,
+      limit: payload.limit,
+      page: payload.page
+    })
+    
+    blockCategories
       .then(res => {
         commit("setProcessing", true);
         return res;
@@ -610,11 +639,18 @@ const actions = {
         commit("get_BlockCategories", res.data);
       });
   },
-  getBlock_Categories: async ({ commit }, payload) => {
+  getBlock_Categories({ commit }, payload) {
     commit("setProcessing", payload.sorting ? payload.sorting : false);
     localStorage.removeItem("blockCategories");
-    await axios
-      .get(`${apiUrl}/blocks/categories`)
+    const blockCategories = get_categories({
+      order_dir: payload.dir,
+      keyword: payload.search,
+      order_by: payload.order_by,
+      limit: payload.limit,
+      page: payload.page
+    })
+    
+    blockCategories
       .then(res => {
         commit("setProcessing", true);
         return res;
@@ -624,13 +660,13 @@ const actions = {
         localStorage.setItem("blockCategories", JSON.stringify(res.data.data));
       });
   },
-  getBlockCategory: async ({ commit }, payload) => {
+  getBlockCategory ({ commit }, payload) {
     const id = payload.id;
     commit("setProcessing", false);
 
-    await axios
-      .get(`${apiUrl}/blocks/categories/${id}`)
-      .then(res => {
+      const category = get_category(id);
+      
+      category.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -638,7 +674,7 @@ const actions = {
         commit("getBlockCategory", res.data.data);
       });
   },
-  createBlockCategory: async ({ commit }, payload) => {
+  createBlockCategory ({ commit }, payload) {
     const formData = new FormData();
     payload.info.forEach(el => {
       formData.append(`${el._name}[name]`, el.name);
@@ -650,11 +686,12 @@ const actions = {
     if (payload.image !== null) {
       formData.append("image", payload.image);
     }
-    await axios.post(`${apiUrl}/blocks/categories`, formData, {}).then(res => {
+    const createCategory = create_category(formData);
+    createCategory.then(res => {
       commit("create_block_category_success", res.data.data);
     });
   },
-  updateBlockCategory: async ({ commit }, payload) => {
+  updateBlockCategory ({ commit }, payload) {
     const id = payload.id;
     const formData = new FormData();
     Object.entries(payload.info).forEach(entry => {
@@ -667,18 +704,19 @@ const actions = {
     if (payload.image !== null) {
       formData.append("image", payload.image);
     }
-    await axios
-      .post(`${apiUrl}/blocks/categories/${id}`, formData, {})
+    
+    const updateCategory = update_category({id, formData});
+    updateCategory
       .then(res => {
         commit("successUpdateBlockCategory", res.data.data);
       });
   },
-  getBlockCategoryTypes: async ({ commit }, payload) => {
+  getBlockCategoryTypes ({ commit }, payload) {
     commit("setProcessing", false);
 
-    await axios
-      .get(`${apiUrl}/blocks/categories/types`)
-      .then(res => {
+   const types = get_categoryType()
+      
+      types.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -689,13 +727,13 @@ const actions = {
       });
   },
   // $$$$$$$$$$$$ category metadata $$$$$$$$$$
-  getBlockCategoryMetadata: async ({ commit }, payload) => {
+  getBlockCategoryMetadata ({ commit }, payload) {
     const id = payload.id;
     commit("setProcessing", false);
 
-    await axios
-      .get(`${apiUrl}/blocks/categories/metadata/${id}`)
-      .then(res => {
+    const metaCategory = get_categoryMeta(id)
+      
+      metaCategory.then(res => {
         commit("setProcessing", true);
         return res;
       })
@@ -710,9 +748,9 @@ const actions = {
       formData.append(`${el.name}[meta_content]`, el.content);
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
-    axios
-      .post(`${apiUrl}/blocks/categories/metadata/${id}`, formData, {})
-      .then(res => {
+    const createCateMeta = create_categoryMeta({id, formData})
+    
+      createCateMeta.then(res => {
         if (res.status === 201 || res.status === 200) {
           dispatch("getBlockCategoryMetadata", { id });
           commit("create_block_category_meta_success", res);
@@ -728,25 +766,21 @@ const actions = {
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
     formData.append("_method", "PUT");
-    axios
-      .post(
-        `${apiUrl}/blocks/categories/metadata/${id}/${metadata_id}`,
-        formData,
-        {}
-      )
-      .then(res => {
+    const updateCateMeta = update_categoryMeta({id, metadata_id, formData})
+    
+     
+    updateCateMeta.then(res => {
         if (res.status === 200 || res.status === 201) {
           dispatch("getBlockCategoryMetadata", { id });
           commit("updateblockCategoryMetaSuccess", res);
         }
       });
   },
-  deleteBlockCategoryMetadata: async ({ commit, dispatch }, payload) => {
+  deleteBlockCategoryMetadata ({ commit, dispatch },payload){
     const id = payload.id;
     const metadata_id = payload.metadata_id;
-
-    await axios
-      .delete(`${apiUrl}/blocks/categories/metadata/${id}/${metadata_id}`)
+    const deleteCateMeta = delete_categoryMeta({id, metadata_id})
+    deleteCateMeta
       .then(res => {
         dispatch("getBlockCategoryMetadata", { id });
       });

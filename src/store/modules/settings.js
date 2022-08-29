@@ -1,6 +1,6 @@
 import axios from "../../plugins/axios";
 import { apiUrl } from "../../constants/config";
-
+import {get_settings, update_setting} from "../../plugins/services/settings"
 const state = {
   isLoadSettings: true,
   paginations: null,
@@ -39,10 +39,9 @@ const mutations = {
 const actions = {
   getSettings({ commit }, payload) {
     commit("getSettingsStarted");
-
-    axios
-      .get(`${apiUrl}/setting`)
-      .then(res => res.data)
+    const settings = get_settings()
+    
+      settings.then(res => res.data)
       .then(res => {
         if (res.status) {
           commit("getSettingsSuccess", res.data);
@@ -53,15 +52,9 @@ const actions = {
   },
   updateSettings({ commit }, payload) {
     const id = payload.id;
-    axios
-      .put(
-        `${apiUrl}/setting/${id}`,
-        {
-          value: payload.value
-        },
-        {}
-      )
-      .then(res => {
+    const value = payload.value;
+    const update = update_setting({id, value})
+    update.then(res => {
         if (res.status === 200) {
           commit("updatedSuccessfuly");
         }

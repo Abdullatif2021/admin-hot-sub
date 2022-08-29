@@ -18,8 +18,11 @@ import {
   get_subCategory,
   create_subCategory,
   update_subCategory,
-  delete_subCategory
-
+  delete_subCategory,
+  get_customFileds,
+  create_customField,
+  update_customField,
+  delete_customField
 } from "../../plugins/services/categories"
 const state = {
   paginations: null,
@@ -435,8 +438,8 @@ const actions = {
     commit("setCustomProcessing", false);
 
     const id = payload.id;
-    axios
-      .get(`${apiUrl}/categories/custom_fields/${id}`)
+    const customFileds = get_customFileds(id)
+    customFileds
       .then(res => {
         commit("setCustomProcessing", true);
         return res;
@@ -457,9 +460,9 @@ const actions = {
         formData.append(`${el.name}[description]`, el.description);
       }
     });
-    axios
-      .post(`${apiUrl}/categories/custom_fields/${id}`, formData, {})
-      .then(res => {
+    const createCustomField = create_customField({id, formData})
+    
+      createCustomField.then(res => {
         if (res.status === 201) {
           commit("createCustomField", res.data.data);
           dispatch("getCustomFieldList", { id: id });
@@ -480,13 +483,9 @@ const actions = {
         formData.append(`${el.name}[description]`, el.description);
       }
     });
-    axios
-      .post(
-        `${apiUrl}/categories/custom_fields/${id}/${custom_id}`,
-        formData,
-        {}
-      )
-      .then(res => {
+    const updateCustomField = update_customField({id, custom_id, formData});
+    
+    updateCustomField.then(res => {
         if (res.status === 200) {
           commit("updateCustomField", res.data.data);
           dispatch("getCustomFieldList", { id: id });
@@ -497,9 +496,10 @@ const actions = {
   deleteCustomField({ commit, dispatch }, payload) {
     const id = payload.categoryId;
     const custom_id = payload.custom_id;
-    axios
-      .delete(`${apiUrl}/categories/custom_fields/${id}/${custom_id}`)
-      .then(res => {
+    const deleteCustomField = delete_customField({id, custom_id});
+
+      
+      deleteCustomField.then(res => {
         if (res.status === 200) {
           commit("deleteCustomField", res);
           dispatch("getCustomFieldList", { id });
