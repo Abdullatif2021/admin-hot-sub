@@ -40,7 +40,7 @@
             @vuetable:cell-rightclicked="rightClicked"
           >
             <template slot="actions" slot-scope="props">
-              <b-button
+              <!-- <b-button
                 v-if="
                   props.rowData.auction_type_value !== 1 &&
                     props.rowData.auction_type_value !== 3
@@ -73,34 +73,26 @@
                   :title="$t('forms.active_auction')"
                 >
                 </b-tooltip>
-              </b-button>
+              </b-button> -->
 
               <b-button
                 variant="outline-theme-3"
                 id="edit"
-                class="icon-button"
+                class="icon-button-auction"
                 @click="
                   modify(
                     props.rowData,
                     props.rowData.id,
                     props.rowData.auction_type_value
-                  )
-                "
+                  )"
               >
-                <i
-                  v-if="
-                    props.rowData.auction_type_value === 1 ||
-                      props.rowData.auction_type_value === 3
-                  "
-                  class="simple-icon-arrow-right-circle"
-                ></i>
-                <i v-else class="simple-icon-pencil"></i>
-                <b-tooltip
+                <i  class="simple-icon-arrow-right"></i>
+                <!-- <b-tooltip
                   target="edit"
                   placement="top"
                   :title="$t('forms.edit')"
                 >
-                </b-tooltip>
+                </b-tooltip> -->
               </b-button>
               <!-- <b-button
                 v-if="props.rowData.auction_type_value !== 1"
@@ -466,7 +458,7 @@ export default {
           title: "Title",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "30%"
+          width: "28%"
         },
 
         { 
@@ -490,7 +482,7 @@ export default {
           title: "Duration",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "10%"
+          width: "15%"
         },
         {
           name: "minimum_paid",
@@ -530,14 +522,14 @@ export default {
           title: "Activate",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "15%"
+          width: "8%"
         },
         {
           name: "__slot:actions",
           title: "",
           titleClass: "center aligned text-right",
           dataClass: "center aligned text-right",
-          width: "5%"
+          width: "10%"
         }
       ]
     };

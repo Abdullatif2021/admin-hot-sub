@@ -31,6 +31,7 @@ const state = {
   created_Successfuly: null,
   updated_Successfuly: null,
   Error: "",
+  get_reviews: false,
   auction: null,
   successDeleteAuction: null,
   processing: false,
@@ -64,6 +65,7 @@ const getters = {
   auctions: state => state.auctions,
   _bids: state => state.bids,
   _cities: state => state.cities,
+  _get_reviews: state => state.get_reviews,
   _File_List: state => state.File_List,
   _updateReviewRequest: state => state.updateReviewRequest,
   _isCustomValueCreated: state => state.isCustomValueCreated,
@@ -151,7 +153,9 @@ const mutations = {
   },
   getAuctionBidsSuccess(state, payload){
     state.bids = payload;
-    
+  },
+  get_reviews(state, payload){
+    state.get_reviews =  payload
   },
   createAuctionImage(state, payload) {
     state.create_Image = payload;
@@ -564,13 +568,13 @@ const actions = {
   },
    // &&&&&&&&&&&&&&&&&& REVIEW REQUEST &&&&&&&&&&&&&
   getReviewRequests({ commit }, payload) {
-    commit("setProcessing", false);
+    commit('get_reviews', false)
     const auction_id = payload.auction_id;
     const requests  = get_requests({auction_id}) 
 
     requests
       .then(res => {
-        commit("setProcessing", true);
+        commit('get_reviews', true)
         return res;
       })
       .then(res => {

@@ -165,9 +165,10 @@
               </b-colxx>
             </b-row>
           </b-tab>
-          <b-tab @click="customFiledOn = false , set_review_data()" :title="$t('forms.preview-requests')">
+          <b-tab @click="customFiledOn = false,  getReviewRequests({auction_id : auctionId})" :title="$t('forms.preview-requests')">
             <b-row>
               <b-colxx>
+                <template v-if="_get_reviews">
                 <vuetable
                   ref="previews_vuetable"
                   class="table-divided order-with-arrow"
@@ -175,7 +176,10 @@
                   :fields="review_fields"
                 >
                 </vuetable>
-               
+                </template>
+                <template v-else>
+          <div class="loading"></div>
+        </template>
               </b-colxx>
             </b-row>
           </b-tab>
@@ -253,6 +257,7 @@ export default {
       isLoad: false,
       search: null,
       customFiledOn: false,
+      isLoadReviewRequests: false,
       limit: null,
       comments: comments.slice(0, 5),
       orders,
@@ -423,10 +428,10 @@ export default {
     this.language = getCurrentLanguage();
     this.auctionId = this.$route.query.id;
     this.getAuction({ id: this.auctionId });
-
+   
   },
   methods: {
-...mapActions(["getAuction", "getAuctionFiles", "getAuctionImages", "getAuctionBids"]),
+...mapActions(["getAuction", "getAuctionFiles", "getAuctionImages", "getAuctionBids", "getReviewRequests"]),
  onPaginationData(paginationData) {
       this.from = paginationData.from;
       this.to = paginationData.to;
@@ -451,10 +456,6 @@ return this.formatEndDate;
     },  
     refresh(){
         this.getAuctionBids({auction_id : this.auction_id})
-    },
-    set_review_data(){
-            this.$refs.previews_vuetable.setData(this.auction_form.preview);
-
     },
      changePageSize(perPage) {
       this.limit = perPage;
@@ -491,7 +492,7 @@ return this.formatEndDate;
     }, 50);
   },
    computed: {
-    ...mapGetters(["auction", "_isLoadAuctions", "_Image_List", "_File_List", "_bids", "_isLoadAuctions", "_isLoadAuctionBids"])
+    ...mapGetters(["auction","_get_reviews", "_auctionReviewRequests", "_isLoadAuctions", "_Image_List", "_File_List", "_bids", "_isLoadAuctions", "_isLoadAuctionBids"])
   },
   watch: {
     auction(newInfo, oldOne) {
@@ -541,7 +542,6 @@ return this.formatEndDate;
         )
       }): this.auction_form.custom_fields = null;
       this.isLoad = true;
-      this.$refs.previews_vuetable.setData(newInfo.preview);
       this.$refs.vuetable.setData(this.auction_form.custom_fields);
     },
       _Image_List: function(val) {
@@ -577,6 +577,15 @@ return this.formatEndDate;
       this.total = val.total;
       this.$refs.pagination.setPaginationData(val);
       this.customFiledOn = true
+    },
+    _auctionReviewRequests: function(val){
+      console.log(val);
+      this.$refs.previews_vuetable.setData(val);
+      this.isLoadReviewRequests = true;
+
+    },
+    _get_reviews: function(val){
+      console.log(val);
     }
   }
 };

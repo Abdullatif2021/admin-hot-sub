@@ -1342,6 +1342,37 @@ button {
   }
 }
 
+.icon-button-auction {
+  padding: 0;
+  background: unset;
+  color: #000000;
+  border-color: #dddddd;
+  font-size: 12px;
+  width: 34px;
+  height: 34px;
+  line-height: 34px;
+
+
+
+     
+
+    &:hover {
+      background-color: #f2efef;
+       border-color: #f2efef; 
+      color: white;
+  
+    }
+  &.large {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  &.small-icon {
+    font-size: 12px;
+    line-height: 32px;
+  }
+}
 .icon-button {
   padding: 0;
   font-size: 14px;

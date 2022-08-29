@@ -7,7 +7,7 @@ import axios from "../../plugins/axios";
 export const get_pages = async (params) =>{
   return await axios.get(`${apiUrl}/pages`, {params})
 }
-export const get_page = async (pageId) =>{
+export const get_page = async (id) =>{
   return await axios.get(`${apiUrl}/pages/${id}`)
 }
 export const update_page = async ({id, formData}) =>{

@@ -841,7 +841,6 @@
                                     :disabled="lang.brochure == '' || disabledAttachLangsBtn"
                                     >{{ $t("OPEN") }}</b-button
                                   >
-                                  <p v-if="!lang.brochure">ijrejoejioejioejioejioerjioejioejiofjifoijor</p>
                                   <b-button
                                     @click="deleteTermsBrochure({type: 'brochure', id: lang.id.$model})"
                                     variant="light"
@@ -2608,6 +2607,7 @@ this.isLoadCustomField = true
       this.saveBtn = 'save';
       this.showField = true;
       this.selectedFields.push(this.selectedCustomField)
+      this.categoryCustomFieldOptions = this.getDifference2(this.categoryCustomFieldOptions,this.selectedFields);
     },
     delete_img(){
         this.image = null;
@@ -2798,12 +2798,20 @@ this.date_check();
           
           
         },
-      
+        getDifference2(array1, array2) {
+            return array1.filter(object1 => {
+              return !array2.some(object2 => {
+                return object1.value.id === object2.id;
+              });
+    
+  });
+},
       getDifference(array1, array2) {
   return array1.filter(object1 => {
     return !array2.some(object2 => {
       return object1.id === object2.id;
     });
+    
   });
 },
         open_modal(refname,id, notes){
@@ -2953,8 +2961,7 @@ this.date_check();
       });
 
         }else{
-
-       val.forEach(option => {
+          this.getDifference(val,this.selectedFields).forEach(option => {
         this.categoryCustomFieldOptions.push(
           new Object({
             value: option,
