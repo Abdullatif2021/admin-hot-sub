@@ -26,9 +26,11 @@ import vuePerfectScrollbar from "vue-perfect-scrollbar";
 import contentmenu from "v-contextmenu";
 import VueLineClamp from "vue-line-clamp";
 import VueScrollTo from "vue-scrollto";
+
 import "firebase/auth";
 import { getCurrentLanguage } from "./utils";
 import auction from "./plugins/services/auction";
+import './registerServiceWorker';
 // date picker
 
 Vue.use(BootstrapVue);
