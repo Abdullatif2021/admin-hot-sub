@@ -49,7 +49,7 @@
                           height="160"
                         />
                       </label>
-                      </b-colxx> 
+                      </b-colxx>
                      <b-colxx sm="6">
                       <b-form-group>
                         <label class="form-group-label" for="desc">{{
@@ -67,7 +67,7 @@
                           }}</b-form-invalid-feedback
                         >
                       </b-form-group>
-                    </b-colxx> 
+                    </b-colxx>
                     <b-colxx sm="6">
                       <b-form-group>
                         <label class="form-group-label" for="cate">{{
@@ -94,12 +94,12 @@
                             $t("forms.category_type_select")
                           }}</b-form-invalid-feedback
                         >
-                          
-        
+
+
                       </b-form-group>
                     </b-colxx>
-                    
-                    
+
+
                       <b-colxx sm="6">
                         <b-form-group
                           class="form-group-label"
@@ -137,7 +137,7 @@
                             }}</b-form-invalid-feedback
                           >
                         </b-form-group>
-                      </b-colxx>                 
+                      </b-colxx>
                       <b-colxx sm="6">
                         <b-form-group
                           class="form-group-label"
@@ -146,7 +146,7 @@
                           <datepicker
                             style="width: 100%;"
                             type="datetime"
-                            :disabled-date="disableDate" 
+                            :disabled-date="disableDate"
                             value-type="YYYY-MM-DD HH:mm:ss"
                             v-model="$v.gridForm1.start_date.$model"
                             @change="selectedDate('start')"
@@ -163,7 +163,7 @@
                             {{ $t("forms.start_date_req") }}
                           </div>
                         </b-form-group>
-                      </b-colxx>                     
+                      </b-colxx>
                       <b-colxx sm="6">
                         <b-form-group
                           class="form-group-label"
@@ -172,7 +172,7 @@
                           <datepicker
                             style="width: 100%;"
                             type="datetime"
-                            :disabled-date="disableDate" 
+                            :disabled-date="disableDate"
                             value-type="YYYY-MM-DD HH:mm:ss"
                             v-model="$v.gridForm1.end_date.$model"
                             @change="selectedDate('end')"
@@ -234,7 +234,7 @@
                           "
                           v-model="terms_conditions"
                         ></b-form-file>
-                      
+
                       </b-input-group>
                       <b-form-invalid-feedback
                         v-if="!$v.files_form.terms_conditions.required"
@@ -271,7 +271,7 @@
                       >
                     </b-form-group>
                   </b-colxx>
-                  
+
                   </b-colxx>
                     </b-row>
                   </b-form>
@@ -282,7 +282,7 @@
                 :validate="validateStep2"
               >
                 <div class="wizard-basic-step">
-                 
+
                         <div
                           v-for="(lang, index) in $v.lang_form.$each.$iter"
                           :key="index"
@@ -332,10 +332,10 @@
                                   :placeholder="$t('input-groups.change-brochure')"
                                    v-model="lang.brochure.$model"
                                 ></b-form-file>
-                               
+
                               </b-input-group>
 
-                       
+
                             </b-form-group>
                           </b-colxx>
                           <b-colxx sm="6">
@@ -343,7 +343,7 @@
                               <label class="form-group-label" >{{
                                 $t("forms.terms_conditions")
                               }}</label>
-                             
+
                               <b-input-group class="mb-3">
                                 <b-form-file
                                   accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
@@ -352,15 +352,15 @@
                                   "
                                 v-model="lang.terms_conditions.$model"
                                 ></b-form-file>
-                               
+
                               </b-input-group>
-                       
+
                             </b-form-group>
-                          </b-colxx> 
-                      
-                    
+                          </b-colxx>
+
+
                    </b-row>
-                   </b-form> 
+                   </b-form>
                      </div>
                 </div>
               </tab>
@@ -371,7 +371,7 @@
                 <div class="wizard-basic-step">
                   <b-form>
                     <b-row>
-                     
+
                       <b-colxx sm="4">
                         <b-form-group
                           class="form-group-label"
@@ -504,7 +504,7 @@
                 </div>
               </tab>
                <tab
-               
+
                 :name="$t('wizard.step-name-2')"
                 :validate="validateStep4"
                 :submit="onGridFormSubmit"
@@ -519,10 +519,10 @@
                         @change="selectCustomField"
                         plain
                       />
-                    
-                    </b-form-group> 
-                    
-                   
+
+                    </b-form-group>
+
+
                   </b-colxx>
                    <b-colxx sm="2">
                     <b-form-group style="margin: 8px;"  class="form-group-label">
@@ -534,8 +534,8 @@
                         >+ Add</b-button
                       >
                     </b-form-group>
-                  
-                   
+
+
                   </b-colxx>
                    </b-row>
                       <div
@@ -564,7 +564,7 @@
                       </b-form-group>
                     </b-colxx>
                   </div>
-                
+
                   <add-new-custom-field
                     @create-custom-field="create_custom_field"
                     :showCreateModal="showCreateModal"
@@ -614,7 +614,7 @@
                           height="160"
                         />
                       </label>
-                    </b-colxx>           
+                    </b-colxx>
                     <b-colxx sm="6">
                       <b-form-group>
                         <label class="form-group-label" for="desc">{{
@@ -655,8 +655,8 @@
                             $t("forms.category_type_select")
                           }}</b-form-invalid-feedback
                         >
-                          
-        
+
+
                       </b-form-group>
                     </b-colxx>
                     <b-colxx sm="6">
@@ -708,7 +708,7 @@
                           id="start"
                           style="width: 100%;"
                           type="datetime"
-                          :disabled-date="disableDate"  
+                          :disabled-date="disableDate"
                           value-type="YYYY-MM-DD HH:mm:ss"
                           v-model="$v.formStep1.start_date.$model"
                           @change="selectedDate('start')"
@@ -736,7 +736,7 @@
                           id="id"
                           style="width: 100%;"
                           type="datetime"
-                          :disabled-date="disableDate"  
+                          :disabled-date="disableDate"
                           value-type="YYYY-MM-DD HH:mm:ss"
                           v-model="$v.formStep1.end_date.$model"
                           @change="selectedDate('end')"
@@ -850,7 +850,7 @@
                                 </b-input-group-append>
                               </b-input-group>
 
-                       
+
                             </b-form-group>
                           </b-colxx>
                           <b-colxx sm="6">
@@ -858,7 +858,7 @@
                               <label class="form-group-label" >{{
                                 $t("forms.terms_conditions")
                               }}</label>
-                             
+
                               <b-input-group class="mb-3">
                                 <b-form-file
                                   accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
@@ -891,7 +891,7 @@
                                 }}</b-form-invalid-feedback
                               > -->
                             </b-form-group>
-                          </b-colxx> 
+                          </b-colxx>
                         </b-row>
                       </b-form>
                     </div>
@@ -1087,10 +1087,10 @@
                         @change="selectCustomField"
                         plain
                       />
-                    
-                    </b-form-group> 
-                    
-                   
+
+                    </b-form-group>
+
+
                   </b-colxx>
                    <b-colxx sm="2">
                     <b-form-group style="margin: 8px;"  class="form-group-label">
@@ -1102,8 +1102,8 @@
                         >+ Add</b-button
                       >
                     </b-form-group>
-                  
-                   
+
+
                   </b-colxx>
                    </b-row>
                    </b-form>
@@ -1207,7 +1207,7 @@
                       </b-card-body>
                     </b-card>
                   </b-colxx> -->
-                
+
               </b-card>
             </b-colxx>
           </b-row>
@@ -2157,9 +2157,9 @@ export default {
              },
              formStep3: {
 deposit: null,
-       
+
         minimum_paid: null,
-      
+
         opening_price: null,
              },
              formStep4: {
@@ -2182,13 +2182,13 @@ city_id: null,
   //         start_date: null,
   //       end_date: null,
   //       auction_owner: null,
-  //       
+  //
         deposit: null,
-       
+
         minimum_paid: null,
-      
+
         opening_price: null,
-       
+
       },
         gridForm1: {
         auction_side: null,
@@ -2293,12 +2293,12 @@ city_id: null,
         required
       },
         },
-         
+
         formStep3: {
              deposit: {
         required
       },
-    
+
     opening_price: {
         required
       },
@@ -2328,7 +2328,7 @@ area_id: {},
         required
       },
       },
-  
+
     gridForm: {
       deposit: {
         required
@@ -2339,7 +2339,7 @@ area_id: {},
       opening_price: {
         required
       },
- 
+
     },
     gridForm1: {
       auction_number: {
@@ -2467,7 +2467,7 @@ area_id: {},
             image: null,
             langs: null,
           });
-        
+
       }
     },
      onForm2Submited(){
@@ -2485,7 +2485,7 @@ area_id: {},
             id: this.auctionId,
             image: null,
           });
-        
+
       }
     },
     onForm3Submited(){
@@ -2521,7 +2521,7 @@ area_id: {},
     }
     },
     onGridFormSubmit() {
-      
+
         this.disabled = false;
         if (this.auctionId) {
           this.updateAuction({
@@ -2541,7 +2541,7 @@ area_id: {},
             langs: this.lang_form
           });
         }
-      
+
     },
     get_review_request(){
       this.isLoadCustomField = false;
@@ -2567,7 +2567,7 @@ this.isLoadCustomField = true
       this.locationForm.longitude = data.lng;
        this.formStep4.latitude = data.lat;
       this.formStep4.longitude = data.lng;
-      
+
     },
     get_cities() {
       this.is_area_selected = true;
@@ -2598,7 +2598,7 @@ this.isLoadCustomField = true
       this.mainImage = file;
       this.image_added = false;
     },
-  
+
     imageRemoved(){
       this.mainImage = null;
       this.image_added = true;
@@ -2668,7 +2668,7 @@ this.isLoadCustomField = true
     },
     get_SubCat(val){
       this.getSubCategory({id : val})
-    
+
     },
     add_newCustomField(){
   this.showCreateModal = !this.showCreateModal;
@@ -2709,7 +2709,7 @@ this.isLoadCustomField = true
                 </div>
         `;
     },
-    
+
         verfiy_request(val){
           this.requestBtn = true;
             this.updateReviewRequest({val: val, request_id: this.request_id})
@@ -2721,15 +2721,15 @@ this.isLoadCustomField = true
         if(this.date2.getTime() < this.date1.getTime()){
           this.gridForm1.start_date = null;
           this.gridForm1.end_date = null;
-        
+
                     this.$notify(
         "error",
         "Something went wrong",
         "the end date must be a date after start date.",
         { duration: 4000, permanent: false }
       );
-      
-   
+
+
         }else{
           this.enablevalidateForm1 = true;
         }
@@ -2737,13 +2737,13 @@ this.isLoadCustomField = true
         create_custom_field(val,type){
           this.createCustomField({info: val, type: type, categoryId: this.formStep1.category_id ?  this.formStep1.category_id : this.gridForm.category_id})
         },
-      
+
          validateStep1() {
 this.date_check();
              this.$v.$touch();
       this.$v.gridForm1.$touch();
             this.$v.files_form.$touch();
- 
+
         if (
         !this.$v.gridForm1.$invalid &&
                 !this.$v.files_form.$invalid
@@ -2752,30 +2752,30 @@ this.date_check();
         this.$v.$reset();
               this.getCustomFieldList({id: this.gridForm1.category_id})
  return true;
-   
+
       }
 
         },
         validateStep2() {
-         
+
                    this.$v.$touch();
       this.$v.lang_form.$touch();
 
         if (
-        !this.$v.lang_form.$invalid 
+        !this.$v.lang_form.$invalid
 
-      ){   
+      ){
         this.$v.$reset();
  return true;
       }
         },
          validateStep3() {
-          
+
            this.$v.$touch();
       this.$v.gridForm.$touch();
 
         if (
-        !this.$v.gridForm.$invalid 
+        !this.$v.gridForm.$invalid
 
       ){
         this.$v.$reset();
@@ -2787,23 +2787,23 @@ this.date_check();
       this.$v.locationForm.$touch();
 
         if (
-        !this.$v.locationForm.$invalid 
+        !this.$v.locationForm.$invalid
 
       ){
         this.$v.$reset();
         this.saveBtn = 'skip';
  return true;
-   
+
       }
-          
-          
+
+
         },
         getDifference2(array1, array2) {
             return array1.filter(object1 => {
               return !array2.some(object2 => {
                 return object1.value.id === object2.id;
               });
-    
+
   });
 },
       getDifference(array1, array2) {
@@ -2811,7 +2811,7 @@ this.date_check();
     return !array2.some(object2 => {
       return object1.id === object2.id;
     });
-    
+
   });
 },
         open_modal(refname,id, notes){
@@ -2825,7 +2825,7 @@ this.date_check();
           this.custom_fields.forEach(el => {
                  this.updateCustomValue({info: el, custom_id: el.id, value_id: el.values[0].id})
             });
-            
+
         },
         addNewCustomValue(type){
           this.enableModelBtn= true;
@@ -2836,7 +2836,7 @@ this.date_check();
               }
             });
         },
-      
+
         open_field(){
 
         }
@@ -2944,7 +2944,7 @@ this.date_check();
           })
         )
       })
-      
+
     },
     _customFields: function(val) {
             this.categoryCustomFieldOptions = [];
@@ -2970,7 +2970,7 @@ this.date_check();
         );
       });
         }
-       
+
       },
     _auctionReviewRequests: function(val){
   this.$refs.vuetable.setData(val);
@@ -3018,7 +3018,7 @@ this.date_check();
       this.disabled = true;
           this.disabledFormStep1 = false;
 
-      
+
     },
     _createCustomField: function(val){
       this.hideCustomModal = !this.hideCustomModal;
@@ -3112,7 +3112,7 @@ this.date_check();
           "Auction Image have been updated successfully",
           { duration: 3000, permanent: false }
         );
-      
+
 
     },
     _createAuctionSuccessfuly(newInfo, oldOne) {
@@ -3139,7 +3139,7 @@ this.date_check();
             value: option,
             text: option.locales[this.language].name
           })
-         
+
         );
            })
 

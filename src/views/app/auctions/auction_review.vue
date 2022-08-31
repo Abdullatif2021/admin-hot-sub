@@ -1,6 +1,6 @@
 <template>
   <div>
-   
+
      <template v-if="_isLoadAuctions">
     <b-row>
       <b-colxx xxs="12">
@@ -8,19 +8,19 @@
       <div v-if="customFiledOn" class="top-right-button-container">
         <b-button
           variant="primary"
-          
+
           class="top-right-button"
           @click="refresh()"
           ><i style="font-size: 19px;" class="simple-icon-refresh"></i></b-button
         >
       </div>
-        <piaf-breadcrumb /> 
+        <piaf-breadcrumb />
            <div v-if="customFiledOn"  style="display: grid;position: absolute;left: 77%;" class="mb-2 mt-2">
         <b-collapse style="margin: -6px;" id="displayOptions" class="d-md-block">
           <div class="d-block d-md-inline-block">
-            
 
-      
+
+
           </div>
           <div style="display: flex;" class="float-md-right">
             <div style="margin-right: 13px;">
@@ -61,7 +61,7 @@
             <b-row>
               <b-colxx xxs="12" lg="4" class="mb-4">
                 <b-card class="mb-4" no-body>
-                
+
                   <img
                     :src="auction_form.image"
                     alt="Detail"
@@ -80,7 +80,7 @@
                     <div class="mb-3">
                       <stars value="4" :disabled="true"></stars>
                     </div>
-                   
+
                   <p class="text-muted text-small mb-2">
                       {{ $t("forms.auction_owner") }}
                     </p>
@@ -114,7 +114,7 @@
                   <gallery-detail :containerClass="containerClass" :items="file_lists" />
                 </b-card-body>
               </b-card>
-              
+
               </b-colxx>
               <b-colxx xxs="12" lg="8">
                 <small-line-charts
@@ -123,7 +123,7 @@
                 ></small-line-charts>
                   <b-card class="mb-4" :title="$t('forms.binig-info')">
                         <b-card-body>
-                          
+
                     <div class="biding_container">
                       <div>
                          <p class="text-muted text-small mb-2">
@@ -143,7 +143,7 @@
                       </div>
                     </div>
                     </b-card-body>
-                </b-card> 
+                </b-card>
                 <b-card class="mb-4" :title="$t('forms.custom_field')">
           <vuetable
             table-height="360px"
@@ -162,8 +162,8 @@
                   <template v-else>
                     <div class="loading"></div>
                   </template> -->
-                </b-card> 
-              
+                </b-card>
+
               </b-colxx>
             </b-row>
           </b-tab>
@@ -221,7 +221,7 @@
   </div>
 </template>
 
-<script>    
+<script>
 import Stars from "../../../components/Common/Stars.vue";
 import RadialProgressCard from "../../../components/Cards/RadialProgressCard.vue";
 import CommentItem from "../../../components/Listing/CommentItem.vue";
@@ -269,7 +269,7 @@ export default {
         {
           name: "",
           callback: value => {
-            return `<img src="${value.icon}" style="border-radius: 34%;" alt="Image" width="50" height="50"> 
+            return `<img src="${value.icon}" style="border-radius: 34%;" alt="Image" width="50" height="50">
             `;
           },
           title: "Icon",
@@ -296,7 +296,7 @@ export default {
         {
           name: "user_info",
           callback: value => {
-            return `<img src="${value.image}" style="border-radius: 34%;" alt="Image" width="50" height="50"> 
+            return `<img src="${value.image}" style="border-radius: 34%;" alt="Image" width="50" height="50">
             `;
           },
           title: "Image",
@@ -326,7 +326,7 @@ export default {
              callback: value => {
                return new Date(value).toString().slice(new Date(value).toString().indexOf(' '),
   new Date(value).toString().lastIndexOf(':'),)
-            
+
           },
           title: "Date",
           titleClass: "",
@@ -361,7 +361,7 @@ export default {
              callback: value => {
                return new Date(value).toString().slice(new Date(value).toString().indexOf(' '),
   new Date(value).toString().lastIndexOf(':'),)
-            
+
           },
           title: "Date",
           titleClass: "",
@@ -382,7 +382,7 @@ export default {
           dataClass: "text-muted",
           width: "20%"
         },
-      ], 
+      ],
       formatStartDate: null,
       formatEndDate: null,
         isLoad: false,
@@ -430,7 +430,7 @@ export default {
     this.language = getCurrentLanguage();
     this.auctionId = this.$route.query.id;
     this.getAuction({ id: this.auctionId });
-   
+
   },
   methods: {
 ...mapActions(["getAuction", "getAuctionFiles", "getAuctionImages", "getAuctionBids", "getReviewRequests"]),
@@ -455,7 +455,7 @@ return this.formatStartDate;
   this.auction_form.end_date.toString().lastIndexOf(':'),
 );
 return this.formatEndDate;
-    },  
+    },
     refresh(){
       this.search = null;
         this.getAuctionBids({auction_id : this.auction_id})
@@ -539,8 +539,8 @@ return this.formatEndDate;
               name: field.locales[this.language].name,
               value: field.values[0].locales[this.language].value,
               unit: field.values[0].locales[this.language].unit,
-            
-             
+
+
           })
         )
       }): this.auction_form.custom_fields = null;
@@ -548,7 +548,7 @@ return this.formatEndDate;
       this.$refs.vuetable.setData(this.auction_form.custom_fields);
     },
       _Image_List: function(val) {
-    
+
        val.forEach(el => {
         this.file_lists.push(
              new Object({

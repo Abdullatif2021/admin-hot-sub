@@ -1,16 +1,6 @@
 const CopyPlugin = require('copy-webpack-plugin')
 const { InjectManifest } = require("workbox-webpack-plugin")
-// const config = {}
-// if (process.env.NODE_ENV === "production") {
-//   config["configureWebpack"] = {
-//     plugins: [
-//       new InjectManifest({
-//         swSrc: "./service-worker.js",
-//       }),
-//     ],
-//   }
-// }
-// module.exports = config
+
 module.exports = {
 
   pages: {
@@ -54,6 +44,9 @@ module.exports = {
           { from: 'src/assets/logos', to: 'assets/logos' },
           { from: 'src/assets/fonts', to: 'assets/fonts' }
         ],
+      }),
+      new InjectManifest({
+        swSrc: "./src/service-worker-dev.js",
       }),
     ]
   }

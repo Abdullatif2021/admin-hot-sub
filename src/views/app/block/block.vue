@@ -425,8 +425,8 @@ export default {
     _block(newOne, oldone) {
       this.isLoadBlock = true;
       this.details_form.forEach(el => {
-        el.name = newOne.locales.[el._name].name;
-        el.description = newOne.locales.[el._name].description;
+        el.name = newOne.locales[el._name].name;
+        el.description = newOne.locales[el._name].description;
 
       });
       this.blockData = newOne;

@@ -462,10 +462,10 @@ export default {
           width: "28%"
         },
 
-        { 
+        {
           name: "",
           callback: value => {
- 
+
             return  `<span>
                 ${new Date(value.start_date).toString().slice(new Date(value.start_date).toString().indexOf(' '),
   new Date(value.start_date).toString().lastIndexOf(':'),)}
@@ -474,7 +474,7 @@ export default {
               <span>
                ${new Date(value.end_date).toString().slice(new Date(value.end_date).toString().indexOf(' '),
   new Date(value.end_date).toString().lastIndexOf(':'),)}
-              
+
               </span>
               `;
           },
@@ -539,7 +539,7 @@ export default {
   },
   created() {
     this.language = getCurrentLanguage();
-  
+
 
 
     this.getAuctions({

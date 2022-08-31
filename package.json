@@ -1,5 +1,6 @@
 {
   "name": "piaf-vue",
+  "proxy": "http://localhost:8080",
   "version": "5.2.2",
   "description": "Piaf - Vue 2 Bootstrap 4 Admin Dashboard Template",
   "author": "Colored Strategies <support@coloredstrategies.com>",
@@ -12,6 +13,7 @@
   },
   "dependencies": {
     "@glidejs/glide": "^3.4.1",
+    "@vue/babel-preset-app": "^5.0.8",
     "@vuepic/vue-datepicker": "^3.2.2",
     "axios": "^0.21.1",
     "bootstrap-vue": "^2.21.2",
