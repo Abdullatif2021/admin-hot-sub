@@ -1,6 +1,6 @@
 
     const cacheName = "v1";
-
+    self.__WB_MANIFEST
     // install service worker
     console.log("Service 33333333333333333333333: installed")
     self.addEventListener("install", (e) => {

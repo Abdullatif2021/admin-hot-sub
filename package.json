@@ -1,5 +1,6 @@
 {
   "name": "piaf-vue",
+  "proxy": "http://localhost:8080",
   "version": "5.2.2",
   "description": "Piaf - Vue 2 Bootstrap 4 Admin Dashboard Template",
   "author": "Colored Strategies <support@coloredstrategies.com>",

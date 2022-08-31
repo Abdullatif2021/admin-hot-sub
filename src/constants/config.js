@@ -3,8 +3,8 @@ import { UserRole } from "../utils/auth.roles";
 export const defaultMenuType = "menu-default"; // 'menu-default', 'menu-sub-hidden', 'menu-hidden';
 export const adminRoot = "/app";
 export const searchPath = `${adminRoot}/#`;
-export const buyUrl = "https://1.envato.market/nEyZa";
-export const apiUrl = "https://alqias-api2.lilacdev.com/public/api";
+// export const buyUrl = "https://1.envato.market/nEyZa";
+export const apiUrl = process.env.VUE_APP_API_ROOT;
 
 export const subHiddenBreakpoint = 1440;
 export const menuHiddenBreakpoint = 768;
