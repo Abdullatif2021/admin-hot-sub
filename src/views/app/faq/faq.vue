@@ -171,8 +171,8 @@ export default {
   watch: {
     _Faq: function(val){
           this.lang_form.forEach(el => {
-          el.question = val[0].locales.[el._name].question;
-          el.answer = val[0].locales.[el._name].answer;
+          el.question = val[0].locales[el._name].question;
+          el.answer = val[0].locales[el._name].answer;
       })
       this.select_form.select = val[0].category_id;
           },
@@ -181,7 +181,7 @@ export default {
         this.categoryOptions.push(
           new Object({
             value: el.id,
-            text: el.locales.[this.language].title
+            text: el.locales[this.language].title
           })
         );
       });

@@ -411,7 +411,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].title;
+            return value[this.language].title;
           },
           title: "Title",
           titleClass: "",

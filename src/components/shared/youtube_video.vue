@@ -138,7 +138,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].title;
+            return value[this.language].title;
           },
           title: "Title",
           titleClass: "",
@@ -208,8 +208,8 @@ export default {
             this.attachment_id = item.id;
             this.edit = true;
             this.youtube_form.forEach(el => {
-              el.title = item.locales.[el.name].title;
-                  el.description = item.locales.[el.name].description;
+              el.title = item.locales[el.name].title;
+                  el.description = item.locales[el.name].description;
             });
 
             this.path_form.path = item.path;

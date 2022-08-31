@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@glidejs/glide": "^3.4.1",
+    "@vue/babel-preset-app": "^5.0.8",
     "@vuepic/vue-datepicker": "^3.2.2",
     "axios": "^0.21.1",
     "bootstrap-vue": "^2.21.2",

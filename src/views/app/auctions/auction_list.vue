@@ -453,7 +453,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].title;
+            return value[this.language].title;
           },
           title: "Title",
           titleClass: "",
@@ -461,10 +461,10 @@ export default {
           width: "28%"
         },
 
-        { 
+        {
           name: "",
           callback: value => {
- 
+
             return  `<span>
                 ${new Date(value.start_date).toString().slice(new Date(value.start_date).toString().indexOf(' '),
   new Date(value.start_date).toString().lastIndexOf(':'),)}
@@ -473,7 +473,7 @@ export default {
               <span>
                ${new Date(value.end_date).toString().slice(new Date(value.end_date).toString().indexOf(' '),
   new Date(value.end_date).toString().lastIndexOf(':'),)}
-              
+
               </span>
               `;
           },
@@ -536,7 +536,7 @@ export default {
   },
   created() {
     this.language = getCurrentLanguage();
-  
+
 
 
     this.getAuctions({
@@ -855,10 +855,10 @@ this.$notify(
 
     },
     _category: function(val){
-        this.categoryName = val.locales.[this.language].name
+        this.categoryName = val.locales[this.language].name
     },
      _getSubCategorySuccess: function(val){
-        this.subCategoryName = val.data.locales.[this.language].name
+        this.subCategoryName = val.data.locales[this.language].name
     },
     auction_paginations(newActions, old) {
       console.log(newActions);

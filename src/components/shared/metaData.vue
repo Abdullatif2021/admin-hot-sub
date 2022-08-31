@@ -129,7 +129,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].meta_content;
+            return value[this.language].meta_content;
           },
           title: "Content",
           titleClass: "",
@@ -204,7 +204,7 @@ export default {
         this.itemId = item.id;
         this.select_form.select = item.meta_type_id;
         this.meta_form.forEach(el => {
-          el.content = item.locales.[el.name].meta_content;
+          el.content = item.locales[el.name].meta_content;
         });
 
       } else {

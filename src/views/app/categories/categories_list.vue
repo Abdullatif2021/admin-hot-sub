@@ -210,7 +210,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].name;
+            return value[this.language].name;
           },
           sortField: "slug",
           title: "Title",
@@ -221,7 +221,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].description;
+            return value[this.language].description;
           },
           sortField: "description",
           title: "Description",

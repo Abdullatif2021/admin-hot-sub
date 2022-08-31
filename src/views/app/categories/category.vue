@@ -322,8 +322,8 @@ export default {
       this.isimgModify = true;
       this.isiconModify = true;
        this.lang_form.forEach(el => {
-        el.name = item.locales.[el._name].name;
-        el.description = item.locales.[el._name].description;
+        el.name = item.locales[el._name].name;
+        el.description = item.locales[el._name].description;
       });
       this.image = item.image;
       this.sub_id = item.id

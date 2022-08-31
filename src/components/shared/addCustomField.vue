@@ -172,7 +172,7 @@ export default {
         this.editCustomField = true;
         this.select_form.type = val.type;
         this.keys_form.forEach(el => {
-        el.key = val.locales.[el.name].name;
+        el.key = val.locales[el.name].name;
             });
         val.type === "INT" ?  this.selected = 2 : this.selected = 1;
     },
