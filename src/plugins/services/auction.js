@@ -17,8 +17,8 @@ export const update_auction = async ({id, formData}) =>{
 export const delete_auction = async (id) =>{
   return await axios.delete(`${apiUrl}/auctions/${id}`)
 }
-export const get_bids = async () =>{
-  return await axios.get(`${apiUrl}/auctions/bids`)
+export const get_bids = async (params) =>{
+  return await axios.get(`${apiUrl}/auctions/bids`, {params})
 }
 export const get_sides = async () =>{
   return await axios.get(`${apiUrl}/auctions/sides`)

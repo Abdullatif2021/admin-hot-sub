@@ -30,6 +30,7 @@ const state = {
   auctions: null,
   created_Successfuly: null,
   updated_Successfuly: null,
+  updated_un_successfuly: null,
   Error: "",
   get_reviews: false,
   auction: null,
@@ -72,6 +73,7 @@ const getters = {
   _updatedAuctionMainImageSuccessfuly: state => state.updatedAuctionMainImageSuccessfuly,
   _createAuctionFile: state => state.create_File,
   _deleteAuctionFile: state => state.delete_File,
+  _updatedAuctionUnSuccessfuly: state => state.updated_un_successfuly,
   _Image_List: state => state.Image_List,
   _createAuctionImage: state => state.create_Image,
   _deleteAuctionImage: state => state.delete_Image,
@@ -141,6 +143,9 @@ const mutations = {
   },
   deleteAuctionFile(state, payload) {
     state.delete_File = payload;
+  },
+  updatedAuctionUnSuccessfuly(state, payload){
+    state.updated_un_successfuly = payload;
   },
   getAuctionImageList(state, payload) {
     state.Image_List = payload;
@@ -327,8 +332,11 @@ const actions = {
     formData.append("_method", "PUT");
     const update_status =  update_auction({id, formData});
     update_status.then(res => {
-      if (res.status === 200) {
+      console.log(res)
+      if (res.data.status === 200) {
         commit("updatedAuctionSuccessfuly", res);
+      }else {
+        commit("updatedAuctionUnSuccessfuly", res);
       }
     });
   },
