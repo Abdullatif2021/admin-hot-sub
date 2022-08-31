@@ -16,20 +16,22 @@
       </div>
         <piaf-breadcrumb /> 
            <div v-if="customFiledOn"  style="display: grid;position: absolute;left: 77%;" class="mb-2 mt-2">
-        <b-collapse id="displayOptions" class="d-md-block">
+        <b-collapse style="margin: -6px;" id="displayOptions" class="d-md-block">
           <div class="d-block d-md-inline-block">
             
 
       
           </div>
-          <div class="float-md-right pt-1">
-            <div class="search-sm d-inline-block float-md-left mr-1 align-top">
-              <b-input
-                :placeholder="$t('menu.search')"
-                @input="val => searchChange(val)"
-              />
+          <div style="display: flex;" class="float-md-right">
+            <div style="margin-right: 13px;">
+              <div class="search-sm d-inline-block float-md-left mr-1 align-top">
+                <b-input
+                  :placeholder="$t('menu.search')"
+                  @input="val => searchChange(val)"
+                />
+              </div>
             </div>
-            <span class="text-muted text-small mr-1 mb-2"
+            <span style="margin: 5px;" class="text-muted text-small mr-1 mb-2"
               >{{ from }}-{{ to }} {{ $t("forms.of") }} {{ total }}</span
             >
             <b-dropdown
