@@ -175,8 +175,8 @@ export default {
       this.faqData = [];
          val.forEach(el => {
         this.faqData.push({
-          question: el.locales.[this.language].question,
-          answer: el.locales.[this.language].answer,
+          question: el.locales[this.language].question,
+          answer: el.locales[this.language].answer,
           id: el.id
         });
       });
@@ -185,7 +185,7 @@ export default {
          val.forEach(el => {
         this.sortOptions.push( new Object({
             column: el.id,
-            label: el.locales.[this.language].title
+            label: el.locales[this.language].title
           }));
       });
     },

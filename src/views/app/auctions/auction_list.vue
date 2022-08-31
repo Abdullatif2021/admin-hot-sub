@@ -397,6 +397,7 @@ export default {
       enable_details: false,
            modalName: null,
       hideModel: false,
+      active_test: false,
       subCategoryName: null,
       auctionId: null,
             location: [],
@@ -453,7 +454,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].title;
+            return value[this.language].title;
           },
           title: "Title",
           titleClass: "",
@@ -516,7 +517,9 @@ export default {
         {
           name: "",
            callback: value => {
-            return `${value.active}`;
+            return `<b-button class="${value.active === 1 ? 'toggle_btn_on': 'toggle_btn_off'}" variant="primary">
+              <span class="${value.active === 1 ? 'toggle_span_on': 'toggle_span_off'}"></span>
+        </b-button>`;
 
           },
           title: "Activate",
@@ -588,20 +591,23 @@ this.$router.push({
 
     },
 
-    rowClicked(dataItem, event) {
-      const itemId = dataItem.id;
-      if (event.shiftKey && this.selectedItems.length > 0) {
-        this.selectedItems.push(
-          dataItem.map(item => {
-            return item.id;
-          })
-        );
-        this.selectedItems = [...new Set(this.selectedItems)];
-      } else {
-        if (this.selectedItems.includes(itemId)) {
-          this.selectedItems = this.selectedItems.filter(x => x !== itemId);
-        } else this.selectedItems.push(itemId);
+    rowClicked(dataItem, field, event) {
+      if( field.srcElement.localName === 'span' || field.srcElement.localName === 'b-button'){
+        if( field.srcElement.classList[0] !== 'badge'){
+        console.log('grerrerererererere', field)
+        if(dataItem.auction_type_value === 2){
+          this.open_model('activeAuction', dataItem.id, dataItem.active)
+        }else{
+          this.$notify(
+        "error",
+        "Operation failed",
+        "You can't update status for auction anymore",
+        { duration: 3000, permanent: false }
+      );
+        }
+        }
       }
+     
     },
       open_model(refname, id, active) {
               this.enableModalBtn= false;
@@ -614,6 +620,7 @@ this.active = active
 
     },
     rightClicked(dataItem, field, event) {
+      console.log(dataItem, field, event)
       event.preventDefault();
       if (!this.selectedItems.includes(dataItem.id)) {
         this.selectedItems = [dataItem.id];
@@ -632,6 +639,9 @@ this.active = active
      formatDate(d) {
 
         return moment(d).format("MMM Do YYYY");
+    },
+    testtt(){
+      console.log('rffrrffrfrrffr')
     },
     dataManager(sortOrder, pagination) {
       if (sortOrder.length > 0) {
@@ -777,6 +787,7 @@ this.active = active
       "auction_paginations",
       "_successDeleteAuction",
       "_isLoadCategories",
+      "_updatedAuctionUnSuccessfuly",
       "_getSubCategorySuccess",
       "_category",
       "_isLoadAuctions",
@@ -797,6 +808,9 @@ this.active = active
     }
   },
   watch: {
+    active_test: function(val){
+      console.log(val)
+    },
     searchChange(newQuestion, oldQuestion) {
       if (newQuestion) {
       }
@@ -830,6 +844,17 @@ this.$notify(
         page: this.page
       });
     },
+    _updatedAuctionUnSuccessfuly: function(val){
+      this.$refs['activeAuction'].hide();
+      this.enableModalBtn= true;
+
+      this.$notify(
+        "error",
+        "Operation failed",
+        "You can't update status for auction anymore",
+        { duration: 3000, permanent: false }
+      );
+    },
     auctions(newList, old) {
       this.$refs.vuetable.setData(newList);
     },
@@ -855,10 +880,10 @@ this.$notify(
 
     },
     _category: function(val){
-        this.categoryName = val.locales.[this.language].name
+        this.categoryName = val.locales[this.language].name
     },
      _getSubCategorySuccess: function(val){
-        this.subCategoryName = val.data.locales.[this.language].name
+        this.subCategoryName = val.data.locales[this.language].name
     },
     auction_paginations(newActions, old) {
       console.log(newActions);

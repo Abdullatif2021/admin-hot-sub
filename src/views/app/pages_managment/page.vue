@@ -334,8 +334,8 @@ export default {
     _page(newpage, oldone) {
       this.details_form.forEach(el => {
 
-        el.title = newpage.locales.[el._name].title;
-        el.description = newpage.locales.[el._name].description;
+        el.title = newpage.locales[el._name].title;
+        el.description = newpage.locales[el._name].description;
       });
       this.pageData = newpage;
       this.enable = false;

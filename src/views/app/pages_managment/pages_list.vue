@@ -129,7 +129,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].name;
+            return value[this.language].name;
           },
           sortField: "name",
           title: "Name",

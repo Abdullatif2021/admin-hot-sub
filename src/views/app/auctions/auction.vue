@@ -2894,11 +2894,11 @@ this.date_check();
       this.isLoadAuction = true;
          this.location.push(newInfo.latitude, newInfo.longitude);
       this.lang_form.forEach(el => {
-        el.id = newInfo.locales.[el._name].id;
-        el.title = newInfo.locales.[el._name].title;
-        el.description = newInfo.locales.[el._name].description;
-         el.brochure = newInfo.locales.[el._name].brochure;
-        el.terms_conditions = newInfo.locales.[el._name].terms_conditions;
+        el.id = newInfo.locales[el._name].id;
+        el.title = newInfo.locales[el._name].title;
+        el.description = newInfo.locales[el._name].description;
+         el.brochure = newInfo.locales[el._name].brochure;
+        el.terms_conditions = newInfo.locales[el._name].terms_conditions;
       });
       this.image_basename = newInfo.image_basename;
       this.formStep1.category_id = newInfo.category_id;
@@ -2955,7 +2955,7 @@ this.date_check();
         this.categoryCustomFieldOptions.push(
           new Object({
             value: option,
-            text: option.locales.[this.language].name
+            text: option.locales[this.language].name
           })
         );
       });
@@ -2965,7 +2965,7 @@ this.date_check();
         this.categoryCustomFieldOptions.push(
           new Object({
             value: option,
-            text: option.locales.[this.language].name
+            text: option.locales[this.language].name
           })
         );
       });
@@ -3032,7 +3032,7 @@ this.date_check();
         this.cityOptions.push(
           new Object({
             value: option.id,
-            text: option.locales.[this.language].name
+            text: option.locales[this.language].name
           })
         );
       });
@@ -3074,7 +3074,7 @@ this.date_check();
         this.subCategoryOptions.push(
           new Object({
             value: option.id,
-            text: option.locales.[this.language].name
+            text: option.locales[this.language].name
           })
         );
       });
@@ -3085,7 +3085,7 @@ this.date_check();
         this.areaOptions.push(
           new Object({
             value: option.id,
-            text: option.locales.[this.language].name
+            text: option.locales[this.language].name
           })
         );
       });
@@ -3137,7 +3137,7 @@ this.date_check();
         this.categoryIdOptions.push(
           new Object({
             value: option,
-            text: option.locales.[this.language].name
+            text: option.locales[this.language].name
           })
          
         );

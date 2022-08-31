@@ -357,7 +357,7 @@ export default {
     },
     _faqCategory: function(val){
     this.category_form.forEach(el => {
-            el.title = val.locales.[el.name].title;
+            el.title = val.locales[el.name].title;
 
         })
         }

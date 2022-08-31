@@ -37,7 +37,7 @@
             @vuetable:cell-rightclicked="rightClicked"
           >
             <template slot="actions" slot-scope="props">
-              <b-button
+              <!-- <b-button
                 :variant="
                   props.rowData.active === 1
                     ? 'outline-theme-7'
@@ -53,14 +53,14 @@
                 "
               >
                 <i class="iconsminds-radioactive"></i>
-                <!-- <b-tooltip
+                <b-tooltip
                   :target="props.rowData"
                   ref="statusTooltip"
                   placement="top"
                   title="Active"
                   >Active</b-tooltip
-                > -->
-              </b-button>
+                > 
+              </b-button> -->
               <b-button
                 variant="outline-theme-3"
                 class="icon-button"
@@ -210,7 +210,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].name;
+            return value[this.language].name;
           },
           sortField: "slug",
           title: "Title",
@@ -221,7 +221,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].description;
+            return value[this.language].description;
           },
           sortField: "description",
           title: "Description",
@@ -230,22 +230,19 @@ export default {
           width: "20%"
         },
         {
-          name: "active",
-          callback: value => {
-            return value === 1
-              ? `<span class="badge badge-pill badge-success handle mr-1">
-                Active
-              </span>`
-              : `<span class="badge badge-pill badge-danger handle mr-1">
-                Inactive
-              </span>`;
+          name: "",
+           callback: value => {
+            return `<b-button class="${value.active === 1 ? 'toggle_btn_on': 'toggle_btn_off'}" variant="primary">
+              <span class="${value.active === 1 ? 'toggle_span_on': 'toggle_span_off'}"></span>
+        </b-button>`;
+
           },
-          sortField: "active",
-          title: "Status",
+          title: "Activate",
           titleClass: "",
-          dataClass: "text-muted",
-          width: "10%"
+          dataClass: "list-item-heading",
+          width: "8%"
         },
+       
         {
           name: "__slot:actions",
           title: "",
@@ -285,20 +282,12 @@ export default {
       });
     },
 
-    rowClicked(dataItem, event) {
-      const itemId = dataItem.id;
-      if (event.shiftKey && this.selectedItems.length > 0) {
-        this.selectedItems.push(
-          dataItem.map(item => {
-            return item.id;
-          })
-        );
-        this.selectedItems = [...new Set(this.selectedItems)];
-      } else {
-        if (this.selectedItems.includes(itemId)) {
-          this.selectedItems = this.selectedItems.filter(x => x !== itemId);
-        } else this.selectedItems.push(itemId);
-      }
+    rowClicked(dataItem, field) {
+      if( field.srcElement.localName === 'span' || field.srcElement.localName === 'b-button'){
+        if( field.srcElement.classList[0] !== 'badge'){
+          this.open_active_model('activeCategory', dataItem.id, dataItem.active) 
+        }
+        }
     },
     rightClicked(dataItem, field, event) {
       event.preventDefault();
@@ -429,6 +418,7 @@ export default {
         path: `${adminRoot}/categories/category`
       });
     }
+    
   },
   computed: {
     ...mapGetters([

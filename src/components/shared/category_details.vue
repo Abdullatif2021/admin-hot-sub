@@ -364,7 +364,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].name;
+            return value[this.language].name;
           },
           sortField: "slug",
           title: "Title",
@@ -375,7 +375,7 @@ export default {
         {
           name: "locales",
           callback: value => {
-            return value.[this.language].description;
+            return value[this.language].description;
           },
           sortField: "description",
           title: "Description",
@@ -595,8 +595,8 @@ this.modalName = null;
     _category(newInfo, oldOne) {
       this.isAuctionCategory = true;
       this.category_form.forEach(el => {
-         el.name = newInfo.locales.[el._name].name;
-          el.description = newInfo.locales.[el._name].description;
+         el.name = newInfo.locales[el._name].name;
+          el.description = newInfo.locales[el._name].description;
 
       });
       this.image = newInfo.image;
@@ -643,8 +643,8 @@ this.modalName = null;
       this.is_block_category = true;
       this.isAuctionCategory = false;
       this.category_form.forEach(el => {
-           el.name = newInfo.locales.[el._name].name;
-          el.description = newInfo.locales.[el._name].description;
+           el.name = newInfo.locales[el._name].name;
+          el.description = newInfo.locales[el._name].description;
 
       });
       this.image = newInfo.image;

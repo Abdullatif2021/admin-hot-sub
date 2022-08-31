@@ -1341,7 +1341,48 @@ button {
     border-color: darken($theme-color-2, 10%);
   }
 }
+.toggle_btn_on{
+  background: white;
+  padding-left: 50px;
+  border-radius: 17px;
+  border: 1px solid #23ad00;
+  cursor: pointer;
+  padding-top: -7px;
+  font-size: 12px;
+}
+.toggle_span_on{
+  height: 16px;
+  width: 16px;
+  background-color: #1ec200;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0px;
+  margin-left: -43px;
+  position: absolute;
+  margin-top: 5px;
 
+}
+.toggle_btn_off{
+  background: white;
+  padding-left: 50px;
+  border-radius: 17px;
+  border: 1px solid #ad0000;
+  cursor: pointer;
+  padding-top: -7px;
+  font-size: 12px;
+}
+.toggle_span_off{
+  height: 16px;
+  width: 16px;
+  background-color: #c20000;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0px;
+  margin-left: -21px;
+  position: absolute;
+  margin-top: 5px;
+
+}
 .icon-button-auction {
   padding: 0;
   background: unset;

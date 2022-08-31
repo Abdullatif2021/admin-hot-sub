@@ -498,14 +498,14 @@ return this.formatEndDate;
     auction(newInfo, oldOne) {
       this.isLoad = false;
       this.isLoadAuction = true;
-      newInfo.category ? this.auction_form.category = newInfo.category.locales.[this.language].name : '';
-      // this.auction_form.sub_category = newInfo.sub_category.locales.[this.language].name;
+      newInfo.category ? this.auction_form.category = newInfo.category.locales[this.language].name : '';
+      // this.auction_form.sub_category = newInfo.sub_category.locales[this.language].name;
       this.auction_id = newInfo.id;
 
-      this.auction_form.title = newInfo.locales.[this.language].title;
-      this.auction_form.description = newInfo.locales.[this.language].description;
-      this.auction_form.terms_conditions = newInfo.locales.[this.language].terms_conditions;
-      this.auction_form.brochure = newInfo.locales.[this.language].brochure;
+      this.auction_form.title = newInfo.locales[this.language].title;
+      this.auction_form.description = newInfo.locales[this.language].description;
+      this.auction_form.terms_conditions = newInfo.locales[this.language].terms_conditions;
+      this.auction_form.brochure = newInfo.locales[this.language].brochure;
       this.auction_form.opening_price = newInfo.opening_price;
       this.auction_form.auction_number = newInfo.auction_number;
       this.auction_form.current_price = newInfo.current_price;
@@ -521,9 +521,9 @@ return this.formatEndDate;
       this.auction_form.end_date = new Date(newInfo.end_date);
       this.getStartDate();
       this.getEndDate();
-      this.auction_form.city = newInfo.city.locales.[this.language].name;
-      this.auction_form.city = newInfo.city.locales.[this.language].name;
-      this.auction_form.area = newInfo.area.locales.[this.language].name;
+      this.auction_form.city = newInfo.city.locales[this.language].name;
+      this.auction_form.city = newInfo.city.locales[this.language].name;
+      this.auction_form.area = newInfo.area.locales[this.language].name;
       this.auction_form.preview = newInfo.preview;
       this.auction_form.image = newInfo.image;
       this.auction_form.image = newInfo.image;
@@ -533,9 +533,9 @@ return this.formatEndDate;
              new Object({
                icon: field.icon,
                type: field.type,
-              name: field.locales.[this.language].name,
-              value: field.values[0].locales.[this.language].value,
-              unit: field.values[0].locales.[this.language].unit,
+              name: field.locales[this.language].name,
+              value: field.values[0].locales[this.language].value,
+              unit: field.values[0].locales[this.language].unit,
             
              
           })

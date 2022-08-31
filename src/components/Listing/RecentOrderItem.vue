@@ -49,8 +49,8 @@ export default {
     } else {
       this.BtnStyle = `float: right;margin-top: -29px;`;
     }
-  this.title = this.order.locales.[this.language].title;
-  this.desc = this.order.locales.[this.language].description;
+  this.title = this.order.locales[this.language].title;
+  this.desc = this.order.locales[this.language].description;
 
   },
   methods: {
