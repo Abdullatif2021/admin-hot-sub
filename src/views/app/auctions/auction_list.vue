@@ -607,7 +607,7 @@ this.$router.push({
         }
         }
       }
-     
+     console.log(this);
     },
       open_model(refname, id, active) {
               this.enableModalBtn= false;

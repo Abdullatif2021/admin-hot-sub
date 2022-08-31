@@ -457,6 +457,7 @@ return this.formatStartDate;
 return this.formatEndDate;
     },  
     refresh(){
+      this.search = null;
         this.getAuctionBids({auction_id : this.auction_id})
     },
      changePageSize(perPage) {
