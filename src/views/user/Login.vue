@@ -51,6 +51,7 @@
             >
               <b-form-input
                 type="password"
+                autocomplete="on"
                 v-model="$v.form.password.$model"
                 :state="!$v.form.password.$error"
               />
@@ -75,10 +76,10 @@
                 size="lg"
                 
                 :class="{
-                  'show-spinner': processing,
+                  'show-spinner': _loginProcessing,
                   'btn-multiple-state btn-shadow': true,
-                  'show-success': !processing && loginError === false,
-                  'show-fail': !processing && loginError
+                  'show-success': !_loginProcessing && loginError === false,
+                  'show-fail': !_loginProcessing && loginError
                 }"
               >
                 <span class="spinner d-inline-block">
@@ -141,7 +142,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["currentUser", "processing", "loginError"])
+    ...mapGetters(["currentUser", "_loginProcessing", "processing", "loginError"])
   },
   beforeMount() {
     setCurrentLanguage(defaultLocale);

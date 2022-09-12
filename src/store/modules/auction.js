@@ -32,6 +32,7 @@ const state = {
   updated_Successfuly: null,
   updated_un_successfuly: null,
   Error: "",
+  auctionProducts: null,
   get_reviews: false,
   auction: null,
   successDeleteAuction: null,
@@ -48,6 +49,7 @@ const state = {
   create_File: null,
   deleteAuctionError: null,
   updateReviewRequest: false,
+  productsProcessing: false,
   delete_File: null,
   Image_List: null,
   create_Image: null,
@@ -65,7 +67,9 @@ const getters = {
   _auctionReviewRequests: state => state.auctionReviewRequests,
   auctions: state => state.auctions,
   _bids: state => state.bids,
+  _productsProcessing: state => state.productsProcessing,
   _cities: state => state.cities,
+  _auctionProducts: state => state.auctionProducts,
   _get_reviews: state => state.get_reviews,
   _File_List: state => state.File_List,
   _updateReviewRequest: state => state.updateReviewRequest,
@@ -114,6 +118,9 @@ const mutations = {
     state.Error = error;
     state.auctions = null;
   },
+  getAuctionProductsSuccess(state, payload){
+    state.auctionProducts = payload;
+  },
   deleteAuction(state, payload) {
     state.successDeleteAuction = payload;
   },
@@ -149,6 +156,9 @@ const mutations = {
   },
   getAuctionImageList(state, payload) {
     state.Image_List = payload;
+  },
+  setProductProcessing(state, payload) {
+    state.productsProcessing = payload;
   },
   updatedAuctionMainImageSuccessfuly(state, payload) {
     state.updatedAuctionMainImageSuccessfuly = payload;
@@ -202,7 +212,25 @@ const actions = {
       
    
   },
-  
+  getAuctionProducts({ commit }, payload) {
+    commit("setProductProcessing", payload.sorting ? payload.sorting : false);
+    const auctions  = get_Auctions({ 
+      parent_id: 6})
+    auctions.then(res => {
+            commit("setProductProcessing", true);
+            return res;
+          })
+          .then(res => {
+            if (res.status === 200) {
+              console.log(res);
+              commit("getAuctionProductsSuccess", res.data.data);
+            } else {
+              commit("getAuctionsError", "error:getAuctions");
+            }
+          });
+      
+   
+  },
   getAuction({ commit, dispatch }, payload) {
     commit("setProcessing", false);
 
@@ -217,6 +245,7 @@ const actions = {
         commit("getAuctionSuccess", res.data);
       });
   },
+  
   createAuction({ commit, dispatch }, payload) {
     const formData = new FormData();
     payload.langs.forEach(el => {
@@ -249,6 +278,60 @@ const actions = {
         formData.append(key, value);
       }
     });
+    if (payload.image != null) {
+      formData.append("image", payload.image);
+    }
+    if(payload.parent_id){
+      formData.append("parent_id", payload.parent_id);
+    }
+
+    commit("setProcessing", false);
+    const createAuction = create_auction(formData);
+    // axios
+    //   .post(`${apiUrl}/auctions`, formData, {})
+    createAuction.then(res => {
+        if (res.status === 201) {
+          commit("createAuctionSuccessfuly", res);
+          dispatch("getCustomFieldList", { id: res.data.data.category_id });
+        } else {
+        }
+      })
+      .catch(error => {
+        commit("dateError");
+      });
+  },
+  createAuctionGroup({ commit, dispatch }, payload) {
+    const formData = new FormData();
+    payload.langs.forEach(el => {
+      formData.append(`${el._name}[title]`, el.title);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
+        if (el.brochure) {
+          formData.append(`${el._name}[brochure]`, el.brochure);
+        }
+        if (el.terms_conditions) {
+          formData.append(`${el._name}[terms_conditions]`, el.terms_conditions);
+        }
+      }
+    });
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      if (value != null) {
+        formData.append(key, value);
+      }
+    });
+    Object.entries(payload.location).forEach(entry => {
+      const [key, value] = entry;
+      if (value != null) {
+        formData.append(key, value);
+      }
+    });
+    // Object.entries(payload.biding).forEach(entry => {
+    //   const [key, value] = entry;
+    //   if (value != null) {
+    //     formData.append(key, value);
+    //   }
+    // });
     if (payload.image != null) {
       formData.append("image", payload.image);
     }
@@ -455,7 +538,7 @@ const actions = {
       .then(res => {
         if (res.status === 201) {
           commit("createAuctionFile", res.data.data);
-          dispatch("getAuctionFiles", { id });
+          // dispatch("getAuctionFiles", { id });
         }
       })
       .catch(err => {});
@@ -467,7 +550,6 @@ const actions = {
     deleteFile.then(res => {
         if (res.status === 200) {
           commit("deleteAuctionFile", res.data.data);
-          dispatch("getAuctionFiles", { id });
         }
       })
       .catch(err => {});
@@ -488,6 +570,7 @@ const actions = {
       .catch(err => {});
   },
   createAuctionImage({ commit, dispatch }, payload) {
+    console.log(payload);
     const id = payload.id;
     const formData = new FormData();
     formData.append("path", payload.path);
@@ -501,7 +584,7 @@ const actions = {
     createImage.then(res => {
         if (res.status === 201) {
           commit("createAuctionImage", res.data.data);
-          dispatch("getAuctionImages", { id });
+          // dispatch("getAuctionImages", { id });
         }
       })
       .catch(err => {});
@@ -513,7 +596,6 @@ const actions = {
     deleteImage.then(res => {
         if (res.status === 200) {
           commit("deleteAuctionImage", res.data.data);
-          dispatch("getAuctionImages", { id });
         }
       })
       .catch(err => {});

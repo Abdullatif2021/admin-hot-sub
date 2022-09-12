@@ -111,7 +111,7 @@
                   <b-card class="mb-4" no-body>
                 <b-card-body>
                   <b-card-title>{{$t('forms.attach')}}</b-card-title>
-                  <gallery-detail :containerClass="containerClass" :items="file_lists" />
+                  <gallery-detail :containerClass2="containerClass2" :containerClass3="containerClass3" :items="file_lists" />
                 </b-card-body>
               </b-card>
 
@@ -388,7 +388,8 @@ export default {
         isLoad: false,
         file_lists: [],
          attachments: [],
-        containerClass: "gallery_custom_container",
+        containerClass2: "gallery_custom_container",
+        containerClass3: "row social-image-row gallery",
       displayMode: "list",
       items: [],
       auction_form: {
@@ -554,6 +555,7 @@ return this.formatEndDate;
              new Object({
             id: el.id,
             link: el.path,
+            type: el.type,
             img:  el.path
           })
         )
@@ -561,14 +563,29 @@ return this.formatEndDate;
     },
      _File_List: function(newInfo) {
       newInfo.forEach(el => {
-        this.file_lists.push(
+         if(el.original_filename.length > 16){
+          this.file_lists.push(
+             new Object({
+            id: el.id,
+            type: el.type,
+            link: el.path,
+            img:  "/assets/img/products/file-img.png",
+            original_filename:el.original_filename.slice(0, 12)+ "..."
+          })
+        )
+          
+         }else{
+          this.file_lists.push(
              new Object({
             id: el.id,
             link: el.path,
             img:  "/assets/img/products/file-img.png",
-            original_filename: el.original_filename
+            original_filename:el.original_filename
           })
-        )
+          )
+         }
+        
+       
       })
 
     },

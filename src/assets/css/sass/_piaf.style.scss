@@ -415,6 +415,16 @@ hr {
 
 .list-item-heading {
   font-size: 1rem;
+  
+}
+.duration{
+  padding: 10px !important;
+}
+.list-item-title{
+  width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .main_image_uploader{
 
@@ -1341,7 +1351,7 @@ button {
     border-color: darken($theme-color-2, 10%);
   }
 }
-.toggle_btn_on{
+.toggle_btn_on_en{
   background: white;
   padding-left: 50px;
   border-radius: 17px;
@@ -1350,7 +1360,34 @@ button {
   padding-top: -7px;
   font-size: 12px;
 }
-.toggle_span_on{
+.toggle_btn_off_en{
+  background: white;
+  padding-left: 50px;
+  border-radius: 17px;
+  border: 1px solid #ad0000;
+  cursor: pointer;
+  padding-top: -7px;
+  font-size: 12px;
+}
+.toggle_btn_on_ar{
+  background: white;
+  padding-left: 50px;
+  border-radius: 17px;
+  border: 1px solid #23ad00;
+  cursor: pointer;
+  padding-top: -7px;
+  font-size: 12px;
+}
+.toggle_btn_off_ar{
+  background: white;
+  padding-left: 50px;
+  border-radius: 17px;
+  border: 1px solid #ad0000;
+  cursor: pointer;
+  padding-top: -7px;
+  font-size: 12px;
+}
+.toggle_span_on_en{
   height: 16px;
   width: 16px;
   background-color: #1ec200;
@@ -1362,16 +1399,7 @@ button {
   margin-top: 5px;
 
 }
-.toggle_btn_off{
-  background: white;
-  padding-left: 50px;
-  border-radius: 17px;
-  border: 1px solid #ad0000;
-  cursor: pointer;
-  padding-top: -7px;
-  font-size: 12px;
-}
-.toggle_span_off{
+.toggle_span_off_en{
   height: 16px;
   width: 16px;
   background-color: #c20000;
@@ -1379,6 +1407,30 @@ button {
   display: inline-block;
   margin: 0px;
   margin-left: -21px;
+  position: absolute;
+  margin-top: 5px;
+
+}
+.toggle_span_on_ar{
+  height: 16px;
+  width: 16px;
+  background-color: #1ec200;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0px;
+  margin-right: 5px;
+  position: absolute;
+  margin-top: 5px;
+
+}
+.toggle_span_off_ar{
+  height: 16px;
+  width: 16px;
+  background-color: #c20000;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0px;
+  margin-right: 5px;
   position: absolute;
   margin-top: 5px;
 
@@ -1392,6 +1444,7 @@ button {
   width: 34px;
   height: 34px;
   line-height: 34px;
+  text-align: center;
 
 
 
@@ -1447,6 +1500,45 @@ button {
     ::-webkit-scrollbar {
       width: 10px;
     }
+}
+.attach_g_container{
+  display: flex;
+    flex-direction: row;
+    border: 1px dotted #252525;
+    border-radius: 10px;
+    overflow-y: hidden;
+    overflow-x: auto;
+    max-width: 100%;
+}
+.attach_g_container::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+}
+
+.gallery_attach_container{
+    max-height: 150px;
+    display: flex;
+    width: 100%;
+    padding: 25px;
+    flex-direction: row;
+
+}
+.file_pic{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+    align-items: center;
+}
+.file_title{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.exrta_gallery { 
+  
+    width: 23%;
+    display: flex;
+    flex-direction: row;  
 }
 .top-right-button-container {
   float: right;
@@ -3247,6 +3339,19 @@ body.default-transition main {
   /* right: 0; */
   top: 0;
   margin: 100px;
+
+  @include respond-below(xs) {
+    padding: 0.35rem;
+  }
+}
+.product_btn{
+  width: 100%;
+  display: inline-block;
+}
+.card-top-buttons-2 {
+  
+  top: 0;
+  margin: 63px;
 
   @include respond-below(xs) {
     padding: 0.35rem;

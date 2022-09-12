@@ -459,7 +459,6 @@ export default {
           title: "Title",
           titleClass: "",
           dataClass: "list-item-heading",
-          width: "28%"
         },
 
         {
@@ -482,7 +481,7 @@ export default {
           sortField: "start_date",
           title: "Duration",
           titleClass: "",
-          dataClass: "list-item-heading",
+          dataClass: "list-item-heading duration",
           width: "15%"
         },
         {
@@ -517,8 +516,8 @@ export default {
         {
           name: "",
            callback: value => {
-            return `<b-button class="${value.active === 1 ? 'toggle_btn_on': 'toggle_btn_off'}" variant="primary">
-              <span class="${value.active === 1 ? 'toggle_span_on': 'toggle_span_off'}"></span>
+            return `<b-button class="${value.active === 1 ? `toggle_btn_on_${this.language}`: `toggle_btn_off_${this.language}`}" variant="primary">
+              <span class="${value.active === 1 ? `toggle_span_on_${this.language}`: `toggle_span_off_${this.language}`}"></span>
         </b-button>`;
 
           },

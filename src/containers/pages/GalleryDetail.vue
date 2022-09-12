@@ -1,17 +1,24 @@
 <template>
-  <div :class="containerClass">
-    <div class="row social-image-row gallery">
+<div :class="containerClass1">
+  <div :class="containerClass2">
+    <div :class="containerClass3">
       <b-colxx xxs="6" v-for="(thumb, thumbIndex) in items" :key="`thumb_${thumbIndex}`">
-      <div style="display: flex;flex-direction: column;" @click="open_link(thumb.link)">
+      <div  class="file_pic" >
+        <div class="position-absolute card-top-buttons-2"> 
+                        <b-button  variant="outline-white" class="icon-button">
+                          <i @click="$emit('showDeleteModel', thumb.id, thumb.type)" class="simple-icon-trash" />
+                        </b-button>
+                      </div>
                        <img
           class="img-fluid border-radius"
+          style="height: 100px;width: 100px;border-radius: 10px;"
           :src="thumb.img"
+          @click="open_link(thumb.link)"
           alt="thumbnail"
-          @click="onThumbClick(thumbIndex)"
         />
-        <div style="display: flex;justify-content: center;align-items: center;"> <p v-if="thumb.img != thumb.link">{{thumb.original_filename}}</p></div>
+        <div class="file_title"> <p v-if="thumb.img != thumb.link">{{thumb.original_filename}}</p></div>
        
-                    </div>
+      </div>
       </b-colxx>
     </div>
     <!-- <LightGallery
@@ -21,11 +28,11 @@
       @close="handleHide()"
     /> -->
   </div>
+</div>
 </template>
 
 <script>
 import { LightGallery } from "vue-light-gallery";
-
 const images = [
   "/assets/img/products/fruitcake.jpg",
   "/assets/img/products/napoleonshat.jpg",
@@ -56,7 +63,15 @@ export default {
     items: {
       
     },
-    containerClass: {
+    containerClass1: {
+      type: String,
+      default: ""
+    },
+    containerClass2: {
+      type: String,
+      default: ""
+    },
+    containerClass3: {
       type: String,
       default: ""
     },

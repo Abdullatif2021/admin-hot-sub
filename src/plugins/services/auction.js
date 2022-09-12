@@ -35,8 +35,8 @@ export const get_areas = async (params) =>{
 export const get_files = async (id) =>{
   return await axios.get(`${apiUrl}/auctions/files/${id}`)
 }
-export const create_file = async ({id, formData}) =>{
-  return await axios.post(`${apiUrl}/auctions/files/${id}`, formData, {})
+export const create_file = ({id, formData}) =>{
+  return axios.post(`${apiUrl}/auctions/files/${id}`, formData, {})
 }
 export const delete_file = async ({id, fileId}) =>{
   return await axios.delete(`${apiUrl}/auctions/files/${id}/${fileId}`)
@@ -44,8 +44,8 @@ export const delete_file = async ({id, fileId}) =>{
 export const get_images = async (id) =>{
   return await axios.get(`${apiUrl}/auctions/images/${id}`)
 }
-export const create_image = async (id) =>{
-  return await axios.post(`${apiUrl}/auctions/images/${id}`, formData, {})
+export const create_image = ({id, formData}) =>{
+  return axios.post(`${apiUrl}/auctions/images/${id}`, formData, {})
 }
 export const delete_image = async ({id, imgId}) =>{
   return await axios.delete(`${apiUrl}/auctions/images/${id}/${imgId}`)

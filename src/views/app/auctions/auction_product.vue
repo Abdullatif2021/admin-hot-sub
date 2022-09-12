@@ -8,7 +8,7 @@
         @add_new="add_newCustomField"
         :reload="true"
         :transaction_filter="false"
-        :title="auctionId ? $t('forms.editAuction') : $t('forms.createAuction')"
+        :title="auctionId ? $t('forms.editProduct') : $t('forms.createProduct')"
       ></datatable-heading>
       <template v-if="isLoadAuction || _isLoadSubCategory">
         <b-card v-if="!auctionId" class="mb-4">
@@ -190,60 +190,7 @@
                           </div>
                         </b-form-group>
                       </b-colxx>
-                       <!-- <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="bro">{{
-                        $t("forms.brochure")
-                      }}</label>
-                      <b-form-input
-                        style="display: none;"
-                        :state="!$v.files_form.brochure.$error"
-                        v-model="$v.files_form.brochure.$model"
-                      />
-                      <b-input-group id="bro" class="mb-3">
-                        <b-form-file
-                          accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
-                          :placeholder="$t('input-groups.change-brochure')"
-                          v-model="brochure"
-                        ></b-form-file>
-                      </b-input-group>
-
-                      <b-form-invalid-feedback
-                        v-if="!$v.files_form.brochure.required"
-                        >{{
-                          $t("forms.choose-brochure-message")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="cond">{{
-                        $t("forms.terms_conditions")
-                      }}</label>
-                      <input
-                        style="display: none;"
-                        :state="!$v.files_form.terms_conditions.$error"
-                        v-model="$v.files_form.terms_conditions.$model"
-                      />
-                      <b-input-group id="cond" class="mb-3">
-                        <b-form-file
-                          accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
-                          :placeholder="
-                            $t('input-groups.change-terms_conditions')
-                          "
-                          v-model="terms_conditions"
-                        ></b-form-file>
-
-                      </b-input-group>
-                      <b-form-invalid-feedback
-                        v-if="!$v.files_form.terms_conditions.required"
-                        >{{
-                          $t("forms.choose-terms_conditions-message")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx> -->
+                   
                   <b-colxx class="main_image_uploader" sm="12"><b-colxx sm="6">
                     <b-form-group>
                       <label class="form-group-label" for="bro">{{
@@ -365,7 +312,7 @@
                 </div>
               </tab>
               <tab
-              v-if="!is_group_auction"
+           
               :name="$t('forms.binig-info')"
                :validate="validateStep3"
               >
@@ -511,24 +458,8 @@
                 :validate="validateStep4"
                 :submit="onGridFormSubmit"
               >
-                <div v-if="is_group_auction" class="wizard-basic-step">
-                <b-row class="add_container">
-                  <b-colxx sm="12">
-                    <b-form-group>
-                        <vue-dropzone
-                          ref="myVueDropzone"
-                          id="dropzone"
-                          :options="attachDropzoneOptions"
-                          @vdropzone-files-added="attachAdded"
-                          @vdropzone-removed-file="attachRemoved"
-                        ></vue-dropzone>
-                      </b-form-group>
-                  </b-colxx>
-                
-                   </b-row>
-                   
-                </div>
-                <div v-else class="wizard-basic-step">
+             
+                <div  class="wizard-basic-step">
                 <b-row class="add_container">
                   <b-colxx sm="10">
                     <b-form-group  :label="$t(`forms.select-new-custom`)" class="form-group-label">
@@ -987,50 +918,6 @@
                   >
                 </b-row>
               </b-card>
-              <b-card class="mb-4 auction_card" :title="$t('forms.products')">
-     <template>
-    <b-row>
-      <b-colxx xxs="12">
-        <div class="product_btn">
-          <b-button
-            variant="primary"
-            style="float: right;"
-            class="top-right-button"
-            @click="add_New()"
-            >Add new</b-button
-          >
-        </div>
-        <template v-if="_productsProcessing">
-        
-        <vuetable
-            table-height="360px"
-            ref="products_vuetable"
-            class="table-divided order-with-arrow"
-            :api-mode="false"
-            :fields="products_fields"
-        >
-        <template slot="actions" slot-scope="props">
-            <b-button
-              variant="outline-theme-3"
-              id="edit"
-              class="icon-button-auction"
-              @click="modify( props.rowData, props.rowData.id, props.rowData.auction_type_value )">
-              <i  class="simple-icon-arrow-right"></i>
-            </b-button>
-        </template>
-        </vuetable>
-      </template>
-        <template v-else>
-          <div class="loading"></div>
-        </template>
-      </b-colxx>
-    </b-row>
-    </template>
-    <!-- <template v-else>
-        <div class="loading"></div>
-    </template> -->
-
-              </b-card>
               <b-card class="mb-4 auction_card" :title="$t('forms.location')">
                 <b-row>
                   <b-colxx sm="6">
@@ -1281,585 +1168,6 @@
               </b-card>
             </b-colxx>
           </b-row>
-
-          <!-- <b-tabs card no-fade>
-
-            <b-tab
-              title-item-class="w-25 text-center"
-              :title="$t(`forms.basic_details`)"
-              active
-              @click="isLoadCustomField = false"
-            >
-              <b-form >
-                <b-row>
-                  <b-colxx sm="12">
-                    <div
-                      v-for="(lang, index) in $v.lang_form.$each.$iter"
-                      :key="index"
-                    >
-                      <b-form-group>
-                        <label class="form-group-label" for="Name">{{
-                          $t(`forms.${lang._name.$model}_title`)
-                        }}</label>
-                        <b-form-input
-                          id="Name"
-                          type="text"
-                          v-model="lang.title.$model"
-                          :state="!lang.title.$error"
-                        />
-                        <b-form-invalid-feedback v-if="!lang.title.required">{{
-                          $t(`forms.${lang._name.$model}_massege`)
-                        }}</b-form-invalid-feedback>
-                      </b-form-group>
-                      <b-form-group>
-                        <label class="form-group-label" for="desc">{{
-                          $t(`forms.${lang._name.$model}_desc`)
-                        }}</label>
-                        <b-form-input
-                          id="desc"
-                          type="text"
-                          v-model="lang.description.$model"
-                        />
-                      </b-form-group>
-                    </div>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="desc">{{
-                        $t("forms.deposit")
-                      }}</label>
-                      <b-form-input
-                        type="number"
-                        :state="!$v.gridForm.deposit.$error"
-                        v-model="$v.gridForm.deposit.$model"
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.gridForm.deposit.required"
-                        >{{
-                          $t("forms.deposit_message")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="min">{{
-                        $t("forms.minimum_price")
-                      }}</label>
-                      <b-form-input
-                        id="min"
-                        type="number"
-                        :state="!$v.gridForm.minimum_paid.$error"
-                        v-model="$v.gridForm.minimum_paid.$model"
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.gridForm.minimum_paid.required"
-                        >{{ $t("forms.min_price") }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="open">{{
-                        $t("forms.opening_price")
-                      }}</label>
-                      <b-form-input
-                        id="open"
-                        type="number"
-                        :state="!$v.gridForm.opening_price.$error"
-                        v-model="$v.gridForm.opening_price.$model"
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.gridForm.opening_price.required"
-                        >{{ $t("forms.open_price") }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="cate">{{
-                        $t("forms.category")
-                      }}</label>
-                      <b-form-select
-                        id="cate"
-                        @change="getSubCateory"
-                        :state="!$v.gridForm.category_id.$error"
-                        v-model="$v.gridForm.category_id.$model"
-                        :options="categoryIdOptions"
-                        plain
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.gridForm.category_id.required"
-                        >{{
-                          $t("forms.category_type_select")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="sub">{{
-                        $t("forms.sub-category")
-                      }}</label>
-                      <b-form-select
-                        id="sub"
-                        :state="!$v.gridForm.sub_category_id.$error"
-                        v-model="$v.gridForm.sub_category_id.$model"
-                        :options="subCategoryOptions"
-                        plain
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.gridForm.sub_category_id.required"
-                        >{{
-                          $t("forms.category_type_select")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="3">
-                    <b-form-group>
-                      <label class="form-group-label" for="side">{{
-                        $t("forms.auction_side")
-                      }}</label>
-                      <b-form-select
-                        id="side"
-                        :state="!$v.gridForm.auction_side.$error"
-                        v-model="$v.gridForm.auction_side.$model"
-                        :options="auctionSideOptions"
-                        plain
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.gridForm.auction_side.required"
-                        >{{
-                          $t("forms.auction_side_message")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="3">
-                    <b-form-group>
-                      <label class="form-group-label" for="owner">{{
-                        $t("forms.auction_owner")
-                      }}</label>
-                      <b-form-select
-                        id="owner"
-                        :state="!$v.gridForm.auction_owner.$error"
-                        v-model="$v.gridForm.auction_owner.$model"
-                        :options="auctionOwnerOptions"
-                        plain
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.gridForm.auction_owner.required"
-                        >{{
-                          $t("forms.auction_owner_message")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="area">{{
-                        $t("forms.area")
-                      }}</label>
-                      <b-form-select
-                        id="area"
-                        :state="!$v.gridForm.area_id.$error"
-                        v-model="$v.gridForm.area_id.$model"
-                        :options="areaOptions"
-                        @change="get_cities()"
-                        plain
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.gridForm.area_id.required"
-                        >{{ $t("forms.area-message") }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="start">{{
-                        $t("forms.start_date")
-                      }}</label>
-                      <datepicker
-                        id="start"
-                        style="width: 100%;"
-                        type="datetime"
-                        value-type="YYYY-MM-DD HH:mm:ss"
-                        v-model="$v.gridForm.start_date.$model"
-                        @change="selectedDate('start')"
-                      >
-                      </datepicker>
-
-                      <div
-                        :class="{
-                          'invalid-feedback': true,
-                          'd-block':
-                            $v.gridForm.start_date.$error &&
-                            !$v.gridForm.start_date.required
-                        }"
-                      >
-                        {{ $t("forms.start_date_req") }}
-                      </div>
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="city">{{
-                        $t("forms.city")
-                      }}</label>
-                      <b-form-select
-                        id="city"
-                        :state="!$v.gridForm.city_id.$error"
-                        v-model="$v.gridForm.city_id.$model"
-                        :options="cityOptions"
-                        plain
-                      />
-                      <b-form-invalid-feedback
-                        v-if="!$v.gridForm.city_id.required"
-                        >{{ $t("forms.city-message") }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="end">{{
-                        $t("forms.end_date")
-                      }}</label>
-                      <datepicker
-                        id="id"
-                        style="width: 100%;"
-                        type="datetime"
-                        value-type="YYYY-MM-DD HH:mm:ss"
-                        v-model="$v.gridForm.end_date.$model"
-                        @change="selectedDate('end')"
-                      >
-                      </datepicker>
-                      <div
-                        :class="{
-                          'invalid-feedback': true,
-                          'd-block':
-                            $v.gridForm.end_date.$error &&
-                            !$v.gridForm.end_date.required
-                        }"
-                      >
-                        {{ $t("forms.end_date_req") }}
-                      </div>
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="maps">{{
-                        $t("forms.location")
-                      }}</label>
-                      <googleMaps
-                        id="maps"
-                        :location="location"
-                        @select_location="set_location"
-                      />
-                      <b-form-input
-                        style="display: none;"
-                        :state="!$v.gridForm.latitude.$error"
-                        v-model="$v.gridForm.latitude.$model"
-                      />
-
-                      <b-form-invalid-feedback
-                        v-if="!$v.gridForm.latitude.required"
-                        >{{ $t("forms.location_req") }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="img">{{
-                        $t("forms.image")
-                      }}</label>
-                      <b-form-input
-                        style="display: none;"
-                        :state="!$v.files_form.image.$error"
-                        v-model="$v.files_form.image.$model"
-                      />
-                      <b-input-group id="img" class="mb-3">
-                        <b-form-file
-                          accept="image/*"
-                          :placeholder="image_basename"
-                          v-model="image"
-                        ></b-form-file>
-
-                        <b-input-group-append>
-                          <b-button
-                            :disabled="!$v.files_form.image.$model"
-                            @click="open($v.files_form.image.$model)"
-                            variant="light default"
-                            >{{ $t("input-groups.show") }}</b-button
-                          >
-                        </b-input-group-append>
-                      </b-input-group>
-                      <div class="image-review-show">
-                        <img
-                          v-if="$v.files_form.image.$model"
-                          style="
-                                  max-width: 100%;
-                                  max-height: 100%;
-                              "
-                          :src="image ? imgUrl : $v.files_form.image.$model"
-                          alt="Auction image"
-                        />
-                        <span
-                          v-if="$v.files_form.image.$model"
-                          :class="
-                            language === 'ar'
-                              ? 'delete-span-ar'
-                              : 'delete-span-en'
-                          "
-                        >
-                          <i @click="delete_img" class="simple-icon-trash"></i>
-                        </span>
-                      </div>
-                      <b-form-invalid-feedback
-                        v-if="!$v.files_form.image.required"
-                        >{{
-                          $t("forms.choose-image-message")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="bro">{{
-                        $t("forms.brochure")
-                      }}</label>
-                      <b-form-input
-                        style="display: none;"
-                        :state="!$v.files_form.brochure.$error"
-                        v-model="$v.files_form.brochure.$model"
-                      />
-                      <b-input-group id="bro" class="mb-3">
-                        <b-form-file
-                          accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
-                          :placeholder="$t('input-groups.change-brochure')"
-                          v-model="brochure"
-                        ></b-form-file>
-                        <b-input-group-append>
-                          <b-button
-                            @click="open($v.files_form.brochure.$model)"
-                            variant="light default"
-                            :disabled="files_form.brochure == null"
-                            >{{ $t("OPEN") }}</b-button
-                          >
-                        </b-input-group-append>
-                      </b-input-group>
-
-                      <b-form-invalid-feedback
-                        v-if="!$v.files_form.brochure.required"
-                        >{{
-                          $t("forms.choose-brochure-message")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx sm="6">
-                    <b-form-group>
-                      <label class="form-group-label" for="cond">{{
-                        $t("forms.terms_conditions")
-                      }}</label>
-                      <input
-                        style="display: none;"
-                        :state="!$v.files_form.terms_conditions.$error"
-                        v-model="$v.files_form.terms_conditions.$model"
-                      />
-                      <b-input-group id="cond" class="mb-3">
-                        <b-form-file
-                          accept="application/pdf,.doc,.txt,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf"
-                          :placeholder="
-                            $t('input-groups.change-terms_conditions')
-                          "
-                          v-model="terms_conditions"
-                        ></b-form-file>
-                        <b-input-group-append>
-                          <b-button
-                            @click="open($v.files_form.terms_conditions.$model)"
-                            variant="light default"
-                            :disabled="files_form.terms_conditions == null"
-                            >{{ $t("OPEN") }}</b-button
-                          >
-                        </b-input-group-append>
-                      </b-input-group>
-                      <b-form-invalid-feedback
-                        v-if="!$v.files_form.terms_conditions.required"
-                        >{{
-                          $t("forms.choose-terms_conditions-message")
-                        }}</b-form-invalid-feedback
-                      >
-                    </b-form-group>
-                  </b-colxx>
-                </b-row>
-                <b-button
-                  :disabled="!disabled || auction.auction_type_value != 2"
-                  type="submit"
-                  :variant="
-                    auction.auction_type_value != 2 ? 'light' : 'primary'
-                  "
-                  class="mt-4"
-                  >{{ $t("forms.save") }}</b-button
-                >
-              </b-form>
-            </b-tab>
-            <b-tab
-              title-item-class="w-25 text-center"
-              :title="$t('forms.custom_field')"
-              @click="open_custom_tab"
-            >
-              <div class="wizard-basic-step">
-                <template v-if="_isLoadCustomField || _isLoadAuctions">
-                  <div
-                    style="display: flex;"
-                    v-for="(field, index) in custom_fields"
-                    :key="index"
-                  >
-                    <b-colxx :sm="field.type === 'STRING' ? 12 : 6">
-                      <b-form-group
-                        :label="
-                          language === 'ar'
-                            ? field.locales.ar.name
-                            : field.locales.en.name
-                        "
-                      >
-                        <b-form-input
-                          v-if="language === 'en'"
-                          :type="field.type === 'INT' ? 'number' : 'text'"
-                          v-model="field.values[0].locales.en.value"
-                        />
-                        <b-form-input
-                          v-if="language === 'ar'"
-                          :type="field.type === 'INT' ? 'number' : 'text'"
-                          v-model="field.values[0].locales.ar.value"
-                        />
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx v-if="field.type === 'INT'" sm="6">
-                      <b-form-group
-                        class="form-group-label"
-                        :label="$t('forms.unit')"
-                      >
-                        <b-form-input
-                          type="text"
-                          v-model="field.values[0].locales.en.unit"
-                        />
-                      </b-form-group>
-                    </b-colxx>
-                  </div>
-                  <b-button
-                    :disabled="!disabled || auction.auction_type_value != 2"
-                    type="submit"
-                    @click="editCustomValue('edit')"
-                    :variant="
-                      auction.auction_type_value != 2 ? 'light' : 'primary'
-                    "
-                    class="mt-4"
-                    >{{ $t("forms.save") }}</b-button
-                  >
-                </template>
-                <template v-else>
-                  <div class="loading"></div>
-                </template>
-              </div>
-            </b-tab>
-            <b-tab
-              title-item-class="w-25 text-center"
-              :title="$t('forms.preview-requests')"
-              @click="get_review_request"
-            >
-              <div class="wizard-basic-step">
-                <template v-if="_isLoadAuctions">
-                  <vuetable
-                    ref="vuetable"
-                    class="table-divided order-with-arrow"
-                    :api-mode="false"
-                    :reactive-api-url="true"
-                    :fields="fields"
-                    pagination-path
-                  >
-                    <template slot="actions" slot-scope="props">
-                      <b-button
-                        variant="outline-theme-3"
-                        id="edit"
-                        :disabled="auction.auction_type_value != 2"
-                        class="icon-button"
-                        @click="
-                          open_modal(
-                            'requestReview',
-                            props.rowData.id,
-                            props.rowData.notes
-                          )
-                        "
-                      >
-                        <i class="simple-icon-pencil"></i>
-                        <b-tooltip
-                          target="edit"
-                          placement="top"
-                          :title="$t('forms.edit')"
-                        >
-                        </b-tooltip>
-                      </b-button>
-                    </template>
-                  </vuetable>
-                </template>
-                <template v-else>
-                  <div class="loading"></div>
-                </template>
-              </div>
-            </b-tab>
-            <b-tab
-              @click="
-                getAuctionImages({ id: auctionId }), (isLoadCustomField = false)
-              "
-              title-item-class="w-25 text-center"
-              :title="$t('forms.attach')"
-            >
-              <b-card class="mb-4" no-body>
-                <b-tabs card no-fade>
-                  <b-tab :title="$t('forms.images')" active>
-                    <template v-if="isLoadAuctionImages">
-                      <div style="display: grid;">
-                        <b-button
-                          v-b-modal.modalright
-                          variant="primary"
-                          style="margin: auto;margin-bottom: 17px;"
-                          size="lg"
-                          >{{ $t("survey.add-new") }}</b-button
-                        >
-                        <b-colxx lg="12" xl="12" class="mb-4">
-                          <recent-orders
-                            @deleteImage="deleteImage"
-                            :_ImageList="_Image_List"
-                          />
-                        </b-colxx>
-                      </div>
-                      <add-new-modal
-                        :enable="enable"
-                        :_sccussCreateImage="_createAuctionImage"
-                        @AddNewImage="createImage"
-                      ></add-new-modal>
-                    </template>
-                    <template v-else>
-                      <div class="loading"></div>
-                    </template>
-                  </b-tab>
-                  <b-tab
-                    @click="getAuctionFiles({ id: auctionId })"
-                    :title="$t('forms.files')"
-                  >
-                    <file
-                      :list="auctionFileList"
-                      :isLoad="_isLoadAuctions"
-                      @delete-file="delete_File"
-                      @create-file="create_File"
-                    />
-                  </b-tab>
-                </b-tabs>
-              </b-card>
-            </b-tab>
-          </b-tabs> -->
         </b-card>
       </template>
       <template v-else>
@@ -2118,10 +1426,10 @@ export default {
   data() {
     return {
       auctionId: null,
+      parantId: null,
       modallong:"modallong",
       _categoryId: null,
       password: null,
-      is_group_auction: false,
       containerClass1: "attach_g_container",
       containerClass2: "gallery_attach_container",
       containerClass3: "social-image-row gallery exrta_gallery",
@@ -2581,11 +1889,13 @@ area_id: {},
     }
   },
   created() {
+    
     this.language = getCurrentLanguage();
     this.auctionId = this.$route.query.id;
+    this.parantId = this.$route.query.p_id;
+    
     if (this.auctionId) {
       this.getAuction({ id: this.auctionId });
-      this.getAuctionProducts({parent_id: this.parantId})
       this.isEdit = true;
     } else {
       this.isLoadAuction = true;
@@ -2611,9 +1921,9 @@ area_id: {},
   methods: {
     ...mapActions([
       "getAuction",
+      "getAuctions2",
       "updateAuction",
       "getSubCategory",
-      "getAuctionProducts",
       "deleteTermsBrochure",
       "getCategories",
       "createCustomValue",
@@ -2776,17 +2086,10 @@ area_id: {},
             langs: this.lang_form,
             id: this.auctionId
           });
-        } else if (this.is_group_auction)  {
-          this.createAuctionGroup({
-            info: this.gridForm1,
-            location: this.locationForm,
-            // biding: this.gridForm,
-            image: this.image,
-            langs: this.lang_form
-          });
         }else {
           this.createAuction({
             info: this.gridForm1,
+            parent_id: this.parantId,
             location: this.locationForm,
             biding: this.gridForm,
             image: this.image,
@@ -2821,16 +2124,11 @@ this.isLoadCustomField = true
       this.formStep4.longitude = data.lng;
 
     },
-    add_New(){
+    modify(){
+      // router.push(`${adminRoot}/auctions/auction-product`);
       this.$router.push({
-        path: `${adminRoot}/auctions/auction-product`,
-        query: { p_id: this.auctionId}
-      });
-    },
-    modify(item, id, type){
-      this.$router.push({
-        path: `${adminRoot}/auctions/auction-product`,
-        query: { id: id}
+        path: `${adminRoot}/auctions/auction-product`
+       
       });
     },
     get_cities() {
@@ -2912,7 +2210,7 @@ this.isLoadCustomField = true
       this.updateAuctionMainImage({id: this.auctionId, img: this.mainImage ? this.mainImage[0] : null})
     },
     createAttachment(){
-        if(this.is_group_auction){
+        if(this.parent_id){
           this.$v.$touch();
       this.$v.attach_form.$touch();
 
@@ -2955,8 +2253,8 @@ this.isLoadCustomField = true
           this.createAuctionFile({ info: this.$v.attach_form.$model, path: this.file ? this.file[0] : null, id: this.auctionId });
       }
       }
-
-        }
+    }
+        
         
     },
     get_SubCat(val){
@@ -3163,11 +2461,9 @@ this.date_check();
       "_isLoadCustomField",
       "_auctionOwner",
       "_createAuctionFile",
-      "_productsProcessing",
       "_isLoadAuctions",
       "_deleteAuctionFile",
       "_auctionReviewRequests",
-      "_auctionProducts",
       "_areas",
       "_auctionSide",
       "_isCustomValueCreated",
@@ -3234,6 +2530,7 @@ this.date_check();
         el.terms_conditions = newInfo.locales[el._name].terms_conditions;
       });
       this.image_basename = newInfo.image_basename;
+      // this.$refs.products_vuetable.setData(val.products);
       this.formStep1.category_id = newInfo.category_id;
       this.formStep1.sub_category_id = newInfo.sub_category_id;
       this.selected_sub_category = newInfo.sub_category_id;
@@ -3412,11 +2709,11 @@ this.date_check();
          el.description = null;
       })
              this.$v.$reset();
-             if (this.is_group_auction){
-              router.push(`${adminRoot}/auctions`);
+            //  if (this.is_group_auction){
+            //   router.push(`${adminRoot}/auctions`);
     
                
-            }   
+            // }   
             this.file_lists = []
             this.getAuctionImages({ id: this.auctionId })
       this.getAuctionFiles({ id: this.auctionId })
@@ -3435,12 +2732,8 @@ this.date_check();
          el.title = null;
          el.description = null;
       });
-             this.$v.$reset();
-             if (this.is_group_auction){
+             this.$v.$reset();    
               router.push(`${adminRoot}/auctions`);
-    
-               
-            }  
             this.file_lists = []
             this.getAuctionImages({ id: this.auctionId })
       this.getAuctionFiles({ id: this.auctionId }) 
@@ -3455,11 +2748,6 @@ this.date_check();
         );
       });
     },
-    _auctionProducts: function(val){
-            this.$refs.products_vuetable.setData(val);
-    },
-
-
     _areas: function(val) {
 
       val.forEach(option => {
@@ -3566,7 +2854,7 @@ this.date_check();
       );
       this.enable_custom_save_btn= false;
 
-       router.push(`${adminRoot}/auctions`);
+       router.push(`${adminRoot}/auctions/auction?id=${this.parantId}`);
     },
     image: function(val) {
       if (val) {

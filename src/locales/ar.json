@@ -514,7 +514,10 @@
   "forms": {
     "select-new-custom": "اختر او اضف حقل مخصص جديد",
     "send": "ارسال",
+    "deleteAttachQuestion": "هل انت متاكد بانك تريد حذف هذا المرفق؟",
+    "products": "المنتجات",
     "en_lang": "اللغة الانجليزية",
+    "select_area": "الرجاء اختيار المنطقة اولا",
     "auction_no": "No.",
     "auction_no_message": "الرجاء إدخال رقم المزاد",
     "ar_lang": "اللغة العربية",
@@ -798,6 +801,7 @@
     "basic": "Basic",
     "modal-title": "Modal title",
     "modal-lang-title": "تغيير اللغة",
+    "modal-delete-auction-attach": "حذف المرفق",
     "modal-auction-details": "تفاصيل المزاد",
     "modal-active-title": "تفعيل الحساب",
     "modal-active-category-title": "تفعيل الصنف",

@@ -51,6 +51,7 @@ export default {
     currentUser: isAuthGuardActive ? getCurrentUser() : currentUser,
     loginError: null,
     processing: false,
+    loginProcessing: false,
     forgotMailSuccess: null,
     usersList: null,
     ListActions: null,
@@ -82,6 +83,7 @@ export default {
     ListActions: state => state.ListActions,
     UserInfo: state => state.UserInfo,
     _getCountries: state => state.get_Countries,
+    _loginProcessing: state => state.loginProcessing,
     _AttachProcessing: state => state.AttachProcessing,
     _phoneVerification: state => state.phoneVerification,
     _identityVerification: state => state.identityVerification,
@@ -133,6 +135,10 @@ export default {
     },
     setProcessing(state, payload) {
       state.processing = payload;
+      state.loginError = null;
+    },
+    setLoginProcessing(state, payload) {
+      state.loginProcessing = payload;
       state.loginError = null;
     },
     setAttachProcessing(state, payload) {
@@ -215,7 +221,7 @@ export default {
   actions: {
     login({ commit, dispatch }, payload) {
       commit("clearError");
-      commit("setProcessing", true);
+      commit("setLoginProcessing", true);
       const login = login_user({
         username: payload.email,
         password: payload.password
@@ -237,7 +243,7 @@ export default {
                   ? setDirection("rtl")
                   : setDirection("ltr");
 
-                commit("setProcessing", false);
+                commit("setLoginProcessing", false);
               } else {
                 commit("getItemError", "error:getItem");
               }
@@ -246,7 +252,7 @@ export default {
         })
         .catch(error => {
           setCurrentUser(null);
-          commit("setProcessing", false);
+          commit("setLoginProcessing", false);
 
           commit("setError", error.message);
         });

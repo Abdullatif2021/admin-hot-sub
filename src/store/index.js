@@ -9,14 +9,13 @@ import block from "./modules/block";
 import user from "./modules/user";
 import pages from "./modules/pages";
 import faq from "./modules/faq";
-import test from "./modules/test";
 import settings from "./modules/settings";
 import { setCurrentLanguage } from "../utils";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
+  state: {}, 
   mutations: {
     changeLang(state, payload) {
       app.$i18n.locale = payload;
@@ -35,7 +34,6 @@ export default new Vuex.Store({
     auction,
     categories,
     faq,
-    test,
     settings,
     pages
   }
