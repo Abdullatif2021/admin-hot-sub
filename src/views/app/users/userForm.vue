@@ -1,5 +1,381 @@
 <template>
-  <div>
+<div>
+  <div v-if="isUserForm">
+    <template v-if="processing">
+    <b-row>
+      <b-colxx xxs="12">
+          <h1>{{gridForm.first_name}} {{gridForm.last_name}}</h1>
+          <div v-if="add_attach" class="top-right-button-container">
+            <b-button
+              variant="primary"
+              size="lg"
+              class="top-right-button"
+              @click="add_New()"
+              >{{ $t('todo.add-new-attach') }}</b-button
+            >
+          </div>
+          <piaf-breadcrumb />
+          <b-tabs nav-class="separator-tabs ml-0 mb-5" content-class="tab-content" :no-fade="true">
+              <b-tab @click="
+                  (add_attach = false),
+                    (showFilter = false),
+                    (add_Attachment = false),
+                    selectedTab === 'basicDetails'
+                "  :title="$t('pages.details')">
+                <b-form @submit.prevent="onGridFormSubmit">
+                  <b-row>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.firstname')">
+                        <b-form-input
+                          type="text"
+                          :state="!$v.gridForm.first_name.$error"
+                          v-model="$v.gridForm.first_name.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.first_name.required"
+                          >{{
+                            $t("forms.first_name_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.secondName')">
+                        <b-form-input
+                          type="text"
+                          :state="!$v.gridForm.second_name.$error"
+                          v-model="$v.gridForm.second_name.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.second_name.required"
+                          >{{
+                            $t("forms.second_name_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.middleName')">
+                        <b-form-input
+                          type="text"
+                          :state="!$v.gridForm.middle_name.$error"
+                          v-model="$v.gridForm.middle_name.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.middle_name.required"
+                          >{{
+                            $t("forms.middle_name_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.lastname')">
+                        <b-form-input
+                          type="text"
+                          :state="!$v.gridForm.last_name.$error"
+                          v-model="$v.gridForm.last_name.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.last_name.required"
+                          >{{
+                            $t("forms.last_name_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="12">
+                      <b-form-group :label="$t('forms.email')">
+                        <b-form-input
+                          type="email"
+                          :state="!$v.gridForm.email.$error"
+                          v-model="$v.gridForm.email.$model"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.email.required"
+                          >{{
+                            $t("forms.email_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx v-if="!userId" sm="12">
+                      <b-form-group :label="$t('forms.password')">
+                        <b-form-input
+                          type="password"
+                          v-model.trim="$v.gridForm.password.$model"
+                          :state="!$v.gridForm.password.$error"
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.password.required"
+                          >{{ $t("forms.pass_filed") }}</b-form-invalid-feedback
+                        >
+                        <b-form-invalid-feedback
+                          v-else-if="!$v.gridForm.password.minLength"
+                          >{{ $t("forms.pass_min") }}</b-form-invalid-feedback
+                        >
+                        <b-form-invalid-feedback
+                          v-else-if="!$v.gridForm.password.maxLength"
+                          >{{ $t("forms.pass_max") }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+
+                    <b-colxx sm="12">
+                      <label>{{ $t("forms.phone_number") }}</label>
+                    </b-colxx>
+                    <b-colxx sm="12">
+                      <b-input-group class="mb-3">
+                        <b-input-group-prepend is-text>
+                          <input
+                            :disabled="gridForm.phone_number_confirmed === 1"
+                            type="checkbox"
+                            @click="phone_comfirm()"
+                            :checked="gridForm.phone_number_confirmed"
+                          />
+                        </b-input-group-prepend>
+                        <b-form-input
+                          type="number"
+                          :state="!$v.gridForm.phone_number.$error"
+                          v-model="$v.gridForm.phone_number.$model"
+                        />
+
+                        <b-form-invalid-feedback
+                          style="margin-top: 25px;"
+                          v-if="!$v.gridForm.phone_number.required"
+                          >{{
+                            $t("forms.phonenumber_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-input-group>
+                    </b-colxx>
+                    <b-colxx sm="12">
+                      <label>{{ $t("forms.identity_number") }}</label>
+                    </b-colxx>
+                    <b-colxx sm="12">
+                      <b-input-group class="mb-3">
+                        <b-input-group-prepend is-text>
+                          <input
+                            :disabled="
+                              gridForm.identity_verfied === 1 ||
+                                gridForm.identity_number == null
+                            "
+                            type="checkbox"
+                            @click="identity_comfirm()"
+                            :checked="gridForm.identity_verfied"
+                          />
+                        </b-input-group-prepend>
+                        <b-form-input
+                          type="number"
+                          :state="!$v.gridForm.identity_number.$error"
+                          v-model="$v.gridForm.identity_number.$model"
+                        />
+                        <b-form-invalid-feedback
+                          style="margin-top: 25px;"
+                          v-if="!$v.gridForm.identity_number.required"
+                          >{{
+                            $t("forms.identity_number_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-input-group>
+                    </b-colxx>
+
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.nationality')">
+                        <b-form-select
+                          :state="!$v.gridForm.nationality.$error"
+                          v-model="$v.gridForm.nationality.$model"
+                          :options="nationalityOptions"
+                          plain
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.nationality.required"
+                          >{{
+                            $t("forms.nationality_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.country')">
+                        <b-form-select
+                          :state="!$v.gridForm.country.$error"
+                          v-model="$v.gridForm.country.$model"
+                          :options="countryOptions"
+                          plain
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.country.required"
+                          >{{
+                            $t("forms.country_filed")
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+
+                    <b-colxx v-if="!userId" sm="6">
+                      <b-form-group :label="$t('forms.role')">
+                        <b-form-select
+                          :state="!$v.gridForm.role.$error"
+                          v-model="$v.gridForm.role.$model"
+                          :options="roleOptions"
+                          plain
+                        />
+                        <b-form-invalid-feedback
+                          v-if="!$v.gridForm.role.required"
+                          >{{ $t("forms.role_filed") }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group :label="$t('forms.dob')">
+                        <datepicker
+                          :bootstrap-styling="true"
+                          v-model="$v.gridForm.dob.$model"
+                          @selected="selectedDate()"
+                        ></datepicker>
+                        <div
+                          :class="{
+                            'invalid-feedback': true,
+                            'd-block':
+                              $v.gridForm.dob.$error &&
+                              !$v.gridForm.dob.required
+                          }"
+                        >
+                          {{ $t("forms.date_filed") }}
+                        </div>
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx v-if="userId" sm="6">
+               
+                    
+                      <b-form-group :label="$t('forms.role')">
+                        <p class="mb-3" style="border: 1px dotted;border-radius: 10px;padding: 9px;">{{gridForm.role}}</p>
+                        <!-- <b-form-input
+                          type="text"
+                          readonly
+                          v-model="gridForm.role"
+                        ></b-form-input> -->
+                      </b-form-group>
+                    </b-colxx>
+                    <b-colxx sm="6">
+                      <b-form-group v-if="userId" :label="$t('forms.active')">
+                        <b-form-select
+                          selected
+                          v-model="gridForm.active"
+                          :options="activeOptions"
+                          plain
+                        />
+                      </b-form-group>
+                    </b-colxx>
+                  </b-row>
+
+                  <b-button
+                    :disabled="enable"
+                    type="submit"
+                    variant="primary"
+                    class="mt-4"
+                    >{{ $t("forms.save") }}</b-button
+                  >
+                </b-form>
+              </b-tab>
+              <b-tab @click="
+                  open_attach_tab(),
+                    (add_attach = true),
+                    (add_Attachment = true),
+                    selectedTab === 'attachment'
+                " :title="$t(`forms.attach`)">
+                   <b-colxx xxs="12">
+                  <template v-if="_AttachProcessing">
+                    <vuetable
+                      ref="vuetable"
+                      class="table-divided order-with-arrow"
+                      :api-mode="false"
+                      :reactive-api-url="true"
+                      :fields="fields"
+                      @vuetable:row-clicked="rowClicked"
+                      pagination-path
+                    >
+                      <template slot="actions" slot-scope="props">
+                        <b-button
+                          id="open"
+                          class="icon-button"
+                          @click="open_attach(props.rowData)"
+                        >
+                          <i class="simple-icon-arrow-right-circle"></i>
+                          <b-tooltip
+                            target="open"
+                            placement="left"
+                            :title="$t('forms.open_tooltip')"
+                          >
+                          </b-tooltip>
+                        </b-button>
+                        <b-button
+                        v-if="props.rowData.verfied !== 1"
+                          id="activate"
+                          class="icon-button"
+                          @click="open_verfiy(props.rowData)"
+                        ><i class="iconsminds-yes"></i>
+                          <b-tooltip
+                            target="activate"
+                            placement="top"
+                            :title="$t('forms.activate_tooltip')"
+                          >
+                          </b-tooltip>
+                        </b-button>
+                        <b-button
+                          id="update"
+                          class="icon-button"
+                          @click="update_attach(props.rowData)"
+                        >
+                          <i class="iconsminds-gears"></i>
+                          <b-tooltip
+                            target="update"
+                            placement="bottom"
+                            :title="$t('forms.update_tooltip')"
+                          >
+                          </b-tooltip>
+                        </b-button>
+                        <b-button
+                          id="note"
+                          class="icon-button"
+                          @click="note_attach(props.rowData)"
+                        >
+                          <i class="simple-icon-pencil"></i>
+                          <b-tooltip
+                            target="note"
+                            placement="right"
+                            :title="$t('forms.note_tooltip')"
+                          >
+                          </b-tooltip>
+                        </b-button>
+                      </template>
+                    </vuetable>
+                  </template>
+                  <template v-else>
+                    <div class="loading"></div>
+                  </template>
+                </b-colxx>
+              </b-tab>
+              <b-tab @click="(add_attach = false), (add_Attachment = false),
+                    selectedTab === 'wallet' " :title="$t(`forms.wallet`)">
+                  <user_wallet
+                  @show_filter="show_filter"
+                  @hide_filter="hide_filter"
+                  :filter="filter"
+                  :userId="userId"
+                />
+              </b-tab>
+          </b-tabs>
+
+      </b-colxx>
+  </b-row>
+</template>
+<template v-else>
+          <div class="loading"></div>
+        </template>
+  </div>
+  <div v-if="!isUserForm">
     <datatable-heading
       :details="true"
       :show="false"
@@ -152,21 +528,7 @@
                     >
                   </b-form-group>
                 </b-colxx>
-                <!-- <b-colxx sm="6">
-                  <b-form-group :label="$t('forms.license_number')">
-                    <b-form-input
-                      type="text"
-                      :state="!$v.gridForm.license_number.$error"
-                      v-model="$v.gridForm.license_number.$model"
-                    />
-                    <b-form-invalid-feedback
-                      v-if="!$v.gridForm.license_number.required"
-                      >{{
-                        $t("forms.license_number_filed")
-                      }}</b-form-invalid-feedback
-                    >
-                  </b-form-group>
-                </b-colxx> -->
+            
                 <b-colxx sm="6">
                   <b-form-group :label="$t('forms.nationality')">
                     <b-form-select
@@ -265,11 +627,14 @@
         </template>
       </b-colxx>
     </b-row>
-    <b-row v-if="isUserForm">
+    <!-- <b-row v-if="isUserForm">
       <b-colxx xxs="12">
         <template v-if="processing">
           <b-card class="mb-4">
-            <b-tabs card no-fade>
+            <b-tabs 
+          nav-class="separator-tabs ml-0 mb-5"
+          content-class="tab-content"
+          :no-fade="true">
               <b-tab
                 @click="
                   (add_attach = false),
@@ -550,77 +915,7 @@
                 <template #title>
                   {{ $t(`forms.attach`) }}
                 </template>
-                <b-colxx xxs="12">
-                  <template v-if="_AttachProcessing">
-                    <vuetable
-                      ref="vuetable"
-                      class="table-divided order-with-arrow"
-                      :api-mode="false"
-                      :reactive-api-url="true"
-                      :fields="fields"
-                      @vuetable:row-clicked="rowClicked"
-                      pagination-path
-                    >
-                      <template slot="actions" slot-scope="props">
-                        <b-button
-                          id="open"
-                          class="icon-button"
-                          @click="open_attach(props.rowData)"
-                        >
-                          <i class="simple-icon-arrow-right-circle"></i>
-                          <b-tooltip
-                            target="open"
-                            placement="left"
-                            :title="$t('forms.open_tooltip')"
-                          >
-                          </b-tooltip>
-                        </b-button>
-                        <b-button
-                        v-if="props.rowData.verfied !== 1"
-                          id="activate"
-                          class="icon-button"
-                          @click="open_verfiy(props.rowData)"
-                        ><i class="iconsminds-yes"></i>
-                          <b-tooltip
-                            target="activate"
-                            placement="top"
-                            :title="$t('forms.activate_tooltip')"
-                          >
-                          </b-tooltip>
-                        </b-button>
-                        <b-button
-                          id="update"
-                          class="icon-button"
-                          @click="update_attach(props.rowData)"
-                        >
-                          <i class="iconsminds-gears"></i>
-                          <b-tooltip
-                            target="update"
-                            placement="bottom"
-                            :title="$t('forms.update_tooltip')"
-                          >
-                          </b-tooltip>
-                        </b-button>
-                        <b-button
-                          id="note"
-                          class="icon-button"
-                          @click="note_attach(props.rowData)"
-                        >
-                          <i class="simple-icon-pencil"></i>
-                          <b-tooltip
-                            target="note"
-                            placement="right"
-                            :title="$t('forms.note_tooltip')"
-                          >
-                          </b-tooltip>
-                        </b-button>
-                      </template>
-                    </vuetable>
-                  </template>
-                  <template v-else>
-                    <div class="loading"></div>
-                  </template>
-                </b-colxx>
+               
               </b-tab>
               <b-tab
                 title-item-class="w-30 text-center"
@@ -653,8 +948,9 @@
           <div class="loading"></div>
         </template>
       </b-colxx>
-    </b-row>
-    <b-modal
+    </b-row> -->
+  </div>
+  <b-modal
       id="note"
       ref="note"
       :title="$t('SEND_NOTE')"
@@ -736,7 +1032,7 @@
         }}</b-button>
       </template>
     </b-modal>
-  </div>
+</div>
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";

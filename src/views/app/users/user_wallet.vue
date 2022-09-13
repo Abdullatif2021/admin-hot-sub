@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row>
+    <!-- <b-row>
       <b-colxx xxs="12">
         <b-card class="mb-4" no-body>
           <b-tabs card no-fade>
@@ -40,7 +40,6 @@
             >
               <b-row>
                 <b-colxx xxs="12">
-                  <!-- <template v-if="_isLoadPages"> -->
                   <vuetable
                     ref="transaction_vuetable"
                     class="table-divided order-with-arrow"
@@ -61,15 +60,7 @@
                       </b-button>
                     </template>
                   </vuetable>
-                  <!-- <vuetable-pagination-bootstrap
-            class="mt-4"
-            ref="pagination"
-            @vuetable-pagination:change-page="onChangePage"
-          /> -->
-                  <!-- </template>
-                <template v-else>
-                  <div class="loading"></div>
-                </template> -->
+                
                 </b-colxx>
               </b-row>
             </b-tab>
@@ -80,7 +71,6 @@
             >
               <b-row>
                 <b-colxx xxs="12">
-                  <!-- <template v-if="_isLoadPages"> -->
                   <vuetable
                     ref="deposit_vuetable"
                     class="table-divided order-with-arrow"
@@ -88,36 +78,140 @@
                     :reactive-api-url="true"
                     :fields="deposit_fields"
                   >
-                    <!-- <template
-                   
-                    slot="actions"
-                    slot-scope="props"
-                  >
-                    <b-button
-                      variant="outline-theme-3"
-                      class="icon-button"
-                      @click="modify(props.rowData.id)"
-                    >
-                      <i class="simple-icon-settings"></i>
-                    </b-button>
-                  </template> -->
+      
                   </vuetable>
-                  <!-- <vuetable-pagination-bootstrap
-            class="mt-4"
-            ref="pagination"
-            @vuetable-pagination:change-page="onChangePage"
-          /> -->
-                  <!-- </template>
-                <template v-else>
-                  <div class="loading"></div>
-                </template> -->
+       
                 </b-colxx>
               </b-row>
             </b-tab>
           </b-tabs>
         </b-card>
       </b-colxx>
-    </b-row>
+    </b-row> -->
+    <b-row>
+      <b-colxx xxs="12">
+      <b-card class="mb-4" :title="$t('forms.wallet')">
+                        <b-card-body>
+
+                    <div class="wallet_container">
+                      <div class="wallet_el">
+                         <!-- <p class="text-muted text-small mb-2">
+                      {{ $t('forms.total_balance') }}
+                    </p> -->
+                    <img src="/assets/img/landing-page/account.svg" style="margin: 6px;"  alt="Image" width="30" height="30" />
+                    <p class="mb-3 wallet_value">{{ wallet.total_balance }}</p>
+
+                        
+                      </div>
+                      <div class="wallet_el">
+                        <!-- <p class="text-muted text-small mb-2">{{ $t('forms.balance') }}</p> -->
+                        <img src="/assets/img/landing-page/depos.svg"  alt="Image" width="36" height="36" />
+                        <p class="mb-3 wallet_value">{{ wallet.balance }}</p>
+
+                        
+                      </div>
+                    </div>
+                    </b-card-body>
+      </b-card>
+    </b-colxx>
+    <b-colxx xxs="12">
+      <b-card class="mb-4" :title="$t(`forms.transactions`)">
+        <div class="filter_container">
+          <b-button
+              variant="outline-theme-3"
+              id="edit"
+              class="icon-button-auction"
+              @click="open_filter()">
+              <i  class="simple-icon-menu"></i>
+            </b-button>
+        </div>
+        <div v-if="transaction_filter" class="mb-2 mt-2">
+        <b-collapse id="displayOptions" class="d-md-block">
+          <div class="d-block d-md-inline-block pt-1">
+            <b-dropdown
+              id="ddown1"
+              :text="`${$t('todo.orderbymethod')} ${$t(method_sort.label)}`"
+              variant="outline-dark"
+              class="mr-1 float-md-left btn-group"
+              size="xs"
+            >
+              <b-dropdown-item
+                v-for="(method, index) in methodOptions"
+                :key="`order${index}`"
+                @click="changeOrderBy(method, 'method')"
+                >{{ method.label }}</b-dropdown-item
+              >
+            </b-dropdown>
+            <b-dropdown
+              id="ddown1"
+              :text="`${$t('todo.orderbystate')} ${$t(state_sort.label)}`"
+              variant="outline-dark"
+              class="mr-1 float-md-left btn-group"
+              size="xs"
+            >
+              <b-dropdown-item
+                v-for="(state, index) in stateOptions"
+                :key="`order${index}`"
+                @click="changeOrderBy(state, 'state')"
+                >{{ state.label }}</b-dropdown-item
+              >
+            </b-dropdown>
+            <b-dropdown
+              id="ddown1"
+              :text="`${$t('todo.orderbytype')} ${$t(type_sort.label)}`"
+              variant="outline-dark"
+              class="mr-1 float-md-left btn-group"
+              size="xs"
+            >
+              <b-dropdown-item
+                v-for="(type, index) in typeOptions"
+                :key="`order${index}`"
+                @click="changeOrderBy(type, 'type')"
+                >{{ type.label }}</b-dropdown-item
+              >
+            </b-dropdown>
+
+            <!-- <div class="search-sm d-inline-block float-md-left mr-1 align-top">
+              <b-input
+                :placeholder="$t('menu.search')"
+                @input="val => searchChange(val)"
+              />
+            </div> -->
+            <!-- <i @click="cancle()" class="simple-icon-close" /> -->
+          </div>
+        </b-collapse>
+      </div>
+        <vuetable
+        ref="transaction_vuetable"
+        table-height="360px"
+        :api-mode="false"
+        :reactive-api-url="true"
+        :fields="transaction_fields"
+          >
+          <template slot="actions" slot-scope="props">
+            <b-button
+              variant="outline-theme-3"
+              id="edit"
+              class="icon-button-auction"
+              @click="bank_details(props.rowData)">
+              <i  class="simple-icon-arrow-right"></i>
+            </b-button>
+        </template>
+        </vuetable>
+      </b-card>
+    </b-colxx>
+    <!-- <b-colxx xxs="6">
+      <b-card class="mb-4" :title="$t(`forms.deposits`)">
+            <vuetable
+              table-height="360px"
+              ref="deposit_vuetable"
+              :api-mode="false"
+              :reactive-api-url="true"
+              :fields="deposit_fields"
+            ></vuetable>
+      </b-card>
+    </b-colxx> -->
+  </b-row>
     <b-modal
       id="bank_notice"
       ref="bank_notice"
@@ -126,11 +220,13 @@
       :title="$t('forms.bank_notice')"
     >
       <b-card class="mb-4" no-body>
+      <div v-if="bank_notice.notice_photo">
         <single-lightbox
           :thumb="bank_notice.notice_photo"
           :large="bank_notice.notice_photo"
           class-name="responsive border-0 card-img-top mb-3"
         />
+      </div>
         <b-card-body>
           <div class="mb-5">
             <h5 class="card-title">{{ $t("forms.notice_number") }}</h5>
@@ -154,42 +250,7 @@
         </div>
       </b-card>
     </b-modal>
-    <v-contextmenu ref="contextmenu">
-      <v-contextmenu-item @click="onContextMenuAction('ACCEPTED')">
-        <i
-          class="iconsminds-record-music"
-          style="
   
-        color: #059727;
-    background: #059727;
-    border-radius: 10px;
-"
-        />
-        <span>{{ $t("forms.accepted") }}</span>
-      </v-contextmenu-item>
-      <v-contextmenu-item @click="onContextMenuAction('REJECTED')">
-        <i
-          class="iconsminds-record-music"
-          style="
-     color: red;
-    background: red;
-    border-radius: 10px;
-"
-        />
-        <span>{{ $t("forms.rejected") }}</span>
-      </v-contextmenu-item>
-      <v-contextmenu-item @click="onContextMenuAction('PENDING')">
-        <i
-          class="iconsminds-record-music"
-          style="
-    color: #b69329;
-    background: #b69329;
-    border-radius: 10px;
-"
-        />
-        <span>{{ $t("forms.pending") }}</span>
-      </v-contextmenu-item>
-    </v-contextmenu>
   </div>
 </template>
 
@@ -200,7 +261,7 @@ import { mapGetters, mapActions } from "vuex";
 import { adminRoot } from "../../../constants/config";
 import SingleLightbox from "../../../containers/pages/SingleLightbox.vue";
 export default {
-  props: ["userId", "filter"],
+  props: ["userId"],
   components: {
     vuetable: Vuetable,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
@@ -212,12 +273,26 @@ export default {
         balance: null,
         total_balance: null
       },
+      filter: null,
       bank_notice: {
         notice_number: null,
         notice_photo: null
       },
       method: null,
       type: null,
+      method_sort: {
+        column: null,
+        label: "All"
+      },
+      state_sort: {
+        column: null,
+        label: "All"
+      },
+      type_sort: {
+        column: null,
+        label: "All"
+      },
+      transaction_filter: false,
       transaction_id: null,
       status: null,
       methodOptions: [
@@ -276,8 +351,15 @@ export default {
       ],
       transaction_fields: [
         {
-          name: "id",
-          title: "ID",
+          name: "type",
+          callback: value => {
+            if (value === "deposit") {
+              return `<img src="/assets/img/landing-page/deposit.svg"  alt="Image" width="30" height="30">`;
+            } else {
+              return `<img src="/assets/img/landing-page/with-draw.svg"  alt="Image" width="36" height="36">`;
+            }
+          },
+          title: "Type",
           dataClass: "list-item-heading",
           width: "10%"
         },
@@ -285,7 +367,7 @@ export default {
           name: "reference_id",
           title: "ٌReference",
           dataClass: "list-item-heading",
-          width: "20%"
+          width: "15%"
         },
         {
           name: "amount",
@@ -293,13 +375,7 @@ export default {
           dataClass: "list-item-heading",
           width: "20%"
         },
-        {
-          name: "type",
-          title: "Type",
-          titleClass: "",
-          dataClass: "text-muted",
-          width: "10%"
-        },
+ 
         {
           name: "payment_status",
           callback: value => {
@@ -336,14 +412,14 @@ export default {
           },
           title: "Payment Method",
           dataClass: "text-muted",
-          width: "20%"
+          width: "25%"
         },
         {
           name: "__slot:actions",
           title: "",
           titleClass: "center aligned text-right",
           dataClass: "center aligned text-right",
-          width: "10%"
+          width: "15%"
         }
       ],
       deposit_fields: [
@@ -406,11 +482,24 @@ export default {
       "getUserDeposits",
       "verfiyTransaction"
     ]),
+    changeOrderBy(val, type){
+      
+      this.filter = { val, type };
+      if (type == "type") {
+        this.type_sort = val;
+      } else if (type == "method") {
+        this.method_sort = val;
+      } else {
+        this.state_sort = val;
+      }
+    
+      console.log('i am here');
+    },
     bank_details(item) {
       this.transaction_id = item.id;
       this.bank_notice.notice_photo = item.notice_photo;
       this.bank_notice.notice_number = item.notice_number;
-      // this.$refs["bank_notice"].show();
+      this.$refs["bank_notice"].show();
     },
     verfiy_transaction(event) {
       this.verfiyTransaction({ type: event, id: this.transaction_id });
@@ -421,6 +510,9 @@ export default {
       if (field.name === "payment_status") {
         this.$refs.contextmenu.show({ top: event.pageY, left: event.pageX });
       }
+    },
+    open_filter(){
+      this.transaction_filter = !this.transaction_filter
     },
     onContextMenuAction(event) {},
     hideModal(refname) {
