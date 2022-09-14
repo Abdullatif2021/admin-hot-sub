@@ -38,10 +38,9 @@
             :row-class="onRowClass"
             @vuetable:pagination-data="onPaginationData"
             @vuetable:row-clicked="rowClicked"
-            @vuetable:cell-rightclicked="rightClicked"
           >
             <template slot="actions" slot-scope="props">
-              <b-button
+              <!-- <b-button
                 id="activate"
                 :variant="
                   props.rowData.active === 1
@@ -49,13 +48,7 @@
                     : 'outline-theme-7'
                 "
                 class="icon-button"
-                @click="
-                  open_model(
-                    props.rowData.id,
-                    props.rowData.active,
-                    'activeModal'
-                  )
-                "
+               
               >
                 <i
                   :class="
@@ -70,9 +63,27 @@
                   :title="$t('forms.active_tooltip')"
                 >
                 </b-tooltip>
-              </b-button>
-
+              </b-button> -->
               <b-button
+                variant="outline-theme-3"
+                id="edit"
+                class="icon-button-auction"
+                @click="
+                  modify(
+                    props.rowData,
+                    props.rowData.id,
+                    props.rowData.auction_type_value
+                  )"
+              >
+                <i  class="simple-icon-arrow-right"></i>
+                <!-- <b-tooltip
+                  target="edit"
+                  placement="top"
+                  :title="$t('forms.edit')"
+                >
+                </b-tooltip> -->
+              </b-button>
+              <!-- <b-button
                 variant="outline-theme-3"
                 class="icon-button"
                 id="details"
@@ -84,7 +95,7 @@
                   placement="bottom"
                   :title="$t('forms.show_details')"
                 ></b-tooltip>
-              </b-button>
+              </b-button> -->
             </template>
           </vuetable>
           <vuetable-pagination-bootstrap
@@ -136,6 +147,7 @@
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
+import { getCurrentLanguage } from "../../../utils";
 import { mapGetters, mapActions } from "vuex";
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
@@ -156,6 +168,7 @@ export default {
       activate: null,
       active: null,
       search: null,
+      language: null,
       actions: null,
       isLoad: false,
       apiBase: "/cakes/fordatatable",
@@ -202,7 +215,10 @@ export default {
           width: "20%"
         },
         {
-          name: "first_name",
+          name: "",
+          callback: value => {
+            return `${value.first_name} ${value.last_name}`;
+          },
           sortField: "first_name",
           title: "Name",
           direction: "asc",
@@ -230,14 +246,11 @@ export default {
         },
         {
           name: "active",
-          callback: value => {
-            return value === 1
-              ? `<span class="badge badge-pill badge-success handle mr-1">
-                Active
-              </span>`
-              : `<span class="badge badge-pill badge-danger handle mr-1">
-                Inactive
-              </span>`;
+           callback: value => {
+            return `<b-button class="${value === 1 ? `toggle_btn_on_${this.language}`: `toggle_btn_off_${this.language}`}" variant="primary">
+              <span class="${value === 1 ? `toggle1_span_on_${this.language}`: `toggle1_span_off_${this.language}`}"></span>
+        </b-button>`;
+
           },
           sortField: "active",
           title: "Active",
@@ -259,6 +272,7 @@ export default {
   created() {
     this._type = this.$route.fullPath.split("/")[2];
     this.get_list(this.$route.fullPath.split("/")[2]);
+    this.language = getCurrentLanguage();
   },
   methods: {
     ...mapActions(["getUsersList", "activateUser"]),
@@ -338,27 +352,14 @@ export default {
     hideModal(refname) {
       this.$refs[refname].hide();
     },
-    rowClicked(dataItem, event) {
-      const itemId = dataItem.id;
-      if (event.shiftKey && this.selectedItems.length > 0) {
-        this.selectedItems.push(
-          dataItem.map(item => {
-            return item.id;
-          })
-        );
-        this.selectedItems = [...new Set(this.selectedItems)];
-      } else {
-        if (this.selectedItems.includes(itemId)) {
-          this.selectedItems = this.selectedItems.filter(x => x !== itemId);
-        } else this.selectedItems.push(itemId);
+    rowClicked(dataItem, field) {
+      if( field.srcElement.localName === 'span' || field.srcElement.localName === 'b-button'){
+        if( field.srcElement.classList[0] !== 'badge'){
+        console.log('grerrerererererere', field)
+       
+          this.open_model('activeModal', dataItem.id, dataItem.active)
+        }
       }
-    },
-    rightClicked(dataItem, field, event) {
-      event.preventDefault();
-      if (!this.selectedItems.includes(dataItem.id)) {
-        this.selectedItems = [dataItem.id];
-      }
-      this.$refs.contextmenu.show({ top: event.pageY, left: event.pageX });
     },
     onPaginationData(paginationData) {
       this.from = paginationData.from;
@@ -420,7 +421,7 @@ export default {
         });
       }
     },
-    open_model(id, active, refname) {
+    open_model(refname,id, active ) {
       this.$refs[refname].show();
       this.userId = id;
       this.active = active;

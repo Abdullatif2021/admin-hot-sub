@@ -1446,7 +1446,7 @@ button {
   margin-top: 5px;
 
 }
-.toggle_span_off_ar{
+.toggle1_span_off_ar{
   height: 16px;
   width: 16px;
   background-color: #c20000;
@@ -1455,7 +1455,55 @@ button {
   margin: 0px;
   margin-right: 5px;
   position: absolute;
-  margin-top: 5px;
+  margin-top: 2px;
+
+}
+.toggle1_span_on_en{
+  height: 16px;
+  width: 16px;
+  background-color: #1ec200;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0px;
+  margin-left: -43px;
+  position: absolute;
+  margin-top: 2px;
+
+}
+.toggle1_span_off_en{
+  height: 16px;
+  width: 16px;
+  background-color: #c20000;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0px;
+  margin-left: -21px;
+  position: absolute;
+  margin-top: 2px;
+
+}
+.toggle1_span_on_ar{
+  height: 16px;
+  width: 16px;
+  background-color: #1ec200;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0px;
+  margin-right: 5px;
+  position: absolute;
+  margin-top: 2px;
+
+}
+.toggle1_span_off_ar{
+  height: 16px;
+  width: 16px;
+  background-color: #c20000;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0px;
+  margin-right: 5px;
+  position: absolute;
+  margin-top: 2px;
 
 }
 .icon-button-auction {
