@@ -75,7 +75,7 @@ const getters = {
   _successCreateSubCategory: state => state.successCreateSubCategory,
   _successUpdateSubCategory: state => state.successUpdateSubCategory,
   _categoryMetaTypeList: state => state.categoryMetaTypeList,
-  _error: state => state.error,
+  _errorCategory: state => state.error,
   // block category metaData
   _CategoryMeta: state => state.Categorymetadata,
   _isLoadCategoryMeta: state => state.processing,
@@ -161,8 +161,9 @@ const mutations = {
   getSubCategorySuccess(state, payload) {
     state.getSubCategorySuccess = payload;
   },
-  error(state, payload) {
-    state.error = !state.error;
+  errorCate(state, payload) {
+    console.log(state);
+    state.error = payload;
   }
 };
 
@@ -286,13 +287,15 @@ const actions = {
     });
     formData.append(`meta_type_id`, payload.meta_type_id);
     const createMeta = create_meta({id, formData});
-   
-      createMeta.then(res => {
-        if (res.status === 201 || res.status === 200) {
-          dispatch("getCategoryMetadata", { id });
-          commit("create_category_meta_success", res);
-        }
-      });
+    createMeta.then(res => {
+      console.log('ressssss', res);
+      if (res.status === 201 || res.status === 200) {
+        dispatch("getCategoryMetadata", { id });
+        commit("create_category_meta_success", res);
+      }
+    }).catch(err=> {
+      commit('errorCate', err)
+    })
   },
   updateCategoryMetadata({ commit, dispatch }, payload) {
     const metadata_id = payload.metadata_id;

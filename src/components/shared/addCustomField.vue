@@ -41,6 +41,15 @@
           }}</b-form-invalid-feedback>
         </b-form-group>
       </div>
+      <div v-if="showUpdateModal" class="deleteBtnContainer">
+        <b-button
+        variant="outline-theme-6"
+        :disabled="enable"
+        @click="deleteCustom()"
+        class="mr-1"
+        >{{ $t("forms.delete") }}</b-button
+      >
+      </div>
     </form>
     <template slot="modal-footer">
       <b-button
@@ -126,6 +135,12 @@ export default {
       this.$refs[refname].hide();
       this.$v.$reset();
       // this.$emit("hide-create-modal");
+    },
+    deleteCustom(){
+      this.$emit(
+          "delete-custom-field",
+          this.customFieldInfo.id
+        );
     },
     formSubmit() {
       this.$v.$touch();

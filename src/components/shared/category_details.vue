@@ -1,16 +1,37 @@
 <template>
-  <b-colxx xxs="12">
-    <b-card class="mb-4">
-      <b-tabs card no-fade>
-        <b-tab
-          :title="$t(`forms.basic_details`)"
-          active
-          :title-item-class="
-            isAuctionCategory ? 'w-25 text-center' : 'w-50 text-center'
-          "
-          @click="$emit('showAddButton', false)"
+ <div>
+
+    <!-- <template v-if="_isLoadAuctions"> -->
+    <b-row>
+    <b-colxx xxs="12">
+        <h1>{{title}}</h1>
+        <div v-if="add_new_button" class="top-right-button-container">
+        <b-button
+          variant="primary"
+          size="lg"
+          class="top-right-button"
+          @click="add_New()"
+          >{{ add_new_title }}</b-button
         >
+      </div>
+      <piaf-breadcrumb />
+   
+        
+      <b-tabs
+        nav-class="separator-tabs ml-0 mb-5"
+        content-class="tab-content"
+        :no-fade="true"
+      >
+        <b-tab 
+        :title="$t(`forms.basic_details`)"
+          active
+          @click="
+            $emit('showAddButton', true, $t(`todo.add-new-sub-category`), true)
+          ">
           <template v-if="!is_Load">
+            <b-row>
+        <b-colxx xxs="12" xs="6" :lg="isAuctionCategory ? 6 : 12">
+          <b-card class="mb-4 basicDetailsContainer" no-body>
             <b-form @submit.prevent="onGridFormSubmit">
               <b-colxx sm="12">
                 <label
@@ -102,20 +123,61 @@
                 class="mt-4"
                 >{{ $t("forms.save") }}</b-button
               >
+              <b-button
+                v-if="isAuctionCategory"
+                style="float: right;"
+                variant="outline-theme-6"
+                @click="open_delete_model('deleteCategory')"
+                class="mt-4"
+                >{{ $t("forms.delete") }}</b-button
+              >
             </b-form>
+          </b-card>
+        </b-colxx>
+        <b-colxx v-if="isAuctionCategory" xxs="12" xs="6" lg="6" class="mb-3">
+          <b-card class="mb-4 basicDetailsContainer" no-body>
+            <h5 class="card-title">{{$t(`forms.sub-category`)}}</h5>
+            <vuetable
+                  class="tableSubCategory"
+                  ref="subVuetable"
+                  :api-mode="false"
+                  :reactive-api-url="true"
+                  :fields="subCategoryFields"
+                >
+                  <template slot="actions" slot-scope="props">
+                    <b-button
+                      variant="outline-theme-3"
+                      class="icon-button"
+                      @click="$emit('modifySubCategory', props.rowData)"
+                    >
+                      <i  class="simple-icon-arrow-right"></i>
+                    </b-button>
+                    <!-- <b-button
+                      variant="outline-theme-6"
+                      class="icon-button"
+                      @click="open_model('subDeleteModal', props.rowData.id)"
+                    >
+                      <i class="simple-icon-trash"></i>
+                    </b-button> -->
+                  </template>
+                </vuetable>
+          </b-card>
+        </b-colxx>
+           
+      </b-row>
           </template>
           <template v-else>
             <div class="loading"></div>
           </template>
         </b-tab>
-        <b-tab
+     
+        <b-tab 
           :title="$t(`forms.custom_field`)"
-          title-item-class="w-25 text-center"
           v-if="isAuctionCategory"
           @click="
             $emit('showAddButton', true, $t(`todo.add-new-custom-filed`), false)
           "
-        >
+          >
           <template v-if="_isLoadCustomField">
             <b-colxx xs="12" md="12" class="mb-3">
               <b-card>
@@ -131,15 +193,15 @@
                       class="icon-button"
                       @click="modify(props.rowData)"
                     >
-                      <i class="simple-icon-pencil"></i>
+                      <i  class="simple-icon-arrow-right"></i>
                     </b-button>
-                    <b-button
+                    <!-- <b-button
                       variant="outline-theme-6"
                       class="icon-button"
                       @click="open_model('customDeleteModal', props.rowData.id)"
                     >
                       <i class="simple-icon-trash"></i>
-                    </b-button>
+                    </b-button> -->
                   </template>
                 </vuetable>
               </b-card>
@@ -152,20 +214,19 @@
             :hideCustomModal="hideCustomModal"
             @create-custom-field="create_custom_field"
             @update-custom-field="update_custom_field"
+            @delete-custom-field="delete_custom_field"
             :showCreateModal="showCreateModal"
             :showUpdateModal="showUpdateModal"
             :customFieldInfo="customFieldInfo"
           />
         </b-tab>
-        <b-tab
+        <!-- <b-tab   
           :title="$t(`forms.sub-category`)"
-          title-item-class="w-25 text-center"
           v-if="isAuctionCategory"
           @click="
             $emit('showAddButton', true, $t(`todo.add-new-sub-category`), true)
-          "
-        >
-          <template v-if="_isLoadSubCategory">
+          ">
+         <template v-if="_isLoadSubCategory">
             <b-colxx xs="12" md="12" class="mb-3">
               <b-card>
                 <vuetable
@@ -180,15 +241,9 @@
                       class="icon-button"
                       @click="$emit('modifySubCategory', props.rowData)"
                     >
-                      <i class="simple-icon-pencil"></i>
+                      <i  class="simple-icon-arrow-right"></i>
                     </b-button>
-                    <b-button
-                      variant="outline-theme-6"
-                      class="icon-button"
-                      @click="open_model('subDeleteModal', props.rowData.id)"
-                    >
-                      <i class="simple-icon-trash"></i>
-                    </b-button>
+           
                   </template>
                 </vuetable>
               </b-card>
@@ -197,47 +252,61 @@
           <template v-else>
             <div class="loading"></div>
           </template>
-        </b-tab>
-        <b-tab
+        </b-tab> -->
+        <b-tab 
           :title="$t(`forms.meta_data`)"
-          :title-item-class="
-            isAuctionCategory ? 'w-25 text-center' : 'w-50 text-center'
-          "
-          @click="$emit('showAddButton', false)"
-        >
+          @click="$emit('showAddButton', false)">
           <meta_data :id="_id" :type="_type" />
         </b-tab>
+     
       </b-tabs>
-    </b-card>
+    </b-colxx>
+    </b-row>
+    <!-- </template>
+    <template v-else>
+      <div class="loading"></div>
+    </template> -->
     <b-modal
-      id="deleteModal"
-      ref="deleteModal"
-      :title="
-        isCustomFieldDelete
-          ? $t(`modal.modal-delete-customField-title`)
-          : $t(`modal.modal-delete-sub-category-title`)
-      "
+      id="deleteCategory"
+      ref="deleteCategory"
+      :title="$t('modal.modal-delete-category-title')"
     >
-      {{
-        isCustomFieldDelete
-          ? $t("forms.deleteCustomFieldQuestion")
-          : $t("forms.deleteSubCategoryQuestion")
-      }}
+      {{ $t("forms.deleteCategoryQuestion") }}
       <template slot="modal-footer">
         <b-button
-          :disabled="disableDeleteBtn"
+          :disabled="deleteBtn"
           variant="primary"
-          @click="delete_action()"
+          @click="delete_category()"
           class="mr-1"
         >
           {{ $t("button.yes") }}</b-button
         >
-        <b-button variant="secondary" @click="hideModal('deleteModal')">{{
+        <b-button variant="secondary" @click="hideModal('deleteCategory')">{{
           $t("button.no")
         }}</b-button>
       </template>
     </b-modal>
-  </b-colxx>
+    <b-modal
+    id="deleteModal"
+    ref="deleteModal"
+    :title="$t('modal.modal-delete-category-title')"
+  >
+    {{ $t(`forms.deleteCustomFieldQuestion`) }}
+    <template slot="modal-footer">
+      <b-button
+        variant="primary"
+        :disabled="disableCutomBtn"
+        @click="delete_custom"
+        class="mr-1"
+      >
+        {{ $t("button.yes") }}</b-button
+      >
+      <b-button variant="secondary" @click="hideModal('deleteModal')">{{
+        $t("button.no")
+      }}</b-button>
+    </template>
+  </b-modal>
+</div>
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
@@ -255,7 +324,7 @@ import { getCurrentLanguage } from "../../utils";
 
 
 export default {
-  props: ["_id", "_type", "showCreateModal"],
+  props: ["title", "add_new_button", "add_new_title", "_id", "_type", "showCreateModal"],
   components: {
     "vue-dropzone": VueDropzone,
         'deleteModal': deleteModal,
@@ -273,6 +342,7 @@ export default {
       type: null,
       enable: false,
       customFieldInfo: null,
+      deleteBtn: false,
       edit: true,
       disableDeleteBtn: false,
       hideModel: false,
@@ -281,6 +351,7 @@ export default {
       modalName: null,
       showUpdateModal: false,
       isAuctionCategory: false,
+      disableCutomBtn: false,
       password: null,
       hideCustomModal: false,
       is_block_category: false,
@@ -444,6 +515,7 @@ export default {
       "getBlockCategory",
       "updateBlockCategory",
       "getSubCategories",
+      "deleteCategory",
       "updateCategory",
       "deleteSubCategory",
       "getBlockCategoryTypes",
@@ -461,6 +533,9 @@ export default {
           _name: el.name
         });
       });
+    },
+    add_New() {
+      this.$emit("add_new");
     },
     onGridFormSubmit() {
       this.$v.$touch();
@@ -500,6 +575,14 @@ export default {
       hideModal(refname) {
       this.$refs[refname].hide();
     },
+    delete_category() {
+      this.deleteBtn = true;
+      if(this.isAuctionCategory){
+        this.deleteCategory({ id: this._id });
+      }else{
+
+      }
+    },
     delete_action(){
                 this.disableDeleteBtn = true;
 
@@ -512,12 +595,26 @@ export default {
     hideDeleteModal(){
 this.modalName = null;
     },
+    open_delete_model(refname) {
+        this.$refs[refname].show();
+    },
 
      create_custom_field(val,type){
           this.createCustomField({info: val, type: type, categoryId: this._id })
         },
         update_custom_field(val,type,custom_id){
           this.updateCustomField({info: val, type: type, categoryId: this._id,custom_id: custom_id })
+        },
+        delete_custom_field(custom_id){
+
+          this.customFieldId = custom_id
+      
+      this.$refs['deleteModal'].show();
+          
+        },
+        delete_custom(){
+          this.disableCutomBtn = true;
+          this.deleteCustomField({categoryId: this._id,custom_id: this.customFieldId })
         },
     fileAdded(file) {
       this.file = file;
@@ -559,6 +656,7 @@ this.modalName = null;
       "_successDeleteCustomField",
       "_isLoadSubCategory",
       "_blockCategory",
+      "_successDeleteCategory",
       "_successUpdateBlockCategory",
       "_successDeleteSubCategory",
       "_isLoadBlock",
@@ -593,6 +691,7 @@ this.modalName = null;
 
     },
     _category(newInfo, oldOne) {
+      this.$emit('showAddButton', true, this.$t(`todo.add-new-sub-category`), true);
       this.isAuctionCategory = true;
       this.category_form.forEach(el => {
          el.name = newInfo.locales[el._name].name;
@@ -607,7 +706,9 @@ this.modalName = null;
     },
        _successDeleteCustomField(newVal, old) {
             this.hideModel = !this.hideModel
+            this.hideCustomModal = !this.hideCustomModal;
               this.disableDeleteBtn = false;
+              this.disableCutomBtn = false;
       this.modalName = null;
       this.$notify(
         "success",
@@ -652,6 +753,7 @@ this.modalName = null;
       this.is_Load = false;
     },
     _successUpdateBlockCategory(newInfo, oldOne) {
+      this.enable = false;
       this.$notify(
         "success",
         "Operation completed successfully",
@@ -664,6 +766,18 @@ this.modalName = null;
       newInfo.forEach(el => {
         this.typeOptions.push(el);
       });
+    },
+    _successDeleteCategory(newVal, old) {
+      this.hideModel = !this.hideModel
+      this.deleteBtn = false;
+      this.$refs['deleteCategory'].hide();
+      router.push(`${adminRoot}/categories`);
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Category have been deleted successfully",
+        { duration: 3000, permanent: false }
+      );
     }
   }
 };

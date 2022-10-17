@@ -125,6 +125,15 @@
                       >{{ $t("button.save") }}
                       {{ $t("button.changes") }}</b-button
                     >
+                    <b-button
+                      :disabled="enable_basic"
+                      @click="open_model('deleteModal')"
+                      class="mb-2"
+                      style="margin-left: 60px;"
+                      variant="outline-theme-6"
+                      >{{ $t("forms.delete") }}
+                      </b-button
+                    >
                   </b-colxx>
                 </b-tab>
                 <b-tab
@@ -157,6 +166,12 @@
         </template>
       </b-row>
     </b-colxx>
+    <deleteModal
+      :message="$t('forms.deleteBlockQuestion')"
+      :modalName="modalName"
+      :hideModel="hideModel"
+      @delete_event="delete_block()"
+    />
   </b-row>
 </template>
 <script>
@@ -164,6 +179,7 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import block_attachment from "./block_attachment.vue";
+import { adminRoot } from "../../../constants/config";
 import { quillEditor } from "vue-quill-editor";
 import { mapGetters, mapActions } from "vuex";
 import VueDropzone from "vue2-dropzone";
@@ -175,6 +191,7 @@ import Datepicker from "vuejs-datepicker";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 const { required } = require("vuelidate/lib/validators");
 import metaData from "../../../components/shared/metaData.vue";
+import deleteModal from "../../../components/shared/deleteModal.vue";
 
 export default {
   components: {
@@ -182,6 +199,7 @@ export default {
     "quill-editor": quillEditor,
     "datatable-heading": DatatableHeading,
     metaData: metaData,
+    deleteModal: deleteModal,
     vuetable: Vuetable,
     "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "vue-dropzone": VueDropzone,
@@ -196,7 +214,9 @@ export default {
       enable_basic: false,
       image: null,
       file: null,
+      modalName: null,
       details_form: [],
+      hideModel: false,
       dateSelected: false,
       categoryIdOptions: [],
       // vue dropezone
@@ -299,6 +319,7 @@ export default {
       "updateBlockData",
       "deleteBlockMeta",
       "getBlockCategories",
+      "deleteBlock",
       "updateBlockMeta",
       "createBlockMeta",
       "getBlockMetaTypeList",
@@ -337,6 +358,9 @@ export default {
     selectedDate() {
       this.dateSelected = true;
     },
+    open_model(refname) {
+      this.modalName = refname;
+    },
     //  ....................... meta data ................
 
     meta() {
@@ -348,6 +372,9 @@ export default {
         blockId: this.blockId,
         info: content
       });
+    },
+    delete_block() {
+      this.deleteBlock({ blockId: this.blockId });
     },
     updateMeta(select, content, id) {
       this.updateBlockMeta({
@@ -408,11 +435,24 @@ export default {
       "_updateMetaBlock",
       "_blockMetaTypeList",
       "_blockCategories",
+      "_successDeleteBlock",
       "_updateBlockBasicData",
       "_isLoadBlockMeta"
     ])
   },
   watch: {
+    _successDeleteBlock(newVal, old) {
+      this.hideModel = !this.hideModel;
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Block have been deleted successfully",
+        { duration: 3000, permanent: false }
+      );
+      this.$router.push({
+        path: `${adminRoot}/blocks/blocklist/${this.$route.query.type}`,
+      });
+    },
     _updateBlockBasicData(newInfo, oldOne) {
       this.enable_basic = false;
       this.$notify(

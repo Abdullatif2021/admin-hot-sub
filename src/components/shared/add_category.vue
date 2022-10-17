@@ -1,5 +1,10 @@
 <template>
   <b-colxx xxs="12">
+    <h1>{{title}}</h1>
+   
+   <piaf-breadcrumb />
+   <div class="separator mb-5" />
+
     <b-card class="mb-4">
       <template v-if="_isLoadBlock">
         <b-form @submit.prevent="onGridFormSubmit">
@@ -112,7 +117,7 @@ import VueDropzone from "vue2-dropzone";
 const { required, requiredIf } = require("vuelidate/lib/validators");
 
 export default {
-  props: ["_type"],
+  props: ["title", "_type"],
   components: {
     "vue-dropzone": VueDropzone
   },

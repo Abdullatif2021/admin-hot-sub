@@ -1,7 +1,7 @@
 <template>
   <b-row>
     <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
-      <datatable-heading
+      <!-- <datatable-heading
         :details="true"
         :reload="true"
         :transaction_filter="false"
@@ -15,9 +15,19 @@
             ? $t('create_sub_category')
             : $t('create_category')
         "
-      ></datatable-heading>
+      ></datatable-heading> -->
       <category_details
         @showAddButton="showAddButton"
+        :add_new_title="addBtnTitle"
+        :add_new_button="AddBtn"
+        @add_new="add_new"
+        :title="
+          id
+            ? $t('edit_category')
+            : isSubCategory
+            ? $t('create_sub_category')
+            : $t('create_category')
+        "
         @createdSuccessfuly="createdSuccessfuly"
         @modifySubCategory="modifySubCategory"
         :showCreateModal="showCreateModal"
@@ -28,6 +38,13 @@
       <add_category
         @create-category="create_category"
         :isSubCategory="isSubCategory"
+        :title="
+          id
+            ? $t('edit_category')
+            : isSubCategory
+            ? $t('create_sub_category')
+            : $t('create_category')
+        "
         v-if="!id"
         :_type="category"
       />
@@ -395,7 +412,7 @@ export default {
       "_successCreateSubCategory",
       "_successUpdateSubCategory",
       "_create_category_success",
-      "_error"
+      "_errorCategory"
     ]),
     getImageUrl(){
         return URL.createObjectURL(this.image[0]);
@@ -457,15 +474,15 @@ export default {
       );
       router.push(`${adminRoot}/categories`);
     },
-    _error: function(val){
-              this.enable = false;
-       this.$notify(
-        "error",
-        "there is something wrong",
-        "Please try again",
-        { duration: 3000, permanent: false }
-      );
-    }
+    // _errorCategory: function(val){
+    //           this.enable = false;
+    //    this.$notify(
+    //     "error",
+    //     "there is something wrong",
+    //     "Please try again",
+    //     { duration: 3000, permanent: false }
+    //   );
+    // }
   }
 };
 </script>

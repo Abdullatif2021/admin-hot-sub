@@ -508,6 +508,7 @@
     "select-new-custom": "Select or Add new Custom filed",
     "Yemail_filed": "Please enter your email",
     "bids": "Bids",
+    "content_message": "Please enter content",
     "editProduct": "Edit Product",
     "createProduct": "Create Product",
     "title": "Title",
@@ -813,6 +814,7 @@
   "modal": {
     "basic": "Basic",
     "modal-title": "Modal title",
+    "modal-delete-block-title": "block deletion",
     "modal-lang-title": "Change language",
     "modal-active-auction-title": "Auction Activation",
     "modal-delete-auction-attach": "Attachment deletion",

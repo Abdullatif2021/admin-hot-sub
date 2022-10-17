@@ -4,11 +4,14 @@
       <b-row>
         <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
           <template v-if="_isLoadBlockCategoryMeta || _isLoadCategories">
-            <b-card style="box-shadow: none;" class="mb-4" no-body>
+            <b-card style="box-shadow: none; background: none;" class="mb-4" no-body>
               <b-row>
                 <b-colxx xs="12" md="6" class="mb-3">
-                  <b-card>
+                  <b-card style="
+    border-radius: 15px;
+">
                     <vuetable
+                    
                       ref="vuetable"
                       :api-mode="false"
                       :data-total="dataCount"
@@ -49,6 +52,9 @@
                 <b-colxx xs="12" md="6" class="mb-3">
                   <b-card
                     class="mb-4"
+                    style="
+    border-radius: 15px;
+"
                     :title="edit ? $t('forms.edit') : $t('forms.create')"
                   >
                     <b-form
@@ -325,10 +331,12 @@ export default {
   computed: {
     ...mapGetters([
       "_blockCategoryMeta",
+      "_errorCate",
       "_updateblockCategoryMetaSuccess",
       "_categoryMetaTypeList",
       "_isLoadBlockCategoryMeta",
       "_CategoryMeta",
+      "_errorCategory",
       "_create_block_category_meta_success",
       "_isLoadBlockCategoryMeta",
       "_isLoadCategories",
@@ -336,6 +344,15 @@ export default {
     ])
   },
   watch: {
+    _errorCategory: function(val){
+      this.$notify(
+        "error",
+        "Something went wrong",
+        "Please try again",
+        { duration: 4000, permanent: false }
+      );
+      this.enable = false;
+    },
     _create_block_category_meta_success(newData, oldest) {
       this.enable = false;
 

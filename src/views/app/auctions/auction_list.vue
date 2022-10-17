@@ -144,7 +144,7 @@
       :title="$t('modal.modal-active-auction-title')"
     >
       {{
-        active === 1
+        active === 0
           ? $t("forms.activeAuctionQuestion")
           : $t("forms.inactiveAuctionQuestion")
       }}
@@ -613,7 +613,9 @@ this.$router.push({
 
       this.$refs[refname].show();
       this.auctionId = id;
-      if (active) {
+      console.log(active);
+      if (active != null) {
+        console.log('hiiiiiiiiiiiiiiiiii');
 this.active = active
       }
 

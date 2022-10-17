@@ -1,93 +1,6 @@
 <template>
   <div>
-    <!-- <b-row>
-      <b-colxx xxs="12">
-        <b-card class="mb-4" no-body>
-          <b-tabs card no-fade>
-            <b-tab
-              title-item-class="w-30 text-center"
-              :title="$t('forms.wallet')"
-              @click="$emit('hide_filter')"
-              active
-            >
-              <b-row>
-                <b-colxx sm="6">
-                  <b-form-group :label="$t('forms.balance')">
-                    <b-form-input
-                      type="number"
-                      readonly
-                      v-model="wallet.balance"
-                    ></b-form-input>
-                  </b-form-group>
-                </b-colxx>
-                <b-colxx sm="6">
-                  <b-form-group :label="$t('forms.total_balance')">
-                    <b-form-input
-                      type="number"
-                      readonly
-                      v-model="wallet.total_balance"
-                    ></b-form-input>
-                  </b-form-group>
-                </b-colxx>
-              </b-row>
-            </b-tab>
-            <b-tab
-              title-item-class="w-30 text-center"
-              :title="$t(`forms.transactions`)"
-              @click="
-                $emit('show_filter', methodOptions, stateOptions, typeOptions)
-              "
-            >
-              <b-row>
-                <b-colxx xxs="12">
-                  <vuetable
-                    ref="transaction_vuetable"
-                    class="table-divided order-with-arrow"
-                    :api-mode="false"
-                    :reactive-api-url="true"
-                    :fields="transaction_fields"
-                    @vuetable:cell-rightclicked="rightClicked"
-                  >
-                    <template slot="actions" slot-scope="props">
-                      <b-button
-                        :disabled="props.rowData.payment_status == 'ACCEPTED'"
-                        v-b-modal.bank_notice
-                        variant="outline-theme-3"
-                        class="icon-button"
-                        @click="bank_details(props.rowData)"
-                      >
-                        <i class="simple-icon-arrow-right-circle"></i>
-                      </b-button>
-                    </template>
-                  </vuetable>
-                
-                </b-colxx>
-              </b-row>
-            </b-tab>
-            <b-tab
-              title-item-class="w-30 text-center"
-              :title="$t(`forms.deposits`)"
-              @click="$emit('hide_filter')"
-            >
-              <b-row>
-                <b-colxx xxs="12">
-                  <vuetable
-                    ref="deposit_vuetable"
-                    class="table-divided order-with-arrow"
-                    :api-mode="false"
-                    :reactive-api-url="true"
-                    :fields="deposit_fields"
-                  >
-      
-                  </vuetable>
-       
-                </b-colxx>
-              </b-row>
-            </b-tab>
-          </b-tabs>
-        </b-card>
-      </b-colxx>
-    </b-row> -->
+   
     <b-row>
       <b-colxx xxs="12">
       <b-card class="mb-4" :title="$t('forms.wallet')">
@@ -95,9 +8,7 @@
 
                     <div class="wallet_container">
                       <div class="wallet_el">
-                         <!-- <p class="text-muted text-small mb-2">
-                      {{ $t('forms.total_balance') }}
-                    </p> -->
+                        <!-- <p class="text-muted text-small mb-2">{{ $t('forms.total_balance') }}</p> -->
                     <img src="/assets/img/landing-page/account.svg" style="margin: 6px;"  alt="Image" width="30" height="30" />
                     <p class="mb-3 wallet_value">{{ wallet.total_balance }}</p>
 
@@ -171,13 +82,7 @@
               >
             </b-dropdown>
 
-            <!-- <div class="search-sm d-inline-block float-md-left mr-1 align-top">
-              <b-input
-                :placeholder="$t('menu.search')"
-                @input="val => searchChange(val)"
-              />
-            </div> -->
-            <!-- <i @click="cancle()" class="simple-icon-close" /> -->
+        
           </div>
         </b-collapse>
       </div>
@@ -200,17 +105,7 @@
         </vuetable>
       </b-card>
     </b-colxx>
-    <!-- <b-colxx xxs="6">
-      <b-card class="mb-4" :title="$t(`forms.deposits`)">
-            <vuetable
-              table-height="360px"
-              ref="deposit_vuetable"
-              :api-mode="false"
-              :reactive-api-url="true"
-              :fields="deposit_fields"
-            ></vuetable>
-      </b-card>
-    </b-colxx> -->
+   
   </b-row>
     <b-modal
       id="bank_notice"

@@ -251,11 +251,7 @@
                     
                       <b-form-group :label="$t('forms.role')">
                         <p class="mb-3" style="border: 1px dotted;border-radius: 10px;padding: 9px;">{{gridForm.role}}</p>
-                        <!-- <b-form-input
-                          type="text"
-                          readonly
-                          v-model="gridForm.role"
-                        ></b-form-input> -->
+                
                       </b-form-group>
                     </b-colxx>
                     <b-colxx sm="6">
@@ -341,7 +337,7 @@
                           class="icon-button"
                           @click="note_attach(props.rowData)"
                         >
-                          <i class="simple-icon-pencil"></i>
+                        <i  class="simple-icon-arrow-right"></i>
                           <b-tooltip
                             target="note"
                             placement="right"
@@ -627,328 +623,7 @@
         </template>
       </b-colxx>
     </b-row>
-    <!-- <b-row v-if="isUserForm">
-      <b-colxx xxs="12">
-        <template v-if="processing">
-          <b-card class="mb-4">
-            <b-tabs 
-          nav-class="separator-tabs ml-0 mb-5"
-          content-class="tab-content"
-          :no-fade="true">
-              <b-tab
-                @click="
-                  (add_attach = false),
-                    (showFilter = false),
-                    (add_Attachment = false),
-                    selectedTab === 'basicDetails'
-                "
-                :title="$t(`forms.basic_details`)"
-                :active="selectedTab === 'basicDetails'"
-                title-item-class="w-30 text-center"
-              >
-                <b-form @submit.prevent="onGridFormSubmit">
-                  <b-row>
-                    <b-colxx sm="6">
-                      <b-form-group :label="$t('forms.firstname')">
-                        <b-form-input
-                          type="text"
-                          :state="!$v.gridForm.first_name.$error"
-                          v-model="$v.gridForm.first_name.$model"
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.first_name.required"
-                          >{{
-                            $t("forms.first_name_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx sm="6">
-                      <b-form-group :label="$t('forms.secondName')">
-                        <b-form-input
-                          type="text"
-                          :state="!$v.gridForm.second_name.$error"
-                          v-model="$v.gridForm.second_name.$model"
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.second_name.required"
-                          >{{
-                            $t("forms.second_name_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx sm="6">
-                      <b-form-group :label="$t('forms.middleName')">
-                        <b-form-input
-                          type="text"
-                          :state="!$v.gridForm.middle_name.$error"
-                          v-model="$v.gridForm.middle_name.$model"
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.middle_name.required"
-                          >{{
-                            $t("forms.middle_name_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx sm="6">
-                      <b-form-group :label="$t('forms.lastname')">
-                        <b-form-input
-                          type="text"
-                          :state="!$v.gridForm.last_name.$error"
-                          v-model="$v.gridForm.last_name.$model"
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.last_name.required"
-                          >{{
-                            $t("forms.last_name_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx sm="12">
-                      <b-form-group :label="$t('forms.email')">
-                        <b-form-input
-                          type="email"
-                          :state="!$v.gridForm.email.$error"
-                          v-model="$v.gridForm.email.$model"
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.email.required"
-                          >{{
-                            $t("forms.email_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx v-if="!userId" sm="12">
-                      <b-form-group :label="$t('forms.password')">
-                        <b-form-input
-                          type="password"
-                          v-model.trim="$v.gridForm.password.$model"
-                          :state="!$v.gridForm.password.$error"
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.password.required"
-                          >{{ $t("forms.pass_filed") }}</b-form-invalid-feedback
-                        >
-                        <b-form-invalid-feedback
-                          v-else-if="!$v.gridForm.password.minLength"
-                          >{{ $t("forms.pass_min") }}</b-form-invalid-feedback
-                        >
-                        <b-form-invalid-feedback
-                          v-else-if="!$v.gridForm.password.maxLength"
-                          >{{ $t("forms.pass_max") }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx>
-
-                    <b-colxx sm="12">
-                      <label>{{ $t("forms.phone_number") }}</label>
-                    </b-colxx>
-                    <b-colxx sm="12">
-                      <b-input-group class="mb-3">
-                        <b-input-group-prepend is-text>
-                          <input
-                            :disabled="gridForm.phone_number_confirmed === 1"
-                            type="checkbox"
-                            @click="phone_comfirm()"
-                            :checked="gridForm.phone_number_confirmed"
-                          />
-                        </b-input-group-prepend>
-                        <b-form-input
-                          type="number"
-                          :state="!$v.gridForm.phone_number.$error"
-                          v-model="$v.gridForm.phone_number.$model"
-                        />
-
-                        <b-form-invalid-feedback
-                          style="margin-top: 25px;"
-                          v-if="!$v.gridForm.phone_number.required"
-                          >{{
-                            $t("forms.phonenumber_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-input-group>
-                    </b-colxx>
-                    <b-colxx sm="12">
-                      <label>{{ $t("forms.identity_number") }}</label>
-                    </b-colxx>
-                    <b-colxx sm="12">
-                      <b-input-group class="mb-3">
-                        <b-input-group-prepend is-text>
-                          <input
-                            :disabled="
-                              gridForm.identity_verfied === 1 ||
-                                gridForm.identity_number == null
-                            "
-                            type="checkbox"
-                            @click="identity_comfirm()"
-                            :checked="gridForm.identity_verfied"
-                          />
-                        </b-input-group-prepend>
-                        <b-form-input
-                          type="number"
-                          :state="!$v.gridForm.identity_number.$error"
-                          v-model="$v.gridForm.identity_number.$model"
-                        />
-                        <b-form-invalid-feedback
-                          style="margin-top: 25px;"
-                          v-if="!$v.gridForm.identity_number.required"
-                          >{{
-                            $t("forms.identity_number_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-input-group>
-                    </b-colxx>
-
-                    <b-colxx sm="6">
-                      <b-form-group :label="$t('forms.nationality')">
-                        <b-form-select
-                          :state="!$v.gridForm.nationality.$error"
-                          v-model="$v.gridForm.nationality.$model"
-                          :options="nationalityOptions"
-                          plain
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.nationality.required"
-                          >{{
-                            $t("forms.nationality_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx sm="6">
-                      <b-form-group :label="$t('forms.country')">
-                        <b-form-select
-                          :state="!$v.gridForm.country.$error"
-                          v-model="$v.gridForm.country.$model"
-                          :options="countryOptions"
-                          plain
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.country.required"
-                          >{{
-                            $t("forms.country_filed")
-                          }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx>
-
-                    <b-colxx v-if="!userId" sm="6">
-                      <b-form-group :label="$t('forms.role')">
-                        <b-form-select
-                          :state="!$v.gridForm.role.$error"
-                          v-model="$v.gridForm.role.$model"
-                          :options="roleOptions"
-                          plain
-                        />
-                        <b-form-invalid-feedback
-                          v-if="!$v.gridForm.role.required"
-                          >{{ $t("forms.role_filed") }}</b-form-invalid-feedback
-                        >
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx sm="6">
-                      <b-form-group :label="$t('forms.dob')">
-                        <datepicker
-                          :bootstrap-styling="true"
-                          v-model="$v.gridForm.dob.$model"
-                          @selected="selectedDate()"
-                        ></datepicker>
-                        <div
-                          :class="{
-                            'invalid-feedback': true,
-                            'd-block':
-                              $v.gridForm.dob.$error &&
-                              !$v.gridForm.dob.required
-                          }"
-                        >
-                          {{ $t("forms.date_filed") }}
-                        </div>
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx v-if="userId" sm="6">
-                      <b-form-group :label="$t('forms.role')">
-                        <b-form-input
-                          type="text"
-                          readonly
-                          v-model="gridForm.role"
-                        ></b-form-input>
-                      </b-form-group>
-                    </b-colxx>
-                    <b-colxx sm="6">
-                      <b-form-group v-if="userId" :label="$t('forms.active')">
-                        <b-form-select
-                          selected
-                          v-model="gridForm.active"
-                          :options="activeOptions"
-                          plain
-                        />
-                      </b-form-group>
-                    </b-colxx>
-                  </b-row>
-
-                  <b-button
-                    :disabled="enable"
-                    type="submit"
-                    variant="primary"
-                    class="mt-4"
-                    >{{ $t("forms.save") }}</b-button
-                  >
-                </b-form>
-              </b-tab>
-
-              <b-tab
-                title-item-class="w-30 text-center"
-                @click="
-                  open_attach_tab(),
-                    (add_attach = true),
-                    (showFilter = false),
-                    (add_Attachment = true),
-                    selectedTab === 'attachment'
-                "
-                :active="selectedTab === 'attachment'"
-              >
-                <template #title>
-                  {{ $t(`forms.attach`) }}
-                </template>
-               
-              </b-tab>
-              <b-tab
-                title-item-class="w-30 text-center"
-                @click="
-                  (add_attach = false),
-                    (add_Attachment = false),
-                    selectedTab === 'wallet'
-                "
-                :active="selectedTab === 'wallet'"
-              >
-                <template #title>
-                  <b-spinner
-                    v-if="getTransactions"
-                    type="border"
-                    small
-                  ></b-spinner>
-                  {{ $t(`forms.wallet`) }}
-                </template>
-                <user_wallet
-                  @show_filter="show_filter"
-                  @hide_filter="hide_filter"
-                  :filter="filter"
-                  :userId="userId"
-                />
-              </b-tab>
-            </b-tabs>
-          </b-card>
-        </template>
-        <template v-else>
-          <div class="loading"></div>
-        </template>
-      </b-colxx>
-    </b-row> -->
+   
   </div>
   <b-modal
       id="note"
@@ -1042,6 +717,7 @@ import { validationMixin } from "vuelidate";
 import Datepicker from "vuejs-datepicker";
 import user_wallet from "./user_wallet.vue";
 import VueDropzone from "vue2-dropzone";
+import data_seter from "@/plugins/mixins/data_seter";
 const {
   required,
   email,
@@ -1298,6 +974,7 @@ export default {
         if (!this.$v.gridForm.$invalid) {
           this.enable = true;
           this.updateUserInfo({
+            
             user: {
               first_name: this.gridForm.first_name,
               last_name: this.gridForm.last_name,
@@ -1529,20 +1206,20 @@ export default {
       this.$refs.vuetable.setData(val);
     },
     UserInfo(newInfo, oldOne) {
-      this.gridForm.first_name = newInfo.first_name;
-      this.gridForm.last_name = newInfo.last_name;
-      this.gridForm.email = newInfo.email;
-      this.gridForm.dob = newInfo.dob;
-      this.gridForm.phone_number = newInfo.phone_number;
-      this.gridForm.second_name = newInfo.second_name;
-      this.gridForm.middle_name = newInfo.middle_name;
-      this.gridForm.identity_number = newInfo.identity_number;
-      this.gridForm.role = newInfo.role[0];
-      this.gridForm.identity_verfied = newInfo.identity_verfied;
-      this.gridForm.phone_number_confirmed = newInfo.phone_number_confirmed;
-      this.gridForm.active = newInfo.active;
-      this.gridForm.country = newInfo.country.id;
-      this.gridForm.nationality = newInfo.nationality.id;
+      // const data = data_seter()
+      for (const [key, value] of Object.entries(newInfo)) {
+        if (this.gridForm.hasOwnProperty(key)) {
+          if (typeof value === 'object') {
+            if (value.hasOwnProperty('id')) {
+              this.gridForm[key] = value.id
+            }else {
+              this.gridForm[key] = value[0]
+            }
+          }else{
+            this.gridForm[key] = value
+          }
+        }
+      }
     },
     _addAttachSuccess(newInfo, oldest) {
       this.$notify(

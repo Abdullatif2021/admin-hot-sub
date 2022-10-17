@@ -12,7 +12,7 @@
                 <i class="simple-icon-eye"></i>
             </b-button>
             <b-button variant="outline-theme-3" class="icon-button" @click="changeMode('edit')" v-if="mode=='preview'">
-                <i class="simple-icon-pencil"></i>
+                <i  class="simple-icon-arrow-right"></i>
             </b-button>
 
             <b-button variant="outline-theme-3" class="icon-button rotate-icon-click rotate"

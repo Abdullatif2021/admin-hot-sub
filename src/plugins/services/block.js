@@ -100,7 +100,7 @@ export const delete_youtube = async ({id, attachment_id}) =>{
 export const get_categories = async (params) =>{
     return await axios.get(`${apiUrl}/blocks/categories`, {params})
 }
-export const get_categoryType = async ({id, formData}) =>{
+export const get_categoryType = async () =>{
     return await axios.get(`${apiUrl}/blocks/categories/types`)
 }
 export const get_category = async (id) =>{
@@ -110,6 +110,7 @@ export const create_category = async (formData) =>{
     return await axios.post(`${apiUrl}/blocks/categories`, formData, {})
 }
 export const update_category = async ({id, formData}) =>{
+  console.log('from service', id, formData);
     return await axios.post(`${apiUrl}/blocks/categories/${id}`, formData, {})
 }
 export const delete_category = async () =>{

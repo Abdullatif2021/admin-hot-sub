@@ -45,7 +45,7 @@ export const send_note = async (formData) =>{
     return await axios.post(`${apiUrl}/user/attachments/report`, formData, {})
 }
 export const update_info = async ({id, user}) =>{
-    return await axios.put(`${apiUrl}/users/${id}`, {user}, {})
+    return await axios.put(`${apiUrl}/users/${id}`, user, {})
 }
 export const verfiy_transaction = async ({id, type}) =>{
     return await axios.post(`${apiUrl}/wallet/transactions/verfiy/${id}`,{payment_status: type},{})

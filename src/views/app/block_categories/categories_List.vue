@@ -1,6 +1,48 @@
 <template>
   <div>
     <datatable-heading
+    :title="$t('menu.block-categories-table')"
+    :isAnyItemSelected="isAnyItemSelected"
+    :keymap="keymap"
+    :changePageSize="changePageSize"
+    :searchChange="searchChange"
+    :transaction_filter="false"
+    :from="from"
+    :add_new_button="true"
+    :add_new_title="$t('todo.add-new')"
+    @add_new="add_New"
+    :reload="true"
+    :sort="sort"
+    :to="to"
+    :Filtered="false"
+    :total="total"
+    :perPage="perPage"
+  ></datatable-heading>
+    <b-row>
+        <b-colxx v-for="(category,CIndex) in _blockCategories" xxs="12" lg="6" class="mb-5" :key="`category_${CIndex}`">
+            <b-card class="flex-row listing-card-container cateCard" no-body>
+                <div class="w-40 position-relative">
+                    <router-link to="blog-detail">
+                        <img class="cateImg" :src="category.image" alt="Card cap" />
+                        <!-- <b-badge  variant="primary" pill class="position-absolute badge-top-left">new</b-badge> -->
+                    </router-link>
+                </div>
+                <div class="w-60 d-flex align-items-center">
+                    <b-card-body>
+                        <router-link :to="`${adminRoot}/blockCategories/category?id=${category.id}`">
+                            <h5 class="mb-3 listing-heading" v-line-clamp="2">{{ category.locales.en.name }}</h5>
+                        </router-link>
+                        <p class="listing-desc text-muted" v-line-clamp="3">{{ category.locales.en.description }}</p>
+                        <b-button size="xs" @click="modify(category.id)" variant="outline-primary">Edit</b-button>
+                    </b-card-body>
+                </div>
+            </b-card>
+        </b-colxx>
+    </b-row>
+    
+</div>
+  <!-- <div>
+    <datatable-heading
       :title="$t('menu.block-categories-table')"
       :isAnyItemSelected="isAnyItemSelected"
       :keymap="keymap"
@@ -21,6 +63,24 @@
     <b-row>
       <b-colxx xxs="12">
         <template v-if="_isLoadCategories">
+          <b-colxx v-for="(category,CIndex) in _blockCategories" xxs="12" lg="6" class="mb-5" :key="`category_${CIndex}`">
+            <b-card class="flex-row listing-card-container" no-body>
+                <div class="w-40 position-relative">
+                    <router-link to="blog-detail">
+                        <img class="card-img-left" :src="category.image" alt="Card cap" />
+                        <b-badge  variant="primary" pill class="position-absolute badge-top-left">new</b-badge>
+                    </router-link>
+                </div>
+                <div class="w-60 d-flex align-items-center">
+                    <b-card-body>
+                        <router-link to="blog-detail">
+                            <h5 class="mb-3 listing-heading" v-line-clamp="2">{{ category.locales.en.name }}</h5>
+                        </router-link>
+                        <p class="listing-desc text-muted" v-line-clamp="3">{{ category.locales.en.description }}</p>
+                    </b-card-body>
+                </div>
+            </b-card>
+        </b-colxx>
           <vuetable
             ref="vuetable"
             class="table-divided order-with-arrow"
@@ -39,7 +99,7 @@
                 class="icon-button"
                 @click="modify(props.rowData.id)"
               >
-                <i class="simple-icon-pencil"></i>
+              <i  class="simple-icon-arrow-right"></i>
               </b-button>
             </template>
           </vuetable>
@@ -47,20 +107,21 @@
             class="mt-4"
             ref="pagination"
             @vuetable-pagination:change-page="onChangePage"
-          />
+          /> 
         </template>
         <template v-else>
           <div class="loading"></div>
         </template>
       </b-colxx>
     </b-row>
-  </div>
+  </div> -->
 </template>
 <script>
 import Vuetable from "vuetable-2/src/components/Vuetable";
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { mapGetters, mapActions } from "vuex";
+import { getCurrentLanguage } from "../../../utils";
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
 export default {
@@ -74,6 +135,7 @@ export default {
       dir: null,
       order_by: null,
       search: null,
+      language: null,
       sort: {
         column: null,
         label: "All"
@@ -83,6 +145,7 @@ export default {
       page: 1,
       limit: null,
       perPage: 8,
+      adminRoot: adminRoot,
       from: 0,
       to: 0,
       total: 0,
@@ -104,10 +167,12 @@ export default {
           width: "30%"
         },
         {
-          name: "slug",
-
+          name: "locales",
+          callback: value => {
+            return value[this.language].name;
+          },
           sortField: "slug",
-          title: "Slug",
+          title: "Name",
           titleClass: "",
           dataClass: "list-item-heading",
           width: "30%"
@@ -132,6 +197,7 @@ export default {
     };
   },
   created() {
+    this.language = getCurrentLanguage();
     this.getBlockCategories({
       dir: null,
       search: null,
@@ -314,7 +380,7 @@ export default {
       this.from = newActions.from;
       this.to = newActions.to;
       this.total = newActions.total;
-      this.$refs.pagination.setPaginationData(newActions);
+      // this.$refs.pagination.setPaginationData(newActions);
     }
   }
 };

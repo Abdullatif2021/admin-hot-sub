@@ -40,62 +40,17 @@
             @vuetable:row-clicked="rowClicked"
           >
             <template slot="actions" slot-scope="props">
-              <!-- <b-button
-                id="activate"
-                :variant="
-                  props.rowData.active === 1
-                    ? 'outline-theme-6'
-                    : 'outline-theme-7'
-                "
-                class="icon-button"
-               
-              >
-                <i
-                  :class="
-                    props.rowData.active === 1
-                      ? 'iconsminds-close'
-                      : 'iconsminds-yes'
-                  "
-                ></i>
-                <b-tooltip
-                  target="activate"
-                  placement="left"
-                  :title="$t('forms.active_tooltip')"
-                >
-                </b-tooltip>
-              </b-button> -->
+           
               <b-button
                 variant="outline-theme-3"
                 id="edit"
                 class="icon-button-auction"
-                @click="
-                  modify(
-                    props.rowData,
-                    props.rowData.id,
-                    props.rowData.auction_type_value
-                  )"
-              >
-                <i  class="simple-icon-arrow-right"></i>
-                <!-- <b-tooltip
-                  target="edit"
-                  placement="top"
-                  :title="$t('forms.edit')"
-                >
-                </b-tooltip> -->
-              </b-button>
-              <!-- <b-button
-                variant="outline-theme-3"
-                class="icon-button"
-                id="details"
                 @click="modify(props.rowData.id, props.rowData.first_name)"
               >
-                <i class="simple-icon-pencil"></i>
-                <b-tooltip
-                  target="details"
-                  placement="bottom"
-                  :title="$t('forms.show_details')"
-                ></b-tooltip>
-              </b-button> -->
+                <i  class="simple-icon-arrow-right"></i>
+                
+              </b-button>
+             
             </template>
           </vuetable>
           <vuetable-pagination-bootstrap

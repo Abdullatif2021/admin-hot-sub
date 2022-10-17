@@ -66,15 +66,15 @@
                 class="icon-button"
                 @click="modify(props.rowData.id)"
               >
-                <i class="simple-icon-pencil"></i>
+              <i  class="simple-icon-arrow-right"></i>
               </b-button>
-              <b-button
+              <!-- <b-button
                 variant="outline-theme-6"
                 class="icon-button"
                 @click="open_model('deleteCategory', props.rowData.id)"
               >
                 <i class="simple-icon-trash"></i>
-              </b-button>
+              </b-button> -->
             </template>
           </vuetable>
           <vuetable-pagination-bootstrap

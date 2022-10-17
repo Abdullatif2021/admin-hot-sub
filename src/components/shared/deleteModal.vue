@@ -2,7 +2,7 @@
   <b-modal
     id="deleteModal"
     ref="deleteModal"
-    :title="$t('modal.modal-delete-category-title')"
+    :title="$t('modal.modal-delete-block-title')"
   >
     {{ message }}
     <template slot="modal-footer">

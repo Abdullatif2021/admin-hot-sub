@@ -14,6 +14,15 @@
           ><i style="font-size: 19px;" class="simple-icon-refresh"></i></b-button
         >
       </div>
+      <!-- <div v-if="!customFiledOn" class="top-right-button-container">
+        <b-button
+          variant="outline-theme-6"
+
+          class="top-right-button"
+          @click="DeleteAuction()"
+          >{{$t(`forms.delete`)}}</b-button
+        >
+      </div> -->
         <piaf-breadcrumb />
            <div v-if="customFiledOn"  style="display: grid;position: absolute;left: 77%;" class="mb-2 mt-2">
         <b-collapse style="margin: -6px;" id="displayOptions" class="d-md-block">
@@ -145,14 +154,19 @@
                     </b-card-body>
                 </b-card>
                 <b-card class="mb-4" :title="$t('forms.custom_field')">
+                  <template v-if="isLoad">
           <vuetable
             table-height="360px"
-            ref="vuetable"
+            ref="custom_vuetable"
             :api-mode="false"
             class="order-with-arrow"
             :fields="fields"
           >
           </vuetable>
+           </template>
+                  <template v-else>
+                    <div class="loading"></div>
+                  </template> 
                   <!-- <template v-if="isLoad">
                     <list-page-listing
                       :displayMode="displayMode"
@@ -218,6 +232,25 @@
     <template v-else>
         <div class="loading"></div>
     </template>
+    <b-modal
+      id="deleteAuction"
+      ref="deleteAuction"
+      :title="$t('modal.modal-active-auction-title')"
+      >{{ $t("forms.deleteAuctionQuestion") }}
+      <template slot="modal-footer">
+        <b-button
+          :disabled="enableModalBtn"
+          variant="primary"
+          @click="delete_auction()"
+          class="mr-1"
+        >
+          {{ $t("button.yes") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('deleteAuction')">{{
+          $t("button.no")
+        }}</b-button>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -249,7 +282,7 @@ export default {
     "radial-progress-card": RadialProgressCard,
     "comment-item": CommentItem,
     "order-item": OrderItem,
-        "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
+    "vuetable-pagination-bootstrap": VuetablePaginationBootstrap,
     "small-line-charts": SmallLineCharts,
     "website-visit-chart-card": WebsiteVisitsChartCard,
      "list-page-listing": ListPageListing,
@@ -258,6 +291,7 @@ export default {
     return {
       isLoad: false,
       search: null,
+      enableModalBtn: false,
       customFiledOn: false,
       isLoadReviewRequests: false,
       limit: null,
@@ -434,7 +468,7 @@ export default {
 
   },
   methods: {
-...mapActions(["getAuction", "getAuctionFiles", "getAuctionImages", "getAuctionBids", "getReviewRequests"]),
+...mapActions(["getAuction", "getAuctionFiles", "getAuctionImages", "getAuctionBids", "getReviewRequests", "deleteAuction"]),
  onPaginationData(paginationData) {
       this.from = paginationData.from;
       this.to = paginationData.to;
@@ -449,6 +483,13 @@ export default {
   this.auction_form.start_date.toString().lastIndexOf(':'),
 );
 return this.formatStartDate;
+    },
+    DeleteAuction(){
+      this.$refs['deleteAuction'].show();
+    },
+    delete_auction() {
+      this.enableModalBtn= true;
+      this.deleteAuction({ Id: this.auctionId });
     },
         getEndDate(){
      this.formatEndDate = this.auction_form.end_date.toString().slice(
@@ -545,8 +586,10 @@ return this.formatEndDate;
           })
         )
       }): this.auction_form.custom_fields = null;
+      
+      this.$refs.custom_vuetable.setData(this.auction_form.custom_fields);
       this.isLoad = true;
-      this.$refs.vuetable.setData(this.auction_form.custom_fields);
+      console.log('this.auction_form.custom_fields',this.auction_form.custom_fields);
     },
       _Image_List: function(val) {
 

@@ -42,7 +42,7 @@
                 class="icon-button"
                 @click="modify(props.rowData.id)"
               >
-                <i class="simple-icon-pencil"></i>
+              <i  class="simple-icon-arrow-right"></i>
               </b-button>
             </template>
           </vuetable>

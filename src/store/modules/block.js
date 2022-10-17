@@ -694,17 +694,24 @@ const actions = {
   updateBlockCategory ({ commit }, payload) {
     const id = payload.id;
     const formData = new FormData();
-    Object.entries(payload.info).forEach(entry => {
-      const [key, value] = entry;
-      if (value != null) {
-        formData.append(key, value);
+    payload.info.forEach(el => {
+      formData.append(`${el._name}[name]`, el.name);
+      if (el.description) {
+        formData.append(`${el._name}[description]`, el.description);
       }
     });
+    formData.append(`type`, payload.type);
+    // Object.entries(payload.info).forEach(entry => {
+    //   const [key, value] = entry;
+    //   if (value != null) {
+    //     formData.append(key, value);
+    //   }
+    // });
     formData.append("_method", "PUT");
     if (payload.image !== null) {
       formData.append("image", payload.image);
     }
-    
+    console.log(formData);
     const updateCategory = update_category({id, formData});
     updateCategory
       .then(res => {

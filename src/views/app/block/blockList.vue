@@ -51,15 +51,15 @@
                   modify(props.rowData.id, props.rowData.block_category_id.slug)
                 "
               >
-                <i class="simple-icon-pencil"></i>
+              <i  class="simple-icon-arrow-right"></i>
               </b-button>
-              <b-button
+              <!-- <b-button
                 variant="outline-theme-6"
                 class="icon-button"
                 @click="open_model('deleteModal', props.rowData.id)"
               >
                 <i class="simple-icon-trash"></i>
-              </b-button>
+              </b-button> -->
             </template>
           </vuetable>
           <vuetable-pagination-bootstrap
@@ -245,7 +245,8 @@ export default {
     modify(id, slug) {
       this.$router.push({
         path: `${adminRoot}/blocks/block`,
-        query: { id: id }
+        query: { id: id,
+          type: this.type }
       });
       this.setCategoryId({ id: this.type });
     },

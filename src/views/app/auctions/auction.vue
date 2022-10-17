@@ -771,7 +771,9 @@
                         </div>
                       </b-form-group>
                     </b-colxx>
-                    <b-button
+                    
+                  <div style="width: 100%">
+<b-button
                     :disabled="disabledFormStep1"
                     type="submit"
                     @click="onForm1Submited()"
@@ -779,6 +781,16 @@
                     class="mt-4"
                     >{{ $t("forms.save") }}</b-button
                   >
+                    <b-button
+                      :disabled="disabledFormStep1"
+                      type="submit"
+                      style="float: right"
+                      @click="openDeleteModal()"
+                      :variant="disabledFormStep1 ? 'light' : 'outline-theme-6'"
+                      class="mt-4"
+                      >{{ $t("forms.delete") }}</b-button
+                    >
+                  </div>
                   </b-row>
                 </b-form>
               </b-card>
@@ -2071,6 +2083,25 @@
         }}</b-button>
       </template>
     </b-modal>
+    <b-modal
+      id="deleteAuction"
+      ref="deleteAuction"
+      :title="$t('modal.modal-active-auction-title')"
+      >{{ $t("forms.deleteAuctionQuestion") }}
+      <template slot="modal-footer">
+        <b-button
+          :disabled="enableModalBtn"
+          variant="primary"
+          @click="delete_auction()"
+          class="mr-1"
+        >
+          {{ $t("button.yes") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('deleteAuction')">{{
+          $t("button.no")
+        }}</b-button>
+      </template>
+    </b-modal>
   </b-row>
 </template>
 <script>
@@ -2621,6 +2652,7 @@ area_id: {},
       "getCustomFieldList",
       "createAuctionImage",
       "deleteAuctionFile",
+      "deleteAuction",
       "getCategory",
       "createAuctionFile",
       "getAuctionFiles",
@@ -2683,6 +2715,10 @@ area_id: {},
           });
 
       }
+    },
+    delete_auction() {
+      this.enableModalBtn= true;
+      this.deleteAuction({ Id: this.auctionId });
     },
      onForm2Submited(){
        this.$v.$touch();
@@ -3146,9 +3182,10 @@ this.date_check();
               }
             });
         },
+        
 
-        open_field(){
-
+        openDeleteModal(){
+          this.$refs['deleteAuction'].show();
         }
   },
   computed: {
@@ -3363,6 +3400,17 @@ this.date_check();
       this.file_lists = []
        this.getAuctionImages({ id: this.auctionId })
       this.getAuctionFiles({ id: this.auctionId })
+    },
+    _successDeleteAuction(newVal, old) {
+      this.enableModalBtn= false;
+      this.$refs['deleteAuction'].hide();
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "the auction have been deleted successfully",
+        { duration: 4000, permanent: false }
+      );
+      router.push(`${adminRoot}/auctions`);
     },
     _dateError: function(val) {
       this.disableNextBtn = false;

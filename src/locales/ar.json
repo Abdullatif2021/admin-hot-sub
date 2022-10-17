@@ -800,6 +800,7 @@
   "modal": {
     "basic": "Basic",
     "modal-title": "Modal title",
+    "modal-delete-block-title": "حذف البلوك",
     "modal-lang-title": "تغيير اللغة",
     "modal-delete-auction-attach": "حذف المرفق",
     "modal-auction-details": "تفاصيل المزاد",

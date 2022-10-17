@@ -212,13 +212,30 @@ export default {
     },
     setMenuItems(val) {
      JSON.parse(val).forEach(item => {
+      // if(item.slug.length > 16){
         menuItems.push({
           id: item.id,
           icon: "iconsminds-blogger",
-          label: item.slug,
+          label: item.slug.length > 16 ? item.slug.slice(0, 16)+ "..." : item.slug,
           roles: ["superadmin", "admin", "editor"],
 
-          to: `${adminRoot}/blocks/blockList/${item.id}`
+          // to: `${adminRoot}/blocks/blockList/${item.id}`,
+          subs: [
+            {
+              id: item.id,
+              icon: "iconsminds-blogger",
+              label: item.slug.length > 16 ? item.slug.slice(0, 16)+ "..." : item.slug,
+              roles: ["superadmin", "admin", "editor"],
+              to: `${adminRoot}/blocks/blockList/${item.id}`,
+            },
+            {
+              id: "category",
+              icon: "simple-icon-list",
+              label: "Category",
+              to: `${adminRoot}/blocks/category?id=${item.id}`,
+              roles: ["superadmin", "admin"]
+            }
+          ]
         });
       });
       this._blockCategories = null;
