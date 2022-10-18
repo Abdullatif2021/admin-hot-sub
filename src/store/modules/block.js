@@ -75,6 +75,7 @@ const getters = {
   _blockError: state => state._Error,
   _blockPaginations: state => state._paginations,
   _blocks: state => state.blocks,
+  _isBLoad: state => state.processing,
   _isBLoadAttach: state => state.processing,
   _isLoadBlockMeta: state => state.processing,
   _updateBlockBasicData: state => state.updateBlockBasicData,
@@ -780,6 +781,7 @@ const actions = {
         if (res.status === 200 || res.status === 201) {
           dispatch("getBlockCategoryMetadata", { id });
           commit("updateblockCategoryMetaSuccess", res);
+          commit("create_block_category_meta_success", res);
         }
       });
   },

@@ -119,6 +119,13 @@ const routes = [
               import(
                 /* webpackChunkName: "blog" */ "./views/app/categories/category"
               )
+          },
+          {
+            path: "add-category",
+            component: () =>
+              import(
+                /* webpackChunkName: "blog" */ "./components/shared/add_category"
+              )
           }
         ]
       },

@@ -41,7 +41,7 @@
           }}</b-form-invalid-feedback>
         </b-form-group>
       </div>
-      <div v-if="showUpdateModal" class="deleteBtnContainer">
+      <div v-if="enableDeleteBtn" class="deleteBtnContainer">
         <b-button
         variant="outline-theme-6"
         :disabled="enable"
@@ -88,6 +88,7 @@ export default {
       enable: false,
       editCustomField: false,
       selected: null,
+      enableDeleteBtn: false,
       select_form: {
         type: null
       },
@@ -171,6 +172,7 @@ export default {
   watch: {
     showCreateModal: function(val) {
         this.editCustomField = false;;
+        this.enableDeleteBtn = false;
       this.select_form.type = null;
        this.keys_form.forEach(el => {
          el.key = null;
@@ -181,6 +183,7 @@ export default {
     },
     showUpdateModal: function(val) {
       this.enable = false;
+      this.enableDeleteBtn = true;
       this.$refs["add_newCustomField"].show();
     },
     customFieldInfo: function(val) {
@@ -199,6 +202,7 @@ export default {
       });
       this.editCustomField = false;
       this.enable = false;
+      this.enableDeleteBtn = false;
        this.$v.$reset();
     }
   }

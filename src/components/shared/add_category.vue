@@ -217,6 +217,7 @@ export default {
         !this.$v.icon_form.$invalid
       ) {
         this.enable = true;
+        console.log('eddwddwwedeeeddedddddddwwedwedwed');
         this.$emit(
           "create-category",
           this.$v.category_form.$model,

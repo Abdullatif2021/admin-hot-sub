@@ -312,6 +312,7 @@ const actions = {
         if (res.status === 200 || res.status === 201) {
           dispatch("getCategoryMetadata", { id });
           commit("updateCategoryMetaSuccess", res);
+          commit("create_category_meta_success", res);
         }
       });
   },
@@ -385,7 +386,7 @@ const actions = {
       })
       .then(res => {
         commit("createSubCategory", res.data.data);
-        dispatch("getSubCategories", { id });
+        // dispatch("getSubCategories", { id });
       });
   },
   updateSubCategory: async ({ commit, dispatch }, payload) => {
@@ -417,7 +418,7 @@ const actions = {
       })
       .then(res => {
         commit("updateSubCategory", res.data.data);
-        dispatch("getSubCategories", { id });
+        // dispatch("getSubCategories", { id });
       })
       .catch(res => {
         commit("error");

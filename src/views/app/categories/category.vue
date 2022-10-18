@@ -1,55 +1,132 @@
 <template>
-  <b-row>
-    <b-colxx xxs="12" xs="12" lg="12" class="mb-3">
-      <!-- <datatable-heading
-        :details="true"
-        :reload="true"
-        :transaction_filter="false"
-        :add_new_button="AddBtn"
-        @add_new="add_new"
-        :add_new_title="addBtnTitle"
-        :title="
-          id
-            ? $t('edit_category')
-            : isSubCategory
-            ? $t('create_sub_category')
-            : $t('create_category')
-        "
-      ></datatable-heading> -->
-      <category_details
-        @showAddButton="showAddButton"
-        :add_new_title="addBtnTitle"
-        :add_new_button="AddBtn"
-        @add_new="add_new"
-        :title="
-          id
-            ? $t('edit_category')
-            : isSubCategory
-            ? $t('create_sub_category')
-            : $t('create_category')
-        "
-        @createdSuccessfuly="createdSuccessfuly"
-        @modifySubCategory="modifySubCategory"
-        :showCreateModal="showCreateModal"
-        v-if="id"
-        :_id="id"
-        :_type="category"
-      />
-      <add_category
-        @create-category="create_category"
-        :isSubCategory="isSubCategory"
-        :title="
-          id
-            ? $t('edit_category')
-            : isSubCategory
-            ? $t('create_sub_category')
-            : $t('create_category')
-        "
-        v-if="!id"
-        :_type="category"
-      />
-    </b-colxx>
-
+  <div>
+    <b-row>
+      <b-colxx xxs="12">
+        <h1>{{$t('edit_category')}}</h1>
+        <div v-if="!isMetaData" class="top-right-button-container">
+          <b-button
+            variant="primary"
+            size="lg"
+            class="top-right-button"
+            @click="add_new()"
+            >{{ $t(`${add_new_title}`) }}</b-button>
+        </div>
+        <piaf-breadcrumb />
+        <b-tabs nav-class="separator-tabs ml-0 mb-5" content-class="tab-content" :no-fade="true">
+          <b-tab 
+            :title="$t(`forms.basic_details`)"
+            active
+            @click="displayAddBtn('todo.add-new-sub-category', false, true ), getBasic()"
+           >
+            <template v-if="_isLoadCategories">
+              <b-row>
+                <b-colxx xxs="12" xs="6" lg="6"> 
+                  <Category_basic_details :basicData="_category" @deleteBtnClicked="open_delete_model('deleteCategory')" :isAuctionCategory="true" :enableSubmitBtn="enableSubmitBtn" @formSubmited="basicDetailsSubmit" />
+                </b-colxx>
+                <b-colxx xxs="12" xs="6" lg="6">
+                    <b-card class="mb-4 basicDetailsContainer" no-body>
+                      <h5 class="card-title">{{$t(`forms.sub-category`)}}</h5>
+                      <vuetable
+                        class="tableSubCategory"
+                        ref="subVuetable"
+                        :api-mode="false"
+                        :reactive-api-url="true"
+                        :fields="subCategoryFields">
+                        <template slot="actions" slot-scope="props">
+                          <b-button
+                            variant="outline-theme-3"
+                            class="icon-button"
+                            @click="modifySubCategory(props.rowData)">
+                            <i class="simple-icon-arrow-right"></i>
+                          </b-button>
+                        </template>
+                      </vuetable>
+                    </b-card>
+                </b-colxx>
+              </b-row>
+            </template>
+            <template v-else>
+              <div class="loading"></div>
+            </template>
+          </b-tab>
+          <b-tab 
+            :title="$t(`forms.custom_field`)"
+            @click="displayAddBtn('todo.add-new-custom-filed', false, false), getCutom()"
+            >
+              <template v-if="_isLoadCustomField">
+                <b-colxx xs="12" md="12" class="mb-3">
+                  <b-card>
+                    <vuetable
+                      ref="custom_vuetable"
+                      :api-mode="false"
+                      :reactive-api-url="true"
+                      :fields="fields">
+                      <template slot="actions" slot-scope="props">
+                        <b-button
+                          variant="outline-theme-3"
+                          class="icon-button"
+                          @click="modify(props.rowData)">
+                          <i class="simple-icon-arrow-right"></i>
+                        </b-button>
+                      </template>
+                    </vuetable>
+                  </b-card>
+                </b-colxx>
+              </template>
+              <template v-else>
+                <div class="loading"></div>
+              </template>
+              <add-new-custom-field
+                :hideCustomModal="hideCustomModal"
+                @create-custom-field="create_custom_field"
+                @update-custom-field="update_custom_field"
+                @delete-custom-field="delete_custom_field"
+                :showCreateModal="showCreateModal"
+                :showUpdateModal="showUpdateModal"
+                :customFieldInfo="customFieldInfo"
+              />
+          </b-tab>
+          <b-tab 
+            :title="$t(`forms.meta_data`)"
+            @click="displayAddBtn('meta', true, false), getMeta()">
+            <metaData
+                :list="_CategoryMeta"
+                :meta_type_list="_categoryMetaTypeList"
+                :isLoad="_isLoadCategories"
+                :meta_success_create="_create_category_meta_success"
+                @create-meta="createMeta"
+                @update-meta="updateMeta"
+                @delete-meta="deleteMeta"
+              /> 
+          </b-tab>
+        </b-tabs>
+      </b-colxx>
+    </b-row>
+    <b-modal
+      id="deleteCategory"
+      ref="deleteCategory"
+      :title="$t('modal.modal-delete-category-title')">
+      {{ $t("forms.deleteCategoryQuestion") }}
+      <template slot="modal-footer">
+        <b-button
+          :disabled="deleteBtn"
+          variant="primary"
+          @click="delete_category()"
+          class="mr-1"
+        >
+          {{ $t("button.yes") }}</b-button
+        >
+        <b-button variant="secondary" @click="hideModal('deleteCategory')">{{
+          $t("button.no")
+        }}</b-button>
+      </template>
+    </b-modal>
+    <b-modal id="deleteModal" ref="deleteModal" :title="$t('modal.modal-delete-category-title')">{{ $t(`forms.deleteCustomFieldQuestion`) }}
+      <template slot="modal-footer">
+        <b-button variant="primary" :disabled="disableCutomBtn" @click="delete_custom" class="mr-1">{{ $t("button.yes") }}</b-button>
+        <b-button variant="secondary" @click="hideModal('deleteModal')">{{$t("button.no")}}</b-button>
+      </template>
+    </b-modal>
     <b-modal
       ref="subCategoryModal"
       id="subCategoryModal"
@@ -195,12 +272,12 @@
         }}</b-button>
       </template>
     </b-modal>
-  </b-row>
+  </div>
 </template>
 
 <script>
 import VueDropzone from "vue2-dropzone";
-import category_details from "../../../components/shared/category_details.vue";
+import Vuetable from "vuetable-2/src/components/Vuetable";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import add_category from "../../../components/shared/add_category.vue";
 import { mapActions, mapGetters } from "vuex";
@@ -209,13 +286,20 @@ import { getCurrentLanguage } from "../../../utils";
 const { required } = require("vuelidate/lib/validators");
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
+import addCustomField from "../../../components/shared/addCustomField.vue";
+import metaData from "../../../components/shared/metaData.vue";
+import Category_basic_details from "../../../components/shared/category_basic_details.vue";
+
 
 export default {
   components: {
-    category_details,
     add_category,
+    vuetable: Vuetable,
+    metaData,
+    Category_basic_details,
     "vue-dropzone": VueDropzone,
-    "datatable-heading": DatatableHeading
+    "datatable-heading": DatatableHeading,
+    "add-new-custom-field": addCustomField,
   },
   data() {
     return {
@@ -228,14 +312,23 @@ export default {
         icon: null
       },
       image: null,
+      deleteBtn: false,
+      enableSubmitBtn: false,
       sub_id : null,
       isModify: false,
+      disableCutomBtn: false,
+      isMetaData: false,
       enable: false,
       iseEditCategory: false,
+      customFieldInfo: null,
+      customFieldId: null,
       icon: null,
+      add_new_title: 'todo.add-new-sub-category',
       addBtnTitle: null,
+      hideCustomModal: false,
       isSubCategory: false,
       AddBtn: false,
+      showUpdateModal: false,
       showCreateModal: false,
       iconDropzoneOptions: {
         url: "https://lilacmarketingevents.com",
@@ -260,7 +353,104 @@ export default {
         previewTemplate: this.dropzoneTemplate(),
         headers: {},
         acceptedFiles: "image/jpeg,image/png,image/gif"
-      }
+      },
+      fields: [
+        {
+          name: "icon",
+           callback: value => {
+            return `<img src="${value}" style="border-radius: 34%;" alt="Image" width="50" height="50">`;
+          },
+          title: "Icon",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "25%"
+        },
+        {
+          name: "locales",
+          callback: value => {
+            return value.ar.name;
+          },
+          title: "Arabic Title",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "25%"
+        },
+        {
+          name: "locales",
+          callback: value => {
+            return value.en.name;
+          },
+          title: "English Title",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "25%"
+        },
+        {
+          name: "__slot:actions",
+          title: "",
+          titleClass: "center aligned text-right",
+          dataClass: "center aligned text-right",
+          width: "25%"
+        }
+      ],
+      subCategoryFields: [
+         {
+          name: "image",
+          callback: value => {
+            return `<img src="${value}" style="border-radius: 34%;" alt="Image" width="50" height="50">`;
+          },
+          title: "Image",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "20%"
+        },
+        {
+          name: "locales",
+          callback: value => {
+            return value[this.language].name;
+          },
+          sortField: "slug",
+          title: "Title",
+          titleClass: "title",
+          dataClass: "list-item-heading",
+          width: "20%"
+        },
+        {
+          name: "locales",
+          callback: value => {
+            return value[this.language].description;
+          },
+          sortField: "description",
+          title: "Description",
+          titleClass: "",
+          dataClass: "list-item-heading",
+          width: "30%"
+        },
+        {
+          name: "active",
+          callback: value => {
+            return value === 1
+              ? `<span class="badge badge-pill badge-success handle mr-1">
+                Active
+              </span>`
+              : `<span class="badge badge-pill badge-danger handle mr-1">
+                Inactive
+              </span>`;
+          },
+          sortField: "active",
+          title: "Status",
+          titleClass: "",
+          dataClass: "text-muted",
+          width: "10%"
+        },
+        {
+          name: "__slot:actions",
+          title: "",
+          titleClass: "center aligned text-right",
+          dataClass: "center aligned text-right",
+          width: "20%"
+        }
+      ]
     };
   },
   mixins: [validationMixin],
@@ -284,11 +474,35 @@ export default {
     this.id = this.$route.query.id;
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.lang_form);
-           this.language = getCurrentLanguage();
-
+    this.language = getCurrentLanguage();
+    this.getCategory({ id: this.$route.query.id })
+    this.getSubCategories({ id: this.$route.query.id })
   },
   methods: {
-    ...mapActions(["createSubCategory","updateSubCategory", "createCategory"]),
+    ...mapActions([
+      "createCategory",
+      "deleteCategory",
+      "updateCategory",
+      "getCategory",
+      // ----- sub categories
+      "getSubCategories",
+      "createSubCategory",
+      "updateSubCategory",
+      "deleteSubCategory",
+      
+      //  ----- metadata -----
+      "getCategoryMetadata",
+      "getCategoryMetaTypeList",
+      "createCategoryMetadata",
+      "updateCategoryMetadata",
+      "deleteCategoryMetadata",
+
+      // ------ custom fields -----
+      "updateCustomField",
+      "getCustomFieldList",
+      "deleteCustomField",
+      "createCustomField",
+      ]),
     make_collaction(langs, form) {
       JSON.parse(langs).forEach(el => {
         form.push({
@@ -297,6 +511,26 @@ export default {
           _name: el.name
         });
       });
+    },
+    basicDetailsSubmit(langsData, img){
+      this.enableSubmitBtn = true;
+      this.updateCategory({
+            info: langsData,
+            image: img,
+            id: this.id
+          });
+    },
+    displayAddBtn(title, isMetaData, isSubCategory){
+      this.add_new_title = title;
+      this.isMetaData = isMetaData;
+      this.isSubCategory = isSubCategory;
+    },
+    open_delete_model(refname) {
+        this.$refs[refname].show();
+    },
+    delete_category() {
+      this.deleteBtn = true;
+      this.deleteCategory({ id: this.id });
     },
     addSubCategory() {
       this.$v.$touch();
@@ -322,11 +556,6 @@ export default {
         }
 
       }
-    },
-    showAddButton(val, title, isSubCategory) {
-      this.isSubCategory = isSubCategory;
-      this.AddBtn = val;
-      this.addBtnTitle = title;
     },
     create_category(info, img, type, icon) {
       this.createCategory({ info: info, image: img, icon: icon });
@@ -362,11 +591,62 @@ export default {
         this.isModify = false;
         this.$refs["subCategoryModal"].show();
       } else {
+        // this for custom field
         this.showCreateModal = !this.showCreateModal;
       }
     },
-    createdSuccessfuly() {
-     },
+    getBasic(){
+      this.getCategory({ id: this.$route.query.id })
+      this.getSubCategories({ id: this.$route.query.id })
+    },
+  // -------------------custom filed --------------------------------
+      getCutom(){
+        console.log('errfrfnrfnrfnrfunruneune');
+        this.getCustomFieldList({id: this.id})
+      },
+      modify(data){
+        this.customFieldInfo = data;
+        this.showUpdateModal = !this.showUpdateModal;
+      },
+      create_custom_field(val,type){
+        this.createCustomField({info: val, type: type, categoryId: this.id })
+      },
+      update_custom_field(val,type,custom_id){
+        this.updateCustomField({info: val, type: type, categoryId: this.id,custom_id: custom_id })
+      },
+      delete_custom_field(custom_id){
+        this.customFieldId = custom_id
+        this.$refs['deleteModal'].show();
+      },
+      delete_custom(){
+        this.deleteCustomField({categoryId: this.id, custom_id: this.customFieldId})
+      },
+  // ===================meta_data===========================
+      getMeta(){
+          this.getCategoryMetadata({ id: this.id })
+          this.getCategoryMetaTypeList();
+        },
+      createMeta(type, info){
+        this.createCategoryMetadata({
+                id: this.id,
+                meta_type_id: type,
+                info: info
+              });
+      },
+      updateMeta(type, info, metaID){
+        this.updateCategoryMetadata({
+                id: this.id,
+                metadata_id: metaID,
+                meta_type_id: type,
+                info: info
+              });
+      },
+      deleteMeta(metaID){
+        this.deleteCategoryMetadata({
+                id: this.id,
+                metadata_id: metaID
+              })
+      },
     fileAdded(image) {
       this.image = image;
     },
@@ -412,7 +692,21 @@ export default {
       "_successCreateSubCategory",
       "_successUpdateSubCategory",
       "_create_category_success",
-      "_errorCategory"
+      "_categoryMetaTypeList",
+      "_create_category_meta_success",
+      "_CategoryMeta",
+      "_category",
+      "_successUpdateCategory",
+      "_errorCategory",
+      "_successDeleteCategory",
+      "_isLoadCategories",
+      "_updateCategoryMetaSuccess",
+      "_customFields",
+      "_updateCustomField",
+      "_successDeleteCustomField",
+      "_createCustomField",
+     "_isLoadCustomField",
+     "_subCategories"
     ]),
     getImageUrl(){
         return URL.createObjectURL(this.image[0]);
@@ -424,15 +718,50 @@ export default {
     }
   },
   watch: {
-    // _createCustomField: function(val) {
-    //   this.showCreateModal = !this.showCreateModal;
-    //   this.$notify(
-    //     "success",
-    //     "Operation completed successfully",
-    //     "Custom Field have been created successfully",
-    //     { duration: 3000, permanent: false }
-    //   );
-    // },
+    _subCategories: function(val){
+      console.log('subbbbbbb',val);
+      this.$refs.subVuetable.setData(val);
+    },
+
+  
+    _createCustomField: function(val){
+        this.hideCustomModal = !this.hideCustomModal;
+       this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Custom Field have been created successfully",
+        { duration: 3000, permanent: false }
+      );
+
+
+    },
+    _updateCustomField: function(val){
+      this.hideCustomModal = !this.hideCustomModal;
+        this.$notify(
+          "success",
+          "Operation completed successfully",
+          "Custom Field have been updated successfully",
+          { duration: 3000, permanent: false }
+        );
+    },
+    _customFields(newList, old) {
+      console.log(newList);
+      this.$refs.custom_vuetable.setData(newList);
+    },
+    _successDeleteCustomField(newVal, old) {
+      this.hideModel = !this.hideModel
+      this.hideCustomModal = !this.hideCustomModal;
+      this.disableDeleteBtn = false;
+      this.disableCutomBtn = false;
+      this.modalName = null;
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Custom Field have been deleted successfully",
+        { duration: 4000, permanent: false }
+      );
+      this.$refs['deleteModal'].hide();
+    },
     _successCreateSubCategory: function(val) {
       this.lang_form.forEach(el => {
         el.name = null;
@@ -448,6 +777,7 @@ export default {
       );
       this.$refs["subCategoryModal"].hide();
       this.enable = false;
+      this.getBasic();
     },
     _successUpdateSubCategory: function(val) {
             this.lang_form.forEach(el => {
@@ -464,6 +794,7 @@ export default {
       );
       this.$refs["subCategoryModal"].hide();
       this.enable = false;
+      this.getBasic();
     },
     _create_category_success: function(val) {
       this.$notify(
@@ -474,15 +805,36 @@ export default {
       );
       router.push(`${adminRoot}/categories`);
     },
-    // _errorCategory: function(val){
-    //           this.enable = false;
-    //    this.$notify(
-    //     "error",
-    //     "there is something wrong",
-    //     "Please try again",
-    //     { duration: 3000, permanent: false }
-    //   );
-    // }
+    _successUpdateCategory: function(val){
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Auction Category have been updated successfully",
+        { duration: 3000, permanent: false }
+      );
+      this.enableSubmitBtn = false;
+    },
+    _errorCategory: function(val){
+      this.$notify(
+        "error",
+        "Something went wrong",
+        "Please try again",
+        { duration: 4000, permanent: false }
+      );
+      this.enable = false;
+    },
+    _successDeleteCategory(newVal, old) {
+      this.hideModel = !this.hideModel
+      this.deleteBtn = false;
+      this.$refs['deleteCategory'].hide();
+      router.push(`${adminRoot}/categories`);
+      this.$notify(
+        "success",
+        "Operation completed successfully",
+        "Category have been deleted successfully",
+        { duration: 3000, permanent: false }
+      );
+    }
   }
 };
 </script>

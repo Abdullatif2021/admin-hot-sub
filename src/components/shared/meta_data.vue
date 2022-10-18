@@ -268,12 +268,7 @@ export default {
         this.enable = true;
         if (this.meta_form.id) {
           if (this.type === "block") {
-            this.updateBlockCategoryMeta({
-              id: this.id,
-              metadata_id: this.meta_form.id,
-              meta_type_id: this.select_form.select,
-              info: this.$v.meta_form.$model
-            });
+            
           } else {
             this.updateCategoryMetadata({
               id: this.id,
@@ -285,11 +280,7 @@ export default {
           }
         } else {
           if (this.type === "block") {
-            this.createBlockCategoryMetadata({
-              id: this.id,
-              meta_type_id: this.select_form.select,
-              info: this.$v.meta_form.$model
-            });
+            
           } else {
             this.createCategoryMetadata({
               id: this.id,
@@ -333,17 +324,32 @@ export default {
       "_blockCategoryMeta",
       "_errorCate",
       "_updateblockCategoryMetaSuccess",
-      "_categoryMetaTypeList",
       "_isLoadBlockCategoryMeta",
-      "_CategoryMeta",
-      "_errorCategory",
-      "_create_block_category_meta_success",
-      "_isLoadBlockCategoryMeta",
-      "_isLoadCategories",
-      "_updateCategoryMetaSuccess"
+    
     ])
   },
   watch: {
+    metaData: function(val) {
+      this.$refs.vuetable.setData(val);
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     _errorCategory: function(val){
       this.$notify(
         "error",

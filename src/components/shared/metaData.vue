@@ -233,7 +233,7 @@ export default {
     },
     meta_success_create: function(val) {
        this.select_form.select = null;
-        this.$v.$reset()
+        this.$v.$reset() 
     },
     meta_type_list: function(val) {
       val.forEach(option => {

@@ -415,7 +415,7 @@ export default {
     },
     add_New() {
       this.$router.push({
-        path: `${adminRoot}/categories/category`
+        path: `${adminRoot}/categories/add-category`
       });
     }
     
