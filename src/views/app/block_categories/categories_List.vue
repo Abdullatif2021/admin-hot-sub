@@ -21,13 +21,13 @@
     <b-row>
         <b-colxx v-for="(category,CIndex) in _blockCategories" xxs="12" lg="6" class="mb-5" :key="`category_${CIndex}`">
             <b-card class="flex-row listing-card-container cateCard" no-body>
-                <div class="w-40 position-relative">
+                <div class="w-30 position-relative">
                     <router-link to="blog-detail">
                         <img class="cateImg" :src="category.image" alt="Card cap" />
                         <!-- <b-badge  variant="primary" pill class="position-absolute badge-top-left">new</b-badge> -->
                     </router-link>
                 </div>
-                <div class="w-60 d-flex align-items-center">
+                <div class="w-70 d-flex align-items-center">
                     <b-card-body>
                         <router-link :to="`${adminRoot}/blockCategories/category?id=${category.id}`">
                             <h5 class="mb-3 listing-heading" v-line-clamp="2">{{ category.locales.en.name }}</h5>
