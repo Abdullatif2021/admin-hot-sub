@@ -415,7 +415,7 @@ export default {
     },
     add_New() {
       this.$router.push({
-        path: `${adminRoot}/categories/add-category`
+        path: `${adminRoot}/categories/category`
       });
     }
     
@@ -426,7 +426,6 @@ export default {
       "cate_paginations",
       "_successDeleteCategory",
       "_successActiveCategory",
-
       "_isLoadCategories"
     ]),
     isSelectedAll() {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="id">
     <b-row>
       <b-colxx xxs="12">
         <h1>{{$t('edit_block')}}</h1>
@@ -30,25 +30,31 @@
       </b-colxx>
     </b-row>
   </div>
+  <div v-else>
+    <add_category :title="$t(`create_block`)" :is_block_category="true" @create-category="create_category" />
+  </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 import metaData from "../../../components/shared/metaData.vue";
 import Category_basic_details from "../../../components/shared/category_basic_details.vue";
+import add_category from "../../../components/shared/add_category.vue";
 import router from "../../../router";
 import { adminRoot } from "../../../constants/config";
 
 export default {
   components: {
     Category_basic_details,
-    metaData
+    metaData,
+    add_category
   },
   data() {
     return {
       id: null,
       basicData: null,
       enableSubmitBtn: false,
+      is_block_category: true
     };
   },
   created() {
@@ -66,7 +72,7 @@ export default {
       "deleteBlockCategoryMetadata",
       "getBlockMetaTypeList",
     ]),
-    createCategory(info, img, type) {
+    create_category(info, img, type) {
       this.createBlockCategory({ info: info, type: type, image: img });
     },
     basicDetailsSubmit(langsData, img){

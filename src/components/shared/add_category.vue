@@ -5,7 +5,7 @@
    <piaf-breadcrumb />
    <div class="separator mb-5" />
 
-    <b-card class="mb-4">
+    <b-card  class="mb-4 addCategoryCard">
       <template v-if="_isLoadBlock">
         <b-form @submit.prevent="onGridFormSubmit">
           <div
@@ -59,7 +59,7 @@
               }}</b-form-invalid-feedback>
             </b-form-group>
           </b-colxx>
-          <b-colxx v-if="_type !== 'block'" xxs="12">
+        <b-colxx v-if="!is_block_category" xxs="12">
             <b-form-group
               class="has-float-label mb-4"
               :label="$t('forms.icon')"
@@ -117,13 +117,21 @@ import VueDropzone from "vue2-dropzone";
 const { required, requiredIf } = require("vuelidate/lib/validators");
 
 export default {
-  props: ["title", "_type"],
+
+  props: {
+    title: {
+      type: String
+    },
+    is_block_category: {
+        type: Boolean,
+        default: false
+    },
+},
   components: {
     "vue-dropzone": VueDropzone
   },
   data() {
     return {
-      is_block_category: false,
       file: null,
       enable: false,
       typeOptions: [],
@@ -188,14 +196,15 @@ export default {
     }
   },
   created() {
-    this._type == "block"
-      ? ((this.is_block_category = true), this.getBlockCategoryTypes())
-      : (this.gridForm.select = "just for form submit");
+    console.log(this.is_block_category);
+    if(this.is_block_category){
+      this.getBlockCategoryTypes()
+    }
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.category_form);
   },
   methods: {
-    ...mapActions(["createBlockCategory", "getBlockCategoryTypes"]),
+    ...mapActions(["getBlockCategoryTypes"]),
     make_collaction(langs, form) {
       JSON.parse(langs).forEach(el => {
         form.push({
@@ -206,6 +215,7 @@ export default {
       });
     },
     onGridFormSubmit() {
+      
       this.$v.$touch();
       this.$v.gridForm.$touch();
       this.$v.icon_form.$touch();
@@ -217,7 +227,6 @@ export default {
         !this.$v.icon_form.$invalid
       ) {
         this.enable = true;
-        console.log('eddwddwwedeeeddedddddddwwedwedwed');
         this.$emit(
           "create-category",
           this.$v.category_form.$model,
@@ -273,7 +282,8 @@ export default {
       newInfo.forEach(el => {
         this.typeOptions.push(el);
       });
-    }
+    },
+   
   }
 };
 </script>

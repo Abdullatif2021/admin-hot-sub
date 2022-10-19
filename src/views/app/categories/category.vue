@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="id">
     <b-row>
       <b-colxx xxs="12">
         <h1>{{$t('edit_category')}}</h1>
@@ -273,6 +273,9 @@
       </template>
     </b-modal>
   </div>
+  <div v-else>
+    <add_category :title="$t(`create_category`)"  @create-category="create_category"  />
+  </div>
 </template>
 
 <script>
@@ -303,7 +306,6 @@ export default {
   },
   data() {
     return {
-      category: "category",
       id: null,
       lang_form: [],
       isimgModify: false,
