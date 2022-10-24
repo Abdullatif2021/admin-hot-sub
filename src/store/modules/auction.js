@@ -222,7 +222,6 @@ const actions = {
           })
           .then(res => {
             if (res.status === 200) {
-              console.log(res);
               commit("getAuctionProductsSuccess", res.data.data);
             } else {
               commit("getAuctionsError", "error:getAuctions");
@@ -415,7 +414,6 @@ const actions = {
     formData.append("_method", "PUT");
     const update_status =  update_auction({id, formData});
     update_status.then(res => {
-      console.log(res)
       if (res.data.status === 200) {
         commit("updatedAuctionSuccessfuly", res);
       }else {
@@ -570,7 +568,6 @@ const actions = {
       .catch(err => {});
   },
   createAuctionImage({ commit, dispatch }, payload) {
-    console.log(payload);
     const id = payload.id;
     const formData = new FormData();
     formData.append("path", payload.path);

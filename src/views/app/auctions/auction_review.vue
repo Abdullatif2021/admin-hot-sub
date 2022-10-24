@@ -589,7 +589,6 @@ return this.formatEndDate;
       
       this.$refs.custom_vuetable.setData(this.auction_form.custom_fields);
       this.isLoad = true;
-      console.log('this.auction_form.custom_fields',this.auction_form.custom_fields);
     },
       _Image_List: function(val) {
 
@@ -642,13 +641,11 @@ return this.formatEndDate;
       this.customFiledOn = true
     },
     _auctionReviewRequests: function(val){
-      console.log(val);
       this.$refs.previews_vuetable.setData(val);
       this.isLoadReviewRequests = true;
 
     },
     _get_reviews: function(val){
-      console.log(val);
     }
   }
 };

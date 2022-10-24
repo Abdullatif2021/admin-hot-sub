@@ -2044,7 +2044,6 @@ area_id: {},
     }
     },
     attachAdded(file){
-      console.log(file);
       this.attachmentFile = file;
       this.$refs['attachDetails'].show();
       this.saveBtn = this.$t(`forms.save`);
@@ -2055,11 +2054,9 @@ area_id: {},
     createAttachmentsQueue(auction_id){
       this.creationAttachments.forEach(el => {
        if(el.file[0].type.split('/')[0] === 'image'){
-        console.log('this is image')
         this.createAuctionImage({ info: el.info, path: el.file[0], id: auction_id });
        }else{
         this.createAuctionFile({ info: el.info, path: el.file[0], id: auction_id });
-        console.log('this is file')
        }
       })
     },
@@ -2232,7 +2229,6 @@ this.isLoadCustomField = true
              this.$v.$reset();
              this.enable_attach_btn = false;
 
-        console.log(this.creationAttachments)
       }
 
         }else{
@@ -2242,14 +2238,12 @@ this.isLoadCustomField = true
       if (!this.$v.attach_form.$invalid) {
         this.enable_attach_btn = true;
       if(this.file[0].type.split('/')[0] === 'image'){
-        console.log('here i am image')
         this.createAuctionImage({
         info: this.$v.attach_form.$model,
         path: this.file ? this.file[0] : null,
         id: this.auctionId
         });
       }else{
-        console.log('here i am file')
           this.createAuctionFile({ info: this.$v.attach_form.$model, path: this.file ? this.file[0] : null, id: this.auctionId });
       }
       }
@@ -2515,7 +2509,6 @@ this.date_check();
         
        
       })
-      console.log('files',this.file_lists)
 
 
     },
@@ -2576,7 +2569,6 @@ this.date_check();
         )
       
       })
-      console.log('images',this.file_lists)
     },
     _customFields: function(val) {
             this.categoryCustomFieldOptions = [];

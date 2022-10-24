@@ -603,7 +603,6 @@ export default {
     },
   // -------------------custom filed --------------------------------
       getCutom(){
-        console.log('errfrfnrfnrfnrfunruneune');
         this.getCustomFieldList({id: this.id})
       },
       modify(data){
@@ -721,7 +720,6 @@ export default {
   },
   watch: {
     _subCategories: function(val){
-      console.log('subbbbbbb',val);
       this.$refs.subVuetable.setData(val);
     },
 
@@ -747,7 +745,6 @@ export default {
         );
     },
     _customFields(newList, old) {
-      console.log(newList);
       this.$refs.custom_vuetable.setData(newList);
     },
     _successDeleteCustomField(newVal, old) {

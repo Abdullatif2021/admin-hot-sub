@@ -110,7 +110,6 @@ export const create_category = async (formData) =>{
     return await axios.post(`${apiUrl}/blocks/categories`, formData, {})
 }
 export const update_category = async ({id, formData}) =>{
-  console.log('from service', id, formData);
     return await axios.post(`${apiUrl}/blocks/categories/${id}`, formData, {})
 }
 export const delete_category = async () =>{

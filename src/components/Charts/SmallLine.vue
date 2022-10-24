@@ -1,6 +1,6 @@
 <template>
   <div>
-      <h4 class="mb-1">auction title</h4>
+      <h4 class="mb-1">{{name}}</h4>
       <p class="lead color-theme-1 mb-1 value">{{ labelPrefix }}{{ labely }}</p>
       <p class="mb-0 label text-small">{{ labelx }}</p>
       <div :class="containerClass">
@@ -29,6 +29,10 @@ export default {
       default: false
     },
     labelPrefix: {
+      type: String,
+      default: "$"
+    },
+    name: {
       type: String,
       default: "$"
     }

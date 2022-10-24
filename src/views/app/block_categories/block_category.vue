@@ -118,6 +118,10 @@ export default {
     ...mapGetters(["_create_block_category_success", "_successUpdateBlockCategory", "_blockMetaTypeList", "_blockCategory", "_isBLoad",  "_blockCategoryMeta", "_isLoadBlockCategoryMeta",])
   },
   watch: {
+    $route(to, from) {
+      
+        this.getBlockCategory({ id: this.$route.query.id })
+    },
     _blockCategory: function(val) {
       this.basicData = val
     },

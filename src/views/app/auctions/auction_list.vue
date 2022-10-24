@@ -593,7 +593,6 @@ this.$router.push({
     rowClicked(dataItem, field, event) {
       if( field.srcElement.localName === 'span' || field.srcElement.localName === 'b-button'){
         if( field.srcElement.classList[0] !== 'badge'){
-        console.log('grerrerererererere', field)
         if(dataItem.auction_type_value === 2){
           this.open_model('activeAuction', dataItem.id, dataItem.active)
         }else{
@@ -606,22 +605,18 @@ this.$router.push({
         }
         }
       }
-     console.log(this);
     },
       open_model(refname, id, active) {
               this.enableModalBtn= false;
 
       this.$refs[refname].show();
       this.auctionId = id;
-      console.log(active);
       if (active != null) {
-        console.log('hiiiiiiiiiiiiiiiiii');
 this.active = active
       }
 
     },
     rightClicked(dataItem, field, event) {
-      console.log(dataItem, field, event)
       event.preventDefault();
       if (!this.selectedItems.includes(dataItem.id)) {
         this.selectedItems = [dataItem.id];
@@ -640,9 +635,6 @@ this.active = active
      formatDate(d) {
 
         return moment(d).format("MMM Do YYYY");
-    },
-    testtt(){
-      console.log('rffrrffrfrrffr')
     },
     dataManager(sortOrder, pagination) {
       if (sortOrder.length > 0) {
@@ -810,7 +802,6 @@ this.active = active
   },
   watch: {
     active_test: function(val){
-      console.log(val)
     },
     searchChange(newQuestion, oldQuestion) {
       if (newQuestion) {
@@ -887,7 +878,6 @@ this.$notify(
         this.subCategoryName = val.data.locales[this.language].name
     },
     auction_paginations(newActions, old) {
-      console.log(newActions);
       this.perPage = newActions.per_page;
       this.from = newActions.from;
       this.to = newActions.to;

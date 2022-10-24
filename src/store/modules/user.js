@@ -305,7 +305,6 @@ export default {
     activateUser({ commit }, payload) {
       const id = payload.id;
       const active = payload.active;
-      console.log(active);
       const activate = active_user({id, active})
         activate.then(res => {
           if (res.status === 200) {

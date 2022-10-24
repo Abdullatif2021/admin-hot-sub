@@ -153,7 +153,6 @@ methods: {
           _name: el.name
         });
       });
-      console.log('this.category_form' ,this.category_form );
     },
     onGridFormSubmit() {
       this.$v.$touch();
@@ -192,7 +191,6 @@ methods: {
 },
 watch: {
     basicData: function(val) {
-        console.log(val);
         this.image = val.image;
         this.category_form.forEach(el => {
          el.name = val.locales[el._name].name;

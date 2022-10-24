@@ -388,7 +388,6 @@ export default {
         this.state_sort = val;
       }
     
-      console.log('i am here');
     },
     bank_details(item) {
       this.transaction_id = item.id;

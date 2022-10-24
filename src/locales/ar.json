@@ -514,6 +514,8 @@
   "forms": {
     "select-new-custom": "اختر او اضف حقل مخصص جديد",
     "send": "ارسال",
+    "percentages": "نسب حقيقية",
+    "pie-chart": "Pie Chart",
     "deleteAttachQuestion": "هل انت متاكد بانك تريد حذف هذا المرفق؟",
     "products": "المنتجات",
     "en_lang": "اللغة الانجليزية",

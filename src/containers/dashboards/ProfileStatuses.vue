@@ -1,5 +1,5 @@
 <template>
-  <b-card :title="$t('dashboards.profile-status')">
+  <b-card >
     <div v-for="(s,index) in profileStatuses" :key="index" class="mb-4">
       <p class="mb-2">
         {{ s.title }}

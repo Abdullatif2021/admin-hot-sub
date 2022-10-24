@@ -7,7 +7,7 @@
       </b-col>
       <b-col sm="10">
         <b-card-body class="p-3">
-          <small-line-chart :data="data" labelPrefix="$"/>
+          <small-line-chart :name="name" :data="data" labelPrefix="$"/>
         </b-card-body>
       </b-col>
     </b-row>
@@ -18,7 +18,7 @@
 import SmallLineChart from "../Charts/SmallLine";
 
 export default {
-  props: ["labelPrefix", "data"],
+  props: ["labelPrefix", "data", "name"],
   components: {
     "small-line-chart": SmallLineChart
   },

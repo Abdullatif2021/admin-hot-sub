@@ -712,7 +712,6 @@ const actions = {
     if (payload.image !== null) {
       formData.append("image", payload.image);
     }
-    console.log(formData);
     const updateCategory = update_category({id, formData});
     updateCategory
       .then(res => {

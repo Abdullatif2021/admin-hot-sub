@@ -24,7 +24,7 @@ export default {
     props: ['icon', 'title', 'detail', 'percent', 'progressText'],
     data() {
         return {
-            diameterDefault: 125,
+            diameterDefault: 105,
             strokeWidthDefault: 5,
             diameter: this.diameterDefault,
             strokeWidth: this.strokeWidthDefault

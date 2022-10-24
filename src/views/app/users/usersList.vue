@@ -309,9 +309,7 @@ export default {
     },
     rowClicked(dataItem, field) {
       if( field.srcElement.localName === 'span' || field.srcElement.localName === 'b-button'){
-        if( field.srcElement.classList[0] !== 'badge'){
-        console.log('grerrerererererere', field)
-       
+        if( field.srcElement.classList[0] !== 'badge'){       
           this.open_model('activeModal', dataItem.id, dataItem.active)
         }
       }

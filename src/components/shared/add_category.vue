@@ -196,7 +196,6 @@ export default {
     }
   },
   created() {
-    console.log(this.is_block_category);
     if(this.is_block_category){
       this.getBlockCategoryTypes()
     }

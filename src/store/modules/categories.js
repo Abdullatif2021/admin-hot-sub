@@ -162,7 +162,6 @@ const mutations = {
     state.getSubCategorySuccess = payload;
   },
   errorCate(state, payload) {
-    console.log(state);
     state.error = payload;
   }
 };
@@ -288,7 +287,6 @@ const actions = {
     formData.append(`meta_type_id`, payload.meta_type_id);
     const createMeta = create_meta({id, formData});
     createMeta.then(res => {
-      console.log('ressssss', res);
       if (res.status === 201 || res.status === 200) {
         dispatch("getCategoryMetadata", { id });
         commit("create_category_meta_success", res);
