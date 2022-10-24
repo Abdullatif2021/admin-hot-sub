@@ -477,8 +477,10 @@ export default {
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.lang_form);
     this.language = getCurrentLanguage();
-    this.getCategory({ id: this.$route.query.id })
-    this.getSubCategories({ id: this.$route.query.id })
+    if (this.$route.query.id) {
+      this.getCategory({ id: this.$route.query.id })
+      this.getSubCategories({ id: this.$route.query.id })
+    }      
   },
   methods: {
     ...mapActions([

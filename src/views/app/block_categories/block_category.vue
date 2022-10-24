@@ -59,7 +59,9 @@ export default {
   },
   created() {
     this.id = this.$route.query.id;
-    this.getBlockCategory({ id: this.$route.query.id })
+    if (this.$route.query.id) {
+      this.getBlockCategory({ id: this.$route.query.id })
+    }      
   },
   methods: {
     ...mapActions([

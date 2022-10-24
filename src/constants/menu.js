@@ -7,22 +7,7 @@ const data = [
     icon: "iconsminds-shop",
     label: "Static",
     to: `${adminRoot}/static`
-  },
-
-  {
-    id: "blockCategories",
-    icon: "iconsminds-picasa",
-    label: "Blocks Category",
-    to: `${adminRoot}/blockCategories`,
-    roles: ["superadmin"]
-  },
-  {
-    id: "categories",
-    icon: "simple-icon-grid",
-    label: "Categories",
-    to: `${adminRoot}/categories`,
-    roles: ["superadmin"]
-  },
+  },  
   {
     id: "auctions",
     icon: "simple-icon-folder",
@@ -31,19 +16,12 @@ const data = [
     roles: ["superadmin", "admin", "accountant"]
   },
   {
-    id: "Pages",
-    icon: "iconsminds-digital-drawing",
-    label: "Pages",
-    to: `${adminRoot}/pages`,
-    roles: ["superadmin", "admin", "editor"]
+    id: "categories",
+    icon: "simple-icon-grid",
+    label: "Categories",
+    to: `${adminRoot}/categories`,
+    roles: ["superadmin"]
   },
-  // {
-  //   id: "admins",
-  //   icon: "simple-icon-user",
-  //   label: "Admins",
-  //   to: `${adminRoot}/admins`,
-  //   roles: ["superadmin", "admin"]
-  // },
   {
     id: "faq",
     icon: "simple-icon-question",
@@ -67,6 +45,27 @@ const data = [
       }
     ]
   },
+  {
+    id: "blockCategories",
+    icon: "iconsminds-picasa",
+    label: "Blocks Category",
+    to: `${adminRoot}/blockCategories`,
+    roles: ["superadmin"]
+  },
+  {
+    id: "Pages",
+    icon: "iconsminds-digital-drawing",
+    label: "Pages",
+    to: `${adminRoot}/pages`,
+    roles: ["superadmin", "admin", "editor"]
+  },
+  // {
+  //   id: "admins",
+  //   icon: "simple-icon-user",
+  //   label: "Admins",
+  //   to: `${adminRoot}/admins`,
+  //   roles: ["superadmin", "admin"]
+  // },
 
   {
     id: "alc",
