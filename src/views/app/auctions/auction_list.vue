@@ -538,11 +538,10 @@ export default {
   },
   created() {
     this.language = getCurrentLanguage();
-
-
-
+    console.log(this.$route.query.owner_id);
     this.getAuctions({
       dir: null,
+      auction_owner: this.$route.query.owner_id,
       auctionType: null,
       search: null,
       order_by: null,
@@ -643,6 +642,7 @@ this.active = active
           this.dir = "ASC";
           this.getAuctions({
             dir: this.dir,
+            auction_owner: null,
             sorting: true,
              auctionType: this.auctionType_id,
             search: this.search,
@@ -657,6 +657,7 @@ this.active = active
           this.getAuctions({
             dir: this.dir,
             sorting: true,
+            auction_owner: null,
             search: this.search,
             auctionType: this.auctionType_id,
             order_by: this.order_by,
@@ -691,6 +692,7 @@ this.active = active
         this.page = page;
         this.getAuctions({
           dir: this.dir,
+          auction_owner: null,
           search: this.search,
           auctionType: this.auctionType_id,
           order_by: this.order_by,
@@ -704,6 +706,7 @@ this.active = active
       this.limit = perPage;
       this.getAuctions({
         dir: this.dir,
+        auction_owner: null,
         auctionType: this.auctionType_id,
         search: this.search,
         order_by: this.order_by,
@@ -717,6 +720,7 @@ this.active = active
       this.getAuctions({
         dir: null,
         search: val,
+        auction_owner: null,
         auctionType: this.auctionType_id,
         order_by: null,
         limit: null,
@@ -729,6 +733,7 @@ this.active = active
       this.auctionType_id = sort.column;
     this.getAuctions({
         dir: null,
+        auction_owner: null,
         auctionType: sort.column,
         search: null,
         order_by: null,
@@ -830,6 +835,7 @@ this.$notify(
       this.getAuctions({
         dir: this.dir,
         search: this.search,
+        auction_owner: null,
         order_by: this.order_by,
         auctionType: this.auctionType_id,
         limit: this.limit,
@@ -864,6 +870,7 @@ this.$notify(
           this.getAuctions({
         dir: this.dir,
         search: this.search,
+        auction_owner: null,
         order_by: this.order_by,
         auctionType: this.auctionType_id,
         limit: this.limit,

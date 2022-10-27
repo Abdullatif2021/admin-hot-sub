@@ -8,6 +8,7 @@ import categories from "./modules/categories";
 import block from "./modules/block";
 import user from "./modules/user";
 import pages from "./modules/pages";
+import dashboard from "./modules/dashboard";
 import faq from "./modules/faq";
 import settings from "./modules/settings";
 import { setCurrentLanguage } from "../utils";
@@ -35,6 +36,7 @@ export default new Vuex.Store({
     categories,
     faq,
     settings,
+    dashboard,
     pages
   }
 });

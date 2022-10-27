@@ -195,6 +195,7 @@ const actions = {
     const auctions  = get_Auctions({ order_dir: payload.dir,
       keyword: payload.search,
       order_by: payload.order_by,
+      auction_owner: payload.auction_owner,
       limit: payload.limit,
       page: payload.page,
       auction_type: payload.auctionType})

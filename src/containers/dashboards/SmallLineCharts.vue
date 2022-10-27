@@ -1,35 +1,16 @@
 <template>
   <b-row>
     <b-colxx xxs="12" class="mb-4">
-<!--      todo:needs fixed height-->
-      <!-- <vue-perfect-scrollbar
-        class="scroll dashboard-list-with-thumbs"
-        :settings="{ suppressScrollX: true, wheelPropagation: false }"
-      >
-      <draggable ghost-class="ghost" @end="onEnd">
-      <transition-group tag="small-line-chart-card" type="transition" name="flip-list">
-        <small-line-chart-card :class="itemClass" label-prefix="$" :data="smallChartData1"/>
-        <small-line-chart-card :class="itemClass" label-prefix="$" :data="smallChartData2"/>
-        <small-line-chart-card :class="itemClass" label-prefix="$" :data="smallChartData3"/>
-        <small-line-chart-card :class="itemClass" label-prefix="$" :data="smallChartData4"/>
-        <small-line-chart-card :class="itemClass" label-prefix="$" :data="smallChartData1"/>
-        <small-line-chart-card :class="itemClass" label-prefix="$" :data="smallChartData2"/>
-        <small-line-chart-card :class="itemClass" label-prefix="$" :data="smallChartData3"/>
-        <small-line-chart-card :class="itemClass" label-prefix="$" :data="smallChartData4"/>
-      </transition-group>
-    </draggable>
-       
-      </vue-perfect-scrollbar> -->
-
-
-      <!-- <draggable v-model="myArray" ghost-class="ghost" @end="onEnd"> -->
         <vue-perfect-scrollbar
         class="scroll dashboard-list-with-thumbs "
         :settings="{ suppressScrollX: true, wheelPropagation: false }"
       >
       <transition-group type="transition" name="flip-list">
-        <div class="sortable" :id="element.id" v-for="element in myArray" :key="element.id">
-          <small-line-chart-card :name="element.name" :class="itemClass" label-prefix="$" :data="smallChartData3"/>      </div>
+        <div class="sortable" :id="element.data.id" v-for="element in myArray" :key="element.data.id">
+          <router-link :to="element.link">
+            <small-line-chart-card :name="element.name" :class="itemClass" label-prefix="$" :data="smallChartData3"/>  
+          </router-link>
+        </div>
       </transition-group>
     </vue-perfect-scrollbar> 
     <!-- </draggable> -->
@@ -53,27 +34,20 @@ export default {
     "small-line-chart-card": SmallLineChartCard,
     draggable
   },
-  props: ["itemClass"],
+  props: ["itemClass", "myArray"],
   data() {
     return {
       smallChartData1,
       smallChartData2,
       smallChartData3,
       smallChartData4,
-      myArray: [
-        { name: "VueJS", id: 0 },
-        { name: "HTML", id: 1 },
-        { name: "CSS", id: 2 },
-        { name: "JavaScript", id: 3 },
-        { name: "Java", id: 4 },
-        { name: "Groovy", id: 5 }
-      ],
+
     };
   },
   created(){
     setTimeout(() => {
       this.refresh();
-    }, 2000)
+    }, 4000)
   },
   methods: {
     onEnd(){
@@ -81,31 +55,15 @@ export default {
     },
     refresh(){
       setTimeout(() => {
-        this.myArray = [];
-      this.myArray.push(
-        { name: "Code", id: 1 },
-        { name: "python", id: 3 },
-        { name: "C++", id: 4 },
-        { name: "React", id: 0 },
-        { name: "Rube", id: 2 },
-        { name: "C#", id: 5 }
-      )
-      this.refreshAgain();
+        this.$emit('refresh')
+        this.refreshAgain();
       }, 4000)
      
     },
     refreshAgain(){
       setTimeout(() => {
-        this.myArray = [];
-      this.myArray.push(
-        { name: "Rube", id: 2 },
-        { name: "React", id: 0 },
-        { name: "C++", id: 4 },
-        { name: "python", id: 3 },
-        { name: "Code", id: 1 },
-        { name: "C#", id: 5 }
-      )
-      this.refresh();
+        this.$emit('refresh')
+        this.refresh();
       }, 4000)
     }
   }

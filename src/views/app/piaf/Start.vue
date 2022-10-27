@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <b-row>
       <b-colxx xxs="12">
         <piaf-breadcrumb :heading="$t('menu.start')"/>
@@ -14,33 +14,39 @@
               <b-colxx lg="4" class="mb-4">
                 <gradient-with-radial-progress-card
                   icon="iconsminds-clock"
-                  :title="`35 ${$t('dashboards.posts')}`"
+                  :filterAuction="true"
+                  @filtering = "filtering" 
+                  :title="isLoadActive ? `${data.auction_active} ${$t('dashboards.active')}` : `${data.auction_upcoming} ${$t('dashboards.pending')}`"
                   :detail="$t('dashboards.pending-for-publish')"
-                  :percent="5*100/12"
-                  progressText="35/152"
+                  :percent="isLoadActive ? (data.total_auction /data.auction_active) /100 : (data.total_auction/data.auction_upcoming) / 100"
+                  :progressText="isLoadActive ? `${data.auction_active} / ${data.total_auction}` : `${data.auction_upcoming} / ${data.total_auction}`"
                 />
               </b-colxx>
               <b-colxx lg="4" class="mb-4">
                     <gradient-with-radial-progress-card
                       icon="iconsminds-male"
-                      :title="`40 ${$t('dashboards.users')}`"
+                      :title="`${data.users} ${$t('dashboards.users')}`"
                       :detail="$t('dashboards.on-approval-process')"
-                      :percent="4*100/6"
-                      progressText="40/766"
+                      :percent="(data.users/data.users)/100"
+                      :progressText="`${data.users}/${data.users}`"
                     />
               </b-colxx>
               <b-colxx lg="4" class="mb-4">
                 <gradient-with-radial-progress-card
                   icon="iconsminds-bell"
-                  :title="`87 ${$t('dashboards.alerts')}`"
+                  :filter="true"
+                  :title="`${data.bids} ${$t('dashboards.bids')}`"
                   :detail="$t('dashboards.waiting-for-notice')"
-                  :percent="8*100/10"
-                  progressText="87/180"
+                  :percent="(data.bids/data.bids)/100"
+                  :progressText="`${data.bids}/${data.bids}`"
+                  @filterFormSubmited="filterFormSubmited"
+                  :auction_list= "auction_list"
+                  @filtercanceled="filtercanceled"
                 />
               </b-colxx>
             </b-row>
             <h4 class="mb-3">Active Auctions</h4>
-            <small-line-charts itemClass="dashboard-small-chart"></small-line-charts>
+            <small-line-charts :myArray="active_auctions_list" @refresh="refreshAuctions" itemClass="dashboard-small-chart"></small-line-charts>
           </b-colxx>
           <b-colxx lg="4" md="6" class="mb-4">
             <b-card class="mb-4" no-body>
@@ -58,7 +64,7 @@
                     </b-tab>
                     <b-tab :title="`${$t('forms.percentages')}`">
                         <b-colxx sm="12">
-                            <profile-statuses></profile-statuses>
+                            <profile-statuses :data="percentagesData"></profile-statuses>
                         </b-colxx>
                     </b-tab>
                 </b-tabs>
@@ -80,11 +86,11 @@
             </gradient-card>
           </b-colxx>
           <b-colxx md="6" lg="4" class="mb-4">
-            <cakes></cakes>
+            <cakes :sides="sides" :owners="owners"></cakes>
           </b-colxx>
           <b-colxx md="6" lg="4" class="mb-4">
             <tickets></tickets>
-          </b-colxx>
+          </b-colxx> 
           
         </b-row>
       </b-colxx>
@@ -94,7 +100,7 @@
 <script>
 import IconCard from "../../../components/Cards/IconCard.vue";
 import GradientCard from "../../../components/Cards/GradientCard";
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import SmallLineCharts from "@/containers/dashboards/SmallLineCharts";
 import TopRatedItems from "@/containers/dashboards/TopRatedItems";
 import ProfileStatuses from "@/containers/dashboards/ProfileStatuses";
@@ -106,6 +112,8 @@ import SortableStaticticsRow from "@/containers/dashboards/SortableStaticticsRow
 import DoughnutChart from "../../../components/Charts/Doughnut";
 import { ThemeColors } from "../../../utils";
 import GradientWithRadialProgressCard from "../../../components/Cards/GradientWithRadialProgressCard";
+import { getCurrentLanguage } from "../../../utils";
+import { adminRoot } from "../../../constants/config";
 
 const colors = ThemeColors();
 export default {
@@ -125,8 +133,15 @@ export default {
   },
   data() {
     return {
-      genderChartData: {
-        labels: ["Pending", "Ended", "Upcoming"],
+      data: null,
+      isLoadActive: false,
+      owners: [],
+      sides: [],
+      active_auctions_list: [],
+      language: null,
+      auction_list: [],
+      percentagesData: [],
+      genderChartData: {  labels: ["Pending", "Ended", "Upcoming"],
         datasets: [
           {
             label: "",
@@ -141,17 +156,140 @@ export default {
               colors.themeColor3_10
             ],
             borderWidth: 2,
-            data: [85, 45, 20]
+            data: []
           }
         ]
-      },
+      }
     };
   },
+  created(){
+    this.language = getCurrentLanguage();
+    this.getStatistics({
+        auction_id: null,
+        start_date: null,
+        end_date: null,
+        date: null
+      }),
+    this.getAuctions({
+        dir: null,
+        auctionType: 1,
+        search: null,
+        auction_owner: null,
+        order_by: null,
+        limit: null,
+        page: null
+      }),
+      this.getAuctionSide();
+      this.getAuctionOwner();
+  },  
   methods: {
-    // ...mapActions(["getItems"]),
-    // click() {
-    //   this.getItems();
-    // }
-  }
+    ...mapActions(["getStatistics", "getAuctions", "getAuctionOwner", "getAuctionSide"]),
+    refreshAuctions(){
+      this.getAuctions({
+        dir: null,
+        auctionType: 1,
+        search: null,
+        auction_owner: null,
+        order_by: null,
+        limit: null,
+        page: null
+      })
+    },
+    filtering(){
+      this.isLoadActive = !this.isLoadActive
+    },
+    filterFormSubmited(id, rangeDate, date){
+      console.log(id, rangeDate, date);
+      this.getStatistics({
+        auction_id: id,
+        start_date: rangeDate ? new Date(rangeDate[0]).toISOString().split('T')[0] : null,
+        end_date: rangeDate ? new Date(rangeDate[1]).toISOString().split('T')[0] : null,
+        date: date ? new Date(date).toISOString().split('T')[0] : null
+      })
+    },
+    filtercanceled(){
+      this.getStatistics({
+        auction_id: null,
+        start_date: null,
+        end_date: null,
+        date: null
+      })
+    }
+  },
+  computed: {
+    ...mapGetters(["_statistics", "_isLoadData", "auctions", "_auctionOwner", "_auctionSide"]),
+
+  },
+  watch: {
+    _auctionOwner: function(val) {
+      this.owners = [];
+      console.log(val);
+      val.forEach(el =>{
+        this.owners.push(  new Object({
+          title: el.name,
+          link: `${adminRoot}/auctions?owner_id=${el.id}`
+        }))
+      })
+    },
+    _auctionSide: function(val) {
+      this.sides = []
+      val.forEach(el =>{
+        this.sides.push( new Object({
+          title: el.name,
+          link: `${adminRoot}/auctions?markter_id=${el.id}`
+        }))
+        console.log(el.name.length);
+      })
+    },
+    _statistics: function(val){
+        this.percentagesData = [];
+        console.log('watcherrrrr',val);
+        this.data = val;
+        this.genderChartData.datasets[0]['data'].push(val.percentage_auction_active)
+        this.genderChartData.datasets[0]['data'].push(val.percentage_auction_ended)
+        this.genderChartData.datasets[0]['data'].push(val.percentage_auction_upcoming)
+        this.percentagesData.push( new Object({
+          title: this.$t('forms.pending'),
+          status: val.auction_upcoming,
+          total: val.total_auction
+        }))
+        this.percentagesData.push( new Object({
+          title: this.$t('forms.active'),
+          status: val.auction_active,
+          total: val.total_auction 
+        }))
+        this.percentagesData.push( new Object({
+          title: this.$t('ended'),
+          status: val.auction_ended,
+          total: val.total_auction
+        }))
+    },
+    auctions: function(val) {
+        console.log(val);
+        this.auction_list = []
+        if (val) {
+          val.forEach(el => {
+            this.auction_list.push(
+              new Object({
+                text:el.locales[this.language].title,
+                value: el.id
+              })
+            )
+          });
+          this.active_auctions_list = [];
+          val.forEach(el => {
+            this.active_auctions_list.push(
+              new Object({
+                data:el,
+                name:el.locales[this.language].title,
+                link: `${adminRoot}/auctions/auction-review?id=${el.id}`
+              })
+            )
+          });
+        }
+       
+    }
+    },
+  
 };
 </script>

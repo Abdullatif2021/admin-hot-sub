@@ -1,15 +1,23 @@
 <template>
 <div class="d-flex flex-row">
+
     <div class="w-50">
+        <div class="title">
+            <h4>Marketrs</h4>
+        </div>
         <ul class="list-unstyled mb-0">
-            <li v-for="(item,index) in data.slice(0,data.length/2)" :key="index" class="mb-1">
-                <router-link :to="item.link">{{ item.title }}</router-link>
+            <li v-for="(item,index) in sides" :key="index" class="mb-1">
+                <router-link to="">{{ item.title }}</router-link>
             </li>
         </ul>
     </div>
+    <div class="vl"></div>
     <div class="w-50">
+        <div class="title">
+            <h4>Owners</h4>
+        </div>
         <ul class="list-unstyled mb-0">
-            <li v-for="(item,index) in data.slice(data.length/2,data.length)" :key="index" class="mb-1">
+            <li v-for="(item,index) in owners" :key="index" class="mb-1">
                 <router-link :to="item.link">{{ item.title }}</router-link>
             </li>
         </ul>
@@ -19,6 +27,18 @@
 
 <script>
 export default {
-    props: ['data']
+    props: ['sides', 'owners']
 }
 </script>
+<style scoped>
+.vl {
+    border-left: 1px solid rgb(204 204 204);
+    height: 300px;
+    margin: 40px 18px;
+}
+.title {
+    margin-bottom: 23px;
+    font-weight: 900;
+}
+
+</style>

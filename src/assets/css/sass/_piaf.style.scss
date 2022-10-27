@@ -3469,6 +3469,10 @@ body.default-transition main {
   justify-content: center;
   align-items: center;
 }
+.deleteBtnContainer::selection{
+  color: #242329;
+  background-color: #f6bfe2;
+}
 .auctionDetailsContainer{
   background: none;
   box-shadow: none;

@@ -1,7 +1,7 @@
 <template>
   <div>
 
-     <template v-if="_isLoadAuctions">
+  <template v-if="_isLoadAuctions">
     <b-row>
       <b-colxx xxs="12">
          <h1>{{auction_form.title}}</h1>
@@ -129,6 +129,7 @@
                 <small-line-charts
                   itemClass="dashboard-small-chart"
                   v-if="isLoad"
+                  :myArray="myArray"
                 ></small-line-charts>
                   <b-card class="mb-4" :title="$t('forms.binig-info')">
                         <b-card-body>
@@ -291,6 +292,14 @@ export default {
     return {
       isLoad: false,
       search: null,
+      myArray:[
+        { name: "Code", data: {id: 1}, link: ''},
+        { name: "python", data: {id: 1} , link: ''},
+        { name: "C++", data: {id: 1} , link: ''},
+        { name: "React", data: {id: 1} , link: ''},
+        { name: "Rube", data: {id: 1} , link: ''},
+        { name: "C#", data: {id: 1} , link: ''}
+      ],
       enableModalBtn: false,
       customFiledOn: false,
       isLoadReviewRequests: false,

@@ -1,19 +1,19 @@
 <template>
-  <b-card :title="$t('dashboards.cakes')" class="dashboard-link-list">
-    <two-column-list :data="cakes" />
+  <b-card  class="dashboard-link-list">
+    <two-column-list :sides="sides" :owners="owners"/>
   </b-card>
 </template>
 <script>
-import cakes from "../../data/cakes";
 import TwoColumnList from "../../components/Listing/TwoColumnList";
 
 export default {
+  props: ['sides', 'owners'],
   components: {
     "two-column-list": TwoColumnList
   },
   data() {
     return {
-      cakes
+      
     };
   }
 };

@@ -2,7 +2,7 @@
 import { apiUrl } from "../../constants/config";
 import axios from "../../plugins/axios";
 
-export const get_faqs = async (params) =>{
+export const get_statistics = async (params) =>{
   return await axios.get(`${apiUrl}/faq`, {params})
 }
 export const get_faq = async (params) =>{
