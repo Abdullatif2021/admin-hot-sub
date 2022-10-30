@@ -242,7 +242,7 @@ export default {
             search: null,
             order_by: null,
             limit: null,
-            page: null
+            page: null 
           });
           break;
         case "accountant":

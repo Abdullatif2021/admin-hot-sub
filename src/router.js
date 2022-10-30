@@ -95,7 +95,6 @@ const routes = [
           }
         ]
       },
-
       {
         path: "categories",
         component: () =>
@@ -129,7 +128,6 @@ const routes = [
           }
         ]
       },
-
       {
         path: "faq",
         component: () =>
@@ -223,37 +221,6 @@ const routes = [
           }
         ]
       },
-      // {
-      //   path: "users",
-      //   component: () =>
-      //     import(/* webpackChunkName: "second-menu" */ "./views/app/users"),
-      //   redirect: `${adminRoot}/users/admins`,
-      //   meta: { loginRequired: true, roles: ["superadmin"] },
-
-      //   children: [
-      //     {
-      //       path: "admins",
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "piaf" */ "./views/app/users/usersList"
-      //         )
-      //     },
-      //     {
-      //       path: "customers",
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "piaf" */ "./views/app/users/usersList"
-      //         )
-      //     },
-      //     {
-      //       path: "user",
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "piaf" */ "./views/app/users/userForm"
-      //         )
-      //     }
-      //   ]
-      // },
       {
         path: "admins",
         component: () =>
@@ -326,7 +293,29 @@ const routes = [
           }
         ]
       },
-
+      {
+        path: "owners",
+        component: () =>
+          import(/* webpackChunkName: "second-menu" */ "./views/app/users"),
+        redirect: `${adminRoot}/owners/usersList`,
+        meta: { loginRequired: true, roles: ["superadmin"] },
+        children: [
+          {
+            path: "usersList",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/users/usersList"
+              )
+          },
+          {
+            path: "user",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/users/userForm"
+              )
+          }
+        ]
+      },
       {
         path: "settings",
         component: () =>

@@ -95,6 +95,13 @@ const data = [
         to: `${adminRoot}/accountant`,
         roles: ["superadmin", "admin"]
       },
+      {
+        id: "owners",
+        icon: "simple-icon-user-following",
+        label: "Owners",
+        to: `${adminRoot}/owners`,
+        roles: ["superadmin"]
+      },
     
     ]
   },
