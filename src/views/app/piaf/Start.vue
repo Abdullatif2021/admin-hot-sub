@@ -13,7 +13,7 @@
             <b-row>
               <b-colxx lg="4" class="mb-4">
                 <gradient-with-radial-progress-card
-                  icon="iconsminds-clock"
+                  svgImage="auction"
                   :filterAuction="true"
                   @filtering = "filtering" 
                   :title="isLoadActive ? `${data.auction_active} ${$t('dashboards.active')}` : `${data.auction_upcoming} ${$t('dashboards.pending')}`"
@@ -34,6 +34,7 @@
               <b-colxx lg="4" class="mb-4">
                 <gradient-with-radial-progress-card
                   icon="iconsminds-bell"
+                  svgImage="bids"
                   :filter="true"
                   :title="`${data.bids} ${$t('dashboards.bids')}`"
                   :detail="$t('dashboards.waiting-for-notice')"
@@ -180,7 +181,12 @@ export default {
         page: null
       }),
       this.getAuctionSide();
-      this.getAuctionOwner();
+      this.getAuctionOwner({
+      order_dir: null,
+      keyword: null,
+      limit: null,
+      page: null
+    })
   },  
   methods: {
     ...mapActions(["getStatistics", "getAuctions", "getAuctionOwner", "getAuctionSide"]),

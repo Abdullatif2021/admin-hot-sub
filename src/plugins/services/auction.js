@@ -23,8 +23,11 @@ export const get_bids = async (params) =>{
 export const get_sides = async () =>{
   return await axios.get(`${apiUrl}/auctions/sides`)
 }
-export const get_owners = async () =>{
-  return await axios.get(`${apiUrl}/auctions/owners`)
+export const get_owners = async (params) =>{
+  return await axios.get(`${apiUrl}/auctions/owners`, {params})
+}
+export const get_owner = async ({id}) =>{
+  return await axios.get(`${apiUrl}/auctions/owners/${id}`)
 }
 export const get_cities = async (params) =>{
   return await axios.get(`${apiUrl}/cities`, {params})

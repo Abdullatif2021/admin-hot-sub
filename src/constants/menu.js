@@ -71,7 +71,6 @@ const data = [
     id: "alc",
     icon: "simple-icon-people",
     label: "ALC",
-    to: `${adminRoot}/users`,
     roles: ["superadmin", "admin"],
     subs: [
       {

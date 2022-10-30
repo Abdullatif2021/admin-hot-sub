@@ -2,20 +2,13 @@
     <div>
     <datatable-heading
         :title="$t(`menu.owners`)"
-        :isAnyItemSelected="isAnyItemSelected"
         :changePageSize="changePageSize"
         :searchChange="searchChange"
-        :category="category"
-        :cancle="cancle"
-        :transaction_filter="false"
         :add_new_button="true"
         :add_new_title="$t('todo.add-new')"
         :from="from"
         @add_new="add_New"
         :to="to"
-        :reload="reload"
-        :Filtered="false"
-        :sortOptions="sortOptions"
         :total="total"
         :perPage="perPage"
     ></datatable-heading>
@@ -62,10 +55,10 @@
 <script>
 import { mapActions, mapGetters} from 'vuex';
 import Vuetable from "vuetable-2/src/components/Vuetable";
-import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
-import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
-import { getCurrentLanguage } from "../../../utils";
-import { adminRoot } from "../../../constants/config";
+import VuetablePaginationBootstrap from "../../../../components/Common/VuetablePaginationBootstrap.vue";
+import DatatableHeading from "../../../../containers/datatable/DatatableHeading.vue";
+import { getCurrentLanguage } from "../../../../utils";
+import { adminRoot } from "../../../../constants/config";
 
 export default {
     components: {
@@ -103,7 +96,7 @@ export default {
                 width: "20%"
                 },
                 {
-                name: "phone number",
+                name: "phone_number",
                 title: "Phone Number",
                 titleClass: "",
                 dataClass: "text-muted",
@@ -234,11 +227,19 @@ export default {
         },
     },
     computed: {
-        ...mapGetters(["ownersList", "_isLoadOwners"])
+        ...mapGetters(["_auctionOwner", "_ownerPaginations", "_isLoadOwners"])
     },
     watch: {
-        ownersList: function(val) {
-
+        _auctionOwner: function(val) {
+            this.$refs.vuetable.setData(val);
+        },
+        _ownerPaginations: function(val) {
+            console.log(val);
+            this.perPage = val.per_page;
+            this.from = val.from;
+            this.to = val.to;
+            this.total = val.total;
+            this.$refs.pagination.setPaginationData(val);
         }
     }
 }

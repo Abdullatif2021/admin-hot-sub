@@ -1915,7 +1915,12 @@ area_id: {},
     this.make_collaction(this.langs, this.lang_form);
     this.make_collaction1(this.langs, this.attach_form);
     this.getAuctionSide();
-    this.getAuctionOwner();
+       this.getAuctionOwner({
+      order_dir: null,
+      keyword: null,
+      limit: null,
+      page: null
+    })
 
   },
   methods: {

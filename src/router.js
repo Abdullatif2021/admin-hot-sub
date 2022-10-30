@@ -296,22 +296,22 @@ const routes = [
       {
         path: "owners",
         component: () =>
-          import(/* webpackChunkName: "second-menu" */ "./views/app/users"),
-        redirect: `${adminRoot}/owners/usersList`,
+          import(/* webpackChunkName: "second-menu" */ "./views/app/users/owners"),
+        redirect: `${adminRoot}/owners/ownersList`,
         meta: { loginRequired: true, roles: ["superadmin"] },
         children: [
           {
-            path: "usersList",
+            path: "ownersList",
             component: () =>
               import(
-                /* webpackChunkName: "piaf" */ "./views/app/users/usersList"
+                /* webpackChunkName: "piaf" */ "./views/app/users/owners/ownersList"
               )
           },
           {
-            path: "user",
+            path: "owner",
             component: () =>
               import(
-                /* webpackChunkName: "piaf" */ "./views/app/users/userForm"
+                /* webpackChunkName: "piaf" */ "./views/app/users/owners/owner"
               )
           }
         ]

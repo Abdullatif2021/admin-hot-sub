@@ -9,6 +9,10 @@ import {
   get_bids,
   get_sides,
   get_owners,
+  get_owner,
+  create_owner,
+  update_owner,
+  delete_owner,
   get_cities,
   get_areas,
   get_files,
@@ -43,6 +47,11 @@ const state = {
   isCustomValueCreated: false,
   updatedAuctionMainImageSuccessfuly: false,
   auctionSide: null,
+  getOwner: null,
+  owner_paginations: null,
+  createOwner: null,
+  updateOwner: null,
+  deleteOwner: null,
   auctionOwner: null,
   areas: null,
   File_List: null,
@@ -77,6 +86,11 @@ const getters = {
   _updatedAuctionMainImageSuccessfuly: state => state.updatedAuctionMainImageSuccessfuly,
   _createAuctionFile: state => state.create_File,
   _deleteAuctionFile: state => state.delete_File,
+  _getOwner: state => state.getOwner,
+  _ownerPaginations: state => state.owner_paginations,
+  _createOwner: state => state.createOwner,
+  _updateOwner: state => state.updateOwner,
+  _deleteOwner: state => state.deleteOwner,
   _updatedAuctionUnSuccessfuly: state => state.updated_un_successfuly,
   _Image_List: state => state.Image_List,
   _createAuctionImage: state => state.create_Image,
@@ -88,6 +102,7 @@ const getters = {
   _auctionOwner: state => state.auctionOwner,
   auction: state => state.auction,
   _isLoadAuctions: state => state.processing,
+  _isLoadOwners: state => state.processing,
   _updatedAuctionSuccessfuly: state => state.updated_Successfuly,
   _createAuctionSuccessfuly: state => state.created_Successfuly,
   _successDeleteAuction: state => state.successDeleteAuction,
@@ -133,8 +148,21 @@ const mutations = {
   getAuctionSide(state, payload) {
     state.auctionSide = payload;
   },
-  getAuctionOwner(state, payload) {
-    state.auctionOwner = payload;
+  getAuctionOwner(state, payload){
+    state.auctionOwner = payload.data;
+    state.owner_paginations = payload;
+  },
+  getOwner(state, payload) {
+    state.getOwner = payload;
+  },
+  createOwner(state, payload) {
+    state.createOwner = payload;
+  },
+  updateOwner(state, payload) {
+    state.updateOwner = payload;
+  },
+  deleteOwner(state, payload) {
+    state.deleteOwner = payload;
   },
   deleteAuctionterms(state, payload){
     state.deleteAuctionterms = payload;
@@ -475,10 +503,63 @@ const actions = {
     });
   },
   getAuctionOwner({ commit, dispatch }, payload) {
-    const owners = get_owners();
+    commit("setProcessing", payload.sorting ? payload.sorting : false);
+    const owners = get_owners({ order_dir: payload.dir,
+      keyword: payload.search,
+      order_by: payload.order_by,
+      limit: payload.limit,
+      page: payload.page,
+     });
+    owners
+    .then(res => {
+      commit("setProcessing", true);
+      return res;
+    })
+    .then(res => {
+      if (res.status === 200) {
+        commit("getAuctionOwner", res.data);
+        
+      }
+    });
+  },
+  getOwner({ commit, dispatch }, payload) {
+    commit("setProcessing", false);
+    const owners = get_owner({ id: payload.id,
+     });
     owners.then(res => {
       if (res.status === 200) {
-        commit("getAuctionOwner", res.data.data);
+        commit("getOwner", res.data.data);
+        commit("setProcessing", true);
+      }
+    });
+  },
+  createOwner({ commit, dispatch }, payload) {
+    commit("setProcessing", false);
+    const owners = create_owner({ id: payload.id,
+     });
+    owners.then(res => {
+      if (res.status === 200) {
+        commit("setProcessing", true);
+      }
+    });
+  },
+  updateOwner({ commit, dispatch }, payload) {
+    commit("setProcessing", false);
+    const owners = update_owner({ id: payload.id,
+     });
+    owners.then(res => {
+      if (res.status === 200) {
+        commit("setProcessing", true);
+      }
+    });
+  },
+  deleteOwner({ commit, dispatch }, payload) {
+    commit("setProcessing", false);
+    const owners = delete_owner({ id: payload.id,
+     });
+    owners.then(res => {
+      if (res.status === 200) {
+        commit("setProcessing", true);
       }
     });
   },

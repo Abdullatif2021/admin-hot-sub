@@ -511,6 +511,8 @@
   "forms": {
     "select-new-custom": "Select or Add new Custom filed",
     "Yemail_filed": "Please enter your email",
+    "create_owner": "Create new owner",
+    "update_owner": "Update owner",
     "bids": "Bids",
     "filter": "Filters",
     "auction": "Auction",

@@ -8,13 +8,14 @@
             </b-card-header>
             <b-card-header v-if="filterAuction" class="p-0 position-relative" >
                 <div  @click="$emit('filtering')" class="position-absolute handle card-icon">
-                    <i style="font-size: 20px;color: #eee;" class="iconsminds-switch" />
+                    <i style="font-size: 20px;color: #eee;" class="iconsminds-repeat" />
                 </div>
             </b-card-header>
 
             <b-card-body class="justify-content-between d-flex flex-row align-items-center">
                 <div>
-                    <i :class="`${icon} mr-2 text-white align-text-bottom d-inline-block`" />
+                    <img v-if="svgImage" :src="`/assets/img/landing-page/${svgImage}.svg`"   alt="Image" />
+                    <i v-else :class="`${icon} mr-2 text-white align-text-bottom d-inline-block`" />
                     <div>
                         <p class="lead text-white">{{ title }}</p>
                         <!-- <p class="text-small text-white">{{ detail }}</p> -->
@@ -85,7 +86,7 @@ export default {
         'calendar-range': calender_range,
         'radial-progress-bar': RadialProgressBar
     },
-    props: ['icon', 'title', 'filter', 'auction_list', 'filterAuction', 'detail', 'percent', 'progressText', 'is_load'],
+    props: ['icon', 'svgImage', 'title', 'filter', 'auction_list', 'filterAuction', 'detail', 'percent', 'progressText', 'is_load'],
     data() {
         return {
             diameterDefault: 105,
