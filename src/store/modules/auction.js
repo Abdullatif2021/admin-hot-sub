@@ -35,6 +35,8 @@ const state = {
   created_Successfuly: null,
   updated_Successfuly: null,
   updated_un_successfuly: null,
+  deleteOwnerSuccess: null,
+  deleteOwnerError: null,
   Error: "",
   auctionProducts: null,
   get_reviews: false,
@@ -50,6 +52,10 @@ const state = {
   getOwner: null,
   owner_paginations: null,
   createOwner: null,
+  createOwnerSuccess: null,
+  createOwnerError: null,
+  updateOwnerSuccess: null,
+  updateOwnerError: null,
   updateOwner: null,
   deleteOwner: null,
   auctionOwner: null,
@@ -89,8 +95,14 @@ const getters = {
   _getOwner: state => state.getOwner,
   _ownerPaginations: state => state.owner_paginations,
   _createOwner: state => state.createOwner,
+  _createOwnerSuccess: state => state.createOwnerSuccess,
+  _createOwnerError: state => state.createOwnerError,
+  _updateOwnerSuccess: state => state.updateOwnerSuccess,
+  _updateOwnerError: state => state.updateOwnerError,
   _updateOwner: state => state.updateOwner,
   _deleteOwner: state => state.deleteOwner,
+  _deleteOwnerSuccess: state => state.deleteOwnerSuccess,
+  _deleteOwnerError: state => state.deleteOwnerError,
   _updatedAuctionUnSuccessfuly: state => state.updated_un_successfuly,
   _Image_List: state => state.Image_List,
   _createAuctionImage: state => state.create_Image,
@@ -158,11 +170,29 @@ const mutations = {
   createOwner(state, payload) {
     state.createOwner = payload;
   },
+  create_ownerSuccess(state, payload) {
+    state.createOwnerSuccess = payload;
+  },
+  createOwnerError(state, payload){
+    state.createOwnerError = payload;
+  },
   updateOwner(state, payload) {
     state.updateOwner = payload;
   },
+  updateOwnerSuccess(state, payload) {
+    state.updateOwnerSuccess = payload;
+  },
+  updateOwnerError(state, payload){
+    state.updateOwnerError = payload;
+  },
   deleteOwner(state, payload) {
     state.deleteOwner = payload;
+  },
+  deleteOwnerSuccess(state, payload){
+    state.deleteOwnerSuccess = payload;
+  },
+  deleteOwnerError(state, payload){
+    state.deleteOwnerError = payload;
   },
   deleteAuctionterms(state, payload){
     state.deleteAuctionterms = payload;
@@ -534,24 +564,48 @@ const actions = {
     });
   },
   createOwner({ commit, dispatch }, payload) {
-    commit("setProcessing", false);
-    const owners = create_owner({ id: payload.id,
-     });
-    owners.then(res => {
-      if (res.status === 200) {
-        commit("setProcessing", true);
+    const formData = new FormData();
+    formData.append(`logo`, payload.icon);
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      if (value != null) {
+        formData.append(key, value);
       }
     });
+    const owners = create_owner({ formData });
+    owners.then(res => {
+      if (res.status === 201) {
+        commit("create_ownerSuccess", res)
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      commit("createOwnerError", err);
+    })
   },
   updateOwner({ commit, dispatch }, payload) {
-    commit("setProcessing", false);
-    const owners = update_owner({ id: payload.id,
-     });
-    owners.then(res => {
-      if (res.status === 200) {
-        commit("setProcessing", true);
+    const id = payload.id;
+    const formData = new FormData();
+    formData.append(`_method`, "PUT");
+    if (payload.icon) {
+      formData.append(`logo`, payload.icon);
+    }  
+    Object.entries(payload.info).forEach(entry => {
+      const [key, value] = entry;
+      if (value != null) {
+        formData.append(key, value);
       }
     });
+    const owners = update_owner({ id, formData });
+    owners.then(res => {
+      if (res.status === 200) {
+        commit("updateOwnerSuccess", res)
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      commit("updateOwnerError", err);
+    })
   },
   deleteOwner({ commit, dispatch }, payload) {
     commit("setProcessing", false);
@@ -559,9 +613,12 @@ const actions = {
      });
     owners.then(res => {
       if (res.status === 200) {
-        commit("setProcessing", true);
+        commit("deleteOwnerSuccess", res);
       }
-    });
+    })
+    .catch(err => {
+      commit("deleteOwnerError", err);
+    })
   },
 
   // &&&&&&&&&&&&&&&&&& LOCATION &&&&&&&&&&&&&

@@ -26,6 +26,8 @@
   },
   "menu": {
     "home": "Home",
+    "ownersList": "List",
+    "owner": "Owner",
     "auction-product": "Auction Product",
     "auction-review": "auction review",
     "owners": "Owners list",
@@ -511,6 +513,7 @@
   "forms": {
     "select-new-custom": "Select or Add new Custom filed",
     "Yemail_filed": "Please enter your email",
+    "delete_owner_message": "Are you sure you want to delete this owner",
     "create_owner": "Create new owner",
     "update_owner": "Update owner",
     "bids": "Bids",
@@ -631,6 +634,8 @@
     "pass_filed": "Password is required",
     "pass_min": "Minimum 6",
     "pass_max": "Maximum 16",
+    "name": "Name",
+
     "phonenumber_filed": "Please enter phone number",
     "role_filed": "Please select user role",
     "date_filed": "Date of birth required",
@@ -826,6 +831,7 @@
     "basic": "Basic",
     "modal-title": "Modal title",
     "modal-delete-block-title": "block deletion",
+    "modal-delete-owner-title": "owner deletion",
     "modal-lang-title": "Change language",
     "modal-active-auction-title": "Auction Activation",
     "modal-delete-auction-attach": "Attachment deletion",

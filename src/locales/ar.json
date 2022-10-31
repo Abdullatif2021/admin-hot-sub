@@ -803,6 +803,7 @@
     "basic": "Basic",
     "modal-title": "Modal title",
     "modal-delete-block-title": "حذف البلوك",
+    "modal-delete-owner-title": "حذف المالك",
     "modal-lang-title": "تغيير اللغة",
     "modal-delete-auction-attach": "حذف المرفق",
     "modal-auction-details": "تفاصيل المزاد",

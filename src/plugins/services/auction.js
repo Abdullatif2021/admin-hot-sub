@@ -29,6 +29,15 @@ export const get_owners = async (params) =>{
 export const get_owner = async ({id}) =>{
   return await axios.get(`${apiUrl}/auctions/owners/${id}`)
 }
+export const create_owner = ({ formData }) =>{
+  return axios.post(`${apiUrl}/auctions/owners`, formData, {})
+}
+export const update_owner = ({id, formData}) =>{
+  return axios.post(`${apiUrl}/auctions/owners/${id}`, formData, {})
+}
+export const delete_owner = async ({id}) =>{
+  return await axios.delete(`${apiUrl}/auctions/owners/${id}`)
+}
 export const get_cities = async (params) =>{
   return await axios.get(`${apiUrl}/cities`, {params})
 }

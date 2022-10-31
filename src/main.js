@@ -10,6 +10,8 @@ import store from "./store";
 import en from "./locales/en.json";
 import ar from "./locales/ar.json";
 import es from "./locales/es.json";
+import Vuelidate from 'vuelidate'
+
 
 import VueI18n from "vue-i18n";
 import { firebaseConfig } from "./constants/config";
@@ -26,7 +28,6 @@ import vuePerfectScrollbar from "vue-perfect-scrollbar";
 import contentmenu from "v-contextmenu";
 import VueLineClamp from "vue-line-clamp";
 import VueScrollTo from "vue-scrollto";
-
 import "firebase/auth";
 import { getCurrentLanguage } from "./utils";
 import auction from "./plugins/services/auction";
@@ -45,7 +46,7 @@ const i18n = new VueI18n({
 Vue.use(Notifications);
 Vue.use(require("vue-shortkey"));
 Vue.use(contentmenu);
-
+Vue.use(Vuelidate)
 Vue.use(VueScrollTo);
 Vue.use(VueLineClamp, {
   importCss: true
