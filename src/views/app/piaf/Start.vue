@@ -70,7 +70,7 @@
                     </b-tab>
                 </b-tabs>
             </b-card>
-            <logs class="mb-4"></logs>
+            <logs :logs="logs" class="mb-4"></logs>
           </b-colxx>
         </b-row>
         <b-row>
@@ -135,6 +135,7 @@ export default {
   data() {
     return {
       data: null,
+      logs: [],
       isLoadActive: false,
       owners: [],
       sides: [],
@@ -165,6 +166,7 @@ export default {
   },
   created(){
     this.language = getCurrentLanguage();
+    this.getLogs();
     this.getStatistics({
         auction_id: null,
         start_date: null,
@@ -189,7 +191,7 @@ export default {
     })
   },  
   methods: {
-    ...mapActions(["getStatistics", "getAuctions", "getAuctionOwner", "getAuctionSide"]),
+    ...mapActions(["getStatistics", "getAuctions", "getAuctionOwner", "getAuctionSide", "getLogs"]),
     refreshAuctions(){
       this.getAuctions({
         dir: null,
@@ -223,7 +225,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["_statistics", "_isLoadData", "auctions", "_auctionOwner", "_auctionSide"]),
+    ...mapGetters(["_statistics",
+     "_isLoadData",
+     "auctions",
+     "_auctionOwner",
+     "_auctionSide",
+     "_logs",
+     "_logsProssing"
+    ]),
 
   },
   watch: {
@@ -233,9 +242,25 @@ export default {
       val.forEach(el =>{
         this.owners.push(  new Object({
           title: el.name,
+          auctionNumber: el.auction_number,
           link: `${adminRoot}/auctions?owner_id=${el.id}`
         }))
       })
+    },
+    _logs: function (val) {
+      console.log(val);
+      val.forEach(el => {
+        this.logs.push( new Object({
+          type: el.type,
+          ref_type: el.referable_type.split("\\").pop(),
+          ref_id: `${adminRoot}/auctions/auction-review?id=${el.referable_id}`,
+          message: el.message.split(" ")[5],
+          title: el.title,
+          user_id: `${adminRoot}/users/user?id=${el.user_id}` ,
+          date: '3 weeks ago'
+        }))
+      })
+      console.log('new logsss',this.logs)
     },
     _auctionSide: function(val) {
       this.sides = []
@@ -249,7 +274,6 @@ export default {
     },
     _statistics: function(val){
         this.percentagesData = [];
-        console.log('watcherrrrr',val);
         this.data = val;
         this.genderChartData.datasets[0]['data'].push(val.percentage_auction_active)
         this.genderChartData.datasets[0]['data'].push(val.percentage_auction_ended)
@@ -271,7 +295,6 @@ export default {
         }))
     },
     auctions: function(val) {
-        console.log(val);
         this.auction_list = []
         if (val) {
           val.forEach(el => {

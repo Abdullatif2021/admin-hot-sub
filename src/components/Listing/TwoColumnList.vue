@@ -6,7 +6,7 @@
             <h4>Marketrs</h4>
         </div>
         <ul class="list-unstyled mb-0">
-            <li v-for="(item,index) in sides" :key="index" class="mb-1">
+            <li v-for="(item,index) in sides" :key="index" class="fullWidth">
                 <router-link to="">{{ item.title }}</router-link>
             </li>
         </ul>
@@ -17,8 +17,8 @@
             <h4>Owners</h4>
         </div>
         <ul class="list-unstyled mb-0">
-            <li v-for="(item,index) in owners" :key="index" class="mb-1">
-                <router-link :to="item.link">{{ item.title }}</router-link>
+            <li v-for="(item,index) in owners" :key="index" class="fullWidth">
+                <router-link :to="item.link">{{ item.title }} <b-badge class="badge" variant="light">{{item.auctionNumber}}</b-badge></router-link>
             </li>
         </ul>
     </div>
@@ -40,5 +40,11 @@ export default {
     margin-bottom: 23px;
     font-weight: 900;
 }
-
+.fullWidth{
+    width: 100%;
+    margin-bottom: 19px;
+}
+.badge{ 
+    float: right;
+}
 </style>

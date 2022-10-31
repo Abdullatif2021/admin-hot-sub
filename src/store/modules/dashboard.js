@@ -1,17 +1,21 @@
 import axios from "../../plugins/axios";
 import { apiUrl } from "../../constants/config";
 import {
-    get_statistics
-
+    get_statistics,
+    get_logs
 } from "../../plugins/services/dashboard"
 const state = {
   isLoadData: false,
   statistics: null,
+  logs: null,
+  logsProssing: false,
 };
 
 const getters = {
   _isLoadData: state => state.isLoadData,
-  _statistics: state => state.statistics
+  _statistics: state => state.statistics,
+  _logs: state => state.logs,
+  _logsProssing: state => state.logsProssing
 };
 
 const mutations = {
@@ -20,8 +24,13 @@ const mutations = {
   },
   getStatistics(state, payload){
     state.statistics = payload;
+  },
+  getLogs(state, payload){
+    state.logs = payload;
+  },
+  getLogsProssing(state, payload){
+    state.logsProssing = payload;
   }
-  
 };
 
 const actions = {
@@ -43,20 +52,23 @@ const actions = {
         }
       });
   },
-  getFaq({ commit }, payload) {
-    commit("setProssing", false);
-    const faq = get_faq({id: payload.faqId})
-    faq
-      .then(res => {
-        commit("setProssing", true);
-        return res;
-      })
-      .then(res => {
-        if (res.status === 200) {
-          commit("getFaq", res.data.data);
-        }
-      });
-  },
+  getLogs({ commit, dispatch }, payload) {
+    commit("getLogsProssing", false);
+    const logs = get_logs();
+    logs
+    .then(res => {
+      commit("getLogsProssing", true);
+      return res;
+    })
+    .then(res => {
+      if (res.status === 200) {
+        commit("getLogs", res.data.data);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }
 };
 
 export default {

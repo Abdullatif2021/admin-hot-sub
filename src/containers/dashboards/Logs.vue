@@ -10,15 +10,15 @@
 </template>
 <script>
 import LogList from "../../components/Listing/LogList";
-import logs from "../../data/logs";
 
 export default {
+  props: ['logs'],
   components: {
     "log-list": LogList
   },
   data() {
     return {
-      logs
+      
     };
   }
 };
