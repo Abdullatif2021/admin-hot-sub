@@ -25,10 +25,10 @@
               <b-colxx lg="4" class="mb-4">
                     <gradient-with-radial-progress-card
                       icon="iconsminds-male"
-                      :title="`${data.users} ${$t('dashboards.users')}`"
+                      :title="`${data.active_users} ${$t('dashboards.users')}`"
                       :detail="$t('dashboards.on-approval-process')"
-                      :percent="(data.users/data.users)/100"
-                      :progressText="`${data.users}/${data.users}`"
+                      :percent="(data.users * 100/data.active_users)"
+                      :progressText="`${data.active_users}/${data.users}`"
                     />
               </b-colxx>
               <b-colxx lg="4" class="mb-4">
