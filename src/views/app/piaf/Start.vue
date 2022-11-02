@@ -254,9 +254,9 @@ export default {
           type: el.type,
           ref_type: el.referable_type.split("\\").pop(),
           ref_id: `${adminRoot}/auctions/auction-review?id=${el.referable_id}`,
-          message: el.message.split(" ")[5],
-          title: el.title,
-          user_id: `${adminRoot}/users/user?id=${el.user_id}` ,
+          message: `${el.created_by.first_name} ${el.created_by.last_name}`,
+          title: el.data.slug,
+          user_id: el.created_by.id,
           date: '3 weeks ago'
         }))
       })

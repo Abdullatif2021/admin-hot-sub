@@ -5,23 +5,37 @@ const data = [
   {
     id: "static",
     icon: "iconsminds-shop",
-    label: "Static",
+    label: "Dashboard",
     to: `${adminRoot}/static`
   },  
   {
-    id: "auctions",
     icon: "simple-icon-folder",
     label: "Auctions",
-    to: `${adminRoot}/auctions`,
-    roles: ["superadmin", "admin", "accountant"]
+    roles: ["superadmin", "admin", "accountant"],
+    subs: [
+      { 
+        id: "auctions",
+        icon: "simple-icon-folder",
+        label: "Auctions",
+        to: `${adminRoot}/auctions`,
+        roles: ["superadmin", "admin", "accountant"],
+      },
+      {
+        id: "categories",
+        icon: "simple-icon-grid",
+        label: "Categories",
+        to: `${adminRoot}/categories`,
+        roles: ["superadmin"]
+      }
+    ]
   },
-  {
-    id: "categories",
-    icon: "simple-icon-grid",
-    label: "Categories",
-    to: `${adminRoot}/categories`,
-    roles: ["superadmin"]
-  },
+  // {
+  //   id: "categories",
+  //   icon: "simple-icon-grid",
+  //   label: "Categories",
+  //   to: `${adminRoot}/categories`,
+  //   roles: ["superadmin"]
+  // },
   {
     id: "faq",
     icon: "simple-icon-question",
