@@ -59,13 +59,13 @@ const data = [
       }
     ]
   },
-  {
-    id: "blockCategories",
-    icon: "iconsminds-picasa",
-    label: "Blocks Category",
-    to: `${adminRoot}/blockCategories`,
-    roles: ["superadmin"]
-  },
+  // {
+  //   id: "blockCategories",
+  //   icon: "iconsminds-picasa",
+  //   label: "Blocks Category",
+  //   to: `${adminRoot}/blockCategories`,
+  //   roles: ["superadmin"]
+  // },
   {
     id: "Pages",
     icon: "iconsminds-digital-drawing",

@@ -25,6 +25,7 @@ export default {
             router.push(link);
         },
         open_element(link){
+            console.log(link);
             router.push(link);
         }
     }
@@ -40,8 +41,8 @@ export default {
 }
 .clickable:hover {
     color: #0011b1;
-    font-size: 15px;
-    transition: all .9s ease;
-    -webkit-transition: all .9s ease;
+    text-decoration: underline;
+    transition: all .5s ease;
+    -webkit-transition: all .5s ease;
 }
 </style>

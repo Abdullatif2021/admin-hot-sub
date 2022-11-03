@@ -117,12 +117,12 @@
                     </b-card-body>
                     <googleMaps id="maps" :location="auction_form.location" />
                   </b-card>
-                  <b-card class="mb-4" no-body>
+                  <!-- <b-card class="mb-4" no-body>
                 <b-card-body>
                   <b-card-title>{{$t('forms.attach')}}</b-card-title>
                   <gallery-detail :containerClass2="containerClass2" :containerClass3="containerClass3" :items="file_lists" />
                 </b-card-body>
-              </b-card>
+              </b-card> -->
 
               </b-colxx>
               <b-colxx xxs="12" lg="8">
@@ -178,7 +178,12 @@
                     <div class="loading"></div>
                   </template> -->
                 </b-card>
-
+                <b-card class="mb-4" no-body>
+                <b-card-body>
+                  <b-card-title>{{$t('forms.attach')}}</b-card-title>
+                  <gallery-detail :containerClass2="containerClass2" :containerClass3="containerClass3" :items="file_lists" />
+                </b-card-body>
+              </b-card>
               </b-colxx>
             </b-row>
           </b-tab>

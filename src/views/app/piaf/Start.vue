@@ -38,7 +38,7 @@
                   :filter="true"
                   :title="`${data.bids} ${$t('dashboards.bids')}`"
                   :detail="$t('dashboards.waiting-for-notice')"
-                  :percent="(data.bids/data.bids)/100"
+                  :percent="(data.bids * 100/data.bids)"
                   :progressText="`${data.bids}/${data.bids}`"
                   @filterFormSubmited="filterFormSubmited"
                   :auction_list= "auction_list"
@@ -256,7 +256,7 @@ export default {
           ref_id: `${adminRoot}/auctions/auction-review?id=${el.referable_id}`,
           message: `${el.created_by.first_name} ${el.created_by.last_name}`,
           title: el.data.slug,
-          user_id: el.created_by.id,
+          user_id: `${adminRoot}/users/user?id=${el.created_by.id}`,
           date: '3 weeks ago'
         }))
       })
