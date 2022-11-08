@@ -1,16 +1,24 @@
 <template>
-  <div class="icon-cards-row">
+  <div class="icon-cards-row perCard" style="background-color: white;">
     <glide-component :settings="glideIconsOption">
-      <icon-card :title="$t('dashboards.pending-orders')" icon="iconsminds-clock" :value="14" />
+      <icon-card 
+        :title="$t('dashboards.pending-orders') + ' 01'" 
+        img="/assets/img/cards/def.png" 
+        :value="14"
+
+        :desc="'I have Django and Vue project and I need to add permissions in the Vue router based on user role.'"
+       />
       <icon-card
-        :title="$t('dashboards.completed-orders')"
-        icon="iconsminds-basket-coins"
+        :title="$t('dashboards.completed-orders') + ' 02'"
+        img="/assets/img/cards/def.png"
         :value="32"
+        :desc="'I have Django and Vue project and I need to add permissions in the Vue router based on user role.'"
       />
       <icon-card
-        :title="$t('dashboards.refund-requests')"
-        icon="iconsminds-arrow-refresh"
+        :title="$t('dashboards.refund-requests') + ' 03'"
+        img="/assets/img/cards/def.png"
         :value="74"
+        :desc="'I have Django and Vue project and I need to add permissions in the Vue router based on user role.'"
       />
       <icon-card :title="$t('dashboards.new-comments')" icon="iconsminds-mail-read" :value="25" />
     </glide-component>
@@ -51,3 +59,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.perCard{
+  background-color: white;
+  box-shadow: 0 1px 15px rgb(0 0 0 / 4%), 0 1px 6px rgb(0 0 0 / 4%);
+  margin-top: 0px;
+}
+</style>

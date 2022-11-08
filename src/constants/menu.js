@@ -6,7 +6,23 @@ const data = [
     id: "static",
     icon: "iconsminds-shop",
     label: "Dashboard",
-    to: `${adminRoot}/static`
+    to: `${adminRoot}/static`,
+    subs: [
+      { 
+        id: "start",
+        icon: "simple-icon-folder",
+        label: "Start",
+        to: `${adminRoot}/static/start`,
+        roles: ["superadmin", "admin", "accountant"],
+      },
+      {
+        id: "owner",
+        icon: "simple-icon-grid",
+        label: "Owner dashboard",
+        to: `${adminRoot}/static/owner`,
+        roles: ["superadmin", "admin", "accountant"],
+      }
+    ]
   },  
   {
     icon: "simple-icon-folder",

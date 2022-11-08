@@ -24,7 +24,17 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "piaf" */ "./views/app/piaf"),
         redirect: `${adminRoot}/static/start`,
+        // beforeEnter: (to, from) => {
+        //   console.log(to, from);
+        //   return true
+        // },
         children: [
+          {
+            path: "owner",
+            component: () =>
+              import(/* webpackChunkName: "piaf" */ "./views/app/piaf/owner_dashboard")
+            // meta: { roles: [UserRole.Admin, UserRole.Editor] },
+          },
           {
             path: "start",
             component: () =>

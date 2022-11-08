@@ -121,7 +121,7 @@ export default {
   components: {
     "icon-card": IconCard,
     "small-line-charts": SmallLineCharts,
-    "top-rated-items": TopRatedItems,
+    "top-rated-items": TopRatedItems, 
     cakes: Cakes,
     logs: Logs,
     tickets: Tickets,

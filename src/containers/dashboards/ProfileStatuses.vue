@@ -1,5 +1,8 @@
 <template>
-  <b-card >
+  <b-card :class="height ? 'preCard' : ''">
+    <div class="title">
+                <h4>Marketrs</h4>
+            </div>
     <div v-for="(s,index) in data" :key="index" class="mb-4">
       <p class="mb-2">
         {{ s.title }}
@@ -13,7 +16,7 @@
 import profileStatuses from "../../data/profileStatuses";
 
 export default {
-  props: ['data'],
+  props: ['data' , 'height'],
   data() {
     return {
       profileStatuses
@@ -21,3 +24,13 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.title {
+    margin-bottom: 23px;
+    font-weight: 900;
+}
+.preCard {
+    height: 353px;
+}
+</style>
