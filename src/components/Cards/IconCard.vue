@@ -1,6 +1,6 @@
 <template>
   <div class="icon-row-item">
-    <b-card class="mb-4 card">
+    <b-card :class="className">
       <p class="card-text font-weight-semibold mb-0">{{ title }}</p>
       <img :src="img" class="image"/>
       <p class="persan">{{ value }}%</p>
@@ -13,6 +13,7 @@ export default {
   props: {
     title: { type: String, default: 'icon-card-title' },
     img: { type: String, default: 'iconsminds-clock' },
+    className: { type: String, default: 'card' },
     desc: { type: String, default: 'iconsminds-clock' }, 
     value: { type: Number, default: 0 }
   }
@@ -20,6 +21,13 @@ export default {
 </script>
 <style scoped>
 .card{
+  margin-left: 11px;
+    height: 345px;
+  background-color: unset;
+  box-shadow: unset;
+}
+.card_3{
+  margin-left: 0px;
   height: 321px;
   background-color: unset;
   box-shadow: unset;

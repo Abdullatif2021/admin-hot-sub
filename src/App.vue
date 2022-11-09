@@ -15,6 +15,7 @@ export default {
   },
   beforeMount() {
     const direction = getDirection();
+    document.body.classList.add("rounded");
     if (
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches

@@ -5,7 +5,6 @@
         :title="$t('dashboards.pending-orders') + ' 01'" 
         img="/assets/img/cards/def.png" 
         :value="14"
-
         :desc="'I have Django and Vue project and I need to add permissions in the Vue router based on user role.'"
        />
       <icon-card
@@ -18,9 +17,9 @@
         :title="$t('dashboards.refund-requests') + ' 03'"
         img="/assets/img/cards/def.png"
         :value="74"
+        :class="'card_3'"
         :desc="'I have Django and Vue project and I need to add permissions in the Vue router based on user role.'"
       />
-      <icon-card :title="$t('dashboards.new-comments')" icon="iconsminds-mail-read" :value="25" />
     </glide-component>
   </div>
 </template>
@@ -65,5 +64,6 @@ export default {
   background-color: white;
   box-shadow: 0 1px 15px rgb(0 0 0 / 4%), 0 1px 6px rgb(0 0 0 / 4%);
   margin-top: 0px;
+  border-radius: 14px;
 }
 </style>

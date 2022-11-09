@@ -11,7 +11,7 @@
             <website-visit-chart-card></website-visit-chart-card>
         </b-colxx>
         <b-colxx xl="3" lg="6" class="mb-4">
-            <cakes :isOwnerDashboard="true" :sides="sides" :owners="owners"></cakes>
+            <cakes :isOwnerDashboard="true"></cakes>
         </b-colxx>
         <b-colxx xl="3" lg="6" class="mb-4">
             <product-categories-doughnut></product-categories-doughnut>
