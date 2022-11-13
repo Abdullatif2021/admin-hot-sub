@@ -2,20 +2,23 @@ import axios from "../../plugins/axios";
 import { apiUrl } from "../../constants/config";
 import {
     get_statistics,
-    get_logs
+    get_logs,
+    get_owner_chart
 } from "../../plugins/services/dashboard"
 const state = {
   isLoadData: false,
   statistics: null,
   logs: null,
   logsProssing: false,
+  ownerChart: null,
 };
 
 const getters = {
   _isLoadData: state => state.isLoadData,
   _statistics: state => state.statistics,
   _logs: state => state.logs,
-  _logsProssing: state => state.logsProssing
+  _logsProssing: state => state.logsProssing,
+  _ownerChart: state => state.ownerChart,
 };
 
 const mutations = {
@@ -30,6 +33,9 @@ const mutations = {
   },
   getLogsProssing(state, payload){
     state.logsProssing = payload;
+  },
+  getOwnerChart(state, payload){
+    state.ownerChart = payload;
   }
 };
 
@@ -63,6 +69,23 @@ const actions = {
     .then(res => {
       if (res.status === 200) {
         commit("getLogs", res.data.data);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  },
+  getOwnerChart({ commit, dispatch}, payload) {
+    commit("getLogsProssing", false);
+    const owner_chart = get_owner_chart({ owner_id: payload.owner_id });
+    owner_chart
+    .then(res => {
+      commit("getLogsProssing", true);
+      return res;
+    })
+    .then(res => {
+      if (res.status === 200) {
+        commit("getOwnerChart", res.data.data);
       }
     })
     .catch(err => {

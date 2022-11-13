@@ -8,7 +8,7 @@
       </b-row>
       <b-row>
         <b-colxx xl="6" lg="6" class="mb-4">
-            <website-visit-chart-card></website-visit-chart-card>
+            <website-visit-chart-card :areaChartData="areaChartData" :chartOptions="chartOptions"></website-visit-chart-card>
         </b-colxx>
         <b-colxx xl="3" lg="6" class="mb-4">
             <cakes :isOwnerDashboard="true"></cakes>
@@ -40,7 +40,9 @@
   import WebsiteVisitsChartCard from "../../../containers/dashboards/WebsiteVisitsChartCard";
   import Cakes from "@/containers/dashboards/Cakes";
   import IconCardsCarousel from "../../../containers/dashboards/IconCardsCarousel";
-
+  import {mapActions, mapGetters} from "vuex";
+  import { ThemeColors } from '../../../utils'
+  const colors = ThemeColors()
   export default {
     components: {
       "converconversion-rates-chart-card": ConversionRatesChartCard,
@@ -58,8 +60,101 @@
     },
     data(){
         return {
-            percentagesData: []
+            percentagesData: [],
+            chartOptions: {
+              legend: {
+                display: false
+              },
+              responsive: true,
+              maintainAspectRatio: false,
+              tooltips:  {
+                enabled: true,
+                mode: 'single',
+                backgroundColor: '#ffffff',
+                titleFontColor: '#000',
+                borderColor: '#d1d1d1',
+                borderWidth: 0.5,
+                bodyFontColor: '#000000',
+                bodySpacing: 10,
+                xPadding: 15,
+                yPadding: 15,
+                cornerRadius: 0.15,
+                callbacks: {
+                    label: function(tooltipItems, data) { 
+                        return ` ${tooltipItems.yLabel}`;
+                    },
+                    title: function(tooltipItems, data) {
+                      return `${data.dates[tooltipItems[0].index]}`;
+                    }
+                }
+              },
+              scales: {
+                yAxes: [
+                  {
+                    gridLines: {
+                      display: true,
+                      lineWidth: 1,
+                      color: 'rgba(0,0,0,0.1)',
+                      drawBorder: false
+                    },
+                    ticks: {
+                      beginAtZero: true,
+                      stepSize: 5,
+                      min: null,
+                      max: null,
+                      padding: 20
+                    }
+                  }
+                ],
+                xAxes: [
+                  {
+                    gridLines: {
+                      display: false
+                    }
+                  }
+                ]
+              }
+            },
+            areaChartData: {
+              labels: ['', '', '', '', '', '', '', '', '','', ''],
+              dates: [],
+              datasets: [
+                {
+                  label: '',
+                  data: [],
+                  borderColor: colors.themeColor1,
+                  pointBackgroundColor: colors.foregroundColor,
+                  pointBorderColor: colors.themeColor1,
+                  pointHoverBackgroundColor: colors.themeColor1,
+                  pointHoverBorderColor: colors.foregroundColor,
+                  pointRadius: 4,
+                  pointBorderWidth: 2,
+                  pointHoverRadius: 8,
+                  fill: true,
+                  borderWidth: 2,
+                  backgroundColor: colors.themeColor1_10
+                },
+                // {
+                //   label: '',
+                //   data: [70, 65, 55, 59, 69, 62, 54],
+                //   borderColor: '#f7cf1f',
+                //   pointBackgroundColor: colors.foregroundColor,
+                //   pointBorderColor: '#f7cf1f',
+                //   pointHoverBackgroundColor: '#f7cf1f',
+                //   pointHoverBorderColor: colors.foregroundColor,
+                //   pointRadius: 4,
+                //   pointBorderWidth: 2,
+                //   pointHoverRadius: 8,
+                //   fill: true,
+                //   borderWidth: 2,
+                //   backgroundColor: colors.themeColor1_10
+                // }
+              ]
+            }
         }
+    },
+    mounted() {
+     
     },
     created() {
         for (let index = 0; index < 4; index++) {
@@ -69,6 +164,26 @@
                 total: 66
             }))  
         }
+        this.getOwnerChart({owner_id: 2})
+    },
+    methods: {
+      ...mapActions(['getOwnerChart'])
+    },
+    computed: {
+      ...mapGetters(['_ownerChart'])
+    },
+    watch: {
+      _ownerChart: function(val) {
+        val.forEach(el => {
+          this.areaChartData.datasets[0].data.push(el.total)
+          this.areaChartData.dates.push(el.created_at)
+        });
+        console.log(this.areaChartData);
+        const min = Math.min(...this.areaChartData.datasets[0].data)
+        const max = Math.max(...this.areaChartData.datasets[0].data)
+        this.chartOptions.scales.yAxes[0].ticks.min = min
+        this.chartOptions.scales.yAxes[0].ticks.max = max
+      }
     }
   };
   </script>

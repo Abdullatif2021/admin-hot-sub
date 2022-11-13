@@ -19,21 +19,20 @@
       </b-dropdown>
     </b-card-body>
     <div class="chart card-body pt-0">
-      <area-chart :data="areaChartData" container-class="chart" shadow />
+      <area-chart :chartOptions="chartOptions" :data="areaChartData" container-class="chart" shadow />
     </div>
   </b-card>
 </template>
 <script>
 import AreaChart from "../../components/Charts/Area";
-import { areaChartData } from "../../data/charts";
 
 export default {
+  props:['chartOptions', 'areaChartData'],
   components: {
     "area-chart": AreaChart
   },
   data() {
     return {
-      areaChartData
     };
   }
 };

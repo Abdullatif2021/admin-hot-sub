@@ -69,7 +69,27 @@ export const areaChartOptions = {
   },
   responsive: true,
   maintainAspectRatio: false,
-  tooltips: chartTooltip,
+  tooltips:  {
+    enabled: true,
+    mode: 'single',
+    backgroundColor: '#ffffff',
+    titleFontColor: '#000',
+    borderColor: '#d1d1d1',
+    borderWidth: 0.5,
+    bodyFontColor: '#000000',
+    bodySpacing: 10,
+    xPadding: 15,
+    yPadding: 15,
+    cornerRadius: 0.15,
+    callbacks: {
+        label: function(tooltipItems, data) { 
+            return ` ${tooltipItems.yLabel}`;
+        },
+        title: function(tooltipItems, data) {
+          return `${data.dates[tooltipItems[0].index]}`;
+        }
+    }
+},
   scales: {
     yAxes: [
       {
@@ -82,8 +102,8 @@ export const areaChartOptions = {
         ticks: {
           beginAtZero: true,
           stepSize: 5,
-          min: 50,
-          max: 70,
+          min: 0,
+          max: 100,
           padding: 20
         }
       }

@@ -37,11 +37,13 @@ export const polarAreaChartData = {
 }
 
 export const areaChartData = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  labels: ['fdfddfdf', '', '', '', '', '', '', '', '','', ''],
+  dates: ['iiki', 'iikiku','ccvcvcv', 'dffdfdfdf', '20', '80', '9', '55', '60', '65', '60', '68', '60', '3', '15','12', '60', '65', '60', '68', '60', '43', '20', '80', '9', '55'],
+  // labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun','Mon', 'Tue', 'Wed','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Thu', 'Fri', 'Sat', 'Sun'],
   datasets: [
     {
       label: '',
-      data: [54, 63, 60, 65, 60, 68, 60],
+      data: [54, 63,60, 43, 20, 80, 9, 55, 60, 65, 60, 68, 60, 3, 15,12, 60, 65, 60, 68, 60, 43, 20, 80, 9, 55],
       borderColor: colors.themeColor1,
       pointBackgroundColor: colors.foregroundColor,
       pointBorderColor: colors.themeColor1,
@@ -49,7 +51,7 @@ export const areaChartData = {
       pointHoverBorderColor: colors.foregroundColor,
       pointRadius: 4,
       pointBorderWidth: 2,
-      pointHoverRadius: 5,
+      pointHoverRadius: 8,
       fill: true,
       borderWidth: 2,
       backgroundColor: colors.themeColor1_10
@@ -64,7 +66,7 @@ export const areaChartData = {
       pointHoverBorderColor: colors.foregroundColor,
       pointRadius: 4,
       pointBorderWidth: 2,
-      pointHoverRadius: 5,
+      pointHoverRadius: 8,
       fill: true,
       borderWidth: 2,
       backgroundColor: colors.themeColor1_10

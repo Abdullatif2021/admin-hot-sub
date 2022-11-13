@@ -5,10 +5,12 @@
 </template>
 <script>
 import Chart from "chart.js";
-import { areaChartOptions } from "./config";
 
 export default {
   props: {
+    chartOptions: {
+      type: Object
+    },
     data: {
       type: Object
     },
@@ -44,7 +46,7 @@ export default {
     const myChart = new Chart(ctx, {
       type: this.shadow ? "lineWithShadow" : "line",
       data: this.data,
-      options: areaChartOptions
+      options: this.chartOptions
     });
   }
 };
