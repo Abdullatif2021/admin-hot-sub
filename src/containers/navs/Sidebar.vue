@@ -238,7 +238,6 @@ export default {
         )
       })
       menuItems.push(this.block);
-      console.log(this.block);
       this._blockCategories = null;
 
     },

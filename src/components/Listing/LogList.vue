@@ -25,7 +25,6 @@ export default {
             router.push(link);
         },
         open_element(link){
-            console.log(link);
             router.push(link);
         }
     }

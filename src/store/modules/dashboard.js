@@ -11,6 +11,7 @@ const state = {
   logs: null,
   logsProssing: false,
   ownerChart: null,
+  isLoadChart: false
 };
 
 const getters = {
@@ -19,6 +20,7 @@ const getters = {
   _logs: state => state.logs,
   _logsProssing: state => state.logsProssing,
   _ownerChart: state => state.ownerChart,
+  _isLoadChart: state => state.isLoadChart,
 };
 
 const mutations = {
@@ -36,16 +38,21 @@ const mutations = {
   },
   getOwnerChart(state, payload){
     state.ownerChart = payload;
+  },
+  chartLoading(state, payload){
+    state.isLoadChart = payload;
   }
 };
 
 const actions = {
-  getStatistics({ commit }, payload) {
+  getStatistics({ commit }, {owner_id, auction_id, start_date, end_date, date}) {
     commit("setProssing", false);
-      const state = get_statistics({ auction_id: payload.auction_id,
-        start_date: payload.start_date,
-        end_date: payload.end_date,
-        date: payload.date,
+      const state = get_statistics({ 
+        owner_id,
+        auction_id,
+        start_date,
+        end_date,
+        date,
        });
       state
       .then(res => {
@@ -76,17 +83,18 @@ const actions = {
     })
   },
   getOwnerChart({ commit, dispatch}, payload) {
-    commit("getLogsProssing", false);
+    commit("chartLoading", false);
     const owner_chart = get_owner_chart({ owner_id: payload.owner_id });
     owner_chart
-    .then(res => {
-      commit("getLogsProssing", true);
-      return res;
-    })
+    
     .then(res => {
       if (res.status === 200) {
         commit("getOwnerChart", res.data.data);
       }
+    })
+    .then(res => {
+      commit("chartLoading", true);
+      return res;
     })
     .catch(err => {
       console.log(err);

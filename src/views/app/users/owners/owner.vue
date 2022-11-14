@@ -141,7 +141,6 @@ export default {
     },
     created(){
         this.id =this.$route.query.id; 
-        console.log(this.$route.query.id);
         if(this.$route.query.id){
             this.title = this.$t(`forms.update_owner`)
             this.getOwner({id: this.$route.query.id})
@@ -230,7 +229,6 @@ export default {
         _getOwner: function (val) {
             for (const [key, value] of Object.entries(val)) {
                 if (this.gridForm.hasOwnProperty(key)) {
-                    console.log('yes', this.gridForm);
                     this.gridForm[key] = value
                 }
             }
@@ -239,7 +237,6 @@ export default {
             }
         },
         _createOwnerSuccess: function(val) {
-            console.log(val);
             this.enable = false;
             this.$notify(
                 "success",

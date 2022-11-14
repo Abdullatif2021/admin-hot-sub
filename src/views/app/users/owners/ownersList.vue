@@ -234,7 +234,6 @@ export default {
             this.$refs.vuetable.setData(val);
         },
         _ownerPaginations: function(val) {
-            console.log(val);
             this.perPage = val.per_page;
             this.from = val.from;
             this.to = val.to;

@@ -29,7 +29,6 @@ export default {
   },
   methods: {
     refreshButtonClick() {
-      console.log("refreshButtonClick");
     }
   }
 };

@@ -2,11 +2,11 @@
     <div v-if="isOwnerDashboard" class="d-flex flex-row">
         <div class="w-100">
             <div class="title">
-                <h4>Marketrs</h4>
+                <h4>In Progress Auctions</h4>
             </div>
             <ul class="list-unstyled mb-0">
-                <li v-for="(item,index) in cakes" :key="index" class="fullWidth owner_list">
-                    {{item.No}} - {{ item.title }} <b-badge class="badge_list">{{item.count}}</b-badge>
+                <li v-for="(item,index) in inprogressArray" :key="index" class="fullWidth owner_list">
+                    {{index + 1}} - {{ item.title }} <b-badge class="badge_list">{{item.value}}</b-badge>
                 </li>
             </ul>
         </div>
@@ -39,13 +39,28 @@
 </template>
 
 <script>
-import cakes from "../../data/cakes";
-
+import {getCurrentLanguage} from "../../utils"
 export default {
-    props: ['sides', 'owners', 'isOwnerDashboard'],
+    props: ['sides', 'owners', 'isOwnerDashboard', 'auctions'],
     data() {
         return {
-            cakes
+            inprogressArray: [], 
+            language: null,
+        }
+    },
+    created() {
+        this.language = getCurrentLanguage();
+    },
+    watch: {
+        auctions: function(val) {
+            val.forEach(el => {
+                this.inprogressArray.push(
+                    new Object({
+                    title: el.locales[this.language].title,
+                    value: el.current_price,
+                    })
+                )
+            })
         }
     }
 }

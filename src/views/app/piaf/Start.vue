@@ -143,7 +143,8 @@ export default {
       language: null,
       auction_list: [],
       percentagesData: [],
-      genderChartData: {  labels: ["Pending", "Ended", "Upcoming"],
+      genderChartData: {  
+        labels: ["Pending", "Ended", "Upcoming"],
         datasets: [
           {
             label: "",
@@ -168,6 +169,7 @@ export default {
     this.language = getCurrentLanguage();
     this.getLogs();
     this.getStatistics({
+        owner_id: null,
         auction_id: null,
         start_date: null,
         end_date: null,
@@ -207,9 +209,9 @@ export default {
       this.isLoadActive = !this.isLoadActive
     },
     filterFormSubmited(id, rangeDate, date){
-      console.log(id, rangeDate, date);
       this.getStatistics({
         auction_id: id,
+        owner_id: null,
         start_date: rangeDate ? new Date(rangeDate[0]).toISOString().split('T')[0] : null,
         end_date: rangeDate ? new Date(rangeDate[1]).toISOString().split('T')[0] : null,
         date: date ? new Date(date).toISOString().split('T')[0] : null
@@ -219,6 +221,7 @@ export default {
       this.getStatistics({
         auction_id: null,
         start_date: null,
+        owner_id: null,
         end_date: null,
         date: null
       })
@@ -238,7 +241,6 @@ export default {
   watch: {
     _auctionOwner: function(val) {
       this.owners = [];
-      console.log(val);
       val.forEach(el =>{
         this.owners.push(  new Object({
           title: el.name,
@@ -248,7 +250,6 @@ export default {
       })
     },
     _logs: function (val) {
-      console.log(val);
       val.forEach(el => {
         this.logs.push( new Object({
           type: el.type,
@@ -260,7 +261,6 @@ export default {
           date: '3 weeks ago'
         }))
       })
-      console.log('new logsss',this.logs)
     },
     _auctionSide: function(val) {
       this.sides = []
@@ -269,7 +269,6 @@ export default {
           title: el.name,
           link: `${adminRoot}/auctions?markter_id=${el.id}`
         }))
-        console.log(el.name.length);
       })
     },
     _statistics: function(val){

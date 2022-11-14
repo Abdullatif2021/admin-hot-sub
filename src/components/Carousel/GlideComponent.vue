@@ -3,7 +3,7 @@
     <div class="glide" ref="carouselImages">
         <div data-glide-el="track" class="glide__track">
             <div class="glide__slides">
-                <slot></slot>
+                <slot></slot> 
             </div>
         </div>
         <div v-if="!settings.hideNav" class="glide__arrows slider-nav" data-glide-el="controls">

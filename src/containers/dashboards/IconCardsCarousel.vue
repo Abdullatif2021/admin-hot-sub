@@ -28,6 +28,7 @@ import GlideComponent from "../../components/Carousel/GlideComponent";
 import IconCard from "../../components/Cards/IconCard";
 
 export default {
+  props: ['marketers'],
   components: {
     "glide-component": GlideComponent,
     "icon-card": IconCard
@@ -55,6 +56,11 @@ export default {
         hideNav: true
       }
     };
+  },
+  watch: {
+    marketers: function(val) {
+      console.log(val)
+    }
   }
 };
 </script>

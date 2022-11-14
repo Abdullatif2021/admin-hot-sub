@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div> 
+      <template v-if="_isLoadChart">
       <b-row>
         <b-colxx xxs="12">
           <piaf-breadcrumb :heading="$t('menu.owner-dashboard')" />
@@ -11,22 +12,26 @@
             <website-visit-chart-card :areaChartData="areaChartData" :chartOptions="chartOptions"></website-visit-chart-card>
         </b-colxx>
         <b-colxx xl="3" lg="6" class="mb-4">
-            <cakes :isOwnerDashboard="true"></cakes>
+            <cakes :auctions="auctions" :isOwnerDashboard="true"></cakes>
         </b-colxx>
         <b-colxx xl="3" lg="6" class="mb-4">
-            <product-categories-doughnut></product-categories-doughnut>
+            <product-categories-doughnut :genderChartData="genderChartData"></product-categories-doughnut>
         </b-colxx>
       </b-row>
       <b-row>
         <b-colxx lg="6" xxs="12" class="mb-4">
-            <profile-statuses :height="true" :data="percentagesData"></profile-statuses>
+            <profile-statuses  :height="true" :data="percentagesData"></profile-statuses>
         </b-colxx>
         <b-colxx lg="6" xxs="12" class="mb-4">
-            <icon-cards-carousel></icon-cards-carousel>
+            <icon-cards-carousel :marketers="sides"></icon-cards-carousel>
         </b-colxx>
       </b-row>
-    </div>
-  </template>
+    </template>
+    <template v-else>
+      <div class="loading"></div>
+    </template>
+  </div>
+</template>
   
   <script>
   import ConversionRatesChartCard from "../../../containers/dashboards/ConversionRatesChartCard";
@@ -61,6 +66,7 @@
     data(){
         return {
             percentagesData: [],
+            sides: [],
             chartOptions: {
               legend: {
                 display: false
@@ -99,7 +105,7 @@
                     },
                     ticks: {
                       beginAtZero: true,
-                      stepSize: 5,
+                      stepSize: 1,
                       min: null,
                       max: null,
                       padding: 20
@@ -116,7 +122,7 @@
               }
             },
             areaChartData: {
-              labels: ['', '', '', '', '', '', '', '', '','', ''],
+              labels: [],
               dates: [],
               datasets: [
                 {
@@ -150,6 +156,26 @@
                 //   backgroundColor: colors.themeColor1_10
                 // }
               ]
+            },
+            genderChartData: {  
+              labels: ["Pending", "Ended", "Upcoming"],
+              datasets: [
+                {
+                  label: "",
+                  borderColor: [
+                    colors.themeColor1,
+                    colors.themeColor2,
+                    colors.themeColor3
+                  ],
+                  backgroundColor: [
+                    colors.themeColor1_10,
+                    colors.themeColor2_10,
+                    colors.themeColor3_10
+                  ],
+                  borderWidth: 2,
+                  data: []
+                }
+              ]
             }
         }
     },
@@ -157,31 +183,73 @@
      
     },
     created() {
-        for (let index = 0; index < 4; index++) {
-            this.percentagesData.push( new Object({
-                title: this.$t('ended'),
-                status: 23,
-                total: 66
-            }))  
-        }
+      this.getAuctionSide();
+      this.getStatistics({
+        auction_id: null,
+        owner_id: 2,
+        start_date: null,
+        end_date: null,
+        date: null
+      }),
+        this.getAuctions({
+        dir: null,
+        auction_owner: 2,
+        auctionType: 1,
+        search: null,
+        order_by: null,
+        limit: null,
+        page: null
+      });
         this.getOwnerChart({owner_id: 2})
     },
     methods: {
-      ...mapActions(['getOwnerChart'])
+      ...mapActions(['getAuctionSide', 'getStatistics', 'getOwnerChart', 'getAuctions'])
     },
     computed: {
-      ...mapGetters(['_ownerChart'])
+      ...mapGetters(['_statistics', '_auctionSide', '_ownerChart', '_isLoadChart', 'auctions'])
     },
     watch: {
+      _auctionSide: function(val) {
+        this.sides = []
+        val.forEach(el =>{
+          this.sides.push( new Object({
+            title: el.name,
+            // link: `${adminRoot}/auctions?markter_id=${el.id}`
+          }))
+          console.log('el.name.length', el.name.length);
+        })
+      },
+      _statistics: function(val) {
+        this.percentagesData = [];
+        this.genderChartData.datasets[0]['data'].push(val.percentage_auction_active)
+        this.genderChartData.datasets[0]['data'].push(val.percentage_auction_ended)
+        this.genderChartData.datasets[0]['data'].push(val.percentage_auction_upcoming)
+        this.percentagesData.push( new Object({
+          title: this.$t('forms.pending'),
+          status: val.auction_upcoming,
+          total: val.total_auction
+        }))
+        this.percentagesData.push( new Object({
+          title: this.$t('forms.active'),
+          status: val.auction_active,
+          total: val.total_auction 
+        }))
+        this.percentagesData.push( new Object({
+          title: this.$t('ended'),
+          status: val.auction_ended,
+          total: val.total_auction
+        }))
+      },
       _ownerChart: function(val) {
         val.forEach(el => {
           this.areaChartData.datasets[0].data.push(el.total)
           this.areaChartData.dates.push(el.created_at)
+          const date = el.created_at.toString().split('-')
+          this.areaChartData.labels.push(`${date[1]}-${date[2]}`)
         });
-        console.log(this.areaChartData);
         const min = Math.min(...this.areaChartData.datasets[0].data)
         const max = Math.max(...this.areaChartData.datasets[0].data)
-        this.chartOptions.scales.yAxes[0].ticks.min = min
+        this.chartOptions.scales.yAxes[0].ticks.min = 0
         this.chartOptions.scales.yAxes[0].ticks.max = max
       }
     }

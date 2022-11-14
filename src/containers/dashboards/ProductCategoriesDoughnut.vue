@@ -1,21 +1,20 @@
 <template>
-  <b-card class="h-100" :title="$t('dashboards.product-categories')">
+  <b-card class="h-100" :title="$t('forms.percent-auctions')">
     <div class="dashboard-donut-chart">
-      <doughnut-chart :data="doughnutChartData" shadow />
+      <doughnut-chart :data="genderChartData" shadow />
     </div>
   </b-card>
 </template>
 <script>
 import DoughnutChart from "../../components/Charts/Doughnut";
-import { doughnutChartData } from "../../data/charts";
 
 export default {
+  props: ['genderChartData'],
   components: {
     "doughnut-chart": DoughnutChart
   },
   data() {
     return {
-      doughnutChartData
     };
   }
 };

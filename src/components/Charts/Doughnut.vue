@@ -23,7 +23,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.data);
     if (this.shadow) {
       Chart.defaults.doughnutWithShadow = Chart.defaults.doughnut;
       Chart.controllers.doughnutWithShadow = Chart.controllers.doughnut.extend({

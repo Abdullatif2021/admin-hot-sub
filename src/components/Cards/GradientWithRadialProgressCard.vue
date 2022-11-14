@@ -124,7 +124,6 @@ export default {
             }
         },
         get_bids_by_auction(val){
-            console.log(val);
         },
         open_modal(){
             this.showFilter = true;
@@ -139,10 +138,8 @@ export default {
             this.dateSelected = null;
         },
         rangeSelected(val){
-            console.log(val);
         },
         doSometing(){
-            console.log('doSometing');
             this.showFilter = false;
         },
         formSubmit(){
@@ -156,9 +153,7 @@ export default {
     },
     watch: {
         value: function(val) {
-            console.log(val);
             val.forEach(el => {
-                console.log(el.getDate());
             });
         },
        
