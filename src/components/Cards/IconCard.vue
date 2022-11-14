@@ -35,6 +35,7 @@ export default {
 .desc{
     text-align: left;
     font-size: 11px;
+    width: 140px;
     height: 42px;
     margin-top: 7px;
     color: #8f8f8f !important;

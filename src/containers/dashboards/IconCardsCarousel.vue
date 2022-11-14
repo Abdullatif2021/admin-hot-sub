@@ -1,13 +1,16 @@
 <template>
   <div class="icon-cards-row perCard" style="background-color: white;">
     <glide-component :settings="glideIconsOption">
-      <icon-card 
-        :title="$t('dashboards.pending-orders') + ' 01'" 
+      <div v-for="(mark, index) in marketers" :key="index">
+        <icon-card 
+        :title="mark.title + ' 01'" 
         img="/assets/img/cards/def.png" 
         :value="14"
         :desc="'I have Django and Vue project and I need to add permissions in the Vue router based on user role.'"
        />
-      <icon-card
+      </div>
+      
+      <!-- <icon-card
         :title="$t('dashboards.completed-orders') + ' 02'"
         img="/assets/img/cards/def.png"
         :value="32"
@@ -19,7 +22,7 @@
         :value="74"
         :class="'card_3'"
         :desc="'I have Django and Vue project and I need to add permissions in the Vue router based on user role.'"
-      />
+      /> -->
     </glide-component>
   </div>
 </template>
@@ -36,30 +39,23 @@ export default {
   data() {
     return {
       glideIconsOption: {
-        gap: 5,
-        perView: 4,
+        gap: 1,
+        perView: 1,
         type: "carousel",
         breakpoints: {
           320: {
             perView: 1
           },
-          576: {
-            perView: 2
-          },
-          1600: {
-            perView: 3
-          },
-          1800: {
-            perView: 4
-          }
+          
         },
         hideNav: true
       }
     };
   },
+  created(){  console.log("Created", this.marketers) },
   watch: {
     marketers: function(val) {
-      console.log(val)
+      console.log('marketers', val)
     }
   }
 };

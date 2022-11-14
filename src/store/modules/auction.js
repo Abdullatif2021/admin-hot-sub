@@ -525,12 +525,17 @@ const actions = {
     });
   },
   getAuctionSide({ commit, dispatch }, payload) {
+    commit("setProcessing", false);
     const sides =  get_sides();
     sides.then(res => {
       if (res.status === 200) {
         commit("getAuctionSide", res.data.data);
       }
-    });
+    })
+    .then(res => {
+      commit("setProcessing", true);
+      return res;
+    })
   },
   getAuctionOwner({ commit, dispatch }, payload) {
     commit("setProcessing", payload.sorting ? payload.sorting : false);

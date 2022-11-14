@@ -23,7 +23,7 @@
             <profile-statuses  :height="true" :data="percentagesData"></profile-statuses>
         </b-colxx>
         <b-colxx lg="6" xxs="12" class="mb-4">
-            <icon-cards-carousel :marketers="sides"></icon-cards-carousel>
+            <icon-cards-carousel v-if="_isLoadOwners" :marketers="sides"></icon-cards-carousel>
         </b-colxx>
       </b-row>
     </template>
@@ -206,17 +206,16 @@
       ...mapActions(['getAuctionSide', 'getStatistics', 'getOwnerChart', 'getAuctions'])
     },
     computed: {
-      ...mapGetters(['_statistics', '_auctionSide', '_ownerChart', '_isLoadChart', 'auctions'])
+      ...mapGetters(['_statistics', '_isLoadOwners', '_auctionSide', '_ownerChart', '_isLoadChart', 'auctions'])
     },
     watch: {
       _auctionSide: function(val) {
         this.sides = []
         val.forEach(el =>{
           this.sides.push( new Object({
-            title: el.name,
+            title: el.name.slice(0, 12)+ "...",
             // link: `${adminRoot}/auctions?markter_id=${el.id}`
           }))
-          console.log('el.name.length', el.name.length);
         })
       },
       _statistics: function(val) {
