@@ -11,13 +11,6 @@ export default {
   components: {
     "two-column-list": TwoColumnList
   },
-  data() {
-    return {
-      
-    };
-  },
-  watch: {
-    
-  }
+
 };
 </script>

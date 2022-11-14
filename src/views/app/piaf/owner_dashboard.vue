@@ -12,7 +12,7 @@
             <website-visit-chart-card :areaChartData="areaChartData" :chartOptions="chartOptions"></website-visit-chart-card>
         </b-colxx>
         <b-colxx xl="3" lg="6" class="mb-4">
-            <cakes :auctions="auctions" :isOwnerDashboard="true"></cakes>
+            <cakes :auctions="inprogressArray" :isOwnerDashboard="true"></cakes>
         </b-colxx>
         <b-colxx xl="3" lg="6" class="mb-4">
             <product-categories-doughnut :genderChartData="genderChartData"></product-categories-doughnut>
@@ -46,7 +46,7 @@
   import Cakes from "@/containers/dashboards/Cakes";
   import IconCardsCarousel from "../../../containers/dashboards/IconCardsCarousel";
   import {mapActions, mapGetters} from "vuex";
-  import { ThemeColors } from '../../../utils'
+  import { ThemeColors, getCurrentLanguage } from '../../../utils'
   const colors = ThemeColors()
   export default {
     components: {
@@ -67,6 +67,8 @@
         return {
             percentagesData: [],
             sides: [],
+            inprogressArray: [],
+            language: null,
             chartOptions: {
               legend: {
                 display: false
@@ -183,6 +185,7 @@
      
     },
     created() {
+      this.language = getCurrentLanguage();
       this.getAuctionSide();
       this.getStatistics({
         auction_id: null,
@@ -209,6 +212,16 @@
       ...mapGetters(['_statistics', '_isLoadOwners', '_auctionSide', '_ownerChart', '_isLoadChart', 'auctions'])
     },
     watch: {
+      auctions: function(val) {
+            val.forEach(el => {
+                this.inprogressArray.push(
+                    new Object({
+                    title: el.locales[this.language].title,
+                    value: el.current_price,
+                    })
+                )
+            })
+      },
       _auctionSide: function(val) {
         this.sides = []
         val.forEach(el =>{
