@@ -107,7 +107,7 @@
 import { mapGetters, mapActions } from "vuex";
 import { validationMixin } from "vuelidate";
 import { adminRoot } from "../../constants/config";
-import { setCurrentLanguage } from "../../utils";
+import { setCurrentLanguage, getCurrentUser } from "../../utils";
 import { defaultLocale } from "../../constants/config";
 import { getLanguages } from "../../utils";
 const {
@@ -176,8 +176,20 @@ export default {
   watch: {
     processing: function(value) {},
     currentUser(val) {
-      if (val != null) {
-        this.$router.push(adminRoot);
+      const role = getCurrentUser();
+      
+      console.log('role is here ', role);
+      console.log('role.role[0]', role.role[0]);
+      if (role.role[0] === 'owner') {
+        
+        console.log('owner condition', role.role[0])
+        this.$router.push(`${adminRoot}/static/owner`);
+      }else if (role.role[0] === 'marketer') {
+        console.log('marketer condition', role.role[0])
+        this.$router.push(`${adminRoot}/static/marketer`);
+      }else {
+        console.log('other condition', role.role[0])
+        this.$router.push(`${adminRoot}/static/start`);
       }
     },
     loginError(val) {

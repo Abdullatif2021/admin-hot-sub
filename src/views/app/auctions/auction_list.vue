@@ -370,7 +370,7 @@ import deleteModal from "../../../components/shared/deleteModal.vue"
 import VuetablePaginationBootstrap from "../../../components/Common/VuetablePaginationBootstrap.vue";
 import DatatableHeading from "../../../containers/datatable/DatatableHeading.vue";
 import { mapGetters, mapActions } from "vuex";
-import { getCurrentLanguage } from "../../../utils";
+import { getCurrentLanguage, getCurrentUser } from "../../../utils";
 import * as moment from 'moment'
 import Switches from "vue-switches";
 import googleMaps from "../../../components/shared/googleMaps.vue";
@@ -538,6 +538,11 @@ export default {
   },
   created() {
     this.language = getCurrentLanguage();
+    // const role = getCurrentUser();
+    // this.userRole = role.role[0];
+    // if (userRole = 'owner'){
+    //   console.log('owner is here ');
+    // }
     this.getAuctions({
       dir: null,
       auction_owner: this.$route.query.owner_id,

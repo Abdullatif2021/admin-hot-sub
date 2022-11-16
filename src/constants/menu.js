@@ -7,34 +7,34 @@ const data = [
     icon: "iconsminds-shop",
     label: "Dashboard",
     to: `${adminRoot}/static`,
-    subs: [
-      { 
-        id: "start",
-        icon: "simple-icon-folder",
-        label: "Start",
-        to: `${adminRoot}/static/start`,
-        roles: ["superadmin", "admin", "accountant"],
-      },
-      {
-        id: "owner",
-        icon: "simple-icon-grid",
-        label: "Owner dashboard",
-        to: `${adminRoot}/static/owner`,
-        roles: ["superadmin", "admin", "accountant"],
-      }
-    ]
+    // subs: [
+    //   { 
+    //     id: "start",
+    //     icon: "simple-icon-folder",
+    //     label: "Start",
+    //     to: `${adminRoot}/static/start`,
+    //     roles: ["superadmin", "admin", "accountant"],
+    //   },
+    //   {
+    //     id: "owner",
+    //     icon: "simple-icon-grid",
+    //     label: "Owner dashboard",
+    //     to: `${adminRoot}/static/owner`,
+    //     roles: ["owner"],
+    //   }
+    // ]
   },  
   {
     icon: "simple-icon-folder",
     label: "Auctions",
-    roles: ["superadmin", "admin", "accountant"],
+    roles: ["superadmin", "admin", "accountant", "owner"],
     subs: [
       { 
         id: "auctions",
         icon: "simple-icon-folder",
         label: "Auctions",
         to: `${adminRoot}/auctions`,
-        roles: ["superadmin", "admin", "accountant"],
+        roles: ["superadmin", "admin", "accountant", "owner"],
       },
       {
         id: "categories",

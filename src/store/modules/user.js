@@ -235,6 +235,7 @@ export default {
           if (res.status) {
             const user = get_user();
             user.then(res => {
+              console.log('resssssssssss',res)
               if (res.status) {
                 setCurrentUser(res.data.data);
                 commit("setUser", res.data.data);

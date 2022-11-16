@@ -89,10 +89,10 @@
                 cornerRadius: 0.15,
                 callbacks: {
                     label: function(tooltipItems, data) { 
-                        return ` ${tooltipItems.yLabel}`;
+                        return `Total bids: ${tooltipItems.yLabel}`;
                     },
                     title: function(tooltipItems, data) {
-                      return `${data.dates[tooltipItems[0].index]}`;
+                      return `High bid: ${data.dates[tooltipItems[0].index]}`;
                     }
                 }
               },
@@ -255,10 +255,11 @@
       _ownerChart: function(val) {
         val.forEach(el => {
           this.areaChartData.datasets[0].data.push(el.total)
-          this.areaChartData.dates.push(el.created_at)
+          this.areaChartData.dates.push(el.high_bids)
           const date = el.created_at.toString().split('-')
           this.areaChartData.labels.push(`${date[1]}-${date[2]}`)
         });
+        console.log('eddedededeed',this.areaChartData);
         const min = Math.min(...this.areaChartData.datasets[0].data)
         const max = Math.max(...this.areaChartData.datasets[0].data)
         this.chartOptions.scales.yAxes[0].ticks.min = 0

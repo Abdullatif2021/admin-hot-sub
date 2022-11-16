@@ -10,6 +10,7 @@ export default (to, from, next) => {
           .filter(x => x.meta.roles)
           .map(x => x.meta.roles);
         if (roleArrayHierarchic.every(x => x.includes(user.role[0]))) {
+          console.log(next());
           next();
         } else {
           next("/unauthorized");

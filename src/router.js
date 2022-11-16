@@ -17,29 +17,24 @@ const routes = [
     component: () => import(/* webpackChunkName: "app" */ "./views/app"),
     redirect: `${adminRoot}/static`,
     meta: { loginRequired: true },
-
     children: [
       {
         path: "static",
         component: () =>
           import(/* webpackChunkName: "piaf" */ "./views/app/piaf"),
-        redirect: `${adminRoot}/static/start`,
-        // beforeEnter: (to, from) => {
-        //   console.log(to, from);
-        //   return true
-        // },
+        // redirect: `${adminRoot}/static/start`,
         children: [
           {
-            path: "owner",
+            path: "owner", 
             component: () =>
-              import(/* webpackChunkName: "piaf" */ "./views/app/piaf/owner_dashboard")
-            // meta: { roles: [UserRole.Admin, UserRole.Editor] },
+              import(/* webpackChunkName: "piaf" */ "./views/app/piaf/owner_dashboard"),
+            meta: { roles: ['owner'] },
           },
           {
             path: "start",
             component: () =>
-              import(/* webpackChunkName: "piaf" */ "./views/app/piaf/Start")
-            // meta: { roles: [UserRole.Admin, UserRole.Editor] },
+              import(/* webpackChunkName: "piaf" */ "./views/app/piaf/Start"),
+            meta: { roles: ['superadmin'] },
           }
         ]
       },
@@ -173,7 +168,7 @@ const routes = [
         redirect: `${adminRoot}/auctions/auction_list`,
         meta: {
           loginRequired: true,
-          roles: ["superadmin", "admin", "accountant"]
+          roles: ["superadmin", "admin", "accountant", "owner"]
         },
 
         children: [

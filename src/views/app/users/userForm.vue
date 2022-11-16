@@ -1128,7 +1128,7 @@ export default {
             { text: "Admin", value: 2 }
           ]);
         case "accountant":
-          return (this.roleOptions = [{ text: "Accountant", value: 7 }]);
+          return (this.roleOptions = [{ text: "Accountant", value: 4 },{ text: "Owner", value: 6 },{ text: "Marketer", value: 7 }]);
         case "users":
           return (this.roleOptions = [{ text: "User", value: 3 }]);
       }
