@@ -124,7 +124,7 @@ export default {
         path: ""
       },
       langs: null,
-            language: null,
+      language: null,
       enable_tube: false,
 
       youtube_fields: [
@@ -184,7 +184,6 @@ export default {
     this.langs = localStorage.getItem("Languages");
     this.make_collaction(this.langs, this.youtube_form);
     this.language = getCurrentLanguage();
-
   },
   methods: {
     make_collaction(langs, form) {
@@ -209,7 +208,7 @@ export default {
             this.edit = true;
             this.youtube_form.forEach(el => {
               el.title = item.locales[el.name].title;
-                  el.description = item.locales[el.name].description;
+              el.description = item.locales[el.name].description;
             });
 
             this.path_form.path = item.path;

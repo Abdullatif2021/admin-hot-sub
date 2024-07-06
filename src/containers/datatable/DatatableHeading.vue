@@ -41,7 +41,10 @@
               >
             </b-dropdown>
 
-            <div class="search-sm d-inline-block float-md-left mr-1 align-top">
+            <div
+              v-if="search"
+              class="search-sm d-inline-block float-md-left mr-1 align-top"
+            >
               <b-input
                 :placeholder="$t('menu.search')"
                 @input="val => searchChange(val)"
@@ -169,6 +172,7 @@ export default {
     "sort",
     "state_sort",
     "pagination",
+    "search",
     "method_sort",
     "type_sort",
     "total",
@@ -189,7 +193,7 @@ export default {
   ],
   data() {
     return {
-      pageSizes: [4, 8, 12]
+      pageSizes: [1, 8, 12]
     };
   },
   methods: {

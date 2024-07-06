@@ -147,20 +147,20 @@ export default {
       viewingParentMenu: "",
       add: true,
       block: {
-          id: '4344334',
-          icon: "iconsminds-blogger",
-          label: "Blocks",
-          roles: ["superadmin", "admin", "editor"],
-          subs: [
-            {
-              id: "category",
-              icon: "simple-icon-list",
-              label: "Category",
-              to: `${adminRoot}/blockCategories/categories_List`,
-              roles: ["superadmin", "admin"]
-            }
-          ]
-        }
+        id: "4344334",
+        icon: "iconsminds-blogger",
+        label: "Blocks",
+        roles: ["superadmin", "admin", "editor"],
+        subs: [
+          {
+            id: "category",
+            icon: "simple-icon-list",
+            label: "Category",
+            to: `${adminRoot}/blockCategories/categories_List`,
+            roles: ["superadmin", "admin"]
+          }
+        ]
+      }
     };
   },
   mounted() {
@@ -180,8 +180,8 @@ export default {
     document.removeEventListener("click", this.handleDocumentClick);
     window.removeEventListener("resize", this.handleWindowResize);
   },
-  created(){
-    this.blockCategories =  localStorage.getItem("blockCategories")
+  created() {
+    this.blockCategories = localStorage.getItem("blockCategories");
   },
   methods: {
     ...mapMutations([
@@ -225,21 +225,23 @@ export default {
 
       return isCurrentMenuHasSubItem;
     },
-    do_test(val){
+    do_test(val) {
       JSON.parse(val).forEach(item => {
-        this.block['subs'].push( 
+        this.block["subs"].push(
           new Object({
-              id: item.id,
-              icon: "iconsminds-blogger",
-              label: item.slug.length > 16 ? item.slug.slice(0, 16)+ "..." : item.slug,
-              roles: ["superadmin", "admin", "editor"],
-              to: `${adminRoot}/blocks/blockList/${item.id}`,
+            id: item.id,
+            icon: "iconsminds-blogger",
+            label:
+              item.slug.length > 16
+                ? item.slug.slice(0, 16) + "..."
+                : item.slug,
+            roles: ["superadmin", "admin", "editor"],
+            to: `${adminRoot}/blocks/blockList/${item.id}`
           })
-        )
-      })
-      menuItems.push(this.block);
+        );
+      });
+      // menuItems.push(this.block);
       this._blockCategories = null;
-
     },
     // setMenuItems(val) {
     //  JSON.parse(val).forEach(item => {
@@ -404,13 +406,13 @@ export default {
 
     //For UserRole
     filteredMenuItems(menuItems) {
-      return menuItems
-        ? menuItems.filter(
-            x =>
-              !x.roles ||
-              (x.roles && x.roles.includes(this.currentUser.role[0]))
-          )
-        : [];
+      return menuItems;
+      // ? menuItems.filter(
+      //     x =>
+      //       !x.roles ||
+      //       (x.roles && x.roles.includes(this.currentUser.role[0]))
+      //   )
+      // : [];
     }
   },
 
@@ -445,7 +447,7 @@ export default {
     },
     blockCategories(newVal, old) {
       // this.setMenuItems(newVal);
-      this.do_test(newVal);
+      // this.do_test(newVal);
     }
   }
 };

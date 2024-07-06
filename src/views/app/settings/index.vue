@@ -4,24 +4,38 @@
       <piaf-breadcrumb :heading="$t('menu.settings-list')" />
       <div class="separator mb-5"></div>
     </b-colxx>
-    <template v-if="!isLoadSettings">
-      <b-colxx xxs="12" v-for="item in settings" :key="item.id">
-        <b-card class="mb-4" :title="item.key">
+    <template v-if="isLoadSettings">
+      <b-colxx xxs="12">
+        <b-card class="mb-4" title="Location">
           <b-form>
             <b-row>
               <b-colxx xxs="12">
-                <b-form-input
-                  @change="process(item.id, item.key, item.value)"
-                  v-model="item.value"
-                  type="text"
-                ></b-form-input>
+                <b-form-input v-model="location" type="text"></b-form-input>
+              </b-colxx>
+            </b-row>
+          </b-form>
+        </b-card>
+        <b-card class="mb-4" title="Instagram">
+          <b-form>
+            <b-row>
+              <b-colxx xxs="12">
+                <b-form-input v-model="instagram" type="text"></b-form-input>
+              </b-colxx>
+            </b-row>
+          </b-form>
+        </b-card>
+        <b-card class="mb-4" title="Phone Num">
+          <b-form>
+            <b-row>
+              <b-colxx xxs="12">
+                <b-form-input v-model="phone" type="text"></b-form-input>
               </b-colxx>
             </b-row>
           </b-form>
         </b-card>
       </b-colxx>
       <b-colxx xxs="12">
-        <b-card v-if="!isLoadSettings" class="mb-4">
+        <b-card v-if="isLoadSettings" class="mb-4">
           <b-form>
             <b-row>
               <b-colxx
@@ -30,13 +44,11 @@
               >
                 <!-- <h3>{{ items.length }}</h3> -->
                 <b-button
-                  :disabled="!items"
                   @click="save()"
                   class="mb-2"
                   size="lg"
                   variant="primary"
-                  >{{ $t("button.save") }} {{ items.length }}
-                  {{ $t("button.changes") }}</b-button
+                  >{{ $t("button.save") }} {{ $t("button.changes") }}</b-button
                 >
               </b-colxx>
             </b-row>
@@ -52,44 +64,67 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import axios from "axios";
 
 export default {
   data() {
     return {
-      items: []
+      items: [],
+      isLoadSettings: false,
+      instagram: null,
+      phone: null,
+      location: null
     };
-  },
-  methods: {
-    ...mapActions(["getSettings", "updateSettings"]),
-    process(id, key, value) {
-      this.items.push({
-        id: id,
-        key: key,
-        value: value
-      });
-    },
-    save() {
-      this.items.forEach(item => {
-        this.updateSettings(item);
-      });
-    }
   },
   created() {
     this.getSettings();
   },
-  computed: {
-    ...mapGetters(["settings", "isLoadSettings", "updatedSuccessfuly"])
-  },
-  watch: {
-    updatedSuccessfuly() {
-      this.$notify(
-        "success",
-        "Operation completed successfully",
-        "Settings have been updated successfully",
-        { duration: 3000, permanent: false }
-      );
+  methods: {
+    getSettings() {
+      axios
+        .get("http://back-end.hot-sub.ca/api/settings")
+        .then(response => {
+          console.log({ response });
+          this.isLoadSettings = true;
+          this.instagram = response.data.data[0].instagram_url;
+          this.phone = response.data.data[0].phone_number;
+          this.location = response.data.data[0].location_url;
+        })
+        .catch(error => {
+          console.error("There was an error fetching the offers:", error);
+        });
+    },
+    save() {
+      const formData = {
+        instagram_url: this.instagram,
+        phone_number: this.phone,
+        location_url: this.location
+      };
+
+      axios
+        .put(`http://back-end.hot-sub.ca/api/settings/1`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(response => {
+          this.$notify(
+            "success",
+            "Operation completed successfully",
+            "Settings have been updated successfully",
+            { duration: 3000, permanent: false }
+          );
+        })
+        .catch(error => {
+          console.error("There was an error!", error);
+          this.$notify("error", "Error via update", "Please try again", {
+            duration: 4000,
+            permanent: false
+          });
+        });
     }
   },
+
   destroyed() {}
 };
 </script>

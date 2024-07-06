@@ -22,19 +22,21 @@ const routes = [
         path: "static",
         component: () =>
           import(/* webpackChunkName: "piaf" */ "./views/app/piaf"),
-        // redirect: `${adminRoot}/static/start`,
+        redirect: `${adminRoot}/static/start`,
         children: [
           {
-            path: "owner", 
+            path: "owner",
             component: () =>
-              import(/* webpackChunkName: "piaf" */ "./views/app/piaf/owner_dashboard"),
-            meta: { roles: ['owner'] },
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/piaf/owner_dashboard"
+              ),
+            meta: { roles: ["owner"] }
           },
           {
             path: "start",
             component: () =>
               import(/* webpackChunkName: "piaf" */ "./views/app/piaf/Start"),
-            meta: { roles: ['superadmin'] },
+            meta: { roles: ["superadmin"] }
           }
         ]
       },
@@ -134,6 +136,50 @@ const routes = [
         ]
       },
       {
+        path: "items",
+        component: () =>
+          import(/* webpackChunkName: "second-menu" */ "./views/app/items"),
+        redirect: `${adminRoot}/items/items_list`,
+        meta: { loginRequired: true, roles: ["superadmin"] },
+
+        children: [
+          {
+            path: "items_list",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/items/items_list"
+              )
+          },
+          {
+            path: "item",
+            component: () =>
+              import(/* webpackChunkName: "blog" */ "./views/app/items/item")
+          }
+        ]
+      },
+      {
+        path: "offers",
+        component: () =>
+          import(/* webpackChunkName: "second-menu" */ "./views/app/offers"),
+        redirect: `${adminRoot}/offers/offers_list`,
+        meta: { loginRequired: true, roles: ["superadmin"] },
+
+        children: [
+          {
+            path: "offers_list",
+            component: () =>
+              import(
+                /* webpackChunkName: "piaf" */ "./views/app/offers/offers_list"
+              )
+          },
+          {
+            path: "offer",
+            component: () =>
+              import(/* webpackChunkName: "blog" */ "./views/app/offers/offer")
+          }
+        ]
+      },
+      {
         path: "faq",
         component: () =>
           import(/* webpackChunkName: "second-menu" */ "./views/app/faq"),
@@ -184,20 +230,22 @@ const routes = [
             component: () =>
               import(
                 /* webpackChunkName: "blog" */ "./views/app/auctions/auction"
-              ) 
+              )
           },
 
           {
             path: "auction-review",
             component: () =>
-            import ( /* webpackChunkName: "blog" */ "./views/app/auctions/auction_review")  
+              import(
+                /* webpackChunkName: "blog" */ "./views/app/auctions/auction_review"
+              )
           },
           {
             path: "auction-product",
             component: () =>
-            import( 
-              /* webpackChunkName: "blog" */ "./views/app/auctions/auction_product"
-              )  
+              import(
+                /* webpackChunkName: "blog" */ "./views/app/auctions/auction_product"
+              )
           }
         ]
       },
@@ -301,7 +349,9 @@ const routes = [
       {
         path: "owners",
         component: () =>
-          import(/* webpackChunkName: "second-menu" */ "./views/app/users/owners"),
+          import(
+            /* webpackChunkName: "second-menu" */ "./views/app/users/owners"
+          ),
         redirect: `${adminRoot}/owners/ownersList`,
         meta: { loginRequired: true, roles: ["superadmin"] },
         children: [

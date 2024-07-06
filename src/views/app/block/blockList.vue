@@ -51,7 +51,7 @@
                   modify(props.rowData.id, props.rowData.block_category_id.slug)
                 "
               >
-              <i  class="simple-icon-arrow-right"></i>
+                <i class="simple-icon-arrow-right"></i>
               </b-button>
               <!-- <b-button
                 variant="outline-theme-6"
@@ -245,8 +245,7 @@ export default {
     modify(id, slug) {
       this.$router.push({
         path: `${adminRoot}/blocks/block`,
-        query: { id: id,
-          type: this.type }
+        query: { id: id, type: this.type }
       });
       this.setCategoryId({ id: this.type });
     },

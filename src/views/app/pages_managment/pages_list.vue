@@ -9,7 +9,7 @@
       :cancle="cancle"
       :transaction_filter="false"
       :from="from"
-      :add_new_button="false"
+      :add_new_button="true"
       :sort="sort"
       :add_new="true"
       :to="to"
@@ -42,7 +42,7 @@
                 class="icon-button"
                 @click="modify(props.rowData.id)"
               >
-              <i  class="simple-icon-arrow-right"></i>
+                <i class="simple-icon-arrow-right"></i>
               </b-button>
             </template>
           </vuetable>
@@ -321,9 +321,7 @@ export default {
       return -1;
     },
 
-    onContextMenuAction(action) {
-
-    }
+    onContextMenuAction(action) {}
   },
   computed: {
     ...mapGetters(["_Pages", "_pagesPaginations", "_isLoadPages"]),
@@ -340,7 +338,6 @@ export default {
   watch: {
     searchChange(newQuestion, oldQuestion) {
       if (newQuestion) {
-
       }
     },
 

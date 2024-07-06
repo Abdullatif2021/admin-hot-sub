@@ -18,13 +18,13 @@ axios.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      store.dispatch("refreshToken");
-      setTimeout(() => {
-        axios.request(error.config);
-      }, 1000);
-      setTimeout(() => {
-        location.reload();
-      }, 2000);
+      // store.dispatch("refreshToken");
+      // setTimeout(() => {
+      //   axios.request(error.config);
+      // }, 1000);
+      // setTimeout(() => {
+      //   location.reload();
+      // }, 2000);
     }
   }
 );
